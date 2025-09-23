@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "clean": "vite clean",
     "lint": "eslint .",
     "preview": "vite preview",
     "----------- openapi -----------------------": "",
@@ -28,6 +29,7 @@
     "react-router": "^6.26.0",
     "react-router-dom": "^6.26.0",
     "react-slick": "^0.30.2",
+    "react-youtube": "9.0.2",
     "slick-carousel": "^1.8.1",
     "swiper": "^11.1.9",
     "zustand": "^5.0.3"

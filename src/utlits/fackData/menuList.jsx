@@ -2,27 +2,27 @@ export const menuList = [
     {
         id: 1,
         path: "/",
-        label: "Home"
+        label: "home"
     },
     {
         id: 2,
         path: "/about",
-        label: "About"
+        label: "about"
     },
 /*     {
         id: 3,
         path: "/service",
-        label: "Service"
+        label: "service"
     }, */
     {
         id: 4,
-        path: "/performance",
-        label: "performance"
+        path: "/projects",
+        label: "projects"
     },
     {
         id: 5,
         path: "/contact",
-        label: "Contact"
+        label: "contact"
     },
 
 ]

@@ -43,3 +43,11 @@
 .text-danger {
   color: FireBrick;
 }
+
+.video-container {
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  max-width: 100%;
+  padding-top: 30px;
+}

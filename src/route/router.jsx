@@ -3,9 +3,11 @@ import RootLayout from "../layout/root";
 import Home from "../pages/home";
 import Contact from "../pages/contact";
 import About from "../pages/about";
-import Service from "../pages/service";
-import SingleProject from "../pages/single-project";
-import Performance from "../pages/performance";
+import AvalancheValidatorProject from "../pages/projects/avalanche/validator";
+import FlareValidatorProject from "../pages/projects/flare/validator";
+import FlareFspProject from "../pages/projects/flare/fsp";
+import SongbirdFspProject from "../pages/projects/songbird/fsp";
+import Projects from "../pages/projects";
 
 
 export const router = createHashRouter([
@@ -30,13 +32,25 @@ export const router = createHashRouter([
                 element: <Service />
             }, */
             {
-                path: "/single-project",
-                element: <SingleProject />
+                path: "/projects",
+                element: <Projects />
             },
             {
-                path: "/performance",
-                element: <Performance />
+                path: "/avalanche/validator",
+                element: <AvalancheValidatorProject />
             },
+            {
+                path: "/flare/validator",
+                element: <FlareValidatorProject />
+            },
+            {
+                path: "/flare/fsp",
+                element: <FlareFspProject />
+            },
+            {
+                path: "/songbird/fsp",
+                element: <SongbirdFspProject />
+            }
         ]
     }
 ])

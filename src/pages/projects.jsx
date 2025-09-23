@@ -1,7 +1,6 @@
-import React from 'react'
 import Portfolio from '../components/sections/portfolio'
 
-const Performance = () => {
+const Projects = () => {
     return (
         <>
             <Portfolio className={"innerpage-single-area"} />
@@ -9,4 +8,4 @@ const Performance = () => {
     )
 }
 
-export default Performance
+export default Projects

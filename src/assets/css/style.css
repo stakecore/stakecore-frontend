@@ -1663,6 +1663,30 @@ ul.extra-skills li i {
     padding-top: 200px;
 }
 
+.single-project-page-design-avalanche-validator {
+    background-image: url('src/assets/images/projects/avalanche/validator/background.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+.single-project-page-design-flare-validator {
+    background-image: url('src/assets/images/projects/flare/validator/background.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+.avalanche-div-border {
+    border: 1px solid FireBrick;
+}
+
+.flare-div-border {
+    border: 1px solid #E62058;
+}
+
 .single-project-image img {
     width: 100%;
 }
@@ -2768,7 +2792,8 @@ ul.blog_pagination li a:hover {
 }
 
 .single-side-bar ul li a:hover {
-    color: #fff opacity: 1;
+    color: #fff;
+    opacity: 1;
 }
 
 .single-blog-social-icon {
