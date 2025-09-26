@@ -3,8 +3,9 @@ import Marquee from "react-fast-marquee"
 import { RiGithubLine, RiTwitterXLine } from '@remixicon/react'
 import profile from "../../assets/images/about/profile.svg"
 import SlideUp from '../../utlits/animations/slideUp'
-import avalanche from "../../assets/images/client-logos/avalanche.png"
-import flare from "../../assets/images/client-logos/flare.png"
+import avalanche from "../../assets/images/projects/avalanche/logo.svg"
+import flare from "../../assets/images/projects/flare/logo.svg"
+import songbird from "../../assets/images/projects/songbird/logo.svg"
 
 
 const Hero = () => {
@@ -17,8 +18,10 @@ const Hero = () => {
                         <SlideUp>
                             <div className="about-image-part">
                                 <img src={profile} alt="About Me" />
-                                <p style={{marginTop: 30, marginBottom: 40}}>Flare network validator, FTSO and FDC provider.
-                                    Put your FLR to work by staking and delegating with us!</p>
+                                <p style={{marginTop: 30, marginBottom: 40}}>
+                                    Infrastructure provider for various crypto networks.
+                                    Provide security by delegating your assets with us and earn yield in return!
+                                </p>
                                 <div className="about-social text-center">
                                     <ul>
                                         {/* <li><Link to=""><RiFacebookCircleFill size={20} /></Link></li> */}
@@ -45,14 +48,15 @@ const Hero = () => {
                         </SlideUp>
                         <SlideUp>
                             <div className="about-content-part-bottom">
-                                <h2>Tokens we're providing prices for</h2>
+                                <h2>Networks we're providing infrastructure on</h2>
                                 <div className="company-list">
                                     <div className="scroller">
                                         <div className="scroller__inner">
-                                            <Marquee>
-                                                <img height={"100px"} src={avalanche} alt="" />
-                                                <img height={"100px"} src={flare} alt="" />
-                                            </Marquee>
+                                            <div>
+                                                <img height={"120px"} src={avalanche} alt="" />
+                                                <img height={"120px"} src={flare} alt="" />
+                                                <img height={"120px"} src={songbird} alt="" />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

@@ -1,0 +1,45 @@
+.countdown-circle {
+  position: relative;
+  display: grid;
+  aspect-ratio: 1 / 1;
+  width: 151px;
+  height: 151px;
+  place-content: center;
+  border-radius: 9999px;
+}
+
+.countdown-circle::before {
+  position: absolute;
+  bottom: 44px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.5rem;
+  line-height: 2rem;
+  color: white;
+  content: attr(data-content);
+}
+
+.countdown-circle::after {
+  display: flex;
+  aspect-ratio: 1 / 1;
+  width: 140px;
+  height: 140px;
+  justify-content: center;
+  border-radius: 9999px;
+  background-color: #121214;
+  padding-top: 2rem;
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  font-weight: 500;
+  color: white;
+  font-variant-numeric: tabular-nums;
+  content: attr(data-progress);
+}
+
+.flex-wrap-center {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2.5rem;
+}

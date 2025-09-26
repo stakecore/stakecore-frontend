@@ -17,8 +17,8 @@ const CallToAction = () => {
                         <SlideUp>
                             <div className="about-content-part call-to-action-part text-center">
                                 <h2>Want to put your FLR to work and stake or delegate with us?</h2>
-                                <p>You can go to <Link to="https://portal.flare.network/staking">portal.flare.network</Link>{' '}
-                                and stake FLR to Node Id {' '} <ValidatorNodeLink /> or delegate WFLR to address {' '} <DelegationAddressLink />.
+                                <p>{/* You can go to <Link to="https://portal.flare.network/staking">portal.flare.network</Link>{' '}
+                                and stake FLR to Node Id {' '} <ValidatorNodeLink /> or delegate WFLR to address {' '} <DelegationAddressLink />. */}
                                 </p>
                                 <div className="hero-btns">
                                     <Link onClick={delegate} className="theme-btn">Delegate WFLR  <i><RiContactsFill size={16} /></i></Link>

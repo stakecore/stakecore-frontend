@@ -12,6 +12,10 @@ export const validatorNodeId = 'KiAUisCU8UvXGnMRiUvoeyWneSdUm987'
 export const delegationLink = `https://flare-explorer.flare.network/address/${delegationAddress}`
 export const validatorLink = `https://flare.space/dapp/p-chain-explorer/validator/NodeID-${validatorNodeId}`
 
+export const avalancheValidatorNodeId = 'NodeID-6kHEKvCMAK3WSChsrVXfLDujyKizshbS6'
+export const avalancheValidatorLink = `https://subnets.avax.network/validators/${avalancheValidatorNodeId}`
+
+
 export const chainConfig = {
     chainName: 'Flare Network',
     chainId,

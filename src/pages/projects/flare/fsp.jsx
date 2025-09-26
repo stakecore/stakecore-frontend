@@ -21,7 +21,7 @@ export const FlareFspProject = () => {
                                 <h3>FLR</h3>
                             </div>
                             <div className="single-info">
-                                <p>FLR APY</p>
+                                <p>APY</p>
                                 <h3>10.00%</h3>
                             </div>
                             <div className="single-info">

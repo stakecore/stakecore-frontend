@@ -1,0 +1,27 @@
+.meter-bar-container {
+    margin-top: 15px;
+}
+
+.meter-bar-title {
+    font-size: 18px;
+    color: white;
+}
+
+.meter-bar {
+    display: flex;
+    padding: 1.5px;
+}
+
+.meter-bar-desc {
+    width: 50px;
+    font-size: 30px;
+    margin: auto;
+    margin-left: 10px;
+}
+
+.meter-bar-led {
+    min-height: 100%;
+    margin: 1px;
+    flex-grow: 1;
+    border-radius: 3px;
+}

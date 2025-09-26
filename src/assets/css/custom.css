@@ -31,7 +31,7 @@
   min-width: 200px;
 }
 
-.connect-wallet-button > img {
+.connect-wallet-button>img {
   width: 16px;
   margin-right: 8px;
 }
@@ -50,4 +50,55 @@
   overflow: hidden;
   max-width: 100%;
   padding-top: 30px;
+}
+
+.specs-container {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.specs-table-container {
+  overflow-x: auto;
+  width: auto;
+}
+
+.specs-table {
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0px;
+}
+
+.specs-table-row {
+  display: table-row;
+  vertical-align: middle;
+  outline: 0px;
+}
+
+.specs-table-data {
+  display: table-cell;
+  line-height: 1.43;
+  padding: 8px 12px 8px 8px;
+  font-size: 0.875rem;
+}
+
+.specs-table-data-right {
+  text-align: right;
+  color: white;
+  font-weight: bold;
+}
+
+.specs-table .link {
+  font-weight: normal;
+}
+
+.specs-table-border {
+  margin: 0px 16px;
+  flex-shrink: 0;
+  border-width: 0px 0px thin;
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.4);
+  width: 100%;
+  align-self: center;
 }

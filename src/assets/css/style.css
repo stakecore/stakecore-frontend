@@ -921,7 +921,6 @@ html {
     flex: none;
 }
 
-
 .main-header .logo {
     z-index: 9;
     padding: 2px 0;
@@ -1671,8 +1670,16 @@ ul.extra-skills li i {
     background-attachment: fixed;
 }
 
+.single-project-page-design-songbird-fsp {
+    background-image: url('src/assets/images/projects/songbird/fsp/background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
 .single-project-page-design-flare-validator {
-    background-image: url('src/assets/images/projects/flare/validator/background.jpeg');
+    background-image: url('src/assets/images/projects/flare/validator/background.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -1680,11 +1687,15 @@ ul.extra-skills li i {
 }
 
 .avalanche-div-border {
-    border: 1px solid FireBrick;
+    border: 1.25px solid #FF394A;
 }
 
 .flare-div-border {
-    border: 1px solid #E62058;
+    border: 1.25px solid #E62058;
+}
+
+.songbird-div-border {
+    border: 1.25px solid #253c4d;
 }
 
 .single-project-image img {

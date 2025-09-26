@@ -8,6 +8,8 @@ import './assets/css/style.css'
 import './assets/css/responsive.css'
 import './assets/css/custom.css'
 import './assets/css/wallet.css'
+import './assets/css/meterBar.css'
+import './assets/css/countdown.css'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

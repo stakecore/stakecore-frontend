@@ -1,4 +1,4 @@
-import MovieClip from "../../youtube";
+import MovieClip from "../../../components/ui/youtube";
 
 export const FlareValidatorProject = () => {
     return (
@@ -21,7 +21,7 @@ export const FlareValidatorProject = () => {
                                 <h3>FLR</h3>
                             </div>
                             <div className="single-info">
-                                <p>FLR APY</p>
+                                <p>APY</p>
                                 <h3>12.14%</h3>
                             </div>
                             <div className="single-info">

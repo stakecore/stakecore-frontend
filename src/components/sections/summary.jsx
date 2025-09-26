@@ -5,7 +5,7 @@ import SlideUp from '../../utlits/animations/slideUp'
 import profile from "../../assets/images/about/profile.svg"
 
 
-const Summery = () => {
+const Summary = () => {
     return (
         <section id="about" className="about-single-area innerpage-single-area">
             <div className="container">
@@ -45,4 +45,4 @@ const Summery = () => {
     )
 }
 
-export default Summery
+export default Summary

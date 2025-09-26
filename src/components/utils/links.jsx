@@ -1,7 +1,6 @@
 import { RiFileCopyLine } from '@remixicon/react'
 import { Link } from 'react-router-dom'
 import { formatAddress } from '../../utlits/eip6963/formatting'
-import { validatorNodeId, validatorLink, delegationAddress, delegationLink } from '../../utlits/data/constants'
 
 
 export const CopyPasteButton = ({ text }) => {
@@ -11,10 +10,18 @@ export const CopyPasteButton = ({ text }) => {
     }}><RiFileCopyLine size={16} /></Link>
 }
 
-export const ValidatorNodeLink = () => {
-    return <span><Link target="_blank" to={validatorLink}>{formatAddress(validatorNodeId)}</Link>&nbsp;<CopyPasteButton text={validatorNodeId} /></span>
+export const ValidatorNodeLink = ({ nodeId, link }) => {
+    return <span>
+        <Link target="_blank" to={link}>{formatAddress(nodeId, 10)}</Link>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <CopyPasteButton text={nodeId} />
+    </span>
 }
 
-export const DelegationAddressLink = () => {
-    return <span><Link target="_blank" to={delegationLink}>{formatAddress(delegationAddress)}</Link>&nbsp;<CopyPasteButton text={delegationAddress} /></span>
+export const DelegationAddressLink = ({ address, link }) => {
+    return <span>
+        <Link target="_blank" to={link}>{formatAddress(address)}</Link>
+        &nbsp;&nbsp;
+        <CopyPasteButton text={address} />
+    </span>
 }
