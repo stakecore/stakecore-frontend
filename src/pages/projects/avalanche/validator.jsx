@@ -4,6 +4,17 @@ import Countdown from "../../../components/ui/countdown"
 import { avalancheValidatorLink, avalancheValidatorNodeId } from "../../../utlits/data/constants"
 import { ValidatorNodeLink } from "../../../components/utils/links"
 
+const Tooltip = ({ text }) => {
+    return (
+        <div className="specs-table-info info-tooltip tooltip-fade" data-title={text}>
+            <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                <path fill="none" d="M0 0h24v24H0V0z"></path>
+                <path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"></path>
+            </svg>
+        </div>
+    )
+}
+
 export const AvalancheValidatorProject = () => {
     const validatorTxLink = 'https://subnets.avax.network/p-chain/address/avax1umkusjfu7hgdckc6eldnfhwnll5yuj7qutkk2n'
 
@@ -15,19 +26,22 @@ export const AvalancheValidatorProject = () => {
         validatorFee: 2.00,
         validatorStake: 2004,
         validatorCapacity: 8e3,
-        validatorEndTime: 1761932462,
         validatorStartTime: 1757696437,
+        validatorEndTime: 1761932462,
         totalDelegators: 9,
         totalDelegated: 6310.1,
+        validatorUptime: 0.99
     }
 
-    const validatorLeftoverTime = new Date(data.validatorEndTime * 1000) - Date.now()
+    const validatorLeftoverTime = Math.floor((new Date(data.validatorEndTime * 1000) - Date.now()) / 1000)
     const validatorLeftoverTimePercent = 100 * (validatorLeftoverTime / (data.validatorEndTime - data.validatorStartTime))
-    const validatorDurationDays = Math.floor(validatorLeftoverTime / 86400000)
+    const validatorDurationDays = Math.floor(validatorLeftoverTime / 86400)
 
     const validatorLeftoverCapactiy = data.validatorCapacity - data.totalDelegated
     const validatorLeftoverCapacityPercent = 100 * (validatorLeftoverCapactiy / data.validatorCapacity)
     const validatorLeftoverCapacityAvax = Math.round(validatorLeftoverCapactiy)
+
+    const validatorUptimePercent = Math.round(1000 * data.validatorUptime) / 10
 
     return (
         <div className="single-project-page-design single-project-page-design-avalanche-validator">
@@ -85,29 +99,54 @@ export const AvalancheValidatorProject = () => {
                                         </tbody>
                                     </table>
                                 </div>
-                                <hr class="specs-table-border mt-20"></hr>
+                                <hr className="specs-table-border mt-20"></hr>
                                 <div className="specs-table-container">
                                     <table className="specs-table">
                                         <tbody>
                                             <tr className="specs-table-row">
-                                                <td className="specs-table-data">Validator Fee</td>
-                                                <td className="specs-table-data specs-table-data-right">{data.validatorFee}%</td>
+                                                <td className="specs-table-data specs-table-data-left">
+                                                    <Tooltip text="Fee charged to delegators" />
+                                                    <span>Delegation Fee</span>
+                                                </td>
+                                                <td className="specs-table-data specs-table-data-right">
+                                                    {data.validatorFee}%
+                                                </td>
                                             </tr>
                                             <tr className="specs-table-row">
-                                                <td className="specs-table-data">Validator Capacity</td>
-                                                <td className="specs-table-data specs-table-data-right">{data.validatorCapacity} AVAX</td>
+                                                <td className="specs-table-data">
+                                                    <Tooltip text="Space free for delegations" />
+                                                    <span>Validator Capacity</span>
+                                                </td>
+                                                <td className="specs-table-data specs-table-data-right">
+                                                    {data.validatorCapacity} AVAX
+                                                </td>
                                             </tr>
                                             <tr className="specs-table-row">
-                                                <td className="specs-table-data">Validator Duration</td>
-                                                <td className="specs-table-data specs-table-data-right">{validatorDurationDays} days</td>
+                                                <td className="specs-table-data">
+                                                    <Tooltip text="The maximum delegation time" />
+                                                    <span>Validator Duration</span>
+                                                </td>
+                                                <td className="specs-table-data specs-table-data-right">
+                                                    {validatorDurationDays} days
+                                                </td>
                                             </tr>
                                             <tr className="specs-table-row">
-                                                <td className="specs-table-data">Total Delegations</td>
-                                                <td className="specs-table-data specs-table-data-right">{data.totalDelegators}</td>
+                                                <td className="specs-table-data">
+                                                    <Tooltip text="Total number of delegators" />
+                                                    <span>Total Delegators</span>
+                                                </td>
+                                                <td className="specs-table-data specs-table-data-right">
+                                                    {data.totalDelegators}
+                                                </td>
                                             </tr>
                                             <tr className="specs-table-row">
-                                                <td className="specs-table-data">Total Delegated</td>
-                                                <td className="specs-table-data specs-table-data-right">{data.totalDelegated} AVAX</td>
+                                                <td className="specs-table-data">
+                                                    <Tooltip text="Total delegations from delegators" />
+                                                    <span>Total Delegated</span>
+                                                </td>
+                                                <td className="specs-table-data specs-table-data-right">
+                                                    {data.totalDelegated} AVAX
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -129,29 +168,25 @@ export const AvalancheValidatorProject = () => {
                         We picked some of the most important statistics for our validator to let you monitor Stakecore's activity.
                     </p>
                     <div>
-                        <MeterBar name="Validator Uptime" value={99} ranges={[80, 95]} />
-                        <MeterBar name="Delegation Capacity = Maximum Amount Delegated"
-                            value={validatorLeftoverCapacityPercent} text={validatorLeftoverCapacityAvax} ranges={[10, 50]} />
-                        <MeterBar name="Validation Duration = Maximum Delegation Time"
-                            value={validatorLeftoverTimePercent} text={validatorDurationDays} ranges={[10, 80]} />
+                        <MeterBar name="Validator Uptime" ranges={[80, 95]} value={validatorUptimePercent} />
+                        <MeterBar name="Delegation Capacity"
+                            ranges={[10, 50]} value={validatorLeftoverCapacityPercent} text={validatorLeftoverCapacityAvax + ' AVAX'} />
+                        <MeterBar name="Validation Duration"
+                            ranges={[10, 80]} value={validatorLeftoverTimePercent} text={validatorDurationDays + ' DAYS'} />
                     </div>
                 </div>
                 <div className="single-project-page-right wow fadeInUp delay-0-4s avalanche-div-border mt-30">
-                    <h2>How To Delegate?</h2>
+                    <h2>How To Delegate And Earn APY?</h2>
                     <p>
-                        Avalanche has three subchains - C for contracts, X for transfers, and P for platform-related activity.
-                        If you haven't heard of them, you likely hold your AVAX on the C-chain, however delegation requires you
-                        to move them to the P-chain. This is done by signing two transactions - export from C to P and import to P from C.
-                        Then you need to sign the delegate transaction. If this sounds too complex, the Avalabs team made easy-to-use
-                        apps that simplify the process. See the video below.
+                        Users need to delegate to our Stakecore validator &nbsp;
+                        <ValidatorNodeLink link={avalancheValidatorLink} nodeId={data.validatorNodeId} /> or any other one.
+                        However, note that validators failing to deliver 80%+ uptime will cause their delegators to lose out on rewards.
+                        Due to security reasons we require users to interact with the official Avalanche website when signing transactions,
+                        while providing only the necessary information here. See the video below to learn how to delegate to Stakecore's validator node.
                     </p>
                     <div className="video-container mb-30">
                         <MovieClip videoId="wRPxDEMgDdM" />
                     </div>
-                    <p>
-                        Note our validator info is
-
-                    </p>
                 </div>
             </div>
         </div>

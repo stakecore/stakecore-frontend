@@ -13,7 +13,7 @@ export const CopyPasteButton = ({ text }) => {
 export const ValidatorNodeLink = ({ nodeId, link }) => {
     return <span>
         <Link target="_blank" to={link}>{formatAddress(nodeId, 10)}</Link>
-        &nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;
         <CopyPasteButton text={nodeId} />
     </span>
 }

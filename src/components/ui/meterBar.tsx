@@ -1,5 +1,5 @@
 const MAX_PERC = 100
-const LED_TOTAL = 75
+const LED_TOTAL = 70
 
 const OPACITY_BEFORE = 0.25
 const OPACITY_AFTER = 1

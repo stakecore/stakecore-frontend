@@ -1662,42 +1662,6 @@ ul.extra-skills li i {
     padding-top: 200px;
 }
 
-.single-project-page-design-avalanche-validator {
-    background-image: url('src/assets/images/projects/avalanche/validator/background.jpeg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-}
-
-.single-project-page-design-songbird-fsp {
-    background-image: url('src/assets/images/projects/songbird/fsp/background.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-}
-
-.single-project-page-design-flare-validator {
-    background-image: url('src/assets/images/projects/flare/validator/background.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-}
-
-.avalanche-div-border {
-    border: 1.25px solid #FF394A;
-}
-
-.flare-div-border {
-    border: 1.25px solid #E62058;
-}
-
-.songbird-div-border {
-    border: 1.25px solid #253c4d;
-}
-
 .single-project-image img {
     width: 100%;
 }

@@ -89,6 +89,10 @@
   font-weight: bold;
 }
 
+.specs-table-data-left {
+  text-align: left;
+}
+
 .specs-table .link {
   font-weight: normal;
 }
@@ -101,4 +105,46 @@
   border-color: rgba(255, 255, 255, 0.4);
   width: 100%;
   align-self: center;
+}
+
+.specs-table-info {
+  display: inline-block;
+  margin-right: 5px;
+  color-scheme: dark;
+  color: inherit;
+}
+
+.specs-table-info:hover {
+  cursor: pointer;
+}
+
+.background {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.background.background-avalanche {
+  background-image: url('src/assets/images/projects/avalanche/validator/background.jpeg');
+}
+
+.background.background-flare {
+  background-image: url('src/assets/images/projects/flare/validator/background.png');
+}
+
+.background.background-songbird {
+  background-image: url('src/assets/images/projects/songbird/fsp/background.png');
+}
+
+.avalanche-div-border {
+  border: 1.25px solid #FF394A;
+}
+
+.flare-div-border {
+  border: 1.25px solid #E62058;
+}
+
+.songbird-div-border {
+  border: 1.25px solid #253c4d;
 }

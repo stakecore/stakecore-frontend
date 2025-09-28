@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { RiArrowRightUpLine } from '@remixicon/react'
 import SlideUp from '../../utlits/animations/slideUp'
@@ -78,26 +78,6 @@ const Card = ({ category, title, src, animationClass, id, href }) => {
                     <div className="project-image">
                         <img src={src} alt="Project" />
                         <Link to={href} className="details-btn"><RiArrowRightUpLine /> </Link>
-                    </div>
-                    <div className="project-content">
-                        <span className="sub-title">{category}</span>
-                        <h3>{title}</h3>
-                    </div>
-                </div>
-            </SlideUp>
-        </div>
-    )
-}
-
-const TextCard = ({ title, category, text, animationClass, id }) => {
-    return (
-        <div className={`col-lg-4 col-md-6 item branding game ${animationClass}`}>
-            <SlideUp delay={id}>
-                <div className="project-item style-two">
-                    <div className="project-image">
-                        <div className="image-like">
-                            <span className="center"><h1>{text}</h1></span>
-                        </div>
                     </div>
                     <div className="project-content">
                         <span className="sub-title">{category}</span>

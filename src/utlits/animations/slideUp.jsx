@@ -1,4 +1,3 @@
-import React from 'react'
 import { motion } from "framer-motion"
 
 const SlideUp = ({ children, delay = 1 }) => {

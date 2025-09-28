@@ -10,6 +10,7 @@ import './assets/css/custom.css'
 import './assets/css/wallet.css'
 import './assets/css/meterBar.css'
 import './assets/css/countdown.css'
+import './assets/css/tooltip.css'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
