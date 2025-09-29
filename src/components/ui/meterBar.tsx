@@ -11,11 +11,11 @@ const COLORS = [COLOR_BAD, COLOR_MED, COLOR_GUD]
 
 type args = {
   name: string
-  value: number
-  text: string
   ranges: [number, number]
-  height: number
-  reverse: boolean
+  value: number
+  text?: string
+  height?: number
+  reverse?: boolean
 }
 
 const MeterBar = ({ name, value, text, ranges, height = 40, reverse = false }: args) => {

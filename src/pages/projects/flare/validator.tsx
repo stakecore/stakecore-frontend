@@ -1,4 +1,4 @@
-import MovieClip from "../../../components/ui/youtube";
+import MovieClip from "../../../components/ui/movieClip"
 
 export const FlareValidatorProject = () => {
     return (

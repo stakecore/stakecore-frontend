@@ -7,12 +7,14 @@ export const CopyPasteButton = ({ text }) => {
     return <Link onClick={(event) => {
         event.preventDefault()
         navigator.clipboard.writeText(text)
-    }}><RiFileCopyLine size={16} /></Link>
+    }} to="javascript(0);" >
+        <RiFileCopyLine size={16} />
+    </Link>
 }
 
-export const ValidatorNodeLink = ({ nodeId, link }) => {
+export const ValidatorNodeLink = ({ nodeId, url }) => {
     return <span>
-        <Link target="_blank" to={link}>{formatAddress(nodeId, 10)}</Link>
+        <Link target="_blank" to={url}>{formatAddress(nodeId, 10)}</Link>
         &nbsp;&nbsp;
         <CopyPasteButton text={nodeId} />
     </span>
