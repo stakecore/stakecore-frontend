@@ -17,7 +17,7 @@ const Hero = () => {
                     <div className="col-lg-4">
                         <SlideUp>
                             <div className="about-image-part">
-                                <img src={profile} alt="About Me" />
+                                <img src={profile} alt="About Us" />
                                 <p style={{marginTop: 30, marginBottom: 40}}>
                                     Infrastructure provider for various crypto networks.
                                     Provide security by delegating your assets with us and earn yield in return!

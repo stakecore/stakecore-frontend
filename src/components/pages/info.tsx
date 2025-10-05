@@ -1,5 +1,6 @@
 import React from "react"
 import SpecsTooltip from "./tooltip"
+import type { ISpecs } from "~/pages/projects/avalanche/types"
 
 
 const InfoComponent = ({ summary, specs }) => {
@@ -19,14 +20,14 @@ const ProjectInfoSummary = ({ asset, apy, risk, lockup }) => {
   return (
     <div className="single-project-page-left wow fadeInUp delay-0-2s avalanche-div-border">
       <ProjectSingleInfo title='Asset' value={asset} />
-      <ProjectSingleInfo title='APY' value={apy + '%'} />
+      <ProjectSingleInfo title='APY' value={apy} />
       <ProjectSingleInfo title='Risk Rating' value={risk} />
       <ProjectSingleInfo title='Lockup' value={lockup} />
     </div>
   )
 }
 
-const Specs = ({ config }) => {
+const Specs = ({ config }: { config: ISpecs }) => {
   return (
     <div className="single-project-page-right wow fadeInUp delay-0-4s avalanche-div-border">
       <div className="specs-container">

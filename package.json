@@ -11,7 +11,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "----------- openapi -----------------------": "",
-    "openapi-fix": "sed -i 's|../core/OpenAPI|../../config/openapi|g' ./src/backendApi/services/DataService.ts",
+    "openapi-fix": "sed -i \"s/BASE: *'',/BASE: 'https://backend.stakecore.org',/\" ./src/backendApi/core/OpenAPI.ts",
     "openapi-gen": "yarn openapi -i ./openapi.json -o ./src/backendApi && yarn openapi-fix",
     "----------- github pages deploy -----------": "",
     "build-all": "yarn && yarn build && echo stakecore.org > dist/CNAME",
@@ -31,6 +31,7 @@
     "react-slick": "^0.30.2",
     "react-youtube": "9.0.2",
     "slick-carousel": "^1.8.1",
+    "spinners-react": "^1.0.11",
     "swiper": "^11.1.9",
     "zustand": "^5.0.3"
   },

@@ -17,7 +17,7 @@
                     }
                 },
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "Successful form submission",
                         "content": {
                             "application/json": {
@@ -29,7 +29,7 @@
                     }
                 },
                 "tags": [
-                    "data"
+                    "Form"
                 ]
             }
         },
@@ -40,11 +40,45 @@
                 "parameters": [],
                 "responses": {
                     "200": {
-                        "description": ""
+                        "description": "Fetched all messages",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseDto"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [
-                    "data"
+                    "Form"
+                ],
+                "security": [
+                    {
+                        "x-apikey": []
+                    }
+                ]
+            }
+        },
+        "/api/data/avalanche/validator/info": {
+            "get": {
+                "operationId": "DataController_getAvalanchePageInfo",
+                "summary": "Frontend Page Info For The Avalanche Validator",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseDtoWithModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Data"
                 ]
             }
         }
@@ -58,6 +92,13 @@
     "tags": [],
     "servers": [],
     "components": {
+        "securitySchemes": {
+            "x-apikey": {
+                "type": "apiKey",
+                "in": "header",
+                "name": "x-apikey"
+            }
+        },
         "schemas": {
             "FormDto": {
                 "type": "object",
@@ -86,6 +127,82 @@
                     },
                     "data": {
                         "type": "object"
+                    },
+                    "error": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "status"
+                ]
+            },
+            "AvalancheInfoDto": {
+                "type": "object",
+                "properties": {
+                    "validatorNodeId": {
+                        "type": "string"
+                    },
+                    "validatorTransactionHash": {
+                        "type": "string"
+                    },
+                    "apy": {
+                        "type": "number"
+                    },
+                    "risk": {
+                        "type": "string"
+                    },
+                    "validatorFee": {
+                        "type": "number"
+                    },
+                    "validatorOwnedStake": {
+                        "type": "string"
+                    },
+                    "validatorTotalStake": {
+                        "type": "string"
+                    },
+                    "validatorAvailableCapacity": {
+                        "type": "string"
+                    },
+                    "validatorStartTime": {
+                        "type": "number"
+                    },
+                    "validatorEndTime": {
+                        "type": "number"
+                    },
+                    "totalDelegators": {
+                        "type": "number"
+                    },
+                    "totalDelegated": {
+                        "type": "number"
+                    },
+                    "validatorUptime": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "validatorNodeId",
+                    "validatorTransactionHash",
+                    "apy",
+                    "risk",
+                    "validatorFee",
+                    "validatorOwnedStake",
+                    "validatorTotalStake",
+                    "validatorAvailableCapacity",
+                    "validatorStartTime",
+                    "validatorEndTime",
+                    "totalDelegators",
+                    "totalDelegated",
+                    "validatorUptime"
+                ]
+            },
+            "ApiResponseDtoWithModel": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "number"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/AvalancheInfoDto"
                     },
                     "error": {
                         "type": "string"

@@ -1,0 +1,20 @@
+import MovieClip from "../../../../components/ui/movieClip"
+
+const AvalancheValidatorDelegateComponent = ({ validatorLink }) => {
+  return (
+    <div className="single-project-page-right wow fadeInUp delay-0-4s avalanche-div-border mt-30">
+      <h2>How To Delegate And Earn APY?</h2>
+      <p>
+        Users need to delegate to our Stakecore validator &nbsp; {validatorLink} or any other one.
+        However, note that validators failing to deliver 80%+ uptime will cause their delegators to lose out on rewards.
+        Due to security reasons we require users to interact with the official Avalanche website when signing transactions,
+        while providing only the necessary information here. See the video below to learn how to delegate to Stakecore's validator node.
+      </p>
+      <div className="video-container mb-30">
+        <MovieClip videoId="wRPxDEMgDdM" />
+      </div>
+    </div>
+  )
+}
+
+export default AvalancheValidatorDelegateComponent

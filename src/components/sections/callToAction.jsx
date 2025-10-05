@@ -1,10 +1,7 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
 import { RiContactsFill } from '@remixicon/react'
 import SlideUp from '../../utlits/animations/slideUp'
 import { delegate } from '../utils/chain'
-import { ValidatorNodeLink, DelegationAddressLink } from '../utils/links'
-
 
 
 const CallToAction = () => {

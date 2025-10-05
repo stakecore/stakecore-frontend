@@ -13,10 +13,10 @@ export const Eip6963 = () => {
 
   const executeConnect = async (detail: EIP6963ProviderDetail, address: string) => {
     const { setWalletAddress } = useGlobalStore.getState()
-      const switched = await switchNetworkIfNecessary(detail.provider)
-      if (!switched) return
-      setWalletAddress(address, detail)
-      setWalletVisible(false)
+    const switched = await switchNetworkIfNecessary(detail.provider)
+    if (!switched) return
+    setWalletAddress(address, detail)
+    setWalletVisible(false)
   }
 
   const handleConnect = async (providerWithInfo: EIP6963ProviderDetail) => {
@@ -44,7 +44,9 @@ export const Eip6963 = () => {
               </div>
           }
         </div>
-        <button onClick={() => setWalletVisible(false)} className="close"><i><RiCloseCircleFill size={20} /></i></button>
+        <button onClick={() => setWalletVisible(false)} className="close">
+          <i><RiCloseCircleFill size={20} /></i>
+        </button>
       </div>
     </div>,
     document.getElementById('eip6963') as HTMLElement

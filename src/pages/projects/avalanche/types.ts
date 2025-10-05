@@ -1,23 +1,11 @@
+import { AvalancheInfoDto } from "~/backendApi"
+
 export type AvalancheData = {
-  base: BaseData
+  base: AvalancheInfoDto
   summary: ISummary
   specs: ISpecs
   graphics: IGraphics
-}
-
-export type BaseData = {
-  validatorNodeId: string
-  validatorTransaction: string
-  apy: number
-  risk: string
-  validatorFee: number
-  validatorStake: number
-  validatorCapacity: number
-  validatorStartTime: number
-  validatorEndTime: number
-  totalDelegators: number
-  totalDelegated: number
-  validatorUptime: number
+  delegation: IDelegation
 }
 
 export type ISpecs = ISpec[][]
@@ -35,9 +23,18 @@ export type ISummary = {
 }
 
 export type IGraphics = {
-  validatorUptime: IMeterBar
-  validatorLeftoverCapacity: IMeterBar
-  validatorLeftoverDuration: IMeterBar
+  meterBar: {
+    validatorUptime: IMeterBar
+    validatorLeftoverCapacity: IMeterBar
+    validatorLeftoverDuration: IMeterBar
+  }
+  countdown: {
+    endTime: Date
+  }
+}
+
+export type IDelegation = {
+  validatorLink: any
 }
 
 type IMeterBar = {

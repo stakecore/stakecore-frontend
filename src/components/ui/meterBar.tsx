@@ -4,9 +4,9 @@ const LED_TOTAL = 70
 const OPACITY_BEFORE = 0.25
 const OPACITY_AFTER = 1
 
-const COLOR_BAD = "#d94357"
-const COLOR_MED = "#e58630"
-const COLOR_GUD = "#6aaa5e"
+const COLOR_BAD = ["#d94357", "radial-gradient(#d94357 25%, #a82234)"]
+const COLOR_MED = ["#e58630", "radial-gradient(#a05714 25%, #dd781c)"]
+const COLOR_GUD = ["#76B768", "radial-gradient(#487e3c 25%, #64ae55)"]
 const COLORS = [COLOR_BAD, COLOR_MED, COLOR_GUD]
 
 type args = {
@@ -53,10 +53,10 @@ const MeterBar = ({ name, value, text, ranges, height = 40, reverse = false }: a
             const color = getLedColor(ratio)
             const opacity = getLedOpacity(ratio)
             return <span className='meter-bar-led'
-              key={i} style={{ background: color, opacity }}></span>
+              key={i} style={{ background: color[1], opacity }}></span>
           })
         }
-        <span className='meter-bar-desc' style={{ color: valuecolor }}>{ valuetext }</span>
+        <span className='meter-bar-desc' style={{ color: valuecolor[0] }}>{ valuetext }</span>
       </div>
     </div>
   );
