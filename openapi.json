@@ -62,8 +62,8 @@
         },
         "/api/data/avalanche/validator/info": {
             "get": {
-                "operationId": "DataController_getAvalanchePageInfo",
-                "summary": "Frontend Page Info For The Avalanche Validator",
+                "operationId": "DataController_getAvalancheValidatorPageInfo",
+                "summary": "Frontend page info for the Avalanche validator",
                 "parameters": [],
                 "responses": {
                     "200": {
@@ -71,7 +71,60 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ApiResponseDtoWithModel"
+                                    "$ref": "#/components/schemas/ApiResponseDto_AvalancheValidatorInfoDto"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Data"
+                ]
+            }
+        },
+        "/api/data/flare/fsp/info": {
+            "get": {
+                "operationId": "DataController_getFlareFspPageInfo",
+                "summary": "Frontend page info for the Flare FSP",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseDto_FlareFspInfoDto"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Data"
+                ]
+            }
+        },
+        "/api/data/flare/fsp/delegators/{delegatee}": {
+            "get": {
+                "operationId": "DataController_getFlareDelegators",
+                "summary": "Flare Delegators",
+                "parameters": [
+                    {
+                        "name": "delegatee",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseDto_FlareDelegatorsDto"
                                 }
                             }
                         }
@@ -136,7 +189,7 @@
                     "status"
                 ]
             },
-            "AvalancheInfoDto": {
+            "AvalancheValidatorInfoDto": {
                 "type": "object",
                 "properties": {
                     "validatorNodeId": {
@@ -195,14 +248,120 @@
                     "validatorUptime"
                 ]
             },
-            "ApiResponseDtoWithModel": {
+            "ApiResponseDto_AvalancheValidatorInfoDto": {
                 "type": "object",
                 "properties": {
                     "status": {
                         "type": "number"
                     },
                     "data": {
-                        "$ref": "#/components/schemas/AvalancheInfoDto"
+                        "$ref": "#/components/schemas/AvalancheValidatorInfoDto"
+                    },
+                    "error": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "status"
+                ]
+            },
+            "FlareFspInfoDto": {
+                "type": "object",
+                "properties": {
+                    "delegationAddress": {
+                        "type": "string"
+                    },
+                    "identityAddress": {
+                        "type": "string"
+                    },
+                    "apy": {
+                        "type": "number"
+                    },
+                    "risk": {
+                        "type": "string"
+                    },
+                    "providerFee": {
+                        "type": "number"
+                    },
+                    "totalDelegators": {
+                        "type": "number"
+                    },
+                    "totalDelegated": {
+                        "type": "number"
+                    },
+                    "providerAvailability": {
+                        "type": "number"
+                    },
+                    "providerSuccessRate": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "delegationAddress",
+                    "identityAddress",
+                    "apy",
+                    "risk",
+                    "providerFee",
+                    "totalDelegators",
+                    "totalDelegated",
+                    "providerAvailability",
+                    "providerSuccessRate"
+                ]
+            },
+            "ApiResponseDto_FlareFspInfoDto": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "number"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/FlareFspInfoDto"
+                    },
+                    "error": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "status"
+                ]
+            },
+            "FlareDelegatorDto": {
+                "type": "object",
+                "properties": {
+                    "delegator": {
+                        "type": "string"
+                    },
+                    "delegated": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "delegator",
+                    "delegated"
+                ]
+            },
+            "FlareDelegatorsDto": {
+                "type": "object",
+                "properties": {
+                    "delegators": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/FlareDelegatorDto"
+                        }
+                    }
+                },
+                "required": [
+                    "delegators"
+                ]
+            },
+            "ApiResponseDto_FlareDelegatorsDto": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "number"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/FlareDelegatorsDto"
                     },
                     "error": {
                         "type": "string"

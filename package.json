@@ -11,7 +11,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "----------- openapi -----------------------": "",
-    "openapi-fix": "sed -i \"s/BASE: *'',/BASE: 'https://backend.stakecore.org',/\" ./src/backendApi/core/OpenAPI.ts",
+    "openapi-fix": "sed -i \"s|BASE: *'',|BASE: 'https://backend.stakecore.org',|\" ./src/backendApi/core/OpenAPI.ts",
     "openapi-gen": "yarn openapi -i ./openapi.json -o ./src/backendApi && yarn openapi-fix",
     "----------- github pages deploy -----------": "",
     "build-all": "yarn && yarn build && echo stakecore.org > dist/CNAME",

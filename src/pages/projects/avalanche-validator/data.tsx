@@ -1,12 +1,13 @@
-import { secondsUntil } from "~/utlits/misc/time"
-import { ValidatorNodeLink } from "~/components/utils/links"
+import { secondsUntil, sleep } from "~/utlits/misc/time"
+import { AddressLink } from "~/components/utils/links"
 import { avalancheTransactionUrl, avalancheValidatorUrl } from "~/utlits/data/constants"
-import { AvalancheInfoDto, DataService } from "~/backendApi"
-import type { AvalancheData, IDelegation, IGraphics, ISpecs, ISummary } from "./types"
+import { AvalancheValidatorInfoDto, DataService } from "~/backendApi"
+import type { AvalancheData, IDelegation, IGraphics } from "./types"
+import type { ISpecs, ISummary } from "~/components/pages/types"
 
 
-export async function getPageData(): Promise<AvalancheInfoDto> {
-  const resp = await DataService.dataControllerGetAvalanchePageInfo()
+export async function getPageData(): Promise<AvalancheValidatorInfoDto> {
+  const resp = await DataService.dataControllerGetAvalancheValidatorPageInfo()
   return resp.data
 }
 
@@ -19,7 +20,7 @@ export async function getAvalanchePageData(): Promise<AvalancheData> {
   return { base, summary, specs, graphics, delegation }
 }
 
-export function getSummary(data: AvalancheInfoDto): ISummary {
+export function getSummary(data: AvalancheValidatorInfoDto): ISummary {
   return {
     asset: 'AVAX',
     apy: data.apy + '%',
@@ -28,14 +29,14 @@ export function getSummary(data: AvalancheInfoDto): ISummary {
   }
 }
 
-function getSpecs(data: AvalancheInfoDto): ISpecs {
+function getSpecs(data: AvalancheValidatorInfoDto): ISpecs {
   // avalanche validator transaction link
   const validatorTransactionUrl = avalancheTransactionUrl(data.validatorTransactionHash)
-  const validatorTransactionLink = <ValidatorNodeLink url={validatorTransactionUrl} nodeId={data.validatorTransactionHash} />
+  const validatorTransactionLink = <AddressLink url={validatorTransactionUrl} address={data.validatorTransactionHash} />
 
   // avalanche validator link
   const validatorUrl = avalancheValidatorUrl(data.validatorNodeId)
-  const validatorNodeIdLink = <ValidatorNodeLink url={validatorUrl} nodeId={data.validatorNodeId} />
+  const validatorNodeIdLink = <AddressLink url={validatorUrl} address={data.validatorNodeId} />
 
   // validator duration
   const validatorLeftoverTime = secondsUntil(data.validatorEndTime)
@@ -84,7 +85,7 @@ function getSpecs(data: AvalancheInfoDto): ISpecs {
   return specs
 }
 
-function getGraphics(data: AvalancheInfoDto): IGraphics {
+function getGraphics(data: AvalancheValidatorInfoDto): IGraphics {
   const capacity = Number(data.validatorAvailableCapacity)
   const validatorLeftoverCapactiy = capacity - data.totalDelegated
   const validatorLeftoverCapacityPercent = 100 * (validatorLeftoverCapactiy / capacity)
@@ -110,8 +111,8 @@ function getGraphics(data: AvalancheInfoDto): IGraphics {
   }
 }
 
-function getDelegation(data: AvalancheInfoDto): IDelegation {
+function getDelegation(data: AvalancheValidatorInfoDto): IDelegation {
   const validatorUrl = avalancheValidatorUrl(data.validatorNodeId)
-  const validatorLink = <ValidatorNodeLink url={validatorUrl} nodeId={data.validatorNodeId} />
+  const validatorLink = <AddressLink url={validatorUrl} address={data.validatorNodeId} />
   return { validatorLink }
 }

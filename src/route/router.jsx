@@ -3,10 +3,10 @@ import RootLayout from "../layout/root";
 import Home from "../pages/home";
 import Contact from "../pages/contact";
 import About from "../pages/about";
-import AvalancheValidatorProject from "../pages/projects/avalanche/validator";
-import FlareValidatorProject from "../pages/projects/flare/validator";
-import FlareFspProject from "../pages/projects/flare/fsp";
-import SongbirdFspProject from "../pages/projects/songbird/fsp";
+import AvalancheValidatorProject from "../pages/projects/avalanche-validator/page";
+import FlareValidatorProject from "../pages/projects/flare-validator/page";
+import FlareFspProject from "../pages/projects/flare-fsp/page";
+import SongbirdFspProject from "../pages/projects/songbird-fsp/page";
 import Projects from "../pages/projects";
 
 

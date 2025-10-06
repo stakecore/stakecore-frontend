@@ -2,10 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { AvalancheInfoDto } from './AvalancheInfoDto';
-export type ApiResponseDtoWithModel = {
+import type { FlareDelegatorsDto } from './FlareDelegatorsDto';
+export type ApiResponseDto_FlareDelegatorsDto = {
     status: number;
-    data?: AvalancheInfoDto;
+    data?: FlareDelegatorsDto;
     error?: string;
 };
 

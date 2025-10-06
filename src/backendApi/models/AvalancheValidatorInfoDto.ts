@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type AvalancheInfoDto = {
+export type AvalancheValidatorInfoDto = {
     validatorNodeId: string;
     validatorTransactionHash: string;
     apy: number;

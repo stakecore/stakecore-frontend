@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { SpinnerDotted } from 'spinners-react'
+import { SpinnerCircular } from 'spinners-react'
 import ProjectTitle from "~/components/pages/title"
 import InfoComponent from "~/components/pages/info"
 import AvalancheValidatorGraphicsComponent from "./components/stats"
@@ -26,7 +26,7 @@ export const AvalancheValidatorProject = () => {
     if (loading) {
         component = <>
             <div style={{ textAlign: 'center' }} className="mt-30 mb-30" >
-                <SpinnerDotted color='white' size={100} />
+                <SpinnerCircular color='FireBrick' size={100} />
             </div>
         </>
     } else {
@@ -39,7 +39,7 @@ export const AvalancheValidatorProject = () => {
     }
 
     return (
-        <div className="single-project-page-design single-project-page-design-avalanche-validator">
+        <div className="single-project-page-design">
             <ProjectTitle title='Avalanche Validator Delegation' suptitle='Help Secure The Avalanche Network' />
             <div className="container pt-30">
                 {component}

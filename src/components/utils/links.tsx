@@ -12,17 +12,9 @@ export const CopyPasteButton = ({ text }) => {
     </Link>
 }
 
-export const ValidatorNodeLink = ({ nodeId, url }) => {
+export const AddressLink = ({ address, url }) => {
     return <span>
-        <a href={url} target="_blank" rel="noopener noreferrer">{formatAddress(nodeId, 10)}</a>
-        &nbsp;&nbsp;
-        <CopyPasteButton text={nodeId} />
-    </span>
-}
-
-export const DelegationAddressLink = ({ address, link }) => {
-    return <span>
-        <Link target="_blank" to={link}>{formatAddress(address)}</Link>
+        <a href={url} target="_blank" rel="noopener noreferrer">{formatAddress(address, 10)}</a>
         &nbsp;&nbsp;
         <CopyPasteButton text={address} />
     </span>

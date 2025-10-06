@@ -1,25 +1,12 @@
-import { AvalancheInfoDto } from "~/backendApi"
+import type { ISummary, ISpecs } from "~/components/pages/types"
+import type { AvalancheValidatorInfoDto } from "~/backendApi"
 
 export type AvalancheData = {
-  base: AvalancheInfoDto
+  base: AvalancheValidatorInfoDto
   summary: ISummary
   specs: ISpecs
   graphics: IGraphics
   delegation: IDelegation
-}
-
-export type ISpecs = ISpec[][]
-export type ISpec = {
-  title: string
-  value: any
-  tooltip?: string
-}
-
-export type ISummary = {
-  asset: string
-  apy: string
-  risk: string
-  lockup: string
 }
 
 export type IGraphics = {
