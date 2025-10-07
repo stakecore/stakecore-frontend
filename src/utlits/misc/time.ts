@@ -6,3 +6,7 @@ export function secondsUntil(unix: number): number {
     const end = new Date(1000 * unix).getTime()
     return Math.floor((end - Date.now()) / 1000)
 }
+
+export function unixnow(): number {
+    return Math.floor(Date.now() / 1000)
+}

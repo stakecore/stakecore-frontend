@@ -1,34 +1,26 @@
-import { useEffect, useState } from "react"
 import { SpinnerCircular } from 'spinners-react'
 import ProjectTitle from "~/components/pages/title"
 import InfoComponent from "~/components/pages/info"
-import { getPageData } from "./data"
-import type { FlareData } from "./types"
+import { LoadingStatus, useDataLoader } from "~/components/utils/loader"
+import FlareFspStatsComponent from "./components/stats"
+import { FlareFspDataLayer } from "./data"
+import { FLARE_COLOR_CODE } from "~/utlits/data/constants"
 
 
 export const AvalancheValidatorProject = () => {
-    const [data, setData] = useState<FlareData>(null)
-    const [loading, setLoading] = useState<boolean>(true)
-
-    useEffect(() => {
-        async function fetchData() {
-            const res = await getPageData()
-            setData(res)
-            setLoading(false)
-        }
-        fetchData()
-    }, [])
+    const { data, status, error } = useDataLoader(FlareFspDataLayer.getPageData)
 
     let component = null
-    if (loading) {
+    if (status == LoadingStatus.NONE || status == LoadingStatus.LOADING) {
         component = <>
             <div style={{ textAlign: 'center' }} className="mt-30 mb-30" >
-                <SpinnerCircular color='FireBrick' size={100} />
+                <SpinnerCircular color={FLARE_COLOR_CODE} size={100} />
             </div>
         </>
     } else {
         component = <>
             <InfoComponent specs={data.specs} summary={data.summary} />
+            <FlareFspStatsComponent />
         </>
     }
 

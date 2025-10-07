@@ -1,6 +1,6 @@
 import React from "react"
 import SpecsTooltip from "./tooltip"
-import type { ISpecs } from "~/pages/projects/avalanche-validator/types"
+import type { ISpecs } from "./types"
 
 
 const InfoComponent = ({ summary, specs }) => {

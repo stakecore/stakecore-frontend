@@ -28,6 +28,12 @@ export const avalancheTransactionUrl = (transaction: string) => `${avalancheExpl
 export const avalancheDelegatorMinLockup = 1209600
 export const avalancheDelegatorMaxLockup = 31536000
 
+// style
+
+export const FLARE_COLOR_CODE = '#E62058'
+export const AVALANCHE_COLOR_CODE = '#FF394A'
+export const SONGBIRD_COLOR_CODE = '#253c4d'
+
 // temp
 
 export const chainUrl = 'flare-api.flare.network'

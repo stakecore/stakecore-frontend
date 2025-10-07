@@ -134,6 +134,28 @@
                     "Data"
                 ]
             }
+        },
+        "/api/data/flare/fsp/timeseries/delegated": {
+            "get": {
+                "operationId": "DataController_getDelegatedTimeSeries",
+                "summary": "Timeseries of a given fsp provider during interval [start, end] with number of days step",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseDto_TimeSeriesDto"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Data"
+                ]
+            }
         }
     },
     "info": {
@@ -362,6 +384,52 @@
                     },
                     "data": {
                         "$ref": "#/components/schemas/FlareDelegatorsDto"
+                    },
+                    "error": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "status"
+                ]
+            },
+            "TimeSeriesEntryDto": {
+                "type": "object",
+                "properties": {
+                    "timestamp": {
+                        "type": "number"
+                    },
+                    "value": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "timestamp",
+                    "value"
+                ]
+            },
+            "TimeSeriesDto": {
+                "type": "object",
+                "properties": {
+                    "result": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TimeSeriesEntryDto"
+                        }
+                    }
+                },
+                "required": [
+                    "result"
+                ]
+            },
+            "ApiResponseDto_TimeSeriesDto": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "number"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/TimeSeriesDto"
                     },
                     "error": {
                         "type": "string"

@@ -11,4 +11,5 @@ export namespace Formatter {
     let fracStr = fracPart.toString().padStart(decimals, "0").slice(0, precision)
     return `${intPart.toString()}.${fracStr}`
   }
+
 }

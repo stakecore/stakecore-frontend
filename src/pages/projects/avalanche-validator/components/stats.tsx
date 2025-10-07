@@ -5,7 +5,6 @@ import type { IGraphics } from "../types"
 
 const AvalancheValidatorGraphicsComponent = ({ config }: { config: IGraphics }) => {
   return (
-
     <div className="single-project-page-right wow fadeInUp delay-0-4s avalanche-div-border mt-30">
       <h2>Stakecore Statistics</h2>
       <p>
