@@ -1,39 +1,30 @@
-import { useEffect, useState } from "react"
+import useSWR from 'swr'
 import { SpinnerCircular } from 'spinners-react'
 import ProjectTitle from "~/components/pages/title"
 import InfoComponent from "~/components/pages/info"
-import AvalancheValidatorGraphicsComponent from "./components/stats"
+import AvalancheValidatorStatisticsComponent from "./components/stats"
 import AvalancheValidatorDelegateComponent from "./components/delegate"
 import AvalancheValidatorUserComponent from "./components/user"
-import { getAvalanchePageData } from "./data"
-import type { AvalancheData } from "./types"
+import AvalancheValidatorDataAccess from "./data"
 
 
-export const AvalancheValidatorProject = () => {
-    const [data, setData] = useState<AvalancheData>(null)
-    const [loading, setLoading] = useState<boolean>(true)
-
-    useEffect(() => {
-        async function fetchData() {
-            const res = await getAvalanchePageData()
-            setData(res)
-            setLoading(false)
-        }
-        fetchData()
-    }, [])
+export const AvalancheValidatorPage = () => {
+  const { data, error, isLoading } = useSWR('avalanche-validator-page', (x) => AvalancheValidatorDataAccess.getAvalanchePageData() )
 
     let component = null
-    if (loading) {
+    if (isLoading) {
         component = <>
             <div style={{ textAlign: 'center' }} className="mt-30 mb-30" >
                 <SpinnerCircular color='FireBrick' size={100} />
             </div>
         </>
+    } else if (error != null || data == null) {
+        component = <div>error {error}</div>
     } else {
         component = <>
             <InfoComponent specs={data.specs} summary={data.summary} />
             <AvalancheValidatorUserComponent />
-            <AvalancheValidatorGraphicsComponent config={data.graphics} />
+            <AvalancheValidatorStatisticsComponent config={data.graphics} />
             <AvalancheValidatorDelegateComponent validatorLink={data.delegation.validatorLink} />
         </>
     }
@@ -48,4 +39,4 @@ export const AvalancheValidatorProject = () => {
     )
 }
 
-export default AvalancheValidatorProject
+export default AvalancheValidatorPage

@@ -1,22 +1,24 @@
+import useSWR from 'swr'
 import { SpinnerCircular } from 'spinners-react'
 import ProjectTitle from "~/components/pages/title"
 import InfoComponent from "~/components/pages/info"
-import { LoadingStatus, useDataLoader } from "~/components/utils/loader"
 import FlareFspStatsComponent from "./components/stats"
-import { FlareFspDataLayer } from "./data"
+import FlareFspDataLayer from "./data"
 import { FLARE_COLOR_CODE } from "~/utlits/data/constants"
 
 
-export const AvalancheValidatorProject = () => {
-    const { data, status, error } = useDataLoader(FlareFspDataLayer.getPageData)
+export const FlareFspPage = () => {
+  const { data, error, isLoading } = useSWR('flare-fsp-page', (x) => FlareFspDataLayer.getPageData() )
 
     let component = null
-    if (status == LoadingStatus.NONE || status == LoadingStatus.LOADING) {
+    if (isLoading) {
         component = <>
             <div style={{ textAlign: 'center' }} className="mt-30 mb-30" >
                 <SpinnerCircular color={FLARE_COLOR_CODE} size={100} />
             </div>
         </>
+    } else if (error != null || data == null) {
+        component = <div>error {error}</div>
     } else {
         component = <>
             <InfoComponent specs={data.specs} summary={data.summary} />
@@ -34,4 +36,4 @@ export const AvalancheValidatorProject = () => {
     )
 }
 
-export default AvalancheValidatorProject
+export default FlareFspPage

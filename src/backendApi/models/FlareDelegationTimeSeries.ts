@@ -2,8 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { TimeSeriesEntryDto } from './TimeSeriesEntryDto';
-export type TimeSeriesDto = {
-    result: Array<TimeSeriesEntryDto>;
+export type FlareDelegationTimeSeries = {
+    rewardEpoch: number;
+    delegated: number;
+    delegators: number;
 };
 

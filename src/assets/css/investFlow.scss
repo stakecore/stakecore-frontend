@@ -1,0 +1,113 @@
+.invest-flow-container {
+  position: relative;
+
+  .number {
+    font-family: 'Roboto Mono', monospace;
+
+    &.bg {
+      color: white;
+      font-weight: bold;
+    }
+
+    &.sm {
+      color: grey;
+    }
+  }
+}
+
+.invest-flow-bar-container {
+  display: flex;
+  justify-content: center;
+  flex-flow: row wrap;
+  font-family: sans-serif;
+}
+
+.invest-flow-bar {
+  width: 500px;
+  background-color: #161618;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  padding: 15px
+}
+
+.invest-flow-bar-left {
+  text-align: left;
+
+  .logo {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    margin-bottom: 5px;
+    line-height: 35px;
+
+    .img {
+      margin-right: 5px;
+    }
+
+    .name {
+      margin-left: 5px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+  }
+
+  .balance {
+    line-height: 35px;
+  }
+}
+
+.invest-flow-bar-right {
+  text-align: right;
+
+  .amount {
+    line-height: 35px;
+    margin-bottom: 5px;
+  }
+
+  .amount-input, .max-button {
+    all: unset;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .max-button {
+    line-height: 35px;
+  }
+
+  .max-button:hover {
+    cursor: pointer;
+    color: white;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .amount-input[type=number]::-webkit-inner-spin-button,
+  .amount-input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .amount-input:focus {
+    all: unset;
+  }
+}
+
+.invest-flow-swap-container {
+  position: absolute;
+  right: 50%;
+  transform: translate(50%, -75%);
+}
+
+.invest-flow-swap-arrow {
+  margin: 0 5px;
+  padding: 10px;
+  color: white;
+  background-color: #161618;
+  border: 1.5px solid #101010;
+  border-radius: 50%;
+}
+
+.invest-flow-swap-arrow:hover {
+  cursor: pointer;
+  background-color: #eb5d3a;
+  transition: background-color 0.75s;
+}

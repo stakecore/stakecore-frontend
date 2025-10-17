@@ -138,7 +138,7 @@
         "/api/data/flare/fsp/timeseries/delegated": {
             "get": {
                 "operationId": "DataController_getDelegatedTimeSeries",
-                "summary": "Timeseries of a given fsp provider during interval [start, end] with number of days step",
+                "summary": "Timeseries of total delegated FLR over the last year",
                 "parameters": [],
                 "responses": {
                     "200": {
@@ -146,7 +146,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ApiResponseDto_TimeSeriesDto"
+                                    "$ref": "#/components/schemas/ApiResponseDto_FlareDelegationTimeSeriesDto"
                                 }
                             }
                         }
@@ -252,6 +252,9 @@
                     },
                     "validatorUptime": {
                         "type": "number"
+                    },
+                    "validatorNetworkShare": {
+                        "type": "number"
                     }
                 },
                 "required": [
@@ -267,7 +270,8 @@
                     "validatorEndTime",
                     "totalDelegators",
                     "totalDelegated",
-                    "validatorUptime"
+                    "validatorUptime",
+                    "validatorNetworkShare"
                 ]
             },
             "ApiResponseDto_AvalancheValidatorInfoDto": {
@@ -393,28 +397,32 @@
                     "status"
                 ]
             },
-            "TimeSeriesEntryDto": {
+            "FlareDelegationTimeSeries": {
                 "type": "object",
                 "properties": {
-                    "timestamp": {
+                    "rewardEpoch": {
                         "type": "number"
                     },
-                    "value": {
-                        "type": "string"
+                    "delegated": {
+                        "type": "number"
+                    },
+                    "delegators": {
+                        "type": "number"
                     }
                 },
                 "required": [
-                    "timestamp",
-                    "value"
+                    "rewardEpoch",
+                    "delegated",
+                    "delegators"
                 ]
             },
-            "TimeSeriesDto": {
+            "FlareDelegationTimeSeriesDto": {
                 "type": "object",
                 "properties": {
                     "result": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/TimeSeriesEntryDto"
+                            "$ref": "#/components/schemas/FlareDelegationTimeSeries"
                         }
                     }
                 },
@@ -422,14 +430,14 @@
                     "result"
                 ]
             },
-            "ApiResponseDto_TimeSeriesDto": {
+            "ApiResponseDto_FlareDelegationTimeSeriesDto": {
                 "type": "object",
                 "properties": {
                     "status": {
                         "type": "number"
                     },
                     "data": {
-                        "$ref": "#/components/schemas/TimeSeriesDto"
+                        "$ref": "#/components/schemas/FlareDelegationTimeSeriesDto"
                     },
                     "error": {
                         "type": "string"

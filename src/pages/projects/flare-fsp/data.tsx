@@ -1,16 +1,18 @@
-import { DataService, FlareFspInfoDto, TimeSeriesDto } from "~/backendApi"
+import { DataService, FlareFspInfoDto } from "~/backendApi"
 import { Formatter } from "~/utlits/misc/formatter"
 import { flareEvmUrl, flareFspUrl } from "~/utlits/data/constants"
 import { AddressLink } from "~/components/utils/links"
 import type { ISpecs, ISummary } from "~/components/pages/types"
-import type { FlareData } from "./types"
+import type { FlareData, FlareGraphics } from "./types"
 
 
 export namespace FlareFspDataLayer {
 
-  export async function getGraphicsData(): Promise<TimeSeriesDto> {
+  export async function getGraphicsData(): Promise<FlareGraphics> {
     const resp = await DataService.dataControllerGetDelegatedTimeSeries()
-    return resp.data
+    return {
+      delegations: resp.data
+    }
   }
 
   export async function getPageData(): Promise<FlareData> {
@@ -57,7 +59,7 @@ export namespace FlareFspDataLayer {
         },
         {
           title: 'Total Delegated',
-          value: Formatter.formatBigint(BigInt(info.totalDelegated), 18, 2) + ' FLR'
+          value: Formatter.format(BigInt(info.totalDelegated), 18, 2) + ' FLR'
         },
         {
           title: 'Availability',
@@ -73,3 +75,5 @@ export namespace FlareFspDataLayer {
     ]
   }
 }
+
+export default FlareFspDataLayer

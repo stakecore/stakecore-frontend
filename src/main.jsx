@@ -11,6 +11,7 @@ import './assets/css/wallet.css'
 import './assets/css/meterBar.css'
 import './assets/css/countdown.css'
 import './assets/css/tooltip.css'
+import './assets/css/investFlow.scss'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

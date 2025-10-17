@@ -16,5 +16,6 @@ export type AvalancheValidatorInfoDto = {
     totalDelegators: number;
     totalDelegated: number;
     validatorUptime: number;
+    validatorNetworkShare: number;
 };
 
