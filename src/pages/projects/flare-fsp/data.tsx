@@ -2,7 +2,7 @@ import { DataService, FlareFspInfoDto } from "~/backendApi"
 import { Formatter } from "~/utlits/misc/formatter"
 import { flareEvmUrl, flareFspUrl } from "~/utlits/data/constants"
 import { AddressLink } from "~/components/utils/links"
-import type { ISpecs, ISummary } from "~/components/pages/types"
+import type { ISpecs, ISummary } from "~/components/types"
 import type { FlareData, FlareGraphics } from "./types"
 
 

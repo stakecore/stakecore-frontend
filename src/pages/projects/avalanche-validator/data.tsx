@@ -1,9 +1,8 @@
-import { secondsUntil, sleep } from "~/utlits/misc/time"
 import { AddressLink } from "~/components/utils/links"
 import { avalancheTransactionUrl, avalancheValidatorUrl } from "~/utlits/data/constants"
 import { AvalancheValidatorInfoDto, DataService } from "~/backendApi"
 import type { AvalancheData, IDelegation, IGraphics } from "./types"
-import type { ISpecs, ISummary } from "~/components/pages/types"
+import type { ISpecs, ISummary } from "~/components/types"
 
 namespace AvalancheValidatorDataAccess {
 
@@ -40,8 +39,8 @@ namespace AvalancheValidatorDataAccess {
     const validatorNodeIdLink = <AddressLink url={validatorUrl} address={data.validatorNodeId} />
 
     // validator duration
-    const validatorLeftoverTime = secondsUntil(data.validatorEndTime)
-    const validatorDurationDays = Math.floor(validatorLeftoverTime / 86400)
+    const validatorDuration = data.validatorEndTime - data.validatorStartTime
+    const validatorDurationDays = Math.floor(validatorDuration / 86400)
 
     const specs = [
       [
@@ -61,29 +60,14 @@ namespace AvalancheValidatorDataAccess {
           tooltip: 'Fee charged to delegators',
         },
         {
-          title: 'Validator Capacity',
-          value: data.validatorAvailableCapacity + ' AVAX',
-          tooltip: 'Space free for delegations'
+          title: 'Validator Owned Stake',
+          value: data.validatorOwnedStake + ' AVAX',
+          tooltip: 'Amount staked by Stakecore'
         },
         {
           title: 'Validator Duration',
           value: validatorDurationDays + ' days',
-          tooltip: 'The maximum delegation time'
-        },
-        {
-          title: 'Total Delegators',
-          value: data.totalDelegators,
-          tooltip: 'Total number of delegators'
-        },
-        {
-          title: 'Total Delegated',
-          value: data.totalDelegated + ' AVAX',
-          tooltip: 'Total delegations from delegators'
-        },
-        {
-          title: 'Validator Network Share',
-          value: (100 * data.validatorNetworkShare) + '%',
-          tooltip: 'Validator Stake Share On The Network'
+          tooltip: 'Duration of the current validation instance'
         }
       ]
     ]

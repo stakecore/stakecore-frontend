@@ -1,4 +1,4 @@
-import type { ISummary, ISpecs } from "~/components/pages/types"
+import type { ISummary, ISpecs } from "~/components/types"
 import type { AvalancheValidatorInfoDto } from "~/backendApi"
 
 export type AvalancheData = {

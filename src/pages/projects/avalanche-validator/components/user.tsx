@@ -52,6 +52,31 @@ const AvalancheValidatorUserComponent = () => {
     setWalletVisible(true)
   }
 
+  const tokens = [
+    {
+      symbol: 'AVAX (C)',
+      logoUrl: 'https://flare-systems-explorer.flare.rocks/_next/image?url=%2Fbackend-url%2Fmedia%2Fimages%2Ffeed%2FAVAX_logo.png&w=96&q=75',
+      balance: 100,
+      price: 20,
+      arrows: {
+        down: true,
+        up: true
+      },
+      ireturn: [1, 0.9, null]
+    },
+    {
+      symbol: 'AVAX (P)',
+      logoUrl: 'https://flare-systems-explorer.flare.rocks/_next/image?url=%2Fbackend-url%2Fmedia%2Fimages%2Ffeed%2FAVAX_logo.png&w=96&q=75',
+      balance: 200,
+      price: 20,
+      arrows: {
+        down: true,
+        up: false
+      },
+      ireturn: [0.9, 1, null]
+    }
+  ]
+
   let component = null
   if (walletAddress == null) {
     component = <a onClick={connectWallet} className="theme-btn">
@@ -64,22 +89,20 @@ const AvalancheValidatorUserComponent = () => {
   }
   else {
     component = <>
-      <div style={{ textAlign: 'left' }}>
+      <div className="mb-40">
         <p>
           Delegating AVAX involves moving it from C-Chain to P-Chain, where you then sign the add delegator transaction.
-          After the set delegation lockup time expires, funds are automatically return to your P-Chain account.
+          After the set delegation lockup time expires, funds are automatically returned to your P-Chain account.
         </p>
       </div>
-      <InvestFlow />
+      <InvestFlow staked={100} tokens={tokens} />
     </>
   }
 
   return (
     <div className="single-project-page-right wow fadeInUp delay-0-4s avalanche-div-border mt-30">
       <h2>Position</h2>
-      <div style={{ textAlign: 'center' }}>
-        {component}
-      </div>
+      {component}
     </div>
   )
 }

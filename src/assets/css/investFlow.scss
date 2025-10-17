@@ -64,7 +64,7 @@
     margin-bottom: 5px;
   }
 
-  .amount-input, .max-button {
+  .amount-input input, .max-button button {
     all: unset;
     width: 100%;
     min-width: 0;
@@ -74,19 +74,25 @@
     line-height: 35px;
   }
 
-  .max-button:hover {
+  .max-button button:hover {
     cursor: pointer;
     color: white;
-    width: 100%;
-    min-width: 0;
   }
 
-  .amount-input[type=number]::-webkit-inner-spin-button,
-  .amount-input[type=number]::-webkit-outer-spin-button {
+  .max-button button[disabled] {
+    color: grey;
+  }
+  .max-button button[disabled]:hover {
+    cursor: default;
+    color: grey;
+  }
+
+  .amount-input input[type=number]::-webkit-inner-spin-button,
+  .amount-input input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
   }
-  .amount-input:focus {
+  .amount-input input:focus {
     all: unset;
   }
 }
@@ -104,10 +110,19 @@
   background-color: #161618;
   border: 1.5px solid #101010;
   border-radius: 50%;
+
+  &.disabled {
+    color: grey;
+  }
 }
 
 .invest-flow-swap-arrow:hover {
   cursor: pointer;
   background-color: #eb5d3a;
   transition: background-color 0.75s;
+
+  &.disabled {
+    cursor: default;
+    background-color: #161618;
+  }
 }

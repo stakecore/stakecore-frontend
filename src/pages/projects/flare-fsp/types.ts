@@ -1,5 +1,5 @@
 import type { FlareDelegationTimeSeriesDto, FlareFspInfoDto } from "~/backendApi"
-import type { ISummary, ISpecs } from "~/components/pages/types"
+import type { ISummary, ISpecs } from "~/components/types"
 
 
 export type FlareData = {
