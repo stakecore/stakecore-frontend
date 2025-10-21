@@ -1,6 +1,6 @@
 import useSWR from "swr"
 import { SpinnerCircular } from "spinners-react"
-import { FlareFspDataLayer } from "../data"
+import FlareFspDataLayer from "../data"
 import { FLARE_COLOR_CODE } from "~/utlits/data/constants"
 import { ResponsiveLine } from "@nivo/line"
 import { Formatter } from "~/utlits/misc/formatter"

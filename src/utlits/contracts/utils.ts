@@ -1,12 +1,14 @@
-import { useGlobalStore } from "../../utlits/store/global"
-import { requestAccounts, switchNetworkIfNecessary } from "../../utlits/eip6963/eip1193"
-import { delegate as _delegate } from "../../utlits/eip6963/contracts"
+import { useGlobalStore } from "../store/global"
+import { requestAccounts, switchNetworkIfNecessary } from "../eip6963/eip1193"
+import { delegate as _delegate } from "./flare"
+import { Eip1193Provider } from "ethers"
 
 
-export async function delegate(): Promise<void> {
+export async function ensureProvider(): Promise<Eip1193Provider | undefined> {
   let { walletProvider, setWalletVisible } = useGlobalStore.getState()
   if (walletProvider == null) {
-    return setWalletVisible(true)
+    setWalletVisible(true)
+    return
   }
   if (!await switchNetworkIfNecessary(walletProvider.provider)) return
   const { walletAddress, setWalletAddress } = useGlobalStore.getState()
@@ -15,5 +17,5 @@ export async function delegate(): Promise<void> {
     if (!addresses.length) return
     setWalletAddress(addresses[0])
   }
-  return _delegate(walletProvider.provider)
+  return walletProvider.provider
 }

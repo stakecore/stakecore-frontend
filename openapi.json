@@ -82,6 +82,37 @@
                 ]
             }
         },
+        "/api/data/avalanche/validator/delegator": {
+            "get": {
+                "operationId": "DataController_getAvalancheDelegatorInfo",
+                "summary": "Information about Stakecore's delegator given as an eip-55 checksummed hex string",
+                "parameters": [
+                    {
+                        "name": "address",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseDto_AvalancheDelegatorInfoDto"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Data"
+                ]
+            }
+        },
         "/api/data/flare/fsp/info": {
             "get": {
                 "operationId": "DataController_getFlareFspPageInfo",
@@ -282,6 +313,87 @@
                     },
                     "data": {
                         "$ref": "#/components/schemas/AvalancheValidatorInfoDto"
+                    },
+                    "error": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "status"
+                ]
+            },
+            "AvalancheSubChainBalanceDto": {
+                "type": "object",
+                "properties": {
+                    "address": {
+                        "type": "string"
+                    },
+                    "balance": {
+                        "type": "number"
+                    },
+                    "price": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "address",
+                    "balance",
+                    "price"
+                ]
+            },
+            "AvalancheDelegationDto": {
+                "type": "object",
+                "properties": {
+                    "delegated": {
+                        "type": "number"
+                    },
+                    "reward": {
+                        "type": "number"
+                    },
+                    "startTime": {
+                        "type": "number"
+                    },
+                    "endTime": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "delegated",
+                    "reward",
+                    "startTime",
+                    "endTime"
+                ]
+            },
+            "AvalancheDelegatorInfoDto": {
+                "type": "object",
+                "properties": {
+                    "cChain": {
+                        "$ref": "#/components/schemas/AvalancheSubChainBalanceDto"
+                    },
+                    "pChain": {
+                        "$ref": "#/components/schemas/AvalancheSubChainBalanceDto"
+                    },
+                    "delegations": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AvalancheDelegationDto"
+                        }
+                    }
+                },
+                "required": [
+                    "cChain",
+                    "pChain",
+                    "delegations"
+                ]
+            },
+            "ApiResponseDto_AvalancheDelegatorInfoDto": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "number"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/AvalancheDelegatorInfoDto"
                     },
                     "error": {
                         "type": "string"

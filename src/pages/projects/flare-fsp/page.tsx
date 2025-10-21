@@ -5,6 +5,7 @@ import InfoComponent from "~/components/pages/info"
 import FlareFspStatsComponent from "./components/stats"
 import FlareFspDataLayer from "./data"
 import { FLARE_COLOR_CODE } from "~/utlits/data/constants"
+import FlareFspLocalDelegateComponent from './components/delegateLocal'
 
 
 export const FlareFspPage = () => {
@@ -22,6 +23,7 @@ export const FlareFspPage = () => {
     } else {
         component = <>
             <InfoComponent specs={data.specs} summary={data.summary} />
+            <FlareFspLocalDelegateComponent />
             <FlareFspStatsComponent />
         </>
     }

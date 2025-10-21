@@ -12,17 +12,30 @@ export type ISummary = {
   lockup: string
 }
 
-export interface InvestFlowConfig {
-  staked: number
+export interface IStakeFlow {
+  layout: IStakeFlowLayout
+  data: IStakeFlowData
+}
+
+type StakeAction = (address: string, amount: number) => Promise<boolean>
+
+interface IStakeFlowLayout {
   tokens: {
     symbol: string
     logoUrl: string
+    actions: {
+      down: StakeAction | null
+      up: StakeAction | null
+    }
+  }[]
+}
+
+interface IStakeFlowData {
+  staked: number
+  tokens: {
+    address: string
     balance: number
     price: number
-    arrows: {
-      up: boolean
-      down: boolean
-    }
-    ireturn: (number | null)[]
+    stakeReturn: (((x: number) => number) | null)[]
   }[]
 }

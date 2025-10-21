@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom'
 import { RiContactsFill } from '@remixicon/react'
 import SlideUp from '../../utlits/animations/slideUp'
-import { delegate } from '../utils/chain'
 
 
 const CallToAction = () => {
@@ -18,7 +17,7 @@ const CallToAction = () => {
                                 and stake FLR to Node Id {' '} <ValidatorNodeLink /> or delegate WFLR to address {' '} <DelegationAddressLink />. */}
                                 </p>
                                 <div className="hero-btns">
-                                    <Link onClick={delegate} className="theme-btn">Delegate WFLR  <i><RiContactsFill size={16} /></i></Link>
+                                    <Link onClick={() => null} className="theme-btn">Delegate WFLR <i><RiContactsFill size={16} /></i></Link>
                                 </div>
                             </div>
                         </SlideUp>

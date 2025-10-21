@@ -1,10 +1,15 @@
 import { AddressLink } from "~/components/utils/links"
-import { avalancheTransactionUrl, avalancheValidatorUrl } from "~/utlits/data/constants"
-import { AvalancheValidatorInfoDto, DataService } from "~/backendApi"
+import { avalanchePChainTransactionUrl, avalancheValidatorUrl } from "~/utlits/data/constants"
+import { AvalancheDelegatorInfoDto, AvalancheValidatorInfoDto, DataService } from "~/backendApi"
 import type { AvalancheData, IDelegation, IGraphics } from "./types"
 import type { ISpecs, ISummary } from "~/components/types"
 
 namespace AvalancheValidatorDataAccess {
+
+  export async function getDelegatorInfo(address: string): Promise<AvalancheDelegatorInfoDto> {
+    const resp = await DataService.dataControllerGetAvalancheDelegatorInfo(address)
+    return resp.data
+  }
 
   async function getPageData(): Promise<AvalancheValidatorInfoDto> {
     const resp = await DataService.dataControllerGetAvalancheValidatorPageInfo()
@@ -31,7 +36,7 @@ namespace AvalancheValidatorDataAccess {
 
   function getSpecs(data: AvalancheValidatorInfoDto): ISpecs {
     // avalanche validator transaction link
-    const validatorTransactionUrl = avalancheTransactionUrl(data.validatorTransactionHash)
+    const validatorTransactionUrl = avalanchePChainTransactionUrl(data.validatorTransactionHash)
     const validatorTransactionLink = <AddressLink url={validatorTransactionUrl} address={data.validatorTransactionHash} />
 
     // avalanche validator link

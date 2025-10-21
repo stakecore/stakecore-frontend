@@ -27,7 +27,7 @@
   background-color: #161618;
   border-radius: 10px;
   margin-bottom: 15px;
-  padding: 15px
+  padding: 15px;
 }
 
 .invest-flow-bar-left {
@@ -35,13 +35,15 @@
 
   .logo {
     display: flex;
-    align-items: center;
+    justify-items: center;
     justify-content: left;
     margin-bottom: 5px;
     line-height: 35px;
 
     .img {
       margin-right: 5px;
+      width: 30px;
+      height: 30px;
     }
 
     .name {
@@ -64,7 +66,8 @@
     margin-bottom: 5px;
   }
 
-  .amount-input input, .max-button button {
+  .amount-input input,
+  .max-button button {
     all: unset;
     width: 100%;
     min-width: 0;
@@ -82,6 +85,7 @@
   .max-button button[disabled] {
     color: grey;
   }
+
   .max-button button[disabled]:hover {
     cursor: default;
     color: grey;
@@ -92,6 +96,7 @@
     -webkit-appearance: none;
     margin: 0;
   }
+
   .amount-input input:focus {
     all: unset;
   }
@@ -104,11 +109,13 @@
 }
 
 .invest-flow-swap-arrow {
+  display: inline-block;
+  position: relative;
   margin: 0 5px;
-  padding: 10px;
+  padding: 6px 10px;
   color: white;
   background-color: #161618;
-  border: 1.5px solid #101010;
+  border: 2px solid #101010;
   border-radius: 50%;
 
   &.disabled {

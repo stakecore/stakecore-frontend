@@ -34,4 +34,12 @@ export namespace Formatter {
     }
   }
 
+  export function formatPercent(value: number, places: number): string {
+    if (value < 10 ** (-places + 3)) {
+      return `< 0.${'0'.repeat(places - 3)}1`
+    } else {
+      return (Math.round((10 ** places) * value) / (10 ** places)).toString()
+    }
+  }
+
 }

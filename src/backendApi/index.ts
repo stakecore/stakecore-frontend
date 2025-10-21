@@ -8,10 +8,14 @@ export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { ApiResponseDto } from './models/ApiResponseDto';
+export type { ApiResponseDto_AvalancheDelegatorInfoDto } from './models/ApiResponseDto_AvalancheDelegatorInfoDto';
 export type { ApiResponseDto_AvalancheValidatorInfoDto } from './models/ApiResponseDto_AvalancheValidatorInfoDto';
 export type { ApiResponseDto_FlareDelegationTimeSeriesDto } from './models/ApiResponseDto_FlareDelegationTimeSeriesDto';
 export type { ApiResponseDto_FlareDelegatorsDto } from './models/ApiResponseDto_FlareDelegatorsDto';
 export type { ApiResponseDto_FlareFspInfoDto } from './models/ApiResponseDto_FlareFspInfoDto';
+export type { AvalancheDelegationDto } from './models/AvalancheDelegationDto';
+export type { AvalancheDelegatorInfoDto } from './models/AvalancheDelegatorInfoDto';
+export type { AvalancheSubChainBalanceDto } from './models/AvalancheSubChainBalanceDto';
 export type { AvalancheValidatorInfoDto } from './models/AvalancheValidatorInfoDto';
 export type { FlareDelegationTimeSeries } from './models/FlareDelegationTimeSeries';
 export type { FlareDelegationTimeSeriesDto } from './models/FlareDelegationTimeSeriesDto';

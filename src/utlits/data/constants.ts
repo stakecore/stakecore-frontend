@@ -3,7 +3,11 @@ export const MAX_BIPS = 10_000
 // flare fsp
 
 export const wrappedFlrAdy = '0x1D80c49BbBCd1C0911346656B529DF9E5c2F783d'
-export const wrappedFlrAbi = ['function delegate(address,uint256)']
+export const wrappedFlrAbi = [
+  'function delegate(address,uint256)',
+  'function deposit() payable',
+  'function withdraw()'
+]
 
 export const flareDelegationAddress = '0x1e68DC808A240C096F0261144dc41fd4c883Cfb0'
 
@@ -23,7 +27,8 @@ export const flareValidatorUrl = (nodeId: string) => `${flarePChainExplorer}/val
 
 export const avalancheExplorer = 'https://subnets.avax.network'
 export const avalancheValidatorUrl = (nodeId: string) => `${avalancheExplorer}/validators/${nodeId}`
-export const avalancheTransactionUrl = (transaction: string) => `${avalancheExplorer}/p-chain/tx/${transaction}`
+export const avalanchePChainTransactionUrl = (transaction: string) => `${avalancheExplorer}/p-chain/tx/${transaction}`
+export const avalanchePChainAddressUrl = (address: string) =>`${avalancheExplorer}/p-chain/address/${address}`
 
 export const avalancheDelegatorMinLockup = 1209600
 export const avalancheDelegatorMaxLockup = 31536000

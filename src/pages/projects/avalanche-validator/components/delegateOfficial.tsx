@@ -1,9 +1,9 @@
 import MovieClip from "../../../../components/ui/movieClip"
 
-const AvalancheValidatorDelegateComponent = ({ validatorLink }) => {
+const AvalancheValidatorOfficialDelegateComponent = ({ validatorLink }) => {
   return (
     <div className="single-project-page-right wow fadeInUp delay-0-4s avalanche-div-border mt-30">
-      <h2>How To Delegate And Earn APY?</h2>
+      <h2>Delegate On The Official Avalanche Site</h2>
       <p>
         Users need to delegate to our Stakecore validator &nbsp; {validatorLink} or any other one.
         However, note that validators failing to deliver 80%+ uptime will cause their delegators to lose out on rewards.
@@ -17,4 +17,4 @@ const AvalancheValidatorDelegateComponent = ({ validatorLink }) => {
   )
 }
 
-export default AvalancheValidatorDelegateComponent
+export default AvalancheValidatorOfficialDelegateComponent

@@ -2,6 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { ApiResponseDto_AvalancheDelegatorInfoDto } from '../models/ApiResponseDto_AvalancheDelegatorInfoDto';
 import type { ApiResponseDto_AvalancheValidatorInfoDto } from '../models/ApiResponseDto_AvalancheValidatorInfoDto';
 import type { ApiResponseDto_FlareDelegationTimeSeriesDto } from '../models/ApiResponseDto_FlareDelegationTimeSeriesDto';
 import type { ApiResponseDto_FlareDelegatorsDto } from '../models/ApiResponseDto_FlareDelegatorsDto';
@@ -19,6 +20,23 @@ export class DataService {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/data/avalanche/validator/info',
+        });
+    }
+    /**
+     * Information about Stakecore's delegator given as an eip-55 checksummed hex string
+     * @param address
+     * @returns ApiResponseDto_AvalancheDelegatorInfoDto
+     * @throws ApiError
+     */
+    public static dataControllerGetAvalancheDelegatorInfo(
+        address: string,
+    ): CancelablePromise<ApiResponseDto_AvalancheDelegatorInfoDto> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/data/avalanche/validator/delegator',
+            path: {
+                'address': address,
+            },
         });
     }
     /**
