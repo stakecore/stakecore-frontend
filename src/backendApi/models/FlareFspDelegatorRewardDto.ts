@@ -2,9 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type FlareDelegationTimeSeries = {
+export type FlareFspDelegatorRewardDto = {
     rewardEpoch: number;
-    delegated: number;
-    delegators: number;
+    amount: number;
 };
 

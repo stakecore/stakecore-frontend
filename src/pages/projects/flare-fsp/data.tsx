@@ -1,28 +1,16 @@
-import { DataService, FlareFspInfoDto } from "~/backendApi"
+import { DataService, FlareFspDelegatorInfoDto, FlareFspInfoDto } from "~/backendApi"
 import { Formatter } from "~/utlits/misc/formatter"
 import { flareEvmUrl, flareFspUrl } from "~/utlits/data/constants"
 import { AddressLink } from "~/components/utils/links"
 import type { ISpecs, ISummary } from "~/components/types"
-import type { FlareData, FlareFspDelegatorInfo, FlareGraphics } from "./types"
+import type { FlareData, FlareGraphics } from "./types"
 
 
 namespace FlareFspDataLayer {
 
-  export async function getDelegatorInfo(address: string): Promise<FlareFspDelegatorInfo> {
-    return {
-      delegated: 10,
-      rewards: 1,
-      nat: {
-        address,
-        balance: 10,
-        price: 10
-      },
-      wnat: {
-        address,
-        balance: 0,
-        price: 10
-      }
-    }
+  export async function getDelegatorInfo(address: string): Promise<FlareFspDelegatorInfoDto> {
+    const resp = await DataService.dataControllerGetFlareFspDelegatorInfo(address)
+    return resp.data
   }
 
   export async function getGraphicsData(): Promise<FlareGraphics> {

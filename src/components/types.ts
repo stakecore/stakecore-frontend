@@ -1,3 +1,6 @@
+import type { Status } from "~/constants"
+
+
 export type ISpecs = ISpec[][]
 export type ISpec = {
   title: string
@@ -13,29 +16,36 @@ export type ISummary = {
 }
 
 export interface IStakeFlow {
-  layout: IStakeFlowLayout
-  data: IStakeFlowData
+  layout: IStakeFlowLayoutPart[]
+  data: IStakeFlowDataPart[]
 }
 
-type StakeAction = (address: string, amount: number) => Promise<boolean>
+type ActionMethod = (address: string, balance: number, value: number) => Promise<Status>
+type ActionMessage = (status: Status, address: string, balance: number, value: number) => string
 
-interface IStakeFlowLayout {
-  tokens: {
-    symbol: string
-    logoUrl: string
-    actions: {
-      down: StakeAction | null
-      up: StakeAction | null
-    }
-  }[]
+export type IStakeFlowBarAction = {
+  active: false
+} | {
+  active: true
+  name: string
+  method: ActionMethod
+  message: ActionMessage
+  ok: (status: Status) => boolean
 }
 
-interface IStakeFlowData {
-  staked: number
-  tokens: {
-    address: string
-    balance: number
-    price: number
-    stakeReturn: (((x: number) => number) | null)[]
-  }[]
+export interface IStakeFlowLayoutPart {
+  symbol: string
+  logo: string
+  actions: {
+    down: IStakeFlowBarAction
+    up: IStakeFlowBarAction
+  }
+  maxButton: boolean
+}
+export interface IStakeFlowDataPart {
+  address: string
+  balance: number
+  price: number
+  conversions: (((x: number) => number) | null)[]
+  fixedInputValue: number | null
 }

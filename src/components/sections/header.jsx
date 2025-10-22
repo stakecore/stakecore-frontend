@@ -8,10 +8,10 @@ import { useGlobalStore } from '../../utlits/store/global'
 const ChooseWalletButton = () => {
     const walletProvider = useGlobalStore((state) => state.walletProvider)
     const walletAddress = useGlobalStore((state) => state.walletAddress)
-    const setWalletVisible = useGlobalStore((state) => state.setWalletVisible)
+    const setWalletChoiceVisible = useGlobalStore((state) => state.setWalletChoiceVisible)
     return <Link onClick={(event) => {
         event.preventDefault()
-        setWalletVisible(true)
+        setWalletChoiceVisible(true)
     }} className="theme-btn connect-wallet-button">
         {walletProvider ? <img src={walletProvider.info.icon} alt={walletProvider.info.name} /> : null}
         {walletAddress ? formatAddress(walletAddress) : "Connect Wallet"}

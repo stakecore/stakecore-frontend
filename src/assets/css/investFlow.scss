@@ -16,6 +16,7 @@
 }
 
 .invest-flow-bar-container {
+  position: relative;
   display: flex;
   justify-content: center;
   flex-flow: row wrap;
@@ -61,8 +62,11 @@
 .invest-flow-bar-right {
   text-align: right;
 
-  .amount {
+  .first, .second {
     line-height: 35px;
+  }
+
+  .first {
     margin-bottom: 5px;
   }
 
@@ -71,10 +75,6 @@
     all: unset;
     width: 100%;
     min-width: 0;
-  }
-
-  .max-button {
-    line-height: 35px;
   }
 
   .max-button button:hover {
@@ -103,9 +103,11 @@
 }
 
 .invest-flow-swap-container {
+  z-index: 1;
   position: absolute;
   right: 50%;
-  transform: translate(50%, -75%);
+  bottom: 0;
+  transform: translate(50%, 40%);
 }
 
 .invest-flow-swap-arrow {
@@ -120,6 +122,32 @@
 
   &.disabled {
     color: grey;
+  }
+
+  .overlay {
+    z-index: 2;
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    transition: background-color 2s;
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg) }
+    to { transform: rotate(360deg) }
+  }
+
+  .loading {
+    border-top: 2px solid white;
+    animation: spin 2s linear infinite;
+  }
+
+  .success {
+    background-color: rgba(0,255,0,.2);
+  }
+
+  .failure {
+    background-color: rgba(255,0,0,.2);
   }
 }
 

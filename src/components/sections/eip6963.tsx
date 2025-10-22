@@ -8,15 +8,15 @@ import { useExternalStore } from '../../utlits/eip6963/discover'
 
 export const Eip6963 = () => {
   const { walletProviders } = useExternalStore()
-  const walletVisible = useGlobalStore(state => state.walletVisible)
-  const { setWalletVisible } = useGlobalStore.getState()
+  const walletChoiceVisible = useGlobalStore(state => state.walletChoiceVisible)
+  const { setWalletChoiceVisible } = useGlobalStore.getState()
 
   const executeConnect = async (detail: EIP6963ProviderDetail, address: string) => {
     const { setWalletAddress } = useGlobalStore.getState()
     const switched = await switchNetworkIfNecessary(detail.provider)
     if (!switched) return
     setWalletAddress(address, detail)
-    setWalletVisible(false)
+    setWalletChoiceVisible(false)
   }
 
   const handleConnect = async (providerWithInfo: EIP6963ProviderDetail) => {
@@ -24,8 +24,8 @@ export const Eip6963 = () => {
     if (accounts?.[0]) await executeConnect(providerWithInfo, accounts[0])
   }
 
-  changeOpacity(walletVisible)
-  if (!walletVisible) return null
+  changeOpacity(walletChoiceVisible)
+  if (!walletChoiceVisible) return null
 
   return ReactDOM.createPortal(
     <div className="wallet-container">
@@ -44,7 +44,7 @@ export const Eip6963 = () => {
               </div>
           }
         </div>
-        <button onClick={() => setWalletVisible(false)} className="close">
+        <button onClick={() => setWalletChoiceVisible(false)} className="close">
           <i><RiCloseCircleFill size={20} /></i>
         </button>
       </div>

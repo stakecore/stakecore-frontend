@@ -12,18 +12,3 @@ export type FlareGraphics = {
   delegations: FlareDelegationTimeSeriesDto
 
 }
-
-export interface FlareFspDelegatorInfo {
-  nat: {
-    address: string
-    balance: number
-    price: number
-  }
-  wnat: {
-    address: string
-    balance: number
-    price: number
-  }
-  delegated: number
-  rewards: number
-}

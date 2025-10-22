@@ -135,6 +135,37 @@
                 ]
             }
         },
+        "/api/data/flare/fsp/delegator-info/{delegator}": {
+            "get": {
+                "operationId": "DataController_getFlareFspDelegatorInfo",
+                "summary": "Status of a Flare FSP delegator",
+                "parameters": [
+                    {
+                        "name": "delegator",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseDto_FlareFspDelegatorInfoDto"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Data"
+                ]
+            }
+        },
         "/api/data/flare/fsp/delegators/{delegatee}": {
             "get": {
                 "operationId": "DataController_getFlareDelegators",
@@ -463,6 +494,83 @@
                     "status"
                 ]
             },
+            "FlareFspDelegatorRewardDto": {
+                "type": "object",
+                "properties": {
+                    "rewardEpoch": {
+                        "type": "number"
+                    },
+                    "amount": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "rewardEpoch",
+                    "amount"
+                ]
+            },
+            "FlareFspDelegatorTokenInfoDto": {
+                "type": "object",
+                "properties": {
+                    "address": {
+                        "type": "string"
+                    },
+                    "balance": {
+                        "type": "number"
+                    },
+                    "price": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "address",
+                    "balance",
+                    "price"
+                ]
+            },
+            "FlareFspDelegatorInfoDto": {
+                "type": "object",
+                "properties": {
+                    "delegated": {
+                        "type": "number"
+                    },
+                    "rewards": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/FlareFspDelegatorRewardDto"
+                        }
+                    },
+                    "nat": {
+                        "$ref": "#/components/schemas/FlareFspDelegatorTokenInfoDto"
+                    },
+                    "wnat": {
+                        "$ref": "#/components/schemas/FlareFspDelegatorTokenInfoDto"
+                    }
+                },
+                "required": [
+                    "delegated",
+                    "rewards",
+                    "nat",
+                    "wnat"
+                ]
+            },
+            "ApiResponseDto_FlareFspDelegatorInfoDto": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "number"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/FlareFspDelegatorInfoDto"
+                    },
+                    "error": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "status"
+                ]
+            },
             "FlareDelegatorDto": {
                 "type": "object",
                 "properties": {
@@ -509,7 +617,7 @@
                     "status"
                 ]
             },
-            "FlareDelegationTimeSeries": {
+            "FlareFspDelegationTimeSeries": {
                 "type": "object",
                 "properties": {
                     "rewardEpoch": {
@@ -534,7 +642,7 @@
                     "result": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/FlareDelegationTimeSeries"
+                            "$ref": "#/components/schemas/FlareFspDelegationTimeSeries"
                         }
                     }
                 },

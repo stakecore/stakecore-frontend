@@ -1,35 +1,40 @@
 import useSWR from "swr"
 import { SpinnerCircular } from 'spinners-react'
 import { useGlobalStore } from "~/utlits/store/global"
-import InvestFlow from "~/components/ui/investFlow"
+import StakeFlow from "~/components/ui/stakeFlow"
 import { IStakeFlow } from "~/components/types"
 import FlareFspDataLayer from "../data"
-import * as C from '../constants'
-import type { FlareFspDelegatorInfo } from "../types"
+import * as C from '../layout'
+import type { FlareFspDelegatorInfoDto } from "~/backendApi"
 
 
-
-function delegatorInfoToStakeFlow(position: FlareFspDelegatorInfo): IStakeFlow['data'] {
-  return {
-    staked: position.delegated,
-    tokens: [{
-      address: position.nat.address,
-      balance: position.nat.balance,
-      price: position.nat.price,
-      stakeReturn: [C.FLR_TO_WFLR_FACTOR, C.WFLR_TO_FLR_FACTOR]
-    }, {
-      address: position.wnat.address,
-      balance: position.wnat.balance,
-      price: position.wnat.price,
-      stakeReturn: [C.FLR_TO_WFLR_FACTOR, null]
-    }]
-  }
+function delegatorInfoToStakeFlow(position: FlareFspDelegatorInfoDto): IStakeFlow['data'] {
+  const rewards = position.rewards.reduce((x, y) => x + y.amount, 0)
+  return [{
+    address: position.nat.address,
+    balance: position.nat.balance,
+    price: position.nat.price,
+    fixedInputValue: null,
+    conversions: [C.FLR_TO_WFLR_FACTOR, C.WFLR_TO_FLR_FACTOR]
+  }, {
+    address: position.wnat.address,
+    balance: position.wnat.balance,
+    price: position.wnat.price,
+    fixedInputValue: null,
+    conversions: [C.FLR_TO_WFLR_FACTOR, null]
+  }, {
+    address: position.wnat.address,
+    balance: position.delegated,
+    price: position.wnat.price,
+    fixedInputValue: rewards,
+    conversions: [null, null]
+  }]
 }
 
 const FlareFspLocalDelegateComponent = () => {
   const walletAddress = useGlobalStore((state) => state.walletAddress)
-  const setWalletVisible = useGlobalStore((state) => state.setWalletVisible)
-  const walletVisible = useGlobalStore((state) => state.walletVisible)
+  const setWalletChoiceVisible = useGlobalStore((state) => state.setWalletChoiceVisible)
+  const walletChoiceVisible = useGlobalStore((state) => state.walletChoiceVisible)
 
   const { data, error, isLoading } = useSWR(['flare-delegate', walletAddress], ([_, address]) => {
     if (address == null) return null
@@ -40,8 +45,8 @@ const FlareFspLocalDelegateComponent = () => {
   })
 
   async function connectWallet() {
-    if (walletVisible || walletAddress != null) return
-    setWalletVisible(true)
+    if (walletChoiceVisible || walletAddress != null) return
+    setWalletChoiceVisible(true)
   }
 
   let component = null
@@ -54,7 +59,7 @@ const FlareFspLocalDelegateComponent = () => {
       <SpinnerCircular color="firebrick" size={45} />
     </div>
   } else if (error != null) {
-    component = <div>error {error}</div>
+    component = <div>error {String(error)}</div>
   }
   else {
     component = <>
@@ -67,7 +72,7 @@ const FlareFspLocalDelegateComponent = () => {
           New rewards are distributed every 3.5 days and are based on your balance at 3 block heights
           determined randomly at the end of each reward epoch.
         </p>
-        <InvestFlow layout={C.DELEGATE_FLOW_LAYOUT} data={delegatorInfoToStakeFlow(data)} />
+        <StakeFlow layout={C.DELEGATE_FLOW_LAYOUT} data={delegatorInfoToStakeFlow(data)} />
       </div>
     </>
   }

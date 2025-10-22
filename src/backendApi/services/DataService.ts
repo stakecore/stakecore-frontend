@@ -6,6 +6,7 @@ import type { ApiResponseDto_AvalancheDelegatorInfoDto } from '../models/ApiResp
 import type { ApiResponseDto_AvalancheValidatorInfoDto } from '../models/ApiResponseDto_AvalancheValidatorInfoDto';
 import type { ApiResponseDto_FlareDelegationTimeSeriesDto } from '../models/ApiResponseDto_FlareDelegationTimeSeriesDto';
 import type { ApiResponseDto_FlareDelegatorsDto } from '../models/ApiResponseDto_FlareDelegatorsDto';
+import type { ApiResponseDto_FlareFspDelegatorInfoDto } from '../models/ApiResponseDto_FlareFspDelegatorInfoDto';
 import type { ApiResponseDto_FlareFspInfoDto } from '../models/ApiResponseDto_FlareFspInfoDto';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -48,6 +49,23 @@ export class DataService {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/data/flare/fsp/info',
+        });
+    }
+    /**
+     * Status of a Flare FSP delegator
+     * @param delegator
+     * @returns ApiResponseDto_FlareFspDelegatorInfoDto
+     * @throws ApiError
+     */
+    public static dataControllerGetFlareFspDelegatorInfo(
+        delegator: string,
+    ): CancelablePromise<ApiResponseDto_FlareFspDelegatorInfoDto> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/data/flare/fsp/delegator-info/{delegator}',
+            path: {
+                'delegator': delegator,
+            },
         });
     }
     /**

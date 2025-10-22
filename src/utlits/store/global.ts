@@ -9,6 +9,6 @@ export const useGlobalStore = create<GlobalState>((set) => ({
     walletAddress: address,
     walletProvider: (provider === undefined) ? state.walletProvider : provider
   })),
-  walletVisible: false,
-  setWalletVisible: (visible: boolean) => set({ walletVisible: visible }),
+  walletChoiceVisible: false,
+  setWalletChoiceVisible: (visible: boolean) => set({ walletChoiceVisible: visible }),
 }))

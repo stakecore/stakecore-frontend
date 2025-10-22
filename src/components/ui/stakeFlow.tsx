@@ -1,0 +1,204 @@
+import { useState } from "react"
+import classNames from "classnames"
+import { RiArrowDownLine, RiArrowUpLine } from "@remixicon/react"
+import { toast } from 'react-toastify'
+import { sleep } from "~/utlits/misc/time"
+import type { IStakeFlow, IStakeFlowBarAction, IStakeFlowDataPart, IStakeFlowLayoutPart } from "../types"
+
+
+type NumberOrEmptyString = number | ""
+
+interface IStakeFlowBarArgs {
+  layout: IStakeFlowLayoutPart
+  state: {
+    i: number
+    values: [NumberOrEmptyString, NumberOrEmptyString | null]
+    focused: [boolean, boolean | null]
+    frozen: boolean
+    onInputChange: (i: number, value: number) => void
+    onInputFocus: (i: number) => void
+    freeze: (set: boolean) => void
+  }
+  data?: [IStakeFlowDataPart, IStakeFlowDataPart | null]
+}
+
+interface IStakeFlowBarActionArgs {
+  down: boolean
+  data: IStakeFlowDataPart
+  action: IStakeFlowBarAction
+  active: boolean
+  value: NumberOrEmptyString
+  freeze: (set: boolean) => void
+}
+
+const StakeFlowAction = ({ down, active, action, data, value, freeze }: IStakeFlowBarActionArgs) => {
+  const [loading, setLoading] = useState(false)
+  const [ok, setOk] = useState(null)
+
+  async function flashOk(ok: boolean) {
+    setOk(ok)
+    await sleep(3500)
+    setOk(null)
+  }
+
+  async function execute() {
+    if (!action.active || !active || value == "") return
+    const msg = `began executing ${action.name} for user ${data.address} with value ${value}`
+    const id = toast.loading(msg)
+    freeze(true)
+    setLoading(true)
+    const status = await action.method(data.address, data.balance, value)
+    setLoading(false)
+    freeze(false)
+    const ok = action.ok(status)
+    flashOk(ok)
+    toast.update(id, {
+      type: ok ? 'success' : 'error',
+      render: action.message(status, data.address, data.balance, value),
+      isLoading: false,
+      autoClose: 3000
+    })
+  }
+
+  const parentcls = classNames('invest-flow-swap-arrow', { 'disabled': !active || loading || ok != null })
+  const loadercls = classNames('overlay', { loading, failure: ok === false, success: ok === true })
+
+  return <>
+    <div className={parentcls} onClick={execute}>
+      <div className={loadercls} ></div>
+      {down ? <RiArrowDownLine /> : <RiArrowUpLine />}
+    </div>
+  </>
+}
+
+const StakeFlowBar = ({ layout, state, data }: IStakeFlowBarArgs) => {
+  const [dcurr, dnext] = data
+  return <>
+    <div className='invest-flow-bar-container'>
+      <div className="invest-flow-bar row">
+
+        <div className="invest-flow-bar-left col">
+
+          <div className="logo">
+            <span className="img">
+              <img src={layout.logo}></img>
+            </span>
+            <span className="name">
+              {layout.symbol}
+            </span>
+          </div>
+
+          <div className="balance">
+            <span className="number sm">{dcurr.balance} (${dcurr.balance * dcurr.price})</span>
+          </div>
+
+        </div>
+
+        <div className="invest-flow-bar-right col">
+
+          <div className="first">
+            <span className="amount-input number bg">
+              <input
+                id={`invest-bar-${state.i}`}
+                className="amount-input"
+                type='number'
+                placeholder="0"
+                height={30}
+                value={state.values[0]}
+                onFocus={() => state.focused[0] || state.onInputFocus(state.i)}
+                onChange={(ev) => state.onInputChange(state.i, Number(ev.target.value))}
+                disabled={state.frozen || dcurr.fixedInputValue != null}
+              />
+            </span>
+          </div>
+
+          <div className="second">
+            {layout.maxButton &&
+              <span className="max-button">
+                <button
+                  onClick={() => {
+                    state.onInputFocus(state.i)
+                    state.onInputChange(state.i, dcurr.balance)
+                  }}
+                >Max</button>
+              </span>
+            }
+          </div>
+
+        </div>
+      </div>
+
+      <div key={state.i} className="invest-flow-swap-container">
+        {layout.actions.down.active && <StakeFlowAction
+          action={layout.actions.down}
+          data={dcurr}
+          down={true}
+          active={state.focused[0] && state.values[0] != "" && !state.frozen}
+          value={state.values[0]}
+          freeze={state.freeze}
+        />}
+        {layout.actions.up.active && <StakeFlowAction
+          action={layout.actions.up}
+          data={dnext}
+          down={false}
+          active={(state.focused[1] || dnext.fixedInputValue != null) && state.values[1] != "" && !state.frozen}
+          value={state.values[1]}
+          freeze={state.freeze}
+        />}
+      </div>
+    </div>
+  </>
+}
+
+const StakeFlow = ({ layout, data }: IStakeFlow) => {
+  const n = layout.length
+
+  const [frozen, freeze] = useState<boolean>(false)
+  const focused = Array.from({ length: n }, () => useState<boolean>(false))
+  const values = Array.from({ length: n }, (_, i) => useState<NumberOrEmptyString>(data[i].fixedInputValue ?? ""))
+
+  function onInputChange(i: number, value: number) {
+    if (frozen) return
+    for (let j = 0; j < n; j++) {
+      let _value: NumberOrEmptyString = ""
+      if (j == i) {
+        _value = value
+      } else {
+        const f = data[i].conversions[j]
+        if (f == null) continue
+        _value = f(value)
+      }
+      values[j][1](_value <= 0 ? '' : _value)
+    }
+  }
+
+  function onInputFocus(i: number) {
+    if (frozen) return
+    for (let j = 0; j < n; j++) {
+      values[j][1](data[j].fixedInputValue ?? "")
+      focused[j][1](i == j)
+    }
+  }
+
+  return <>
+    <div className="invest-flow-container">
+      {
+        Array.from({ length: n }).map((_, i) => {
+          return <StakeFlowBar key={i}
+            state={{
+              i,
+              frozen,
+              values: [values[i][0], values[i + 1]?.[0]],
+              focused: [focused[i][0], focused[i + 1]?.[0]],
+              onInputChange, onInputFocus, freeze
+            }}
+            layout={layout[i]}
+            data={[data[i], data[i + 1]]}
+          />
+        })
+      }
+    </div>
+  </>
+}
+
+export default StakeFlow

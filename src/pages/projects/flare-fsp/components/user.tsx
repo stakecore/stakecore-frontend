@@ -20,16 +20,16 @@ async function fetchUserPosition(address: string): Promise<UserPosition> {
 
 const FlareFspUserComponent = () => {
   const walletAddress = useGlobalStore((state) => state.walletAddress)
-  const setWalletVisible = useGlobalStore((state) => state.setWalletVisible)
-  const walletVisible = useGlobalStore((state) => state.walletVisible)
+  const setWalletChoiceVisible = useGlobalStore((state) => state.setWalletChoiceVisible)
+  const walletChoiceVisible = useGlobalStore((state) => state.walletChoiceVisible)
   const { data, error, isLoading } = useSWR([walletAddress], ([address]) => {
     if (address == null) return null
     return fetchUserPosition(address)
   })
 
   async function connectWallet() {
-    if (walletVisible || walletAddress != null) return
-    setWalletVisible(true)
+    if (walletChoiceVisible || walletAddress != null) return
+    setWalletChoiceVisible(true)
   }
 
   let component = null

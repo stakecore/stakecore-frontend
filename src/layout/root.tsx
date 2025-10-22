@@ -1,4 +1,5 @@
 import { Outlet, useLocation } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
 import { chainFromRoute } from '../utlits/misc/translations'
 import Header from '../components/sections/header'
 import Footer from '../components/sections/footer'
@@ -25,6 +26,7 @@ const RootLayout = () => {
                 <CallToAction />
                 <Footer />
             </div>
+            <ToastContainer theme='dark' position='top-left' />
             <DiscoverWalletProviders />
             <ScrollToTop />
         </>

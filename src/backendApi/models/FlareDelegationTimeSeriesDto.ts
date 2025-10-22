@@ -2,8 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { FlareDelegationTimeSeries } from './FlareDelegationTimeSeries';
+import type { FlareFspDelegationTimeSeries } from './FlareFspDelegationTimeSeries';
 export type FlareDelegationTimeSeriesDto = {
-    result: Array<FlareDelegationTimeSeries>;
+    result: Array<FlareFspDelegationTimeSeries>;
 };
 

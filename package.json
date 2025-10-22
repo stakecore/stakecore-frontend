@@ -32,6 +32,7 @@
     "react-router": "^6.26.0",
     "react-router-dom": "^6.26.0",
     "react-slick": "^0.30.2",
+    "react-toastify": "^11.0.5",
     "react-youtube": "9.0.2",
     "slick-carousel": "^1.8.1",
     "spinners-react": "^1.0.11",
