@@ -58,7 +58,7 @@ const FlareFspLocalDelegateComponent = () => {
     component = <div style={{ textAlign: 'center' }}>
       <SpinnerCircular color="firebrick" size={45} />
     </div>
-  } else if (error != null) {
+  } else if (data == null && error != null) {
     component = <div>error {String(error)}</div>
   }
   else {

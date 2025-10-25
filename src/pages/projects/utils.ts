@@ -1,6 +1,7 @@
 import { ensureProvider } from "~/utlits/contracts/utils"
-import type { Eip1193Provider } from "ethers"
+import { Formatter } from "~/utlits/misc/formatter"
 import { Status, StatusCode } from "~/constants"
+import type { Eip1193Provider } from "ethers"
 
 
 export async function contractCallAdapter<T>(
@@ -24,6 +25,6 @@ export function actionStatusMessage(status: Status, msg: string): string {
     case StatusCode.WALLET_CHOICE_SHOWN:
       return `wallet not connected`
     default:
-      return status.toString()
+      return Formatter.error(status as string)
   }
 }

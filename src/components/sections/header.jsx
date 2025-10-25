@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { menuList } from '../../utlits/fackData/menuList'
-import { formatAddress } from '../../utlits/eip6963/formatting'
 import { useGlobalStore } from '../../utlits/store/global'
+import { Formatter } from '../../utlits/misc/formatter'
 
 
 const ChooseWalletButton = () => {
@@ -14,7 +14,7 @@ const ChooseWalletButton = () => {
         setWalletChoiceVisible(true)
     }} className="theme-btn connect-wallet-button">
         {walletProvider ? <img src={walletProvider.info.icon} alt={walletProvider.info.name} /> : null}
-        {walletAddress ? formatAddress(walletAddress) : "Connect Wallet"}
+        {walletAddress ? Formatter.address(walletAddress) : "Connect Wallet"}
     </Link>
 }
 

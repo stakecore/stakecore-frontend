@@ -11,12 +11,12 @@ const DelegatorList = ({ delegators }: { delegators: AvalancheDelegationDto[] })
 
   const delegations = Array.from(delegators).map((v, i) => {
     const duration = v.endTime - v.startTime
-    const perc = Formatter.formatPercent(Math.min((now - v.startTime) / duration, 100), 3)
+    const perc = Formatter.number(Math.min((now - v.startTime) / duration, 100), 3)
 
     const str = new Date(v.startTime * 1000)
     const end = new Date(v.endTime * 1000)
-    const del = Formatter.smartFormat(v.delegated, 0)
-    const rew = Formatter.smartFormat(v.reward + v.delegated, 0)
+    const del = Formatter.number(v.delegated, 3)
+    const rew = Formatter.number(v.reward + v.delegated, 3)
 
     return <div key={i}>
       <div>

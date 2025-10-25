@@ -6,6 +6,7 @@ import { claim, delegate, deposit, withdraw } from "~/utlits/contracts/flare"
 import { FLR_DECIMALS, FLR_SYMBOL, MAX_BIPS, WFLR_SYMBOL } from '~/utlits/data/constants'
 import { flareDelegationAdr } from "~/utlits/data/constants"
 import logo from '~/assets/images/networks/FLR.webp'
+import { Formatter } from "~/utlits/misc/formatter"
 
 
 export const FLR_TO_WFLR_FACTOR = (x: number) => x
@@ -22,7 +23,7 @@ const adelegate: IStakeFlowBarAction = {
     delegate, address, [tobips(balance, value)]),
   ok: (status) => status == StatusCode.CONTRACT_CALL_EXECUTED,
   message: (status, address, _, value) => actionStatusMessage(
-    status, `address ${address} successfully delegated ${value} WFLR to ${flareDelegationAdr} (StakeCore)`
+    status, `address ${Formatter.address(address)} successfully delegated ${value} WFLR to ${flareDelegationAdr} (StakeCore)`
   )
 }
 
@@ -33,7 +34,7 @@ const adeposit: IStakeFlowBarAction = {
     deposit, address, [expbigint(value, FLR_DECIMALS)]),
   ok: (status) => status == StatusCode.CONTRACT_CALL_EXECUTED,
   message: (status, address, _, value) => actionStatusMessage(
-    status, `address ${address} successfully deposited ${value} WFLR`
+    status, `address ${Formatter.address(address)} successfully deposited ${value} WFLR`
   )
 }
 
@@ -44,7 +45,7 @@ const awithdraw: IStakeFlowBarAction = {
     withdraw, address, [expbigint(value, FLR_DECIMALS)]),
   ok: (status) => status == StatusCode.CONTRACT_CALL_EXECUTED,
   message: (status, address, _, value) => actionStatusMessage(
-    status, `address ${address} successfully withdrew ${value} FLR`
+    status, `address ${Formatter.address(address)} successfully withdrew ${value} FLR`
   )
 }
 
@@ -55,7 +56,7 @@ const aclaim: IStakeFlowBarAction = {
     claim, address, [338]),
   ok: (status) => status == StatusCode.CONTRACT_CALL_EXECUTED,
   message: (status, address, _, value) => actionStatusMessage(
-    status, `address ${address} successfully claimed ${value} WFLR`
+    status, `address ${Formatter.address(address)} successfully claimed ${value} WFLR`
   )
 }
 

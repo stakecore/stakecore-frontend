@@ -33,7 +33,7 @@ namespace FlareFspDataLayer {
   function getSummary(info: FlareFspInfoDto): ISummary {
     return {
       asset: 'FLR',
-      apy: String(info.apy),
+      apy: `${info.apy}%`,
       risk: info.risk,
       lockup: 'None'
     }
@@ -64,7 +64,7 @@ namespace FlareFspDataLayer {
         },
         {
           title: 'Total Delegated',
-          value: Formatter.format(BigInt(info.totalDelegated), 18, 2) + ' FLR'
+          value: Formatter.number(BigInt(info.totalDelegated), 4, 18) + ' FLR'
         },
         {
           title: 'Availability',

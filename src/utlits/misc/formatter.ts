@@ -1,45 +1,81 @@
+import { getAddress } from "ethers"
+
 type intish = bigint | number | string
 
 export namespace Formatter {
 
-  export function format(value: intish, decimals: number, precision: number, suffix?: string): string {
-    if (decimals < 0 || precision < 0) throw new Error("decimals and precision must be non-negative")
-    const v = BigInt(value)
+  export function number(value: intish, length: number, decimals = 0): string {
+    let [int, dec] = splitintfrac(value.toString(), decimals)
+    if (BigInt(int + dec) == BigInt(0)) return '0'
 
-    const base = 10n ** BigInt(decimals)
-    const intPart = v / base
-    const fracPart = v % base
+    let res = ''
+    let suffix = ''
+    let sepidx = 0
+    if (int.length > 9) {
+      suffix = 'B'
+      sepidx = 9
+    } else if (int.length > 6) {
+      suffix = 'M'
+      sepidx = 6
+    } else if (int.length > 3) {
+      suffix = 'k'
+      sepidx = 3
+    }
 
-    if (precision === 0) return intPart.toString() + (suffix ?? '')
-    let fracStr = fracPart.toString().padStart(decimals, "0").slice(0, precision)
-    return `${intPart.toString()}.${fracStr}` + (suffix ?? '')
+    if (sepidx > 0) {
+      [int, dec] = shiftleft(int, dec, sepidx)
+    }
+
+    const maxdeclen = length - int.length
+    if (maxdeclen <= 0) {
+      res = int
+    } else if (maxdeclen >= dec.length) {
+      res = int + '.' + dec
+    } else {
+      const cutdec = dec.substring(0, maxdeclen)
+      if (Number(cutdec) != 0) {
+        res = int + '.' + cutdec
+      } else {
+        if (Number(int) != 0) {
+          res = int
+        } else {
+          const zeros = '0'.repeat(length - 3)
+          res = `< 0.${zeros}1`
+        }
+      }
+    }
+
+    return res + suffix
   }
 
-  export function smartFormat(value: intish, decimals: number): string {
-    const v = BigInt(value)
-    if (v >= 10n ** BigInt(decimals + 5)) {
-      let prec = 1
-      if (v >= 10n ** BigInt(decimals + 6)) {
-        prec = 0
-      }
-      return Formatter.format(v, decimals + 6, prec, 'M')
-    } else if (v >= 10n ** BigInt(decimals + 2)) {
-      let prec = 1
-      if (v >= 10n ** BigInt(decimals + 3)) {
-        prec = 0
-      }
-      return Formatter.format(v, decimals + 3, prec, 'K')
-    } else {
-      return Formatter.format(v, decimals, 2)
-    }
+  export function address(adr: string, num = 5): string {
+    const checksummed = getAddress(adr)
+    const start = checksummed.substring(0, 2 + num)
+    const end = checksummed.substring(adr.length - num)
+    return `${start}...${end}`
   }
 
-  export function formatPercent(value: number, places: number): string {
-    if (value < 10 ** (-places + 3)) {
-      return `< 0.${'0'.repeat(places - 3)}1`
-    } else {
-      return (Math.round((10 ** places) * value) / (10 ** places)).toString()
+  export function error(msg: string): string {
+    const regex = /user rejected action\s*\(action="([^"]+)"/i
+    const match = msg.match(regex)
+    if (match) {
+      const [_, action] = match
+      return `user rejected action "${action}"`
     }
+    return msg
+  }
+
+  function shiftleft(int: string, dec: string, n: number): [string, string] {
+    if (n == 0) return [int, dec]
+    return [
+      int.slice(0, int.length - n),
+      int.substring(int.length - n, int.length) + dec
+    ]
+  }
+
+  function splitintfrac(s: string, n: number): [string, string] {
+    const spl = s.split('.')
+    return shiftleft(spl[0], spl[1] ?? '', n)
   }
 
 }

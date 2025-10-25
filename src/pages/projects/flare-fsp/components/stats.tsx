@@ -52,7 +52,7 @@ const FlareFspStatsComponent = () => {
               axisBottom={null}
               axisLeft={null}
               axisRight={null}
-              yFormat={v => Formatter.smartFormat(Math.floor(v), 0)}
+              yFormat={v => Formatter.number(v, 3)}
               margin={{ top: 30, right: 20, bottom: 20, left: 20 }}
               yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: false, reverse: false }}
               pointSize={10}

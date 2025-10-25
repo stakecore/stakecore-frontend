@@ -4,6 +4,7 @@ import { RiArrowDownLine, RiArrowUpLine } from "@remixicon/react"
 import { toast } from 'react-toastify'
 import { sleep } from "~/utlits/misc/time"
 import type { IStakeFlow, IStakeFlowBarAction, IStakeFlowDataPart, IStakeFlowLayoutPart } from "../types"
+import { Formatter } from "~/utlits/misc/formatter"
 
 
 type NumberOrEmptyString = number | ""
@@ -31,6 +32,10 @@ interface IStakeFlowBarActionArgs {
   freeze: (set: boolean) => void
 }
 
+function defaultToEmptyString(value: number | null): NumberOrEmptyString {
+  return (value ?? 0) <= 0 ? '' : value
+}
+
 const StakeFlowAction = ({ down, active, action, data, value, freeze }: IStakeFlowBarActionArgs) => {
   const [loading, setLoading] = useState(false)
   const [ok, setOk] = useState(null)
@@ -43,7 +48,8 @@ const StakeFlowAction = ({ down, active, action, data, value, freeze }: IStakeFl
 
   async function execute() {
     if (!action.active || !active || value == "") return
-    const msg = `began executing ${action.name} for user ${data.address} with value ${value}`
+    const fad = Formatter.address(data.address)
+    const msg = `began executing ${action.name} for user ${fad} with value ${value}`
     const id = toast.loading(msg)
     freeze(true)
     setLoading(true)
@@ -73,6 +79,9 @@ const StakeFlowAction = ({ down, active, action, data, value, freeze }: IStakeFl
 
 const StakeFlowBar = ({ layout, state, data }: IStakeFlowBarArgs) => {
   const [dcurr, dnext] = data
+  const balance = Formatter.number(dcurr.balance, 3)
+  const uvalue = Formatter.number(dcurr.balance * dcurr.price, 3)
+
   return <>
     <div className='invest-flow-bar-container'>
       <div className="invest-flow-bar row">
@@ -89,7 +98,9 @@ const StakeFlowBar = ({ layout, state, data }: IStakeFlowBarArgs) => {
           </div>
 
           <div className="balance">
-            <span className="number sm">{dcurr.balance} (${dcurr.balance * dcurr.price})</span>
+            <span className="number sm">
+              {balance} (${uvalue})
+            </span>
           </div>
 
         </div>
@@ -155,7 +166,8 @@ const StakeFlow = ({ layout, data }: IStakeFlow) => {
 
   const [frozen, freeze] = useState<boolean>(false)
   const focused = Array.from({ length: n }, () => useState<boolean>(false))
-  const values = Array.from({ length: n }, (_, i) => useState<NumberOrEmptyString>(data[i].fixedInputValue ?? ""))
+  const values = Array.from({ length: n }, (_, i) => useState<NumberOrEmptyString>(
+    defaultToEmptyString(data[i].fixedInputValue)))
 
   function onInputChange(i: number, value: number) {
     if (frozen) return
@@ -168,14 +180,14 @@ const StakeFlow = ({ layout, data }: IStakeFlow) => {
         if (f == null) continue
         _value = f(value)
       }
-      values[j][1](_value <= 0 ? '' : _value)
+      values[j][1](defaultToEmptyString(_value))
     }
   }
 
   function onInputFocus(i: number) {
     if (frozen) return
     for (let j = 0; j < n; j++) {
-      values[j][1](data[j].fixedInputValue ?? "")
+      values[j][1](defaultToEmptyString(data[j].fixedInputValue))
       focused[j][1](i == j)
     }
   }
