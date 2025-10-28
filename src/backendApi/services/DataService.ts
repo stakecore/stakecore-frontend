@@ -4,9 +4,9 @@
 /* eslint-disable */
 import type { ApiResponseDto_AvalancheDelegatorInfoDto } from '../models/ApiResponseDto_AvalancheDelegatorInfoDto';
 import type { ApiResponseDto_AvalancheValidatorInfoDto } from '../models/ApiResponseDto_AvalancheValidatorInfoDto';
-import type { ApiResponseDto_FlareDelegationTimeSeriesDto } from '../models/ApiResponseDto_FlareDelegationTimeSeriesDto';
 import type { ApiResponseDto_FlareDelegatorsDto } from '../models/ApiResponseDto_FlareDelegatorsDto';
 import type { ApiResponseDto_FlareFspDelegatorInfoDto } from '../models/ApiResponseDto_FlareFspDelegatorInfoDto';
+import type { ApiResponseDto_FlareFspGraphicsDataDto } from '../models/ApiResponseDto_FlareFspGraphicsDataDto';
 import type { ApiResponseDto_FlareFspInfoDto } from '../models/ApiResponseDto_FlareFspInfoDto';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -25,18 +25,18 @@ export class DataService {
     }
     /**
      * Information about Stakecore's delegator given as an eip-55 checksummed hex string
-     * @param address
+     * @param delegator
      * @returns ApiResponseDto_AvalancheDelegatorInfoDto
      * @throws ApiError
      */
     public static dataControllerGetAvalancheDelegatorInfo(
-        address: string,
+        delegator: string,
     ): CancelablePromise<ApiResponseDto_AvalancheDelegatorInfoDto> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/data/avalanche/validator/delegator',
+            url: '/api/data/avalanche/validator/delegator-info/{delegator}',
             path: {
-                'address': address,
+                'delegator': delegator,
             },
         });
     }
@@ -49,6 +49,17 @@ export class DataService {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/data/flare/fsp/info',
+        });
+    }
+    /**
+     * Frontend page graphics data for the Flare FSP
+     * @returns ApiResponseDto_FlareFspGraphicsDataDto
+     * @throws ApiError
+     */
+    public static dataControllerGetFlareFspGraphicsData(): CancelablePromise<ApiResponseDto_FlareFspGraphicsDataDto> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/data/flare/fsp/graphics',
         });
     }
     /**
@@ -83,17 +94,6 @@ export class DataService {
             path: {
                 'delegatee': delegatee,
             },
-        });
-    }
-    /**
-     * Timeseries of total delegated FLR over the last year
-     * @returns ApiResponseDto_FlareDelegationTimeSeriesDto
-     * @throws ApiError
-     */
-    public static dataControllerGetDelegatedTimeSeries(): CancelablePromise<ApiResponseDto_FlareDelegationTimeSeriesDto> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/api/data/flare/fsp/timeseries/delegated',
         });
     }
 }

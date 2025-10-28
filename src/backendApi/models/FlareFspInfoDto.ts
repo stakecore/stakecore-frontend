@@ -8,9 +8,5 @@ export type FlareFspInfoDto = {
     apy: number;
     risk: string;
     providerFee: number;
-    totalDelegators: number;
-    totalDelegated: number;
-    providerAvailability: number;
-    providerSuccessRate: number;
 };
 

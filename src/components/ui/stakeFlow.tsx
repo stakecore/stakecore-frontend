@@ -3,8 +3,8 @@ import classNames from "classnames"
 import { RiArrowDownLine, RiArrowUpLine } from "@remixicon/react"
 import { toast } from 'react-toastify'
 import { sleep } from "~/utlits/misc/time"
-import type { IStakeFlow, IStakeFlowBarAction, IStakeFlowDataPart, IStakeFlowLayoutPart } from "../types"
 import { Formatter } from "~/utlits/misc/formatter"
+import type { IStakeFlow, IStakeFlowBarAction, IStakeFlowDataPart, IStakeFlowLayoutPart } from "../types"
 
 
 type NumberOrEmptyString = number | ""
@@ -37,6 +37,8 @@ function defaultToEmptyString(value: number | null): NumberOrEmptyString {
 }
 
 const StakeFlowAction = ({ down, active, action, data, value, freeze }: IStakeFlowBarActionArgs) => {
+  if (action.active == false) return <></>
+
   const [loading, setLoading] = useState(false)
   const [ok, setOk] = useState(null)
 
@@ -70,7 +72,7 @@ const StakeFlowAction = ({ down, active, action, data, value, freeze }: IStakeFl
   const loadercls = classNames('overlay', { loading, failure: ok === false, success: ok === true })
 
   return <>
-    <div className={parentcls} onClick={execute}>
+    <div data-tooltip-id="tooltip" data-tooltip-content={action.name} className={parentcls} onClick={execute}>
       <div className={loadercls} ></div>
       {down ? <RiArrowDownLine /> : <RiArrowUpLine />}
     </div>
@@ -82,6 +84,9 @@ const StakeFlowBar = ({ layout, state, data }: IStakeFlowBarArgs) => {
   const balance = Formatter.number(dcurr.balance, 3)
   const uvalue = Formatter.number(dcurr.balance * dcurr.price, 3)
 
+  const civalue = state.values[0] ?? dcurr.fixedInputValue
+  const nivalue = state.values[1] ?? dnext?.fixedInputValue
+
   return <>
     <div className='invest-flow-bar-container'>
       <div className="invest-flow-bar row">
@@ -89,9 +94,11 @@ const StakeFlowBar = ({ layout, state, data }: IStakeFlowBarArgs) => {
         <div className="invest-flow-bar-left col">
 
           <div className="logo">
-            <span className="img">
-              <img src={layout.logo}></img>
-            </span>
+            {layout.logo &&
+              <span className="img">
+                <img src={layout.logo}></img>
+              </span>
+            }
             <span className="name">
               {layout.symbol}
             </span>
@@ -115,7 +122,7 @@ const StakeFlowBar = ({ layout, state, data }: IStakeFlowBarArgs) => {
                 type='number'
                 placeholder="0"
                 height={30}
-                value={state.values[0]}
+                value={civalue}
                 onFocus={() => state.focused[0] || state.onInputFocus(state.i)}
                 onChange={(ev) => state.onInputChange(state.i, Number(ev.target.value))}
                 disabled={state.frozen || dcurr.fixedInputValue != null}
@@ -144,16 +151,16 @@ const StakeFlowBar = ({ layout, state, data }: IStakeFlowBarArgs) => {
           action={layout.actions.down}
           data={dcurr}
           down={true}
-          active={state.focused[0] && state.values[0] != "" && !state.frozen}
-          value={state.values[0]}
+          active={state.focused[0] && civalue != "" && !state.frozen}
+          value={civalue}
           freeze={state.freeze}
         />}
         {layout.actions.up.active && <StakeFlowAction
           action={layout.actions.up}
           data={dnext}
           down={false}
-          active={(state.focused[1] || dnext.fixedInputValue != null) && state.values[1] != "" && !state.frozen}
-          value={state.values[1]}
+          active={(state.focused[1] || dnext.fixedInputValue != null) && nivalue != "" && !state.frozen}
+          value={nivalue}
           freeze={state.freeze}
         />}
       </div>

@@ -4,10 +4,11 @@ import FlareFspDataLayer from "../data"
 import { FLARE_COLOR_CODE } from "~/utlits/data/constants"
 import { ResponsiveLine } from "@nivo/line"
 import { Formatter } from "~/utlits/misc/formatter"
+import MeterBar from "~/components/ui/meterBar"
 
 
 const FlareFspStatsComponent = () => {
-  const { data, error, isLoading } = useSWR('flare-fsp-graphics', (x) => FlareFspDataLayer.getGraphicsData() )
+  const { data, error, isLoading } = useSWR('flare-fsp-graphics', (x) => FlareFspDataLayer.getGraphicsData())
 
   let component = null
   if (isLoading) {
@@ -32,15 +33,28 @@ const FlareFspStatsComponent = () => {
       }
     ]
 
+    const submissionRateName = `submission / uptime rate for reward epoch ${data.ftsoSubmissions.rewardEpoch}`
+    const submissionRate = Formatter.percent(data.ftsoSubmissions.submissionRate, 1)
+    const primarySuccessRateName = `primary success rate for reward epoch ${data.ftsoSubmissions.rewardEpoch}`
+    const primaryRate = Formatter.percent(data.ftsoSubmissions.primarySuccessRate, 1)
+    const secondarySuccessRateName = `secondary success rate for reward epoch ${data.ftsoSubmissions.rewardEpoch}`
+    const secondaryRate = Formatter.percent(data.ftsoSubmissions.secondarySuccessRate, 1)
+
     component = <>
       <div className="single-project-page-right wow fadeInUp delay-0-4s avalanche-div-border mt-30">
         <h2>Stakecore Statistics</h2>
         <p>
+          Flare Systems Protocol is a protocol consisting of three parts -
+          FTSO (Flare Time Series Oracle), Fast Updates, and FDC (Flare Data Connector).
+          Rewards are distributed based on the delegated provider's performance in each 3.5-day epoch.
           We show statistics for the last 25 reward epochs. Note that a reward epoch on Flare Network
           lasts 3.5 days.
         </p>
+        <MeterBar name={submissionRateName} ranges={[95, 98]} value={100 * data.ftsoSubmissions.submissionRate} text={submissionRate} />
+        <MeterBar name={primarySuccessRateName} ranges={[20, 50]} value={100 * data.ftsoSubmissions.primarySuccessRate} text={primaryRate} />
+        <MeterBar name={secondarySuccessRateName} ranges={[80, 95]} value={100 * data.ftsoSubmissions.secondarySuccessRate} text={secondaryRate} />
         <div className="row">
-          <div style={{ border: '2px solid powderblue' }}>
+          <div>
             <div>
               <p>Amount of (wrapped) FLR delegated to Stakecore.</p>
             </div>

@@ -20,7 +20,7 @@ export interface IStakeFlow {
   data: IStakeFlowDataPart[]
 }
 
-type ActionMethod = (address: string, balance: number, value: number) => Promise<Status>
+type ActionMethod = (address: string, balance: number, value: number, args?: any) => Promise<Status>
 type ActionMessage = (status: Status, address: string, balance: number, value: number) => string
 
 export type IStakeFlowBarAction = {
@@ -35,7 +35,7 @@ export type IStakeFlowBarAction = {
 
 export interface IStakeFlowLayoutPart {
   symbol: string
-  logo: string
+  logo?: string
   actions: {
     down: IStakeFlowBarAction
     up: IStakeFlowBarAction

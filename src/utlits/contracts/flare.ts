@@ -24,7 +24,6 @@ export async function withdraw(ethereum: EIP1193Provider, address: string, args:
 }
 
 export async function claim(ethereum: EIP1193Provider, address: string, args: [number]): Promise<void> {
-  console.log(address)
   const provider = new BrowserProvider(ethereum)
   const signer = await provider.getSigner(address)
   const contract = new Contract(fspRewardManagerAdr, fspRewardManagerAbi, signer)

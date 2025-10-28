@@ -1,9 +1,8 @@
-import { DataService, FlareFspDelegatorInfoDto, FlareFspInfoDto } from "~/backendApi"
-import { Formatter } from "~/utlits/misc/formatter"
+import { DataService, FlareFspDelegatorInfoDto, FlareFspGraphicsDataDto, FlareFspInfoDto } from "~/backendApi"
 import { flareEvmUrl, flareFspUrl } from "~/utlits/data/constants"
 import { AddressLink } from "~/components/utils/links"
 import type { ISpecs, ISummary } from "~/components/types"
-import type { FlareData, FlareGraphics } from "./types"
+import type { FlareData } from "./types"
 
 
 namespace FlareFspDataLayer {
@@ -13,11 +12,9 @@ namespace FlareFspDataLayer {
     return resp.data
   }
 
-  export async function getGraphicsData(): Promise<FlareGraphics> {
-    const resp = await DataService.dataControllerGetDelegatedTimeSeries()
-    return {
-      delegations: resp.data
-    }
+  export async function getGraphicsData(): Promise<FlareFspGraphicsDataDto> {
+    const resp = await DataService.dataControllerGetFlareFspGraphicsData()
+    return resp.data
   }
 
   export async function getPageData(): Promise<FlareData> {
@@ -59,22 +56,9 @@ namespace FlareFspDataLayer {
       ],
       [
         {
-          title: 'Total Delegators',
-          value: info.totalDelegators
-        },
-        {
-          title: 'Total Delegated',
-          value: Formatter.number(BigInt(info.totalDelegated), 4, 18) + ' FLR'
-        },
-        {
-          title: 'Availability',
-          value: (Math.round(10_000 * info.providerAvailability) / 100) + '%',
-          tooltip: 'Provider availability for the current reward epoch'
-        },
-        {
-          title: 'Success Rate',
-          value: (Math.round(10_000 * info.providerSuccessRate) / 100) + '%',
-          tooltip: 'Provider price submission success rate for the current reward epoch'
+          title: 'Provider Fee',
+          value: info.providerFee + '%',
+          tooltip: 'Fee charged for oracle services'
         }
       ]
     ]

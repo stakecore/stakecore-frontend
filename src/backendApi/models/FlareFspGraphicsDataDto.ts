@@ -3,9 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { FlareDelegationTimeSeriesDto } from './FlareDelegationTimeSeriesDto';
-export type ApiResponseDto_FlareDelegationTimeSeriesDto = {
-    status: number;
-    data?: FlareDelegationTimeSeriesDto;
-    error?: string;
+import type { FlareFtsoSubmissionDataDto } from './FlareFtsoSubmissionDataDto';
+export type FlareFspGraphicsDataDto = {
+    delegations: FlareDelegationTimeSeriesDto;
+    ftsoSubmissions: FlareFtsoSubmissionDataDto;
 };
 

@@ -3,8 +3,10 @@ import { SpinnerCircular } from 'spinners-react'
 import { useGlobalStore } from "~/utlits/store/global"
 import StakeFlow from "~/components/ui/stakeFlow"
 import { IStakeFlow } from "~/components/types"
+import { injectActionArgs } from "../../utils"
 import FlareFspDataLayer from "../data"
-import * as C from '../layout'
+import * as L from '../layout'
+import * as C from "~/utlits/data/constants"
 import type { FlareFspDelegatorInfoDto } from "~/backendApi"
 
 
@@ -15,13 +17,13 @@ function delegatorInfoToStakeFlow(position: FlareFspDelegatorInfoDto): IStakeFlo
     balance: position.nat.balance,
     price: position.nat.price,
     fixedInputValue: null,
-    conversions: [C.FLR_TO_WFLR_FACTOR, C.WFLR_TO_FLR_FACTOR]
+    conversions: [L.FLR_TO_WFLR_FACTOR, L.WFLR_TO_FLR_FACTOR]
   }, {
     address: position.wnat.address,
     balance: position.wnat.balance,
     price: position.wnat.price,
     fixedInputValue: null,
-    conversions: [C.FLR_TO_WFLR_FACTOR, null]
+    conversions: [L.FLR_TO_WFLR_FACTOR, null]
   }, {
     address: position.wnat.address,
     balance: position.delegated,
@@ -40,7 +42,7 @@ const FlareFspLocalDelegateComponent = () => {
     if (address == null) return null
     return FlareFspDataLayer.getDelegatorInfo(address)
   }, {
-    refreshInterval: 6_000,
+    refreshInterval: 10_000,
     revalidateOnReconnect: true
   })
 
@@ -56,12 +58,13 @@ const FlareFspLocalDelegateComponent = () => {
     </a>
   } else if (isLoading) {
     component = <div style={{ textAlign: 'center' }}>
-      <SpinnerCircular color="firebrick" size={45} />
+      <SpinnerCircular color={C.FLARE_COLOR_CODE} size={45} />
     </div>
-  } else if (data == null && error != null) {
+  } else if (data == null || error != null) {
     component = <div>error {String(error)}</div>
-  }
-  else {
+  } else {
+    const epoch = Math.max(...data.rewards.map(x => x.rewardEpoch))
+    injectActionArgs(L.DELEGATE_FLOW_LAYOUT[1].actions.up, epoch)
     component = <>
       <div className="mb-40">
         <p>
@@ -72,7 +75,7 @@ const FlareFspLocalDelegateComponent = () => {
           New rewards are distributed every 3.5 days and are based on your balance at 3 block heights
           determined randomly at the end of each reward epoch.
         </p>
-        <StakeFlow layout={C.DELEGATE_FLOW_LAYOUT} data={delegatorInfoToStakeFlow(data)} />
+        <StakeFlow layout={L.DELEGATE_FLOW_LAYOUT} data={delegatorInfoToStakeFlow(data)} />
       </div>
     </>
   }

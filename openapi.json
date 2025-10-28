@@ -82,13 +82,13 @@
                 ]
             }
         },
-        "/api/data/avalanche/validator/delegator": {
+        "/api/data/avalanche/validator/delegator-info/{delegator}": {
             "get": {
                 "operationId": "DataController_getAvalancheDelegatorInfo",
                 "summary": "Information about Stakecore's delegator given as an eip-55 checksummed hex string",
                 "parameters": [
                     {
-                        "name": "address",
+                        "name": "delegator",
                         "required": true,
                         "in": "path",
                         "schema": {
@@ -125,6 +125,28 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ApiResponseDto_FlareFspInfoDto"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Data"
+                ]
+            }
+        },
+        "/api/data/flare/fsp/graphics": {
+            "get": {
+                "operationId": "DataController_getFlareFspGraphicsData",
+                "summary": "Frontend page graphics data for the Flare FSP",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseDto_FlareFspGraphicsDataDto"
                                 }
                             }
                         }
@@ -187,28 +209,6 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ApiResponseDto_FlareDelegatorsDto"
-                                }
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "Data"
-                ]
-            }
-        },
-        "/api/data/flare/fsp/timeseries/delegated": {
-            "get": {
-                "operationId": "DataController_getDelegatedTimeSeries",
-                "summary": "Timeseries of total delegated FLR over the last year",
-                "parameters": [],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiResponseDto_FlareDelegationTimeSeriesDto"
                                 }
                             }
                         }
@@ -451,18 +451,6 @@
                     },
                     "providerFee": {
                         "type": "number"
-                    },
-                    "totalDelegators": {
-                        "type": "number"
-                    },
-                    "totalDelegated": {
-                        "type": "number"
-                    },
-                    "providerAvailability": {
-                        "type": "number"
-                    },
-                    "providerSuccessRate": {
-                        "type": "number"
                     }
                 },
                 "required": [
@@ -470,11 +458,7 @@
                     "identityAddress",
                     "apy",
                     "risk",
-                    "providerFee",
-                    "totalDelegators",
-                    "totalDelegated",
-                    "providerAvailability",
-                    "providerSuccessRate"
+                    "providerFee"
                 ]
             },
             "ApiResponseDto_FlareFspInfoDto": {
@@ -485,6 +469,94 @@
                     },
                     "data": {
                         "$ref": "#/components/schemas/FlareFspInfoDto"
+                    },
+                    "error": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "status"
+                ]
+            },
+            "FlareFspDelegationTimeSeries": {
+                "type": "object",
+                "properties": {
+                    "rewardEpoch": {
+                        "type": "number"
+                    },
+                    "delegated": {
+                        "type": "number"
+                    },
+                    "delegators": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "rewardEpoch",
+                    "delegated",
+                    "delegators"
+                ]
+            },
+            "FlareDelegationTimeSeriesDto": {
+                "type": "object",
+                "properties": {
+                    "result": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/FlareFspDelegationTimeSeries"
+                        }
+                    }
+                },
+                "required": [
+                    "result"
+                ]
+            },
+            "FlareFtsoSubmissionDataDto": {
+                "type": "object",
+                "properties": {
+                    "rewardEpoch": {
+                        "type": "number"
+                    },
+                    "submissionRate": {
+                        "type": "number"
+                    },
+                    "primarySuccessRate": {
+                        "type": "number"
+                    },
+                    "secondarySuccessRate": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "rewardEpoch",
+                    "submissionRate",
+                    "primarySuccessRate",
+                    "secondarySuccessRate"
+                ]
+            },
+            "FlareFspGraphicsDataDto": {
+                "type": "object",
+                "properties": {
+                    "delegations": {
+                        "$ref": "#/components/schemas/FlareDelegationTimeSeriesDto"
+                    },
+                    "ftsoSubmissions": {
+                        "$ref": "#/components/schemas/FlareFtsoSubmissionDataDto"
+                    }
+                },
+                "required": [
+                    "delegations",
+                    "ftsoSubmissions"
+                ]
+            },
+            "ApiResponseDto_FlareFspGraphicsDataDto": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "number"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/FlareFspGraphicsDataDto"
                     },
                     "error": {
                         "type": "string"
@@ -608,56 +680,6 @@
                     },
                     "data": {
                         "$ref": "#/components/schemas/FlareDelegatorsDto"
-                    },
-                    "error": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "status"
-                ]
-            },
-            "FlareFspDelegationTimeSeries": {
-                "type": "object",
-                "properties": {
-                    "rewardEpoch": {
-                        "type": "number"
-                    },
-                    "delegated": {
-                        "type": "number"
-                    },
-                    "delegators": {
-                        "type": "number"
-                    }
-                },
-                "required": [
-                    "rewardEpoch",
-                    "delegated",
-                    "delegators"
-                ]
-            },
-            "FlareDelegationTimeSeriesDto": {
-                "type": "object",
-                "properties": {
-                    "result": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/FlareFspDelegationTimeSeries"
-                        }
-                    }
-                },
-                "required": [
-                    "result"
-                ]
-            },
-            "ApiResponseDto_FlareDelegationTimeSeriesDto": {
-                "type": "object",
-                "properties": {
-                    "status": {
-                        "type": "number"
-                    },
-                    "data": {
-                        "$ref": "#/components/schemas/FlareDelegationTimeSeriesDto"
                     },
                     "error": {
                         "type": "string"

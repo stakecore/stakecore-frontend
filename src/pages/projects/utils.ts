@@ -2,6 +2,7 @@ import { ensureProvider } from "~/utlits/contracts/utils"
 import { Formatter } from "~/utlits/misc/formatter"
 import { Status, StatusCode } from "~/constants"
 import type { Eip1193Provider } from "ethers"
+import type { IStakeFlowBarAction } from "~/components/types"
 
 
 export async function contractCallAdapter<T>(
@@ -27,4 +28,11 @@ export function actionStatusMessage(status: Status, msg: string): string {
     default:
       return Formatter.error(status as string)
   }
+}
+
+
+export function injectActionArgs(action: IStakeFlowBarAction, args: any) {
+  if (!action.active) return
+  const prev = action.method
+  action.method = (address, _1, _2) => prev(address, _1, _2, args)
 }

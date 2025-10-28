@@ -114,10 +114,6 @@
   color: inherit;
 }
 
-.specs-table-info:hover {
-  cursor: pointer;
-}
-
 .background {
   background-size: cover;
   background-position: center;

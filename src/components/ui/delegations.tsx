@@ -5,9 +5,9 @@ import { unixnow } from "~/utlits/misc/time"
 
 
 const DelegatorList = ({ delegators }: { delegators: AvalancheDelegationDto[] }) => {
-
-  const { data: now } = useSWR('delegator-list-refresh',
-    (_) => unixnow(), { refreshInterval: 1000 })
+  let { data: now } = useSWR('delegator-list-refresh',
+    (_) => null, { refreshInterval: 1000 })
+  now = unixnow()
 
   const delegations = Array.from(delegators).map((v, i) => {
     const duration = v.endTime - v.startTime

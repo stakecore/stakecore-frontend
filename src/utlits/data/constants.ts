@@ -33,6 +33,18 @@ export const flareFspUrl = (address: string) => `${flareEvmExplorer}/providers/f
 export const flareDelegationAdr = '0x1e68DC808A240C096F0261144dc41fd4c883Cfb0'
 export const flareValidatorAdr = '0x868822C4A79ee2a18bedfdd5f1EF3b23B190cf1e'
 
+export const songbirdEpochConfig = {
+  roundDurationMs: 90_000,
+  firstRoundTimestampMs: 1658429955_000,
+  rewardEpochDurationRounds: 3360
+}
+
+export const flareEpochConfig = {
+  roundDurationMs: 90_000,
+  firstRoundTimestampMs: 1658430000_000,
+  rewardEpochDurationRounds: 3360
+}
+
 // flare validator
 
 export const flarePChainExplorer = 'https://flare.space/dapp/p-chain-explorer'
@@ -44,7 +56,7 @@ export const flareValidatorUrl = (nodeId: string) => `${flarePChainExplorer}/val
 export const avalancheExplorer = 'https://subnets.avax.network'
 export const avalancheValidatorUrl = (nodeId: string) => `${avalancheExplorer}/validators/${nodeId}`
 export const avalanchePChainTransactionUrl = (transaction: string) => `${avalancheExplorer}/p-chain/tx/${transaction}`
-export const avalanchePChainAddressUrl = (address: string) =>`${avalancheExplorer}/p-chain/address/${address}`
+export const avalanchePChainAddressUrl = (address: string) => `${avalancheExplorer}/p-chain/address/${address}`
 
 export const avalancheDelegatorMinLockup = 1209600
 export const avalancheDelegatorMaxLockup = 31536000

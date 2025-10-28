@@ -5,8 +5,8 @@ import { expbigint } from "~/utlits/misc/bigint"
 import { claim, delegate, deposit, withdraw } from "~/utlits/contracts/flare"
 import { FLR_DECIMALS, FLR_SYMBOL, MAX_BIPS, WFLR_SYMBOL } from '~/utlits/data/constants'
 import { flareDelegationAdr } from "~/utlits/data/constants"
-import logo from '~/assets/images/networks/FLR.webp'
 import { Formatter } from "~/utlits/misc/formatter"
+import logo from '~/assets/images/networks/FLR.webp'
 
 
 export const FLR_TO_WFLR_FACTOR = (x: number) => x
@@ -52,8 +52,7 @@ const awithdraw: IStakeFlowBarAction = {
 const aclaim: IStakeFlowBarAction = {
   active: true,
   name: 'claim',
-  method: (address, _, value) => contractCallAdapter(
-    claim, address, [338]),
+  method: (address, _1, _2, epoch: number) => contractCallAdapter(claim, address, [epoch]),
   ok: (status) => status == StatusCode.CONTRACT_CALL_EXECUTED,
   message: (status, address, _, value) => actionStatusMessage(
     status, `address ${Formatter.address(address)} successfully claimed ${value} WFLR`
@@ -72,7 +71,7 @@ export const DELEGATE_FLOW_LAYOUT: IStakeFlow['layout'] = [
     maxButton: true
   },
   {
-    symbol: 'DELEGATED', logo,
+    symbol: 'DELEGATED',
     actions: { down: { active: false }, up: { active: false } },
     maxButton: false
   }

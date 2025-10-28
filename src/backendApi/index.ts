@@ -10,9 +10,9 @@ export type { OpenAPIConfig } from './core/OpenAPI';
 export type { ApiResponseDto } from './models/ApiResponseDto';
 export type { ApiResponseDto_AvalancheDelegatorInfoDto } from './models/ApiResponseDto_AvalancheDelegatorInfoDto';
 export type { ApiResponseDto_AvalancheValidatorInfoDto } from './models/ApiResponseDto_AvalancheValidatorInfoDto';
-export type { ApiResponseDto_FlareDelegationTimeSeriesDto } from './models/ApiResponseDto_FlareDelegationTimeSeriesDto';
 export type { ApiResponseDto_FlareDelegatorsDto } from './models/ApiResponseDto_FlareDelegatorsDto';
 export type { ApiResponseDto_FlareFspDelegatorInfoDto } from './models/ApiResponseDto_FlareFspDelegatorInfoDto';
+export type { ApiResponseDto_FlareFspGraphicsDataDto } from './models/ApiResponseDto_FlareFspGraphicsDataDto';
 export type { ApiResponseDto_FlareFspInfoDto } from './models/ApiResponseDto_FlareFspInfoDto';
 export type { AvalancheDelegationDto } from './models/AvalancheDelegationDto';
 export type { AvalancheDelegatorInfoDto } from './models/AvalancheDelegatorInfoDto';
@@ -25,7 +25,9 @@ export type { FlareFspDelegationTimeSeries } from './models/FlareFspDelegationTi
 export type { FlareFspDelegatorInfoDto } from './models/FlareFspDelegatorInfoDto';
 export type { FlareFspDelegatorRewardDto } from './models/FlareFspDelegatorRewardDto';
 export type { FlareFspDelegatorTokenInfoDto } from './models/FlareFspDelegatorTokenInfoDto';
+export type { FlareFspGraphicsDataDto } from './models/FlareFspGraphicsDataDto';
 export type { FlareFspInfoDto } from './models/FlareFspInfoDto';
+export type { FlareFtsoSubmissionDataDto } from './models/FlareFtsoSubmissionDataDto';
 export type { FormDto } from './models/FormDto';
 
 export { DataService } from './services/DataService';

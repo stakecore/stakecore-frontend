@@ -12,20 +12,26 @@ import type { AvalancheDelegatorInfoDto } from "~/backendApi"
 
 
 function delegatorInfoToStakeFlow(position: AvalancheDelegatorInfoDto): IStakeFlow['data'] {
-  return {
-    staked: position.delegations.reduce((x, y) => x + y.delegated, 0),
-    parts: [{
-      address: position.cChain.address,
-      balance: position.cChain.balance,
-      price: position.cChain.price,
-      conversions: [C.C_TO_P_FACTOR, C.P_TO_C_FACTOR]
-    }, {
-      address: position.pChain.address,
-      balance: position.pChain.balance,
-      price: position.pChain.price,
-      conversions: [C.P_TO_C_FACTOR, null]
-    }]
-  }
+  const delegated = position.delegations.reduce((x, y) => x + y.delegated, 0)
+  return [{
+    address: position.cChain.address,
+    balance: position.cChain.balance,
+    price: position.cChain.price,
+    conversions: [C.C_TO_P_FACTOR, C.P_TO_C_FACTOR],
+    fixedInputValue: null
+  }, {
+    address: position.pChain.address,
+    balance: position.pChain.balance,
+    price: position.pChain.price,
+    conversions: [C.C_TO_P_FACTOR, C.P_TO_C_FACTOR],
+    fixedInputValue: null
+  }, {
+    address: position.pChain.address,
+    balance: delegated,
+    price: position.pChain.price,
+    conversions: [null, null],
+    fixedInputValue: 0
+  }]
 }
 
 const AvalancheValidatorLocalDelegateComponent = () => {

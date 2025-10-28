@@ -4,9 +4,23 @@ type intish = bigint | number | string
 
 export namespace Formatter {
 
+  export function percent(value: number, length: number): string {
+    return number(100 * value, 2 + length) + '%'
+  }
+
   export function number(value: intish, length: number, decimals = 0): string {
     let [int, dec] = splitintfrac(value.toString(), decimals)
     if (BigInt(int + dec) == BigInt(0)) return '0'
+
+    if (int.length + dec.length <= length) {
+      if (dec.length == 0) {
+        return int
+      } else if (int == '0') {
+        return `0.${dec}`
+      } else {
+        return `${int}.${dec}`
+      }
+    }
 
     let res = ''
     let suffix = ''
@@ -49,9 +63,11 @@ export namespace Formatter {
   }
 
   export function address(adr: string, num = 5): string {
-    const checksummed = getAddress(adr)
-    const start = checksummed.substring(0, 2 + num)
-    const end = checksummed.substring(adr.length - num)
+    if (adr.startsWith('0x')) {
+      adr = getAddress(adr)
+    }
+    const start = adr.substring(0, 2 + num)
+    const end = adr.substring(adr.length - num)
     return `${start}...${end}`
   }
 
