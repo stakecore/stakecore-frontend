@@ -30,9 +30,9 @@ export function actionStatusMessage(status: Status, msg: string): string {
   }
 }
 
-
-export function injectActionArgs(action: IStakeFlowBarAction, args: any) {
+export function injectActionArg(action: IStakeFlowBarAction, args: any) {
   if (!action.active) return
-  const prev = action.method
-  action.method = (address, _1, _2) => prev(address, _1, _2, args)
+  const mod = action as any as { original: any }
+  if (mod.original == null) mod.original = action.method
+  action.method = (address, _1, _2) => mod.original(address, _1, _2, args)
 }

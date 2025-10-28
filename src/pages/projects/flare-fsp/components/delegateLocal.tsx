@@ -3,7 +3,7 @@ import { SpinnerCircular } from 'spinners-react'
 import { useGlobalStore } from "~/utlits/store/global"
 import StakeFlow from "~/components/ui/stakeFlow"
 import { IStakeFlow } from "~/components/types"
-import { injectActionArgs } from "../../utils"
+import { injectActionArg } from "../../utils"
 import FlareFspDataLayer from "../data"
 import * as L from '../layout'
 import * as C from "~/utlits/data/constants"
@@ -31,6 +31,12 @@ function delegatorInfoToStakeFlow(position: FlareFspDelegatorInfoDto): IStakeFlo
     fixedInputValue: rewards,
     conversions: [null, null]
   }]
+}
+
+function modifyStakeFlowLayout(position: FlareFspDelegatorInfoDto) {
+  const epoch = Math.max(...position.rewards.map(x => x.rewardEpoch))
+  injectActionArg(L.DELEGATE_FLOW_LAYOUT[1].actions.up, epoch)
+  return L.DELEGATE_FLOW_LAYOUT
 }
 
 const FlareFspLocalDelegateComponent = () => {
@@ -63,8 +69,6 @@ const FlareFspLocalDelegateComponent = () => {
   } else if (data == null || error != null) {
     component = <div>error {String(error)}</div>
   } else {
-    const epoch = Math.max(...data.rewards.map(x => x.rewardEpoch))
-    injectActionArgs(L.DELEGATE_FLOW_LAYOUT[1].actions.up, epoch)
     component = <>
       <div className="mb-40">
         <p>
@@ -75,7 +79,7 @@ const FlareFspLocalDelegateComponent = () => {
           New rewards are distributed every 3.5 days and are based on your balance at 3 block heights
           determined randomly at the end of each reward epoch.
         </p>
-        <StakeFlow layout={L.DELEGATE_FLOW_LAYOUT} data={delegatorInfoToStakeFlow(data)} />
+        <StakeFlow layout={modifyStakeFlowLayout(data)} data={delegatorInfoToStakeFlow(data)} />
       </div>
     </>
   }
