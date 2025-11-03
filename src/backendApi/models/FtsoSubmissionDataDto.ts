@@ -2,8 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type FlareDelegatorDto = {
-    delegator: string;
-    delegated: string;
+export type FtsoSubmissionDataDto = {
+    rewardEpoch: number;
+    uptime: number;
+    primary: number;
+    secondary: number;
 };
 

@@ -4,10 +4,6 @@
 /* eslint-disable */
 import type { ApiResponseDto_AvalancheDelegatorInfoDto } from '../models/ApiResponseDto_AvalancheDelegatorInfoDto';
 import type { ApiResponseDto_AvalancheValidatorInfoDto } from '../models/ApiResponseDto_AvalancheValidatorInfoDto';
-import type { ApiResponseDto_FlareDelegatorsDto } from '../models/ApiResponseDto_FlareDelegatorsDto';
-import type { ApiResponseDto_FlareFspDelegatorInfoDto } from '../models/ApiResponseDto_FlareFspDelegatorInfoDto';
-import type { ApiResponseDto_FlareFspGraphicsDataDto } from '../models/ApiResponseDto_FlareFspGraphicsDataDto';
-import type { ApiResponseDto_FlareFspInfoDto } from '../models/ApiResponseDto_FlareFspInfoDto';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
@@ -37,62 +33,6 @@ export class DataService {
             url: '/api/data/avalanche/validator/delegator-info/{delegator}',
             path: {
                 'delegator': delegator,
-            },
-        });
-    }
-    /**
-     * Frontend page info for the Flare FSP
-     * @returns ApiResponseDto_FlareFspInfoDto
-     * @throws ApiError
-     */
-    public static dataControllerGetFlareFspPageInfo(): CancelablePromise<ApiResponseDto_FlareFspInfoDto> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/api/data/flare/fsp/info',
-        });
-    }
-    /**
-     * Frontend page graphics data for the Flare FSP
-     * @returns ApiResponseDto_FlareFspGraphicsDataDto
-     * @throws ApiError
-     */
-    public static dataControllerGetFlareFspGraphicsData(): CancelablePromise<ApiResponseDto_FlareFspGraphicsDataDto> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/api/data/flare/fsp/graphics',
-        });
-    }
-    /**
-     * Status of a Flare FSP delegator
-     * @param delegator
-     * @returns ApiResponseDto_FlareFspDelegatorInfoDto
-     * @throws ApiError
-     */
-    public static dataControllerGetFlareFspDelegatorInfo(
-        delegator: string,
-    ): CancelablePromise<ApiResponseDto_FlareFspDelegatorInfoDto> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/api/data/flare/fsp/delegator-info/{delegator}',
-            path: {
-                'delegator': delegator,
-            },
-        });
-    }
-    /**
-     * Flare Delegators
-     * @param delegatee
-     * @returns ApiResponseDto_FlareDelegatorsDto
-     * @throws ApiError
-     */
-    public static dataControllerGetFlareDelegators(
-        delegatee: string,
-    ): CancelablePromise<ApiResponseDto_FlareDelegatorsDto> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/api/data/flare/fsp/delegators/{delegatee}',
-            path: {
-                'delegatee': delegatee,
             },
         });
     }

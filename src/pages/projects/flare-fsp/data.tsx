@@ -1,42 +1,43 @@
-import { DataService, FlareFspDelegatorInfoDto, FlareFspGraphicsDataDto, FlareFspInfoDto } from "~/backendApi"
+import { FspDelegatorInfoDto, FspGraphicsDataDto, FspInfoDto, FspService } from "~/backendApi"
 import { flareEvmUrl, flareFspUrl } from "~/utlits/data/constants"
 import { AddressLink } from "~/components/utils/links"
 import type { ISpecs, ISummary } from "~/components/types"
-import type { FlareData } from "./types"
+import type { FspData } from "./types"
 
 
-namespace FlareFspDataLayer {
+namespace FspDataLayer {
 
-  export async function getDelegatorInfo(address: string): Promise<FlareFspDelegatorInfoDto> {
-    const resp = await DataService.dataControllerGetFlareFspDelegatorInfo(address)
+  export async function getDelegatorInfo(chain: string, address: string): Promise<FspDelegatorInfoDto> {
+    const resp = await FspService.fspControllerGetFlareFspDelegatorInfo(chain, address)
     return resp.data
   }
 
-  export async function getGraphicsData(): Promise<FlareFspGraphicsDataDto> {
-    const resp = await DataService.dataControllerGetFlareFspGraphicsData()
+  export async function getGraphicsData(chain: string): Promise<FspGraphicsDataDto> {
+    const resp = await FspService.fspControllerGetFlareFspGraphicsData(chain)
     return resp.data
   }
 
-  export async function getPageData(): Promise<FlareData> {
-    const info = await DataService.dataControllerGetFlareFspPageInfo()
+  export async function getPageData(chain: string): Promise<FspData> {
+    const info = await FspService.fspControllerGetFlareFspPageInfo(chain)
     const data = info.data
     return {
       base: data,
       specs: getSpecs(data),
-      summary: getSummary(data)
+      summary: getSummary(chain, data)
     }
   }
 
-  function getSummary(info: FlareFspInfoDto): ISummary {
+  function getSummary(chain: string, info: FspInfoDto): ISummary {
+    const symbol = chain == 'flare' ? 'FLR' : 'SGB'
     return {
-      asset: 'FLR',
+      asset: symbol,
       apy: `${info.apy}%`,
       risk: info.risk,
       lockup: 'None'
     }
   }
 
-  function getSpecs(info: FlareFspInfoDto): ISpecs {
+  function getSpecs(info: FspInfoDto): ISpecs {
     const delegationAddressUrl = flareEvmUrl(info.delegationAddress)
     const delegationAddressLink = <AddressLink url={delegationAddressUrl} address={info.delegationAddress} />
     const identityAddressUrl = flareFspUrl(info.identityAddress)
@@ -65,4 +66,4 @@ namespace FlareFspDataLayer {
   }
 }
 
-export default FlareFspDataLayer
+export default FspDataLayer

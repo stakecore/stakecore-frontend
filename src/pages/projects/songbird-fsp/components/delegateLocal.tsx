@@ -4,7 +4,7 @@ import { useGlobalStore } from "~/utlits/store/global"
 import StakeFlow from "~/components/ui/stakeFlow"
 import { IStakeFlow } from "~/components/types"
 import { injectActionArg } from "../../utils"
-import FspDataLayer from "../data"
+import FspDataLayer from "../../flare-fsp/data"
 import * as L from '../layout'
 import * as C from "~/utlits/data/constants"
 import type { FspDelegatorInfoDto } from "~/backendApi"
@@ -17,13 +17,13 @@ function delegatorInfoToStakeFlow(position: FspDelegatorInfoDto): IStakeFlow['da
     balance: position.nat.balance,
     price: position.nat.price,
     fixedInputValue: null,
-    conversions: [L.FLR_TO_WFLR_FACTOR, L.WFLR_TO_FLR_FACTOR]
+    conversions: [L.SGB_TO_WSGB_FACTOR, L.WSGB_TO_SGB_FACTOR]
   }, {
     address: position.wnat.address,
     balance: position.wnat.balance,
     price: position.wnat.price,
     fixedInputValue: null,
-    conversions: [L.FLR_TO_WFLR_FACTOR, null]
+    conversions: [L.SGB_TO_WSGB_FACTOR, null]
   }, {
     address: position.wnat.address,
     balance: position.delegated,
@@ -39,14 +39,14 @@ function modifyStakeFlowLayout(position: FspDelegatorInfoDto) {
   return L.DELEGATE_FLOW_LAYOUT
 }
 
-const FlareFspLocalDelegateComponent = () => {
+const SongbirdFspLocalDelegateComponent = () => {
   const walletAddress = useGlobalStore((state) => state.walletAddress)
   const setWalletChoiceVisible = useGlobalStore((state) => state.setWalletChoiceVisible)
   const walletChoiceVisible = useGlobalStore((state) => state.walletChoiceVisible)
 
-  const { data, error, isLoading } = useSWR(['flare-delegate', walletAddress], ([_, address]) => {
+  const { data, error, isLoading } = useSWR(['songbird-delegate', walletAddress], ([_, address]) => {
     if (address == null) return null
-    return FspDataLayer.getDelegatorInfo('flare', address)
+    return FspDataLayer.getDelegatorInfo('songbird', address)
   }, {
     refreshInterval: 10_000,
     revalidateOnReconnect: true
@@ -64,17 +64,17 @@ const FlareFspLocalDelegateComponent = () => {
     </a>
   } else if (isLoading) {
     component = <div style={{ textAlign: 'center' }}>
-      <SpinnerCircular color={C.FLARE_COLOR_CODE} size={45} />
+      <SpinnerCircular color={C.SONGBIRD_COLOR_CODE} size={45} />
     </div>
   } else if (data == null || error != null) {
     component = <div>error {String(error)}</div>
   } else {
     component = <>
       <div className="mb-40">
-        <p>
-          Delegating FLR involves wrapping it into WFLR, which you can then delegate to an FSP entity.
-          The delegation in this case is liquid, meaning you can safely transfer WFLR or withdraw it.
-          Note however that sending WFLR to another address will contribute the stake to the other address.
+        <p className="mb-40">
+          Delegating SGB involves wrapping it into WSGB, which you can then delegate to an SSP entity.
+          The delegation in this case is liquid, meaning you can safely transfer WSGB or withdraw it.
+          Note however that sending WSGB to another address will contribute the stake to the other address.
 
           New rewards are distributed every 3.5 days and are based on your balance at 3 block heights
           determined randomly at the end of each reward epoch.
@@ -85,11 +85,11 @@ const FlareFspLocalDelegateComponent = () => {
   }
 
   return (
-    <div className="single-project-page-right wow fadeInUp delay-0-4s flare-div-border mt-30">
+    <div className="single-project-page-right wow fadeInUp delay-0-4s songbird-div-border mt-30">
       <h2>How To Delegate</h2>
       {component}
     </div>
   )
 }
 
-export default FlareFspLocalDelegateComponent
+export default SongbirdFspLocalDelegateComponent

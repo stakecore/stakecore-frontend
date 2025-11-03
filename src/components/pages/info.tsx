@@ -1,48 +1,52 @@
 import React from "react"
+import { tokenToNetwork } from "~/utlits/misc/translations"
 import SpecsTooltip from "./tooltip"
 import type { ISpecs } from "../types"
 
 
 const InfoComponent = ({ summary, specs }) => {
-  return (
+  const network = tokenToNetwork(summary.asset)
+  return <>
     <div className="row">
       <div className="col-lg-3">
-        <ProjectInfoSummary {...summary} />
+        <div className={`single-project-page-left wow fadeInUp delay-0-2s ${network}-div-border`}>
+          <ProjectInfoSummary {...summary} />
+        </div>
       </div>
       <div className="col-lg-9">
-        <Specs config={specs} />
+        <div className={`single-project-page-right wow fadeInUp delay-0-4s ${network}-div-border`}>
+          <Specs config={specs} />
+        </div>
       </div>
     </div>
-  )
+  </>
 }
 
 const ProjectInfoSummary = ({ asset, apy, risk, lockup }) => {
   return (
-    <div className="single-project-page-left wow fadeInUp delay-0-2s avalanche-div-border">
+    <>
       <ProjectSingleInfo title='Asset' value={asset} />
       <ProjectSingleInfo title='APY' value={apy} />
       <ProjectSingleInfo title='Risk Rating' value={risk} />
       <ProjectSingleInfo title='Lockup' value={lockup} />
-    </div>
+    </>
   )
 }
 
 const Specs = ({ config }: { config: ISpecs }) => {
-  return (
-    <div className="single-project-page-right wow fadeInUp delay-0-4s avalanche-div-border">
-      <div className="specs-container">
-        {config.map((cfg, i: number) => {
-          const hr = <hr className="specs-table-border mt-20"></hr>
-          return (
-            <React.Fragment key={i}>
-              <SpecsTable config={cfg} />
-              {(i + 1 < config.length) ? hr : <></>}
-            </React.Fragment>
-          )
-        })}
-      </div>
+  return <>
+    <div className="specs-container">
+      {config.map((cfg, i: number) => {
+        const hr = <hr className="specs-table-border mt-20"></hr>
+        return (
+          <React.Fragment key={i}>
+            <SpecsTable config={cfg} />
+            {(i + 1 < config.length) && hr}
+          </React.Fragment>
+        )
+      })}
     </div>
-  )
+  </>
 }
 
 const SpecsTable = ({ config }) => {

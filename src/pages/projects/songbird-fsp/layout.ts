@@ -3,14 +3,14 @@ import { StatusCode } from "~/constants"
 import { actionStatusMessage, contractCallAdapter } from "../utils"
 import { expbigint } from "~/utlits/misc/bigint"
 import { claim, delegate, deposit, withdraw } from "~/utlits/contracts/flare"
-import { FLR_DECIMALS, FLR_SYMBOL, MAX_BIPS, WFLR_SYMBOL } from '~/utlits/data/constants'
+import { SGB_DECIMALS, SGB_SYMBOL, MAX_BIPS, WSGB_SYMBOL } from '~/utlits/data/constants'
 import { flareDelegationAdr } from "~/utlits/data/constants"
 import { Formatter } from "~/utlits/misc/formatter"
-import logo from '~/assets/images/networks/FLR.avif'
+import logo from '~/assets/images/networks/SGB.svg'
 
 
-export const FLR_TO_WFLR_FACTOR = (x: number) => x
-export const WFLR_TO_FLR_FACTOR = (x: number) => x
+export const SGB_TO_WSGB_FACTOR = (x: number) => x
+export const WSGB_TO_SGB_FACTOR = (x: number) => x
 
 const tobips = (balance: number, amount: number) => {
   return Math.min(MAX_BIPS, Math.ceil(MAX_BIPS * Math.floor(amount / balance)))
@@ -23,7 +23,7 @@ const adelegate: IStakeFlowBarAction = {
     delegate, address, [tobips(balance, value)]),
   ok: (status) => status == StatusCode.CONTRACT_CALL_EXECUTED,
   message: (status, address, _, value) => actionStatusMessage(
-    status, `address ${Formatter.address(address)} successfully delegated ${value} WFLR to ${flareDelegationAdr} (StakeCore)`
+    status, `address ${Formatter.address(address)} successfully delegated ${value} WSGB to ${flareDelegationAdr} (StakeCore)`
   )
 }
 
@@ -31,10 +31,10 @@ const adeposit: IStakeFlowBarAction = {
   active: true,
   name: 'deposit',
   method: (address, _, value) => contractCallAdapter(
-    deposit, address, [expbigint(value, FLR_DECIMALS)]),
+    deposit, address, [expbigint(value, SGB_DECIMALS)]),
   ok: (status) => status == StatusCode.CONTRACT_CALL_EXECUTED,
   message: (status, address, _, value) => actionStatusMessage(
-    status, `address ${Formatter.address(address)} successfully deposited ${value} WFLR`
+    status, `address ${Formatter.address(address)} successfully deposited ${value} WSGB`
   )
 }
 
@@ -42,10 +42,10 @@ const awithdraw: IStakeFlowBarAction = {
   active: true,
   name: 'withdraw',
   method: (address, _, value) => contractCallAdapter(
-    withdraw, address, [expbigint(value, FLR_DECIMALS)]),
+    withdraw, address, [expbigint(value, SGB_DECIMALS)]),
   ok: (status) => status == StatusCode.CONTRACT_CALL_EXECUTED,
   message: (status, address, _, value) => actionStatusMessage(
-    status, `address ${Formatter.address(address)} successfully withdrew ${value} FLR`
+    status, `address ${Formatter.address(address)} successfully withdrew ${value} SGB`
   )
 }
 
@@ -55,18 +55,18 @@ const aclaim: IStakeFlowBarAction = {
   method: (address, _1, _2, epoch: number) => contractCallAdapter(claim, address, [epoch]),
   ok: (status) => status == StatusCode.CONTRACT_CALL_EXECUTED,
   message: (status, address, _, value) => actionStatusMessage(
-    status, `address ${Formatter.address(address)} successfully claimed ${value} WFLR`
+    status, `address ${Formatter.address(address)} successfully claimed ${value} WSGB`
   )
 }
 
 export const DELEGATE_FLOW_LAYOUT: IStakeFlow['layout'] = [
   {
-    symbol: FLR_SYMBOL, logo,
+    symbol: SGB_SYMBOL, logo,
     actions: { down: adeposit, up: awithdraw },
     maxButton: true
   },
   {
-    symbol: WFLR_SYMBOL, logo,
+    symbol: WSGB_SYMBOL, logo,
     actions: { down: adelegate, up: aclaim },
     maxButton: true
   },

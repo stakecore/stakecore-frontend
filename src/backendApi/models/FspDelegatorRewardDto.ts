@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type FlareFspDelegatorRewardDto = {
+export type FspDelegatorRewardDto = {
     rewardEpoch: number;
     amount: number;
 };

@@ -2,10 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { FlareFspDelegatorInfoDto } from './FlareFspDelegatorInfoDto';
-export type ApiResponseDto_FlareFspDelegatorInfoDto = {
+import type { FspDelegatorInfoDto } from './FspDelegatorInfoDto';
+export type ApiResponseDto_FspDelegatorInfoDto = {
     status: number;
-    data?: FlareFspDelegatorInfoDto;
+    data?: FspDelegatorInfoDto;
     error?: string;
 };
 

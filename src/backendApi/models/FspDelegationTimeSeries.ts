@@ -2,10 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type FlareFtsoSubmissionDataDto = {
+export type FspDelegationTimeSeries = {
     rewardEpoch: number;
-    submissionRate: number;
-    primarySuccessRate: number;
-    secondarySuccessRate: number;
+    delegated: number;
+    delegators: number;
 };
 

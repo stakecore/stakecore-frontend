@@ -1,9 +1,9 @@
-import type { FlareFspInfoDto } from "~/backendApi"
+import type { FspInfoDto } from "~/backendApi"
 import type { ISummary, ISpecs } from "~/components/types"
 
 
-export type FlareData = {
-  base: FlareFspInfoDto
+export type FspData = {
+  base: FspInfoDto
   summary: ISummary
   specs: ISpecs
 }

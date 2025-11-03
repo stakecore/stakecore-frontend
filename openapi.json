@@ -113,55 +113,81 @@
                 ]
             }
         },
-        "/api/data/flare/fsp/info": {
+        "/api/fsp/info/{chain}": {
             "get": {
-                "operationId": "DataController_getFlareFspPageInfo",
+                "operationId": "FspController_getFlareFspPageInfo",
                 "summary": "Frontend page info for the Flare FSP",
-                "parameters": [],
+                "parameters": [
+                    {
+                        "name": "chain",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ApiResponseDto_FlareFspInfoDto"
+                                    "$ref": "#/components/schemas/ApiResponseDto_FspInfoDto"
                                 }
                             }
                         }
                     }
                 },
                 "tags": [
-                    "Data"
+                    "FSP"
                 ]
             }
         },
-        "/api/data/flare/fsp/graphics": {
+        "/api/fsp/graphics/{chain}": {
             "get": {
-                "operationId": "DataController_getFlareFspGraphicsData",
+                "operationId": "FspController_getFlareFspGraphicsData",
                 "summary": "Frontend page graphics data for the Flare FSP",
-                "parameters": [],
+                "parameters": [
+                    {
+                        "name": "chain",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ApiResponseDto_FlareFspGraphicsDataDto"
+                                    "$ref": "#/components/schemas/ApiResponseDto_FspGraphicsDataDto"
                                 }
                             }
                         }
                     }
                 },
                 "tags": [
-                    "Data"
+                    "FSP"
                 ]
             }
         },
-        "/api/data/flare/fsp/delegator-info/{delegator}": {
+        "/api/fsp/delegator-info/{chain}/{delegator}": {
             "get": {
-                "operationId": "DataController_getFlareFspDelegatorInfo",
+                "operationId": "FspController_getFlareFspDelegatorInfo",
                 "summary": "Status of a Flare FSP delegator",
                 "parameters": [
+                    {
+                        "name": "chain",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     {
                         "name": "delegator",
                         "required": true,
@@ -177,45 +203,14 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ApiResponseDto_FlareFspDelegatorInfoDto"
+                                    "$ref": "#/components/schemas/ApiResponseDto_FspDelegatorInfoDto"
                                 }
                             }
                         }
                     }
                 },
                 "tags": [
-                    "Data"
-                ]
-            }
-        },
-        "/api/data/flare/fsp/delegators/{delegatee}": {
-            "get": {
-                "operationId": "DataController_getFlareDelegators",
-                "summary": "Flare Delegators",
-                "parameters": [
-                    {
-                        "name": "delegatee",
-                        "required": true,
-                        "in": "path",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiResponseDto_FlareDelegatorsDto"
-                                }
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "Data"
+                    "FSP"
                 ]
             }
         }
@@ -434,7 +429,7 @@
                     "status"
                 ]
             },
-            "FlareFspInfoDto": {
+            "FspInfoDto": {
                 "type": "object",
                 "properties": {
                     "delegationAddress": {
@@ -461,14 +456,14 @@
                     "providerFee"
                 ]
             },
-            "ApiResponseDto_FlareFspInfoDto": {
+            "ApiResponseDto_FspInfoDto": {
                 "type": "object",
                 "properties": {
                     "status": {
                         "type": "number"
                     },
                     "data": {
-                        "$ref": "#/components/schemas/FlareFspInfoDto"
+                        "$ref": "#/components/schemas/FspInfoDto"
                     },
                     "error": {
                         "type": "string"
@@ -478,7 +473,7 @@
                     "status"
                 ]
             },
-            "FlareFspDelegationTimeSeries": {
+            "FspDelegationTimeSeries": {
                 "type": "object",
                 "properties": {
                     "rewardEpoch": {
@@ -497,13 +492,13 @@
                     "delegators"
                 ]
             },
-            "FlareDelegationTimeSeriesDto": {
+            "FspDelegationTimeSeriesDto": {
                 "type": "object",
                 "properties": {
                     "result": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/FlareFspDelegationTimeSeries"
+                            "$ref": "#/components/schemas/FspDelegationTimeSeries"
                         }
                     }
                 },
@@ -511,52 +506,66 @@
                     "result"
                 ]
             },
-            "FlareFtsoSubmissionDataDto": {
+            "FtsoSubmissionDataDto": {
                 "type": "object",
                 "properties": {
                     "rewardEpoch": {
                         "type": "number"
                     },
-                    "submissionRate": {
+                    "uptime": {
                         "type": "number"
                     },
-                    "primarySuccessRate": {
+                    "primary": {
                         "type": "number"
                     },
-                    "secondarySuccessRate": {
+                    "secondary": {
                         "type": "number"
                     }
                 },
                 "required": [
                     "rewardEpoch",
-                    "submissionRate",
-                    "primarySuccessRate",
-                    "secondarySuccessRate"
+                    "uptime",
+                    "primary",
+                    "secondary"
                 ]
             },
-            "FlareFspGraphicsDataDto": {
+            "FtsoSubmissionTimeSeriesDto": {
+                "type": "object",
+                "properties": {
+                    "result": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/FtsoSubmissionDataDto"
+                        }
+                    }
+                },
+                "required": [
+                    "result"
+                ]
+            },
+            "FspGraphicsDataDto": {
                 "type": "object",
                 "properties": {
                     "delegations": {
-                        "$ref": "#/components/schemas/FlareDelegationTimeSeriesDto"
+                        "$ref": "#/components/schemas/FspDelegationTimeSeriesDto"
                     },
-                    "ftsoSubmissions": {
-                        "$ref": "#/components/schemas/FlareFtsoSubmissionDataDto"
+                    "submissions": {
+                        "$ref": "#/components/schemas/FtsoSubmissionTimeSeriesDto"
                     }
                 },
                 "required": [
                     "delegations",
-                    "ftsoSubmissions"
+                    "submissions"
                 ]
             },
-            "ApiResponseDto_FlareFspGraphicsDataDto": {
+            "ApiResponseDto_FspGraphicsDataDto": {
                 "type": "object",
                 "properties": {
                     "status": {
                         "type": "number"
                     },
                     "data": {
-                        "$ref": "#/components/schemas/FlareFspGraphicsDataDto"
+                        "$ref": "#/components/schemas/FspGraphicsDataDto"
                     },
                     "error": {
                         "type": "string"
@@ -566,7 +575,7 @@
                     "status"
                 ]
             },
-            "FlareFspDelegatorRewardDto": {
+            "FspDelegatorRewardDto": {
                 "type": "object",
                 "properties": {
                     "rewardEpoch": {
@@ -581,7 +590,7 @@
                     "amount"
                 ]
             },
-            "FlareFspDelegatorTokenInfoDto": {
+            "FspDelegatorTokenInfoDto": {
                 "type": "object",
                 "properties": {
                     "address": {
@@ -600,7 +609,7 @@
                     "price"
                 ]
             },
-            "FlareFspDelegatorInfoDto": {
+            "FspDelegatorInfoDto": {
                 "type": "object",
                 "properties": {
                     "delegated": {
@@ -609,14 +618,14 @@
                     "rewards": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/FlareFspDelegatorRewardDto"
+                            "$ref": "#/components/schemas/FspDelegatorRewardDto"
                         }
                     },
                     "nat": {
-                        "$ref": "#/components/schemas/FlareFspDelegatorTokenInfoDto"
+                        "$ref": "#/components/schemas/FspDelegatorTokenInfoDto"
                     },
                     "wnat": {
-                        "$ref": "#/components/schemas/FlareFspDelegatorTokenInfoDto"
+                        "$ref": "#/components/schemas/FspDelegatorTokenInfoDto"
                     }
                 },
                 "required": [
@@ -626,60 +635,14 @@
                     "wnat"
                 ]
             },
-            "ApiResponseDto_FlareFspDelegatorInfoDto": {
+            "ApiResponseDto_FspDelegatorInfoDto": {
                 "type": "object",
                 "properties": {
                     "status": {
                         "type": "number"
                     },
                     "data": {
-                        "$ref": "#/components/schemas/FlareFspDelegatorInfoDto"
-                    },
-                    "error": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "status"
-                ]
-            },
-            "FlareDelegatorDto": {
-                "type": "object",
-                "properties": {
-                    "delegator": {
-                        "type": "string"
-                    },
-                    "delegated": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "delegator",
-                    "delegated"
-                ]
-            },
-            "FlareDelegatorsDto": {
-                "type": "object",
-                "properties": {
-                    "delegators": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/FlareDelegatorDto"
-                        }
-                    }
-                },
-                "required": [
-                    "delegators"
-                ]
-            },
-            "ApiResponseDto_FlareDelegatorsDto": {
-                "type": "object",
-                "properties": {
-                    "status": {
-                        "type": "number"
-                    },
-                    "data": {
-                        "$ref": "#/components/schemas/FlareDelegatorsDto"
+                        "$ref": "#/components/schemas/FspDelegatorInfoDto"
                     },
                     "error": {
                         "type": "string"

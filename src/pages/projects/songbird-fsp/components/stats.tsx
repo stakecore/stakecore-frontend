@@ -1,20 +1,20 @@
 import useSWR from "swr"
 import { SpinnerCircular } from "spinners-react"
-import FspDataLayer from "../data"
-import { FLARE_COLOR_CODE } from "~/utlits/data/constants"
 import { ResponsiveLine } from "@nivo/line"
+import FspDataLayer from "../../flare-fsp/data"
 import { Formatter } from "~/utlits/misc/formatter"
+import { SONGBIRD_COLOR_CODE } from "~/utlits/data/constants"
 import MeterBar from "~/components/ui/meterBar"
 
 
 const FlareFspStatsComponent = () => {
-  const { data, error, isLoading } = useSWR('flare-fsp-graphics', (x) => FspDataLayer.getGraphicsData('flare'))
+  const { data, error, isLoading } = useSWR('songbird-fsp-graphics', (x) => FspDataLayer.getGraphicsData('songbird'))
 
   let component = null
   if (isLoading) {
     component = <>
       <div style={{ textAlign: 'center' }} className="mt-30 mb-30" >
-        <SpinnerCircular color={FLARE_COLOR_CODE} size={100} />
+        <SpinnerCircular color={SONGBIRD_COLOR_CODE} size={100} />
       </div>
     </>
   } else if (error != null || data == null) {
@@ -22,7 +22,7 @@ const FlareFspStatsComponent = () => {
   } else {
     const d1 = [
       {
-        id: 'FLR Delegated',
+        id: 'SGB Delegated',
         data: data.delegations.result.map(({ rewardEpoch: x, delegated: y }) => ({ x, y }))
       }
     ]
@@ -40,7 +40,7 @@ const FlareFspStatsComponent = () => {
 
     const d3 = [
       {
-        id: 'FLR Delegators',
+        id: 'SGB Delegators',
         data: data.delegations.result.map(({ rewardEpoch: x, delegators: y }) => ({ x, y }))
       }
     ]
@@ -51,7 +51,7 @@ const FlareFspStatsComponent = () => {
     const secondary = Formatter.percent(last.secondary, 1)
 
     component = <>
-      <div className="single-project-page-right wow fadeInUp delay-0-4s flare-div-border mt-30">
+      <div className="single-project-page-right wow fadeInUp delay-0-4s songbird-div-border mt-30">
         <h2>Provider Statistics</h2>
         <p>
           We value transparency, and stream a part of our monitoring to this site,
@@ -101,7 +101,7 @@ const FlareFspStatsComponent = () => {
         </div>
 
         <div className="row mt-20">
-          <h5 className='meter-bar-title'>Delegated WFLR</h5>
+          <h5 className='meter-bar-title'>Delegated WSGB</h5>
           <div style={{ height: 250 }}>
             <ResponsiveLine
               data={d1}
@@ -131,7 +131,7 @@ const FlareFspStatsComponent = () => {
         </div>
 
         <div className="row mt-20">
-          <h5 className='meter-bar-title'>FLR Delegators</h5>
+          <h5 className='meter-bar-title'>SGB Delegators</h5>
           <div style={{ height: 250 }}>
             <ResponsiveLine
               data={d3}

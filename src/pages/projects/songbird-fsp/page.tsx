@@ -3,20 +3,20 @@ import { SpinnerCircular } from 'spinners-react'
 import ProjectTitle from "~/components/pages/title"
 import InfoComponent from "~/components/pages/info"
 import FlareFspStatsComponent from "./components/stats"
-import FspDataLayer from "./data"
+import FspDataLayer from "../flare-fsp/data"
 import ProjectDescription from './components/description'
-import FlareFspLocalDelegateComponent from './components/delegateLocal'
-import { FLARE_COLOR_CODE } from "~/utlits/data/constants"
+import SongbirdFspLocalDelegateComponent from './components/delegateLocal'
+import { SONGBIRD_COLOR_CODE } from "~/utlits/data/constants"
 
 
-export const FlareFspPage = () => {
-  const { data, error, isLoading } = useSWR('flare-fsp-page', (x) => FspDataLayer.getPageData('flare'))
+export const SongbirdFspPage = () => {
+  const { data, error, isLoading } = useSWR('songbird-fsp-page', (x) => FspDataLayer.getPageData('songbird'))
 
   let component = null
   if (isLoading) {
     component = <>
       <div style={{ textAlign: 'center' }} className="mt-30 mb-30" >
-        <SpinnerCircular color={FLARE_COLOR_CODE} size={100} />
+        <SpinnerCircular color={SONGBIRD_COLOR_CODE} size={100} />
       </div>
     </>
   } else if (data == null) {
@@ -24,14 +24,14 @@ export const FlareFspPage = () => {
   } else {
     component = <>
       <InfoComponent specs={data.specs} summary={data.summary} />
-      <FlareFspLocalDelegateComponent />
+      <SongbirdFspLocalDelegateComponent />
       <FlareFspStatsComponent />
     </>
   }
 
   return (
     <div className="single-project-page-design">
-      <ProjectTitle title='Flare Systems Protocol' suptitle='Secure Flare Network Oracle Data' />
+      <ProjectTitle title='Songbird Systems Protocol' suptitle='Secure Songbird Canary Network Oracle Data' />
       <div className="container pt-30">
         <ProjectDescription />
         {component}
@@ -40,4 +40,4 @@ export const FlareFspPage = () => {
   )
 }
 
-export default FlareFspPage
+export default SongbirdFspPage

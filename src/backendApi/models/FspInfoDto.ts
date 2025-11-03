@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type FlareFspInfoDto = {
+export type FspInfoDto = {
     delegationAddress: string;
     identityAddress: string;
     apy: number;

@@ -37,6 +37,8 @@ interface GlobalState {
   setWalletAddress: (address: string, provider?: EIP6963ProviderDetail) => void
   walletChoiceVisible: boolean
   setWalletChoiceVisible: (visible: boolean) => void
+  chain: string | null
+  setChain: (chain: string | null) => void
 }
 
 // Global interface for storing the external browser wallet state.

@@ -13,7 +13,7 @@ interface IStakeFlowBarArgs {
   layout: IStakeFlowLayoutPart
   state: {
     i: number
-    values: [NumberOrEmptyString, NumberOrEmptyString | null]
+    values: [number, number | null]
     focused: [boolean, boolean | null]
     frozen: boolean
     onInputChange: (i: number, value: number) => void
@@ -28,7 +28,7 @@ interface IStakeFlowBarActionArgs {
   data: IStakeFlowDataPart
   action: IStakeFlowBarAction
   active: boolean
-  value: NumberOrEmptyString
+  value: number
   freeze: (set: boolean) => void
 }
 
@@ -49,7 +49,7 @@ const StakeFlowAction = ({ down, active, action, data, value, freeze }: IStakeFl
   }
 
   async function execute() {
-    if (!action.active || !active || value == "") return
+    if (!action.active || !active || value == 0) return
     const fad = Formatter.address(data.address)
     const msg = `began executing ${action.name} for user ${fad} with value ${value}`
     const id = toast.loading(msg)
@@ -84,8 +84,8 @@ const StakeFlowBar = ({ layout, state, data }: IStakeFlowBarArgs) => {
   const balance = Formatter.number(dcurr.balance, 3)
   const uvalue = Formatter.number(dcurr.balance * dcurr.price, 3)
 
-  const civalue = state.values[0] ?? dcurr.fixedInputValue
-  const nivalue = state.values[1] ?? dnext?.fixedInputValue
+  const civalue = dcurr.fixedInputValue ?? state.values[0] ?? 0
+  const nivalue = dnext?.fixedInputValue ?? state.values[1] ?? 0
 
   return <>
     <div className='invest-flow-bar-container'>
@@ -122,7 +122,7 @@ const StakeFlowBar = ({ layout, state, data }: IStakeFlowBarArgs) => {
                 type='number'
                 placeholder="0"
                 height={30}
-                value={civalue}
+                value={defaultToEmptyString(civalue)}
                 onFocus={() => state.focused[0] || state.onInputFocus(state.i)}
                 onChange={(ev) => state.onInputChange(state.i, Number(ev.target.value))}
                 disabled={state.frozen || dcurr.fixedInputValue != null}
@@ -151,7 +151,7 @@ const StakeFlowBar = ({ layout, state, data }: IStakeFlowBarArgs) => {
           action={layout.actions.down}
           data={dcurr}
           down={true}
-          active={state.focused[0] && civalue != "" && !state.frozen}
+          active={state.focused[0] && civalue != 0 && !state.frozen}
           value={civalue}
           freeze={state.freeze}
         />}
@@ -159,7 +159,7 @@ const StakeFlowBar = ({ layout, state, data }: IStakeFlowBarArgs) => {
           action={layout.actions.up}
           data={dnext}
           down={false}
-          active={(state.focused[1] || dnext.fixedInputValue != null) && nivalue != "" && !state.frozen}
+          active={(state.focused[1] || dnext.fixedInputValue != null) && nivalue != 0 && !state.frozen}
           value={nivalue}
           freeze={state.freeze}
         />}
@@ -173,8 +173,7 @@ const StakeFlow = ({ layout, data }: IStakeFlow) => {
 
   const [frozen, freeze] = useState<boolean>(false)
   const focused = Array.from({ length: n }, () => useState<boolean>(false))
-  const values = Array.from({ length: n }, (_, i) => useState<NumberOrEmptyString>(
-    defaultToEmptyString(data[i].fixedInputValue)))
+  const values = Array.from({ length: n }, (_, i) => useState<number>(data[i].fixedInputValue))
 
   function onInputChange(i: number, value: number) {
     if (frozen) return
@@ -187,14 +186,14 @@ const StakeFlow = ({ layout, data }: IStakeFlow) => {
         if (f == null) continue
         _value = f(value)
       }
-      values[j][1](defaultToEmptyString(_value))
+      values[j][1](_value)
     }
   }
 
   function onInputFocus(i: number) {
     if (frozen) return
     for (let j = 0; j < n; j++) {
-      values[j][1](defaultToEmptyString(data[j].fixedInputValue))
+      values[j][1](data[j].fixedInputValue)
       focused[j][1](i == j)
     }
   }

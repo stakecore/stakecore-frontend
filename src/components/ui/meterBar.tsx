@@ -1,3 +1,5 @@
+import classNames from "classnames"
+
 const MAX_PERC = 100
 const LED_TOTAL = 70
 
@@ -20,18 +22,18 @@ type args = {
 
 const MeterBar = ({ name, value, text, ranges, height = 40, reverse = false }: args) => {
 
-  function getPercentage(index: number) {
+  function getRatio(index: number) {
     return Math.floor(MAX_PERC * index / LED_TOTAL)
   }
 
-  function getLedOpacity(perc: number) {
-    return value < perc ? OPACITY_BEFORE : OPACITY_AFTER
+  function getLedOpacity(ratio: number) {
+    return value < ratio ? OPACITY_BEFORE : OPACITY_AFTER
   }
 
-  function getLedColor(perc: number) {
+  function getLedColor(ratio: number) {
     let coloridx = null
     for (let i = 0; i < ranges.length; i++) {
-      if (perc < ranges[i]) {
+      if (ratio < ranges[i]) {
         coloridx = i
         break
       }
@@ -43,17 +45,22 @@ const MeterBar = ({ name, value, text, ranges, height = 40, reverse = false }: a
   const valuecolor = getLedColor(value)
   const valuetext = text == null ? `${value}%` : text
 
+  let data: { color: string[], opacity: number }[] = []
+  for (let i = 0; i < LED_TOTAL; i++) {
+    const ratio = getRatio(i)
+    const color = getLedColor(ratio)
+    const opacity = getLedOpacity(ratio)
+    data.push({ color, opacity })
+  }
+
   return (
     <div className="meter-bar-container">
       <h5 className='meter-bar-title'>{name}</h5>
       <div className='meter-bar' style={{ height }}>
         {
-          Array.from(Array(LED_TOTAL).keys()).map((_, i) => {
-            const ratio = getPercentage(i)
-            const color = getLedColor(ratio)
-            const opacity = getLedOpacity(ratio)
+          data.map((d, i) => {
             return <span className='meter-bar-led'
-              key={i} style={{ background: color[1], opacity }}></span>
+              key={i} style={{ background: d.color[1], opacity: d.opacity }}></span>
           })
         }
         <span className='meter-bar-desc' style={{ color: valuecolor[0] }}>{ valuetext }</span>

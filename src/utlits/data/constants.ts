@@ -6,9 +6,12 @@ export const FLR_DECIMALS = 18
 export const FLR_SYMBOL = 'FLR'
 export const WFLR_SYMBOL = 'WFLR'
 
+export const SGB_DECIMALS = 18
+export const SGB_SYMBOL = 'SGB'
+export const WSGB_SYMBOL = 'WSGB'
+
 export const AVAX_DECIMALS = 18
 export const AVAX_SYMBOL = 'AVAX'
-
 
 // flare fsp
 
@@ -31,12 +34,19 @@ export const flareEvmUrl = (address: string) => `${flareEvmExplorer}/address/${a
 export const flareFspUrl = (address: string) => `${flareEvmExplorer}/providers/fsp/${address}`
 
 export const flareDelegationAdr = '0x1e68DC808A240C096F0261144dc41fd4c883Cfb0'
-export const flareValidatorAdr = '0x868822C4A79ee2a18bedfdd5f1EF3b23B190cf1e'
 
-export const songbirdEpochConfig = {
-  roundDurationMs: 90_000,
-  firstRoundTimestampMs: 1658429955_000,
-  rewardEpochDurationRounds: 3360
+export const flareChainUrl = 'flare-api.flare.network'
+export const flareChainId = '0xe'
+
+export const flareChainConfig = {
+  chainName: 'Flare Network',
+  chainId: flareChainId,
+  nativeCurrency: {
+    name: FLR_SYMBOL,
+    decimals: FLR_DECIMALS,
+    symbol: FLR_SYMBOL
+  },
+  rpcUrls: [`https://${flareChainUrl}/ext/C/rpc`]
 }
 
 export const flareEpochConfig = {
@@ -45,7 +55,45 @@ export const flareEpochConfig = {
   rewardEpochDurationRounds: 3360
 }
 
+// songbird fsp
+
+export const wrappedSgbAdr = '0x02f0826ef6aD107Cfc861152B32B52fD11BaB9ED'
+export const wrappedSgbAbi = wrappedFlrAbi
+
+export const songbirdFspRewardManagerAdr = '0xE26AD68b17224951b5740F33926Cc438764eB9a7'
+export const songbirdFspRewardManagerAbi = fspRewardManagerAbi
+
+export const songbirdEvmExplorer = 'https://songbird-explorer.flare.network'
+export const songbirdFspExplorer = 'https://songbird-systems-explorer.flare.network'
+
+export const songbirdEvmUrl = (address: string) => `${songbirdEvmExplorer}/address/${address}`
+export const songbirdFspUrl = (address: string) => `${songbirdEvmExplorer}/providers/fsp/${address}`
+
+export const songbirdDelegationAdr = '0x1e68DC808A240C096F0261144dc41fd4c883Cfb0'
+
+export const songbirdChainUrl = 'songbird-api.flare.network'
+export const songbirdChainId = '0x13'
+
+export const songbirdChainConfig = {
+  chainName: 'Songbird Canary Network',
+  chainId: songbirdChainId,
+  nativeCurrency: {
+    name: SGB_SYMBOL,
+    decimals: SGB_DECIMALS,
+    symbol: SGB_SYMBOL
+  },
+  rpcUrls: [`https://${songbirdChainUrl}/ext/C/rpc`]
+}
+
+export const songbirdEpochConfig = {
+  roundDurationMs: 90_000,
+  firstRoundTimestampMs: 1658429955_000,
+  rewardEpochDurationRounds: 3360
+}
+
 // flare validator
+
+export const flareValidatorAdr = '0x868822C4A79ee2a18bedfdd5f1EF3b23B190cf1e'
 
 export const flarePChainExplorer = 'https://flare.space/dapp/p-chain-explorer'
 
@@ -66,19 +114,3 @@ export const avalancheDelegatorMaxLockup = 31536000
 export const FLARE_COLOR_CODE = '#E62058'
 export const AVALANCHE_COLOR_CODE = '#FF394A'
 export const SONGBIRD_COLOR_CODE = '#253c4d'
-
-// temp
-
-export const chainUrl = 'flare-api.flare.network'
-export const chainId = '0xe'
-
-export const chainConfig = {
-  chainName: 'Flare Network',
-  chainId,
-  nativeCurrency: {
-    name: 'FLR',
-    decimals: 18,
-    symbol: 'FLR'
-  },
-  rpcUrls: [`https://${chainUrl}/ext/C/rpc`]
-}

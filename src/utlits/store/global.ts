@@ -11,4 +11,6 @@ export const useGlobalStore = create<GlobalState>((set) => ({
   })),
   walletChoiceVisible: false,
   setWalletChoiceVisible: (visible: boolean) => set({ walletChoiceVisible: visible }),
+  chain: null,
+  setChain: (chain: string | null) => set({ chain })
 }))

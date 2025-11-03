@@ -3,8 +3,8 @@ import Marquee from "react-fast-marquee"
 import { RiGithubLine, RiTwitterXLine } from '@remixicon/react'
 import profile from "../../assets/images/about/profile.svg"
 import SlideUp from '../../utlits/animations/slideUp'
-import avalanche from "../../assets/images/projects/avalanche/logo.svg"
-import flare from "../../assets/images/projects/flare/logo.svg"
+import avalanche from "../../assets/images/networks/AVAX.webp"
+import flare from "../../assets/images/networks/FLR.webp"
 import songbird from "../../assets/images/projects/songbird/logo.svg"
 
 
@@ -53,9 +53,9 @@ const Hero = () => {
                                     <div className="scroller">
                                         <div className="scroller__inner">
                                             <div>
-                                                <img height={"120px"} src={avalanche} alt="" />
-                                                <img height={"120px"} src={flare} alt="" />
-                                                <img height={"120px"} src={songbird} alt="" />
+                                                <img height={"75px"} src={avalanche} alt="" />
+                                                <img height={"75px"} src={flare} alt="" />
+                                                <img height={"75px"} src={songbird} alt="" />
                                             </div>
                                         </div>
                                     </div>

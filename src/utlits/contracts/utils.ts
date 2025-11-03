@@ -4,14 +4,13 @@ import { delegate as _delegate } from "./flare"
 import { Eip1193Provider } from "ethers"
 import { StatusCode } from "~/constants"
 
-
 export async function ensureProvider(): Promise<[Eip1193Provider | null, StatusCode]> {
-  let { walletProvider, setWalletChoiceVisible } = useGlobalStore.getState()
+  let { walletProvider, setWalletChoiceVisible, chain } = useGlobalStore.getState()
   if (walletProvider == null) {
     setWalletChoiceVisible(true)
     return [null, StatusCode.WALLET_CHOICE_SHOWN]
   }
-  if (!await switchNetworkIfNecessary(walletProvider.provider)) return
+  if (!await switchNetworkIfNecessary(chain, walletProvider.provider)) return
   const { walletAddress, setWalletAddress } = useGlobalStore.getState()
   if (walletAddress == null) {
     const addresses = await requestAccounts(walletProvider.provider)

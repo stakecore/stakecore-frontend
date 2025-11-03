@@ -1,89 +1,86 @@
-import { chainConfig, chainId } from "../data/constants"
+import { chainIdToConfig } from "../misc/translations"
 
 export async function getChainId(
-    ethereum: EIP1193Provider
+  ethereum: EIP1193Provider
 ): Promise<string> {
-    try {
-        const chainId = await ethereum.request({
-            "method": "eth_chainId",
-            "params": []
-        })
-        return chainId! as string
-    } catch (err: any) {
-        return ''
-    }
+  try {
+    const id = await ethereum.request({
+      "method": "eth_chainId",
+      "params": []
+    })
+    return id as string
+  } catch (err: any) {
+    return ''
+  }
 }
 
 export async function getAccounts(
-    ethereum: EIP1193Provider
+  ethereum: EIP1193Provider
 ): Promise<string[]> {
-    try {
-        const accounts = await ethereum.request({
-            method: 'eth_accounts',
-            params: []
-        })
-        return accounts as string[]
-    } catch (err: any) {
-        return []
-    }
+  try {
+    const accounts = await ethereum.request({
+      method: 'eth_accounts',
+      params: []
+    })
+    return accounts as string[]
+  } catch (err: any) {
+    return []
+  }
 }
 
 export async function requestAccounts(
-    ethereum: EIP1193Provider
+  ethereum: EIP1193Provider
 ): Promise<string[]> {
-    try {
-        const accounts = await ethereum.request({
-            method: 'eth_requestAccounts',
-            params: []
-        })
-        return accounts as string[]
-    } catch (err: any) {
-        return []
-    }
+  try {
+    const accounts = await ethereum.request({
+      method: 'eth_requestAccounts',
+      params: []
+    })
+    return accounts as string[]
+  } catch (err: any) {
+    return []
+  }
 }
 
-export async function tryAutoConnect(detail: EIP6963ProviderDetail): Promise<string | null> {
-    const _chainId = await getChainId(detail.provider)
-    if (_chainId == chainId) {
-      const accounts = await getAccounts(detail.provider)
-      if (accounts?.length) {
-        return accounts[0]
-      }
+export async function tryAutoConnect(chainId: string, detail: EIP6963ProviderDetail): Promise<string | null> {
+  const _chainId = await getChainId(detail.provider)
+  if (_chainId == chainId) {
+    const accounts = await getAccounts(detail.provider)
+    if (accounts?.length) {
+      return accounts[0]
     }
-    return null
   }
+  return null
+}
 
 export async function switchNetworkIfNecessary(
-    ethereum: EIP1193Provider
+  chainId: string | null, ethereum: EIP1193Provider
 ): Promise<boolean> {
-    if (await getChainId(ethereum) !== chainId) {
+  const _chainId = await getChainId(ethereum)
+  if (chainId != null && chainId != _chainId) {
+    try {
+      await ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId }]
+      })
+    } catch (err: any) {
+      // Chain not added to MetaMask
+      if (err.code === 4902) {
         try {
-            await ethereum.request({
-                method: 'wallet_switchEthereumChain',
-                params: [{
-                    chainId: chainId
-                }]
-            })
+          const chainConfig = chainIdToConfig(chainId)
+          await ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [{ chainConfig, blockExplorerUrls: null }],
+          })
         } catch (err: any) {
-            // Chain not added to MetaMask
-            if (err.code === 4902) {
-                try {
-                    await ethereum.request({
-                        method: 'wallet_addEthereumChain',
-                        params: [{
-                            chainConfig,
-                            blockExplorerUrls: null
-                        }],
-                    })
-                } catch (err: any) {
-                    console.log(err)
-                    return false
-                }
-            } else {
-                console.log(err)
-                return false
-            }
+          console.error(err)
+          return false
         }
+      } else {
+        console.error(err)
+        return false
+      }
     }
-    return true
+  }
+  return true
 }

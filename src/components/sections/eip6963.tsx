@@ -4,6 +4,7 @@ import { useGlobalStore } from '../../utlits/store/global'
 import { requestAccounts, switchNetworkIfNecessary } from '../../utlits/eip6963/eip1193'
 import { changeOpacity } from '../utils/style'
 import { useExternalStore } from '../../utlits/eip6963/discover'
+import { chainIdToConfig } from '~/utlits/misc/translations'
 
 
 export const Eip6963 = () => {
@@ -12,8 +13,8 @@ export const Eip6963 = () => {
   const { setWalletChoiceVisible } = useGlobalStore.getState()
 
   const executeConnect = async (detail: EIP6963ProviderDetail, address: string) => {
-    const { setWalletAddress } = useGlobalStore.getState()
-    const switched = await switchNetworkIfNecessary(detail.provider)
+    const { setWalletAddress, chain } = useGlobalStore.getState()
+    const switched = await switchNetworkIfNecessary(chain, detail.provider)
     if (!switched) return
     setWalletAddress(address, detail)
     setWalletChoiceVisible(false)
