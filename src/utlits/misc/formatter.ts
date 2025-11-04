@@ -71,6 +71,11 @@ export namespace Formatter {
     return `${start}...${end}`
   }
 
+  export function date(unix: number): string {
+    const d = new Date(unix * 1000)
+    return d.toISOString().replace('T', ' ').split('.')[0];
+  }
+
   export function error(msg: string): string {
     const regex = /user rejected action\s*\(action="([^"]+)"/i
     const match = msg.match(regex)

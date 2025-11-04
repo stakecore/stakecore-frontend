@@ -40,9 +40,9 @@ function modifyStakeFlowLayout(position: FspDelegatorInfoDto) {
 }
 
 const FlareFspLocalDelegateComponent = () => {
-  const walletAddress = useGlobalStore((state) => state.walletAddress)
-  const setWalletChoiceVisible = useGlobalStore((state) => state.setWalletChoiceVisible)
-  const walletChoiceVisible = useGlobalStore((state) => state.walletChoiceVisible)
+  const setWalletChoiceVisible = useGlobalStore(state => state.setWalletChoiceVisible)
+  const walletAddress = useGlobalStore(state => state.walletAddress)
+  const walletChoiceVisible = useGlobalStore(state => state.walletChoiceVisible)
 
   const { data, error, isLoading } = useSWR(['flare-delegate', walletAddress], ([_, address]) => {
     if (address == null) return null

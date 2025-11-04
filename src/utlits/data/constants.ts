@@ -1,6 +1,6 @@
 export const MAX_BIPS = 10_000
 
-// flare
+// tokens
 
 export const FLR_DECIMALS = 18
 export const FLR_SYMBOL = 'FLR'
@@ -22,8 +22,8 @@ export const wrappedFlrAbi = [
   'function withdraw(uint256)'
 ]
 
-export const fspRewardManagerAdr = '0xC8f55c5aA2C752eE285Bd872855C749f4ee6239B'
-export const fspRewardManagerAbi = [
+export const flareFspRewardManagerAdr = '0xC8f55c5aA2C752eE285Bd872855C749f4ee6239B'
+export const flareFspRewardManagerAbi = [
   'function claim(address,address,uint24,bool,(bytes32[],(uint24,bytes20,uint120,uint8))[])'
 ]
 
@@ -61,7 +61,7 @@ export const wrappedSgbAdr = '0x02f0826ef6aD107Cfc861152B32B52fD11BaB9ED'
 export const wrappedSgbAbi = wrappedFlrAbi
 
 export const songbirdFspRewardManagerAdr = '0xE26AD68b17224951b5740F33926Cc438764eB9a7'
-export const songbirdFspRewardManagerAbi = fspRewardManagerAbi
+export const songbirdFspRewardManagerAbi = flareFspRewardManagerAbi
 
 export const songbirdEvmExplorer = 'https://songbird-explorer.flare.network'
 export const songbirdFspExplorer = 'https://songbird-systems-explorer.flare.network'
@@ -108,6 +108,8 @@ export const avalanchePChainAddressUrl = (address: string) => `${avalancheExplor
 
 export const avalancheDelegatorMinLockup = 1209600
 export const avalancheDelegatorMaxLockup = 31536000
+
+export const avalancheChainId = '0xa86a'
 
 // style
 

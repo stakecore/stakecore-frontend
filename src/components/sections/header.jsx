@@ -6,14 +6,15 @@ import { Formatter } from '../../utlits/misc/formatter'
 
 
 const ChooseWalletButton = () => {
-    const walletProvider = useGlobalStore((state) => state.walletProvider)
-    const walletAddress = useGlobalStore((state) => state.walletAddress)
-    const setWalletChoiceVisible = useGlobalStore((state) => state.setWalletChoiceVisible)
+    const walletProvider = useGlobalStore(state => state.walletProvider)
+    const walletAddress = useGlobalStore(state => state.walletAddress)
+    const setWalletChoiceVisible = useGlobalStore(state => state.setWalletChoiceVisible)
+
     return <Link onClick={(event) => {
         event.preventDefault()
         setWalletChoiceVisible(true)
     }} className="theme-btn connect-wallet-button">
-        {walletProvider ? <img src={walletProvider.info.icon} alt={walletProvider.info.name} /> : null}
+        {walletProvider && <img src={walletProvider.info.icon} alt={walletProvider.info.name} />}
         {walletAddress ? Formatter.address(walletAddress) : "Connect Wallet"}
     </Link>
 }

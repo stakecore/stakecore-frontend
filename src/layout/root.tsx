@@ -1,6 +1,8 @@
 import { Outlet, useLocation } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
-import { chainFromRoute } from '../utlits/misc/translations'
+import { useGlobalStore } from '~/utlits/store/global'
+import { onInternalChainSwitch } from '~/utlits/eip6963/hook'
+import { chainFromRoute, chainToChainId } from '../utlits/misc/translations'
 import Header from '../components/sections/header'
 import Footer from '../components/sections/footer'
 import CallToAction from '../components/sections/callToAction'
@@ -8,6 +10,7 @@ import Preloader from '../components/ui/preloader'
 import DiscoverWalletProviders from '../components/sections/eip6963'
 import ScrollToTop from '../components/sections/scrollToTop'
 import { Tooltip } from 'react-tooltip'
+import { useEffect } from 'react'
 
 
 function chainToClassName(chain: string): string {
@@ -17,7 +20,21 @@ function chainToClassName(chain: string): string {
 const RootLayout = () => {
   const { pathname } = useLocation()
   const chain = chainFromRoute(pathname)
+  const chainId = chainToChainId(chain)
   const classname = chainToClassName(chain)
+
+  const setChain = useGlobalStore(state => state.setChain)
+  const setWallet = useGlobalStore(state => state.setWalletAddress)
+  const wallet = useGlobalStore(state => state.walletProvider)
+
+  useEffect(() => {
+    setChain(chainId)
+    if (wallet == null) return
+    (async () => {
+      const address = await onInternalChainSwitch(chainId, wallet)
+      setWallet(address, wallet)
+    })()
+  }, [wallet, chainId])
 
   return (
     <>

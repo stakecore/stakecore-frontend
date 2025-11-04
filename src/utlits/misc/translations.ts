@@ -1,4 +1,4 @@
-import { flareChainConfig, flareChainId, songbirdChainConfig, songbirdChainId } from "../data/constants"
+import { avalancheChainId, flareChainConfig, flareChainId, songbirdChainConfig, songbirdChainId } from "../data/constants"
 
 export function chainFromRoute(route: string): string | null {
   let chain = null
@@ -22,12 +22,24 @@ export function chainIdToConfig(chainId: string | null): any {
   }
 }
 
-export function tokenToNetwork(token: string): any {
+export function tokenToNetwork(token: string): string {
   if (token.includes('FLR')) {
     return 'flare'
   } else if (token.includes('SGB')) {
     return 'songbird'
   } else if (token.includes('AVAX')) {
     return 'avalanche'
+  }
+}
+
+export function chainToChainId(chain: string): string | null {
+  if (chain == 'flare') {
+    return flareChainId
+  } else if (chain == 'songbird') {
+    return songbirdChainId
+  } else if (chain == 'avalanche') {
+    return avalancheChainId
+  } else {
+    return null
   }
 }

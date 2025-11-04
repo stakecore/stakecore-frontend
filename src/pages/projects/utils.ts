@@ -1,8 +1,26 @@
-import { ensureProvider } from "~/utlits/contracts/utils"
 import { Formatter } from "~/utlits/misc/formatter"
 import { Status, StatusCode } from "~/constants"
+import { useGlobalStore } from "~/utlits/store/global"
+import { requestAccounts, switchNetworkIfNecessary } from "~/utlits/eip6963/eip1193"
 import type { Eip1193Provider } from "ethers"
 import type { IStakeFlowBarAction } from "~/components/types"
+
+
+export async function ensureProvider(): Promise<[Eip1193Provider | null, StatusCode]> {
+  let { walletProvider, setWalletChoiceVisible, chain } = useGlobalStore.getState()
+  if (walletProvider == null) {
+    setWalletChoiceVisible(true)
+    return [null, StatusCode.WALLET_CHOICE_SHOWN]
+  }
+  if (!await switchNetworkIfNecessary(chain, walletProvider.provider)) return
+  const { walletAddress, setWalletAddress } = useGlobalStore.getState()
+  if (walletAddress == null) {
+    const addresses = await requestAccounts(walletProvider.provider)
+    if (!addresses.length) return
+    setWalletAddress(addresses[0])
+  }
+  return [walletProvider.provider, StatusCode.WALLET_PROVIDER_OBTAINED]
+}
 
 
 export async function contractCallAdapter<T>(

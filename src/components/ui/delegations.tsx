@@ -13,15 +13,15 @@ const DelegatorList = ({ delegators }: { delegators: AvalancheDelegationDto[] })
     const duration = v.endTime - v.startTime
     const perc = Formatter.number(Math.min((now - v.startTime) / duration, 100), 3)
 
-    const str = new Date(v.startTime * 1000)
-    const end = new Date(v.endTime * 1000)
+    const str = Formatter.date(v.startTime)
+    const end = Formatter.date(v.endTime)
     const del = Formatter.number(v.delegated, 3)
     const rew = Formatter.number(v.reward + v.delegated, 3)
 
     return <div key={i}>
       <div>
-        <span style={{ float: 'left' }}>{del} AVAX at {str.toLocaleDateString()}</span>
-        <span style={{ float: 'right' }}>{rew} AVAX at {end.toLocaleDateString()}</span>
+        <span style={{ float: 'left' }}>{del} AVAX at {str}</span>
+        <span style={{ float: 'right' }}>{rew} AVAX at {end}</span>
       </div>
       <div className="progress-bar" style={{ position: 'relative' }}>
         <div className="center" style={{ fontSize: '16px', position: 'absolute' }}>{perc}%</div>

@@ -40,9 +40,9 @@ function modifyStakeFlowLayout(position: FspDelegatorInfoDto) {
 }
 
 const SongbirdFspLocalDelegateComponent = () => {
-  const walletAddress = useGlobalStore((state) => state.walletAddress)
-  const setWalletChoiceVisible = useGlobalStore((state) => state.setWalletChoiceVisible)
-  const walletChoiceVisible = useGlobalStore((state) => state.walletChoiceVisible)
+  const setWalletChoiceVisible = useGlobalStore(state => state.setWalletChoiceVisible)
+  const walletAddress = useGlobalStore(state => state.walletAddress)
+  const walletChoiceVisible = useGlobalStore(state => state.walletChoiceVisible)
 
   const { data, error, isLoading } = useSWR(['songbird-delegate', walletAddress], ([_, address]) => {
     if (address == null) return null
@@ -59,9 +59,11 @@ const SongbirdFspLocalDelegateComponent = () => {
 
   let component = null
   if (walletAddress == null) {
-    component = <a onClick={connectWallet} className="theme-btn">
-      Connect Wallet To See Your Position
-    </a>
+    component = <div style={{ textAlign: 'center' }}>
+      <a onClick={connectWallet} className="theme-btn">
+        Connect Wallet To See Your Position
+      </a>
+    </div>
   } else if (isLoading) {
     component = <div style={{ textAlign: 'center' }}>
       <SpinnerCircular color={C.SONGBIRD_COLOR_CODE} size={45} />

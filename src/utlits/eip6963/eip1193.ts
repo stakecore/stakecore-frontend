@@ -44,7 +44,7 @@ export async function requestAccounts(
 
 export async function tryAutoConnect(chainId: string, detail: EIP6963ProviderDetail): Promise<string | null> {
   const _chainId = await getChainId(detail.provider)
-  if (_chainId == chainId) {
+  if (chainId == null || _chainId == chainId) {
     const accounts = await getAccounts(detail.provider)
     if (accounts?.length) {
       return accounts[0]
@@ -54,7 +54,9 @@ export async function tryAutoConnect(chainId: string, detail: EIP6963ProviderDet
 }
 
 export async function switchNetworkIfNecessary(
-  chainId: string | null, ethereum: EIP1193Provider
+  chainId: string | null,
+  ethereum: EIP1193Provider,
+  addChain = true
 ): Promise<boolean> {
   const _chainId = await getChainId(ethereum)
   if (chainId != null && chainId != _chainId) {
@@ -65,12 +67,14 @@ export async function switchNetworkIfNecessary(
       })
     } catch (err: any) {
       // Chain not added to MetaMask
-      if (err.code === 4902) {
+      if (err.code === 4902 && addChain) {
         try {
-          const chainConfig = chainIdToConfig(chainId)
           await ethereum.request({
             method: 'wallet_addEthereumChain',
-            params: [{ chainConfig, blockExplorerUrls: null }],
+            params: [{
+              chainConfig: chainIdToConfig(chainId),
+              blockExplorerUrls: null
+            }],
           })
         } catch (err: any) {
           console.error(err)
