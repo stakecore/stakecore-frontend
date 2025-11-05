@@ -2,7 +2,7 @@ import useSWR from 'swr'
 import { SpinnerCircular } from 'spinners-react'
 import ProjectTitle from "~/components/pages/title"
 import InfoComponent from "~/components/pages/info"
-import FlareFspStatsComponent from "./components/stats"
+import SongbirdFspStatsComponent from "./components/stats"
 import FspDataLayer from "../flare-fsp/data"
 import ProjectDescription from './components/description'
 import SongbirdFspLocalDelegateComponent from './components/delegateLocal'
@@ -25,7 +25,7 @@ export const SongbirdFspPage = () => {
     component = <>
       <InfoComponent specs={data.specs} summary={data.summary} />
       <SongbirdFspLocalDelegateComponent />
-      <FlareFspStatsComponent />
+      <SongbirdFspStatsComponent />
     </>
   }
 

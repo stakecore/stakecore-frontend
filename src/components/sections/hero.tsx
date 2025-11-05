@@ -5,7 +5,7 @@ import profile from "../../assets/images/about/profile.svg"
 import SlideUp from '../../utlits/animations/slideUp'
 import avalanche from "../../assets/images/networks/AVAX.webp"
 import flare from "../../assets/images/networks/FLR.webp"
-import songbird from "../../assets/images/projects/songbird/logo.svg"
+import songbird from "../../assets/images/networks/SGB.svg"
 
 
 const Hero = () => {

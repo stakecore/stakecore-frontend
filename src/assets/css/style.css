@@ -475,11 +475,12 @@ html {
     -webkit-transform: rotate(-45deg);
     transform: rotate(-45deg);
     border: 1px solid var(--border-color);
+    background: rgba(0,0,0,.8)!important;
 }
 
 .details-btn:hover {
     color: var(--black-color);
-    background: var(--primary-color);
+    background: rgba(0,0,0,.6)!important;
 }
 
 .read-more {
@@ -1789,7 +1790,6 @@ ul.extra-skills li i {
     opacity: 1;
     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
 }
-
 
 .filter-btns-one {
     display: -webkit-box;

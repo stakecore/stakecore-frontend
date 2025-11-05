@@ -7,7 +7,7 @@ import { SONGBIRD_COLOR_CODE } from "~/utlits/data/constants"
 import MeterBar from "~/components/ui/meterBar"
 
 
-const FlareFspStatsComponent = () => {
+const SongbirdFspStatsComponent = () => {
   const { data, error, isLoading } = useSWR('songbird-fsp-graphics', (x) => FspDataLayer.getGraphicsData('songbird'))
 
   let component = null
@@ -168,4 +168,4 @@ const FlareFspStatsComponent = () => {
   return component
 }
 
-export default FlareFspStatsComponent
+export default SongbirdFspStatsComponent
