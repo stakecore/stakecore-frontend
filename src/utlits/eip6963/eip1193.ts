@@ -42,6 +42,22 @@ export async function requestAccounts(
   }
 }
 
+export async function personalSign(
+  message: string,
+  address: string,
+  ethereum: EIP1193Provider
+): Promise<string> {
+  try {
+    const sig = await ethereum.request({
+      method: 'personal_sign',
+      params: [message, address],
+    })
+    return sig as string
+  } catch (err: any) {
+    return null
+  }
+}
+
 export async function tryAutoConnect(chainId: string, detail: EIP6963ProviderDetail): Promise<string | null> {
   const _chainId = await getChainId(detail.provider)
   if (chainId == null || _chainId == chainId) {

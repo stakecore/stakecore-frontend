@@ -7,32 +7,37 @@ import type { ApiResponseDto_AvalancheValidatorInfoDto } from '../models/ApiResp
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-export class DataService {
+export class ValidatorService {
     /**
      * Frontend page info for the Avalanche validator
      * @returns ApiResponseDto_AvalancheValidatorInfoDto
      * @throws ApiError
      */
-    public static dataControllerGetAvalancheValidatorPageInfo(): CancelablePromise<ApiResponseDto_AvalancheValidatorInfoDto> {
+    public static validatorControllerGetAvalancheValidatorPageInfo(): CancelablePromise<ApiResponseDto_AvalancheValidatorInfoDto> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/data/avalanche/validator/info',
+            url: '/api/validator/avalanche/validator/info',
         });
     }
     /**
-     * Information about Stakecore's delegator given as an eip-55 checksummed hex string
-     * @param delegator
+     * Information about Stakecore's delegator requested by a given C-Chain address and an optional P-Chain address
+     * @param cChainAddress
+     * @param pChainAddress User's explicit P-Chain address
      * @returns ApiResponseDto_AvalancheDelegatorInfoDto
      * @throws ApiError
      */
-    public static dataControllerGetAvalancheDelegatorInfo(
-        delegator: string,
+    public static validatorControllerGetAvalancheDelegatorInfo(
+        cChainAddress: string,
+        pChainAddress?: string,
     ): CancelablePromise<ApiResponseDto_AvalancheDelegatorInfoDto> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/data/avalanche/validator/delegator-info/{delegator}',
+            url: '/api/validator/avalanche/validator/delegator/{cChainAddress}',
             path: {
-                'delegator': delegator,
+                'cChainAddress': cChainAddress,
+            },
+            query: {
+                'pChainAddress': pChainAddress,
             },
         });
     }

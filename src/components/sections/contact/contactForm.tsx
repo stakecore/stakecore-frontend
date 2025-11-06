@@ -1,6 +1,6 @@
 import { RiMailLine } from '@remixicon/react'
 import SlideUp from '../../../utlits/animations/slideUp'
-import { DataService, FormDto } from '../../../backendApi'
+import { FormService, FormDto } from '../../../backendApi'
 
 
 const reemail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
@@ -16,7 +16,7 @@ const ContactForm = () => {
         const form = document.getElementById('contactForm') as HTMLFormElement
         const data = Object.fromEntries(new FormData(form).entries()) as FormDto
         if (!formIsValid(data)) return
-        const response = await DataService.formControllerSubmitForm(data)
+        const response = await FormService.formControllerSubmitForm(data)
         if (response.status == 201) {
             document.getElementById('msgSubmit').classList.add('text-success')
             document.getElementById('msgSubmit').innerHTML = "Message Submitted Successfully"

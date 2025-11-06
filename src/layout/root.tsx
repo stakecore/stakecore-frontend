@@ -11,6 +11,7 @@ import DiscoverWalletProviders from '../components/sections/eip6963'
 import ScrollToTop from '../components/sections/scrollToTop'
 import { Tooltip } from 'react-tooltip'
 import { useEffect } from 'react'
+import { CookiesProvider } from 'react-cookie'
 
 
 function chainToClassName(chain: string): string {
@@ -41,9 +42,11 @@ const RootLayout = () => {
       <Preloader />
       <Header />
       <div className={classname}>
-        <Outlet />
-        <CallToAction />
-        <Footer />
+        <CookiesProvider>
+          <Outlet />
+          <CallToAction />
+          <Footer />
+        </CookiesProvider>
       </div>
       <ToastContainer theme='dark' position='top-left' />
       <Tooltip id="tooltip" />

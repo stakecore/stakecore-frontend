@@ -60,9 +60,9 @@
                 ]
             }
         },
-        "/api/data/avalanche/validator/info": {
+        "/api/validator/avalanche/validator/info": {
             "get": {
-                "operationId": "DataController_getAvalancheValidatorPageInfo",
+                "operationId": "ValidatorController_getAvalancheValidatorPageInfo",
                 "summary": "Frontend page info for the Avalanche validator",
                 "parameters": [],
                 "responses": {
@@ -78,19 +78,28 @@
                     }
                 },
                 "tags": [
-                    "Data"
+                    "Validator"
                 ]
             }
         },
-        "/api/data/avalanche/validator/delegator-info/{delegator}": {
+        "/api/validator/avalanche/validator/delegator/{cChainAddress}": {
             "get": {
-                "operationId": "DataController_getAvalancheDelegatorInfo",
-                "summary": "Information about Stakecore's delegator given as an eip-55 checksummed hex string",
+                "operationId": "ValidatorController_getAvalancheDelegatorInfo",
+                "summary": "Information about Stakecore's delegator requested by a given C-Chain address and an optional P-Chain address",
                 "parameters": [
                     {
-                        "name": "delegator",
+                        "name": "cChainAddress",
                         "required": true,
                         "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "pChainAddress",
+                        "required": false,
+                        "in": "query",
+                        "description": "User's explicit P-Chain address",
                         "schema": {
                             "type": "string"
                         }
@@ -109,7 +118,7 @@
                     }
                 },
                 "tags": [
-                    "Data"
+                    "Validator"
                 ]
             }
         },
@@ -217,7 +226,7 @@
     },
     "info": {
         "title": "FAsset Indexer Api",
-        "description": "Api for the FAsset indexer",
+        "description": "Api for the StakeCore backend",
         "version": "1.0",
         "contact": {}
     },

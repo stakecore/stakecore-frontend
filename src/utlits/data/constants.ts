@@ -116,3 +116,11 @@ export const avalancheChainId = '0xa86a'
 export const FLARE_COLOR_CODE = '#E62058'
 export const AVALANCHE_COLOR_CODE = '#FF394A'
 export const SONGBIRD_COLOR_CODE = '#253c4d'
+
+// hrps
+
+export const HRP = {
+  avalanche: "avax",
+  songbird: "songbird",
+  flare: "flare",
+}

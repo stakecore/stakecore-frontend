@@ -13,6 +13,7 @@ import './assets/css/meterBar.css'
 import './assets/css/countdown.css'
 import './assets/css/investFlow.scss'
 import './assets/css/progressBar.css'
+import './assets/css/specs.css'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

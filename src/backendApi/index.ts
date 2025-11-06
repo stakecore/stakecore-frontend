@@ -28,6 +28,6 @@ export type { FspInfoDto } from './models/FspInfoDto';
 export type { FtsoSubmissionDataDto } from './models/FtsoSubmissionDataDto';
 export type { FtsoSubmissionTimeSeriesDto } from './models/FtsoSubmissionTimeSeriesDto';
 
-export { DataService } from './services/DataService';
 export { FormService } from './services/FormService';
 export { FspService } from './services/FspService';
+export { ValidatorService } from './services/ValidatorService';

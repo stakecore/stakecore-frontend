@@ -1,18 +1,18 @@
+import { Formatter } from "~/utlits/misc/formatter"
 import { AddressLink } from "~/components/utils/links"
 import { avalanchePChainTransactionUrl, avalancheValidatorUrl } from "~/utlits/data/constants"
-import { AvalancheDelegatorInfoDto, AvalancheValidatorInfoDto, DataService } from "~/backendApi"
+import { ApiResponseDto_AvalancheDelegatorInfoDto, AvalancheValidatorInfoDto, ValidatorService } from "~/backendApi"
 import type { AvalancheData, IDelegation, IGraphics } from "./types"
 import type { ISpecs, ISummary } from "~/components/types"
 
-namespace AvalancheValidatorDataAccess {
+export namespace AvalancheValidatorDataAccess {
 
-  export async function getDelegatorInfo(address: string): Promise<AvalancheDelegatorInfoDto> {
-    const resp = await DataService.dataControllerGetAvalancheDelegatorInfo(address)
-    return resp.data
+  export async function getDelegatorInfo(address: string, pchain: string): Promise<ApiResponseDto_AvalancheDelegatorInfoDto> {
+    return await ValidatorService.validatorControllerGetAvalancheDelegatorInfo(address, pchain)
   }
 
   async function getPageData(): Promise<AvalancheValidatorInfoDto> {
-    const resp = await DataService.dataControllerGetAvalancheValidatorPageInfo()
+    const resp = await ValidatorService.validatorControllerGetAvalancheValidatorPageInfo()
     return resp.data
   }
 
@@ -44,8 +44,8 @@ namespace AvalancheValidatorDataAccess {
     const validatorNodeIdLink = <AddressLink url={validatorUrl} address={data.validatorNodeId} />
 
     // validator duration
-    const validatorDuration = data.validatorEndTime - data.validatorStartTime
-    const validatorDurationDays = Math.floor(validatorDuration / 86400)
+    const validatorStartTime = Formatter.date(data.validatorStartTime)
+    const validatorEndTime = Formatter.date(data.validatorEndTime)
 
     const specs = [
       [
@@ -60,9 +60,14 @@ namespace AvalancheValidatorDataAccess {
       ],
       [
         {
-          title: 'Delegation Fee',
-          value: data.validatorFee + '%',
-          tooltip: 'Fee charged to delegators',
+          title: 'Validator Start Time',
+          value: validatorStartTime,
+          tooltip: 'Time when we staked funds to our validator'
+        },
+        {
+          title: 'Validator End Time',
+          value: validatorEndTime,
+          tooltip: 'Time when the stake to the validator expires'
         },
         {
           title: 'Validator Owned Stake',
@@ -70,9 +75,9 @@ namespace AvalancheValidatorDataAccess {
           tooltip: 'Amount staked by Stakecore'
         },
         {
-          title: 'Validator Duration',
-          value: validatorDurationDays + ' days',
-          tooltip: 'Duration of the current validation instance'
+          title: 'Delegation Fee',
+          value: data.validatorFee + '%',
+          tooltip: 'Fee charged to delegators',
         }
       ]
     ]
