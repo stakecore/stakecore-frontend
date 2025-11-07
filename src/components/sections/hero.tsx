@@ -6,6 +6,7 @@ import SlideUp from '../../utlits/animations/slideUp'
 import avalanche from "../../assets/images/networks/AVAX.webp"
 import flare from "../../assets/images/networks/FLR.webp"
 import songbird from "../../assets/images/networks/SGB.svg"
+import DelegationCounter from '../ui/pageStats'
 
 
 const Hero = () => {
@@ -19,8 +20,8 @@ const Hero = () => {
                             <div className="about-image-part">
                                 <img src={profile} alt="About Us" />
                                 <p style={{marginTop: 30, marginBottom: 40}}>
-                                    Infrastructure provider for various crypto networks.
-                                    Provide security by delegating your assets with us and earn yield in return!
+                                    Infrastructure provider for core protocols on various crypto networks.
+                                    Provide security by delegating your assets and earn yield in return!
                                 </p>
                                 <div className="about-social text-center">
                                     <ul>
@@ -38,12 +39,7 @@ const Hero = () => {
                     <div className="col-lg-8">
                         <SlideUp>
                             <div className="about-content-part">
-                                <p>Who are we?</p>
-                                <h3>An inrastructure, investment, and development group</h3>
-                                <div className="adress-field">
-                                    We focus on running secure infrastructure for decentralized networks,
-                                    and securing them economically with investments through yield offerings.
-                                </div>
+                                <DelegationCounter />
                             </div>
                         </SlideUp>
                         <SlideUp>

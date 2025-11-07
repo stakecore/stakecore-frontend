@@ -222,6 +222,28 @@
                     "FSP"
                 ]
             }
+        },
+        "/api/page/total-delegated": {
+            "get": {
+                "operationId": "PageController_getTotalDelegated",
+                "summary": "Frontend page info for the Flare FSP",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseDto_PageStats"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Page Data"
+                ]
+            }
         }
     },
     "info": {
@@ -652,6 +674,64 @@
                     },
                     "data": {
                         "$ref": "#/components/schemas/FspDelegatorInfoDto"
+                    },
+                    "error": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "status"
+                ]
+            },
+            "ProjectBaseStats": {
+                "type": "object",
+                "properties": {
+                    "project": {
+                        "type": "string"
+                    },
+                    "token": {
+                        "type": "string"
+                    },
+                    "delegated": {
+                        "type": "number"
+                    },
+                    "delegatedUsd": {
+                        "type": "number"
+                    },
+                    "delegators": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "project",
+                    "token",
+                    "delegated",
+                    "delegatedUsd",
+                    "delegators"
+                ]
+            },
+            "PageStats": {
+                "type": "object",
+                "properties": {
+                    "results": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ProjectBaseStats"
+                        }
+                    }
+                },
+                "required": [
+                    "results"
+                ]
+            },
+            "ApiResponseDto_PageStats": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "number"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/PageStats"
                     },
                     "error": {
                         "type": "string"
