@@ -83,17 +83,37 @@
   border: 1.25px solid #253c4d;
 }
 
-.custom-block {
+.notification-block {
   border-left: 4px solid #999;
   padding: 0.5rem 1rem;
-  background: rgba(0,0,0,.5);
+  background: rgba(0, 0, 0, .5);
 }
-.custom-block.note {
+
+.notification-block.note {
   border-color: lime;
 }
-.custom-block.warning {
+
+.notification-block.warning {
   border-color: orange;
 }
-.custom-block.danger {
+
+.notification-block.danger {
   border-color: red;
+}
+
+
+.delegation-updates {
+  display: grid;
+  grid-template-columns: auto auto auto auto auto;
+}
+
+.delegation-updates div {
+  padding: 5px 0;
+  text-align: center;
+  border-bottom: 1px solid rgba(0,0,0,.2);
+}
+
+.delegation-updates div:nth-child(-n + 5) {
+  color: white;
+  font-weight: bold;
 }

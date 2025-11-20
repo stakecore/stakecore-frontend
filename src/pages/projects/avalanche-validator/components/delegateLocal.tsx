@@ -138,7 +138,7 @@ const AvalancheValidatorLocalDelegateComponent = () => {
           we can extract the public key from the signature and derive its P-chain address.
           Note that your public key will be stored as a cookie but never leave the browser.
         </p>
-        <div className="custom-block danger mt-10 mb-20">
+        <div className="notification-block danger mt-10 mb-20">
           Our test message is <b>{TEST_SIGN_MSG}</b>, never sign anything else!
         </div>
       </div>

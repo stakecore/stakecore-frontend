@@ -41,9 +41,9 @@ const Portfolio = ({ className }) => {
                             <SlideUp>
                                 <div className="section-title text-center">
                                     <h2>Projects</h2>
-                                    <p>As of now we provide services to Avalanche and Flare networks, along with
-                                        Flare's canary network Songbird. All of the below projects specify their own
-                                        rules and reward structure, which we aim to aggregate.
+                                    <p>As of now we provide services to core protocols on Avalanche and Flare network,
+                                        along with Flare's economic testnet Songbird.
+                                        All of the supported protocols specify their own rules and reward structure.
                                     </p>
                                 </div>
                             </SlideUp>

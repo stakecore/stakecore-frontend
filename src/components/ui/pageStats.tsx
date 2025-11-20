@@ -1,13 +1,12 @@
-import { useEffect } from "react"
 import { SpinnerCircular } from "spinners-react"
-import useSWR, { mutate } from "swr"
+import useSWR from "swr"
 import { PageDataService } from "~/backendApi"
 import { Formatter } from "~/utlits/misc/formatter"
 
 
-const DelegationCounter = () => {
-  const { data, isLoading, error } = useSWR(['page-total-delegated'], (_) => {
-    return PageDataService.pageControllerGetTotalDelegated()
+const PageStats = () => {
+  const { data, isLoading, error } = useSWR(['page-info'], (_) => {
+    return PageDataService.pageControllerGetPageInfo()
   }, {
     refreshInterval: 30_000,
     revalidateOnReconnect: true
@@ -16,11 +15,11 @@ const DelegationCounter = () => {
   let delegated = null
   let delegators = null
   if (data?.data != null) {
-    delegated = Formatter.number(data.data.results.reduce((x, y) => x + y.delegatedUsd, 0), 3)
-    delegators = data.data.results.reduce((x, y) => x + y.delegators, 0)
+    delegated = Formatter.number(data.data.delegated.reduce((x, y) => x + y.delegatedUsd, 0), 3)
+    delegators = data.data.delegated.reduce((x, y) => x + y.delegators, 0)
   } else if (isLoading) {
-    delegated = <span style={{ marginLeft: 15 }}><SpinnerCircular color='FireBrick' size={25} /></span>
-    delegators = <span style={{ marginRight: 15 }}><SpinnerCircular color='FireBrick' size={25} /></span>
+    delegated = <span style={{ marginLeft: 15 }}><SpinnerCircular color='white' size={25} /></span>
+    delegators = <span style={{ marginRight: 15 }}><SpinnerCircular color='white' size={25} /></span>
   } else {
     delegated = <span>{String(error)}</span>
     delegators = <span>{String(error)}</span>
@@ -42,7 +41,7 @@ const DelegationCounter = () => {
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M18 15L12 9L6 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-            <span>12.4% in last 24h</span>
+            <span>12.4% in 24h</span>
           </div>
         </div>
 
@@ -58,7 +57,7 @@ const DelegationCounter = () => {
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M18 15L12 9L6 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-            <span>8.7% in last 24h</span>
+            <span>8.7% in 24h</span>
           </div>
         </div>
 
@@ -67,4 +66,4 @@ const DelegationCounter = () => {
   </div>
 }
 
-export default DelegationCounter
+export default PageStats

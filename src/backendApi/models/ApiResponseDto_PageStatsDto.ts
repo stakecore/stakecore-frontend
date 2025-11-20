@@ -2,10 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { PageStats } from './PageStats';
-export type ApiResponseDto_PageStats = {
+import type { PageStatsDto } from './PageStatsDto';
+export type ApiResponseDto_PageStatsDto = {
     status: number;
-    data?: PageStats;
+    data?: PageStatsDto;
     error?: string;
 };
 

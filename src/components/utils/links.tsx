@@ -12,9 +12,9 @@ export const CopyPasteButton = ({ text }) => {
   </Link>
 }
 
-export const AddressLink = ({ address, url }) => {
+export const AddressLink = ({ address, url, length = 10 }) => {
   return <span>
-    <a href={url} target="_blank" rel="noopener noreferrer">{Formatter.address(address, 10)}</a>
+    <a style={{ fontFamily: 'monospace' }} href={url} target="_blank" rel="noopener noreferrer">{Formatter.address(address, length)}</a>
     &nbsp;&nbsp;
     <CopyPasteButton text={address} />
   </span>

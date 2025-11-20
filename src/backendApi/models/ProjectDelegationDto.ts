@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type ProjectBaseStats = {
+export type ProjectDelegationDto = {
     project: string;
     token: string;
     delegated: number;

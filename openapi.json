@@ -223,10 +223,10 @@
                 ]
             }
         },
-        "/api/page/total-delegated": {
+        "/api/page/info": {
             "get": {
-                "operationId": "PageController_getTotalDelegated",
-                "summary": "Frontend page info for the Flare FSP",
+                "operationId": "PageController_getPageInfo",
+                "summary": "Stakecore frontend page info",
                 "parameters": [],
                 "responses": {
                     "200": {
@@ -234,7 +234,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ApiResponseDto_PageStats"
+                                    "$ref": "#/components/schemas/ApiResponseDto_PageStatsDto"
                                 }
                             }
                         }
@@ -683,7 +683,7 @@
                     "status"
                 ]
             },
-            "ProjectBaseStats": {
+            "ProjectDelegationDto": {
                 "type": "object",
                 "properties": {
                     "project": {
@@ -710,28 +710,74 @@
                     "delegators"
                 ]
             },
-            "PageStats": {
+            "DelegationDto": {
                 "type": "object",
                 "properties": {
-                    "results": {
+                    "chain": {
+                        "type": "number",
+                        "enum": [
+                            0,
+                            1
+                        ]
+                    },
+                    "protocol": {
+                        "type": "number",
+                        "enum": [
+                            0,
+                            1
+                        ]
+                    },
+                    "delegatee": {
+                        "type": "string"
+                    },
+                    "delegator": {
+                        "type": "string"
+                    },
+                    "delegated": {
+                        "type": "string"
+                    },
+                    "timestamp": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "chain",
+                    "protocol",
+                    "delegatee",
+                    "delegator",
+                    "delegated",
+                    "timestamp"
+                ]
+            },
+            "PageStatsDto": {
+                "type": "object",
+                "properties": {
+                    "delegated": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/ProjectBaseStats"
+                            "$ref": "#/components/schemas/ProjectDelegationDto"
+                        }
+                    },
+                    "delegations": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/DelegationDto"
                         }
                     }
                 },
                 "required": [
-                    "results"
+                    "delegated",
+                    "delegations"
                 ]
             },
-            "ApiResponseDto_PageStats": {
+            "ApiResponseDto_PageStatsDto": {
                 "type": "object",
                 "properties": {
                     "status": {
                         "type": "number"
                     },
                     "data": {
-                        "$ref": "#/components/schemas/PageStats"
+                        "$ref": "#/components/schemas/PageStatsDto"
                     },
                     "error": {
                         "type": "string"

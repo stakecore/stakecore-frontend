@@ -2,20 +2,20 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { ApiResponseDto_PageStats } from '../models/ApiResponseDto_PageStats';
+import type { ApiResponseDto_PageStatsDto } from '../models/ApiResponseDto_PageStatsDto';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class PageDataService {
     /**
-     * Frontend page info for the Flare FSP
-     * @returns ApiResponseDto_PageStats
+     * Stakecore frontend page info
+     * @returns ApiResponseDto_PageStatsDto
      * @throws ApiError
      */
-    public static pageControllerGetTotalDelegated(): CancelablePromise<ApiResponseDto_PageStats> {
+    public static pageControllerGetPageInfo(): CancelablePromise<ApiResponseDto_PageStatsDto> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/page/total-delegated',
+            url: '/api/page/info',
         });
     }
 }

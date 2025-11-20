@@ -1,12 +1,9 @@
 import { Link } from 'react-router-dom'
-import Marquee from "react-fast-marquee"
 import { RiGithubLine, RiTwitterXLine } from '@remixicon/react'
 import profile from "../../assets/images/about/profile.svg"
 import SlideUp from '../../utlits/animations/slideUp'
-import avalanche from "../../assets/images/networks/AVAX.webp"
-import flare from "../../assets/images/networks/FLR.webp"
-import songbird from "../../assets/images/networks/SGB.svg"
-import DelegationCounter from '../ui/pageStats'
+import PageStats from '../ui/pageStats'
+import TokenStats from '../ui/tokenStats'
 
 
 const Hero = () => {
@@ -19,7 +16,7 @@ const Hero = () => {
                         <SlideUp>
                             <div className="about-image-part">
                                 <img src={profile} alt="About Us" />
-                                <p style={{marginTop: 30, marginBottom: 40}}>
+                                <p style={{ marginTop: 30, marginBottom: 40 }}>
                                     Infrastructure provider for core protocols on various crypto networks.
                                     Provide security by delegating your assets and earn yield in return!
                                 </p>
@@ -39,23 +36,12 @@ const Hero = () => {
                     <div className="col-lg-8">
                         <SlideUp>
                             <div className="about-content-part">
-                                <DelegationCounter />
+                                <PageStats />
                             </div>
                         </SlideUp>
                         <SlideUp>
                             <div className="about-content-part-bottom">
-                                <h2>Networks we're providing infrastructure on</h2>
-                                <div className="company-list">
-                                    <div className="scroller">
-                                        <div className="scroller__inner">
-                                            <div>
-                                                <img height={"75px"} src={avalanche} alt="" />
-                                                <img height={"75px"} src={flare} alt="" />
-                                                <img height={"75px"} src={songbird} alt="" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <TokenStats />
                             </div>
                         </SlideUp>
                     </div>

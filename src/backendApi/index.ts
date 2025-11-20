@@ -13,11 +13,12 @@ export type { ApiResponseDto_AvalancheValidatorInfoDto } from './models/ApiRespo
 export type { ApiResponseDto_FspDelegatorInfoDto } from './models/ApiResponseDto_FspDelegatorInfoDto';
 export type { ApiResponseDto_FspGraphicsDataDto } from './models/ApiResponseDto_FspGraphicsDataDto';
 export type { ApiResponseDto_FspInfoDto } from './models/ApiResponseDto_FspInfoDto';
-export type { ApiResponseDto_PageStats } from './models/ApiResponseDto_PageStats';
+export type { ApiResponseDto_PageStatsDto } from './models/ApiResponseDto_PageStatsDto';
 export type { AvalancheDelegationDto } from './models/AvalancheDelegationDto';
 export type { AvalancheDelegatorInfoDto } from './models/AvalancheDelegatorInfoDto';
 export type { AvalancheSubChainBalanceDto } from './models/AvalancheSubChainBalanceDto';
 export type { AvalancheValidatorInfoDto } from './models/AvalancheValidatorInfoDto';
+export { DelegationDto } from './models/DelegationDto';
 export type { FormDto } from './models/FormDto';
 export type { FspDelegationTimeSeries } from './models/FspDelegationTimeSeries';
 export type { FspDelegationTimeSeriesDto } from './models/FspDelegationTimeSeriesDto';
@@ -28,8 +29,8 @@ export type { FspGraphicsDataDto } from './models/FspGraphicsDataDto';
 export type { FspInfoDto } from './models/FspInfoDto';
 export type { FtsoSubmissionDataDto } from './models/FtsoSubmissionDataDto';
 export type { FtsoSubmissionTimeSeriesDto } from './models/FtsoSubmissionTimeSeriesDto';
-export type { PageStats } from './models/PageStats';
-export type { ProjectBaseStats } from './models/ProjectBaseStats';
+export type { PageStatsDto } from './models/PageStatsDto';
+export type { ProjectDelegationDto } from './models/ProjectDelegationDto';
 
 export { FormService } from './services/FormService';
 export { FspService } from './services/FspService';
