@@ -1,5 +1,4 @@
 import { RiBookLine } from '@remixicon/react'
-import React from 'react'
 import SlideUp from '../../utlits/animations/slideUp'
 
 const Resume = () => {

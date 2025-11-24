@@ -132,6 +132,7 @@
   @media (max-width: 600px) {
     .metrics-grid {
       grid-template-columns: 1fr;
+      place-items: center;
     }
 
     .stats-grid {

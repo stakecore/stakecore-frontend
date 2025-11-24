@@ -247,7 +247,7 @@
         }
     },
     "info": {
-        "title": "FAsset Indexer Api",
+        "title": "Stakecore Indexer Api",
         "description": "Api for the StakeCore backend",
         "version": "1.0",
         "contact": {}
@@ -736,6 +736,9 @@
                     "delegated": {
                         "type": "string"
                     },
+                    "transaction": {
+                        "type": "string"
+                    },
                     "timestamp": {
                         "type": "number"
                     }
@@ -746,6 +749,7 @@
                     "delegatee",
                     "delegator",
                     "delegated",
+                    "transaction",
                     "timestamp"
                 ]
             },

@@ -1,16 +1,11 @@
 import { SpinnerCircular } from "spinners-react"
-import useSWR from "swr"
-import { PageDataService } from "~/backendApi"
+import { ApiResponseDto_PageStatsDto } from "~/backendApi"
 import { Formatter } from "~/utlits/misc/formatter"
 
 
-const PageStats = () => {
-  const { data, isLoading, error } = useSWR(['page-info'], (_) => {
-    return PageDataService.pageControllerGetPageInfo()
-  }, {
-    refreshInterval: 30_000,
-    revalidateOnReconnect: true
-  })
+const DelegatedStats = ({ data, isLoading, error }: {
+  data: ApiResponseDto_PageStatsDto, isLoading: boolean, error: string
+}) => {
 
   let delegated = null
   let delegators = null
@@ -29,7 +24,7 @@ const PageStats = () => {
     <div className="dashboard loading">
 
       <div className="metrics-grid">
-        <div className="metric-card" data-start="0" data-end="7489" data-increment="1" data-speed="20">
+        <div className="metric-card" data-start="0" data-end="7489" data-increment="1" data-speed="10">
           <div className="metric-title">
             Total Delegated
           </div>
@@ -45,7 +40,7 @@ const PageStats = () => {
           </div>
         </div>
 
-        <div className="metric-card" data-start="0" data-end="843217" data-increment="100" data-speed="5">
+        <div className="metric-card" data-start="0" data-end="843217" data-increment="100" data-speed="1">
           <div className="metric-title">
             Our Delegators
           </div>
@@ -66,4 +61,4 @@ const PageStats = () => {
   </div>
 }
 
-export default PageStats
+export default DelegatedStats

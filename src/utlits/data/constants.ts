@@ -30,8 +30,10 @@ export const flareFspRewardManagerAbi = [
 export const flareEvmExplorer = 'https://flare-explorer.flare.network'
 export const flareFspExplorer = 'https://flare-systems-explorer.flare.network'
 
-export const flareEvmUrl = (address: string) => `${flareEvmExplorer}/address/${address}`
-export const flareFspUrl = (address: string) => `${flareEvmExplorer}/providers/fsp/${address}`
+export const flareEvmAddressUrl = (address: string) => `${flareEvmExplorer}/address/${address}`
+export const flareEvmTransactionUrl = (hash: string) => `${flareEvmExplorer}/tx/${hash}`
+
+export const flareFspAddressUrl = (address: string) => `${flareEvmExplorer}/providers/fsp/${address}`
 
 export const flareDelegationAdr = '0x1e68DC808A240C096F0261144dc41fd4c883Cfb0'
 
@@ -66,8 +68,10 @@ export const songbirdFspRewardManagerAbi = flareFspRewardManagerAbi
 export const songbirdEvmExplorer = 'https://songbird-explorer.flare.network'
 export const songbirdFspExplorer = 'https://songbird-systems-explorer.flare.network'
 
-export const songbirdEvmUrl = (address: string) => `${songbirdEvmExplorer}/address/${address}`
-export const songbirdFspUrl = (address: string) => `${songbirdEvmExplorer}/providers/fsp/${address}`
+export const songbirdEvmAddressUrl = (address: string) => `${songbirdEvmExplorer}/address/${address}`
+export const songbirdEvmTransactionUrl = (hash: string) => `${songbirdEvmExplorer}/tx/${hash}`
+
+export const songbirdFspAddressUrl = (address: string) => `${songbirdEvmExplorer}/providers/fsp/${address}`
 
 export const songbirdDelegationAdr = '0x1e68DC808A240C096F0261144dc41fd4c883Cfb0'
 

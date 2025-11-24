@@ -105,6 +105,7 @@
 .delegation-updates {
   display: grid;
   grid-template-columns: auto auto auto auto auto;
+  overflow-x: auto;
 }
 
 .delegation-updates div {

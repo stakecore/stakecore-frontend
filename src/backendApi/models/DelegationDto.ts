@@ -8,6 +8,7 @@ export type DelegationDto = {
     delegatee: string;
     delegator: string;
     delegated: string;
+    transaction: string;
     timestamp: number;
 };
 export namespace DelegationDto {

@@ -1,5 +1,5 @@
 import { FspDelegatorInfoDto, FspGraphicsDataDto, FspInfoDto, FspService } from "~/backendApi"
-import { flareEvmUrl, flareFspUrl } from "~/utlits/data/constants"
+import { flareEvmAddressUrl, flareFspAddressUrl } from "~/utlits/data/constants"
 import { AddressLink } from "~/components/utils/links"
 import type { ISpecs, ISummary } from "~/components/types"
 import type { FspData } from "./types"
@@ -38,9 +38,9 @@ namespace FspDataLayer {
   }
 
   function getSpecs(info: FspInfoDto): ISpecs {
-    const delegationAddressUrl = flareEvmUrl(info.delegationAddress)
+    const delegationAddressUrl = flareEvmAddressUrl(info.delegationAddress)
     const delegationAddressLink = <AddressLink url={delegationAddressUrl} address={info.delegationAddress} />
-    const identityAddressUrl = flareFspUrl(info.identityAddress)
+    const identityAddressUrl = flareFspAddressUrl(info.identityAddress)
     const identityAddressLink = <AddressLink url={identityAddressUrl} address={info.identityAddress} />
     return [
       [
