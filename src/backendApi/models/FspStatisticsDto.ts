@@ -4,7 +4,7 @@
 /* eslint-disable */
 import type { FspDelegationTimeSeriesDto } from './FspDelegationTimeSeriesDto';
 import type { FtsoSubmissionTimeSeriesDto } from './FtsoSubmissionTimeSeriesDto';
-export type FspGraphicsDataDto = {
+export type FspStatisticsDto = {
     delegations: FspDelegationTimeSeriesDto;
     submissions: FtsoSubmissionTimeSeriesDto;
 };

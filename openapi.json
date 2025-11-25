@@ -142,38 +142,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ApiResponseDto_FspInfoDto"
-                                }
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "FSP"
-                ]
-            }
-        },
-        "/api/fsp/graphics/{chain}": {
-            "get": {
-                "operationId": "FspController_getFlareFspGraphicsData",
-                "summary": "Frontend page graphics data for the Flare FSP",
-                "parameters": [
-                    {
-                        "name": "chain",
-                        "required": true,
-                        "in": "path",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiResponseDto_FspGraphicsDataDto"
+                                    "$ref": "#/components/schemas/ApiResponseDto_FspPageDataDto"
                                 }
                             }
                         }
@@ -487,23 +456,6 @@
                     "providerFee"
                 ]
             },
-            "ApiResponseDto_FspInfoDto": {
-                "type": "object",
-                "properties": {
-                    "status": {
-                        "type": "number"
-                    },
-                    "data": {
-                        "$ref": "#/components/schemas/FspInfoDto"
-                    },
-                    "error": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "status"
-                ]
-            },
             "FspDelegationTimeSeries": {
                 "type": "object",
                 "properties": {
@@ -574,7 +526,7 @@
                     "result"
                 ]
             },
-            "FspGraphicsDataDto": {
+            "FspStatisticsDto": {
                 "type": "object",
                 "properties": {
                     "delegations": {
@@ -589,14 +541,29 @@
                     "submissions"
                 ]
             },
-            "ApiResponseDto_FspGraphicsDataDto": {
+            "FspPageDataDto": {
+                "type": "object",
+                "properties": {
+                    "info": {
+                        "$ref": "#/components/schemas/FspInfoDto"
+                    },
+                    "statistics": {
+                        "$ref": "#/components/schemas/FspStatisticsDto"
+                    }
+                },
+                "required": [
+                    "info",
+                    "statistics"
+                ]
+            },
+            "ApiResponseDto_FspPageDataDto": {
                 "type": "object",
                 "properties": {
                     "status": {
                         "type": "number"
                     },
                     "data": {
-                        "$ref": "#/components/schemas/FspGraphicsDataDto"
+                        "$ref": "#/components/schemas/FspPageDataDto"
                     },
                     "error": {
                         "type": "string"
@@ -762,6 +729,12 @@
                             "$ref": "#/components/schemas/ProjectDelegationDto"
                         }
                     },
+                    "delegatedHistoric": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ProjectDelegationDto"
+                        }
+                    },
                     "delegations": {
                         "type": "array",
                         "items": {
@@ -771,6 +744,7 @@
                 },
                 "required": [
                     "delegated",
+                    "delegatedHistoric",
                     "delegations"
                 ]
             },

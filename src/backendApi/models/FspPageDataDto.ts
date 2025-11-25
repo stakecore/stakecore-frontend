@@ -3,9 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { FspInfoDto } from './FspInfoDto';
-export type ApiResponseDto_FspInfoDto = {
-    status: number;
-    data?: FspInfoDto;
-    error?: string;
+import type { FspStatisticsDto } from './FspStatisticsDto';
+export type FspPageDataDto = {
+    info: FspInfoDto;
+    statistics: FspStatisticsDto;
 };
 

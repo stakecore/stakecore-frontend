@@ -21,6 +21,7 @@ type args = {
 }
 
 const MeterBar = ({ name, value, text, ranges, height = 40, reverse = false }: args) => {
+  value = value * MAX_PERC
 
   function getRatio(index: number) {
     return Math.floor(MAX_PERC * index / LED_TOTAL)

@@ -1,20 +1,23 @@
 import React from "react"
-import { tokenToNetwork } from "~/utlits/misc/translations"
+import classNames from "classnames"
 import SpecsTooltip from "./tooltip"
+import { chainToDivBorderClassName, symbolToChain } from "~/utlits/misc/translations"
 import type { ISpecs } from "../types"
 
 
 const InfoComponent = ({ summary, specs }) => {
-  const network = tokenToNetwork(summary.asset)
+  const chain = symbolToChain(summary.asset)
+  const classname = chainToDivBorderClassName(chain)
+
   return <>
     <div className="row">
       <div className="col-lg-3">
-        <div className={`single-project-page-left wow fadeInUp delay-0-2s ${network}-div-border`}>
+        <div className={classNames('single-project-page-left wow fadeInUp delay-0-2s', { [classname]: true })}>
           <ProjectInfoSummary {...summary} />
         </div>
       </div>
       <div className="col-lg-9">
-        <div className={`single-project-page-right wow fadeInUp delay-0-4s ${network}-div-border`}>
+        <div className={classNames('single-project-page-right wow fadeInUp delay-0-4s', { [classname]: true })}>
           <Specs config={specs} />
         </div>
       </div>

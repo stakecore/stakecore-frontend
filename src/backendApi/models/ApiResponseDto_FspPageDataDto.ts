@@ -2,10 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { FspGraphicsDataDto } from './FspGraphicsDataDto';
-export type ApiResponseDto_FspGraphicsDataDto = {
+import type { FspPageDataDto } from './FspPageDataDto';
+export type ApiResponseDto_FspPageDataDto = {
     status: number;
-    data?: FspGraphicsDataDto;
+    data?: FspPageDataDto;
     error?: string;
 };
 

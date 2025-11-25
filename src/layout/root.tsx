@@ -12,10 +12,18 @@ import ScrollToTop from '../components/sections/scrollToTop'
 import { Tooltip } from 'react-tooltip'
 import { useEffect } from 'react'
 import { CookiesProvider } from 'react-cookie'
+import { Chain } from '~/constants'
 
 
-function chainToClassName(chain: string): string {
-  return chain != null ? `background background-${chain}` : ''
+function chainToClassName(chain: Chain): string {
+  if (chain == Chain.FLARE) {
+    return 'background background-flare'
+  } else if (chain == Chain.SONGBIRD) {
+    return 'background background-songbird'
+  } else if (chain == Chain.AVALANCHE) {
+    return 'background background-avalanche'
+  }
+  return ''
 }
 
 const RootLayout = () => {

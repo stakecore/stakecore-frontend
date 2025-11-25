@@ -5,3 +5,5 @@ export enum StatusCode {
 }
 
 export type Status = StatusCode | string
+
+export enum Chain { FLARE, SONGBIRD, AVALANCHE }

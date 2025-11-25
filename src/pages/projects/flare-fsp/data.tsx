@@ -1,33 +1,22 @@
-import { FspDelegatorInfoDto, FspGraphicsDataDto, FspInfoDto, FspService } from "~/backendApi"
+import { FspDelegatorInfoDto, FspInfoDto, FspPageDataDto, FspService } from "~/backendApi"
 import { flareEvmAddressUrl, flareFspAddressUrl } from "~/utlits/data/constants"
 import { AddressLink } from "~/components/utils/links"
 import type { ISpecs, ISummary } from "~/components/types"
-import type { FspData } from "./types"
 
 
 namespace FspDataLayer {
+
+  export async function getPageData(chain: string): Promise<FspPageDataDto> {
+    const info = await FspService.fspControllerGetFlareFspPageInfo(chain)
+    return info.data
+  }
 
   export async function getDelegatorInfo(chain: string, address: string): Promise<FspDelegatorInfoDto> {
     const resp = await FspService.fspControllerGetFlareFspDelegatorInfo(chain, address)
     return resp.data
   }
 
-  export async function getGraphicsData(chain: string): Promise<FspGraphicsDataDto> {
-    const resp = await FspService.fspControllerGetFlareFspGraphicsData(chain)
-    return resp.data
-  }
-
-  export async function getPageData(chain: string): Promise<FspData> {
-    const info = await FspService.fspControllerGetFlareFspPageInfo(chain)
-    const data = info.data
-    return {
-      base: data,
-      specs: getSpecs(data),
-      summary: getSummary(chain, data)
-    }
-  }
-
-  function getSummary(chain: string, info: FspInfoDto): ISummary {
+  export function extractSummary(chain: string, info: FspInfoDto): ISummary {
     const symbol = chain == 'flare' ? 'FLR' : 'SGB'
     return {
       asset: symbol,
@@ -37,7 +26,7 @@ namespace FspDataLayer {
     }
   }
 
-  function getSpecs(info: FspInfoDto): ISpecs {
+  export function extractSpecs(info: FspInfoDto): ISpecs {
     const delegationAddressUrl = flareEvmAddressUrl(info.delegationAddress)
     const delegationAddressLink = <AddressLink url={delegationAddressUrl} address={info.delegationAddress} />
     const identityAddressUrl = flareFspAddressUrl(info.identityAddress)

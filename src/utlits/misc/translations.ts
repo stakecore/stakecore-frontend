@@ -1,45 +1,69 @@
-import { avalancheChainId, flareChainConfig, flareChainId, songbirdChainConfig, songbirdChainId } from "../data/constants"
+import { Chain } from "~/constants"
+import  * as C from "../data/constants"
 
-export function chainFromRoute(route: string): string | null {
+export function chainFromRoute(route: string): Chain {
   let chain = null
   if (route.includes('flare')) {
-    chain = 'flare'
+    chain = Chain.FLARE
   } else if (route.includes('songbird')) {
-    chain = 'songbird'
+    chain = Chain.SONGBIRD
   } else if (route.includes('avalanche')) {
-    chain = 'avalanche'
+    chain = Chain.AVALANCHE
   }
   return chain
 }
 
 export function chainIdToConfig(chainId: string | null): any {
-  if (chainId == flareChainId) {
-    return flareChainConfig
-  } else if (chainId = songbirdChainId) {
-    return songbirdChainConfig
+  if (chainId == C.flareChainId) {
+    return C.flareWalletConfig
+  } else if (chainId = C.songbirdChainId) {
+    return C.songbirdWalletConfig
   } else {
     return null
   }
 }
 
-export function tokenToNetwork(token: string): string {
-  if (token.includes('FLR')) {
-    return 'flare'
-  } else if (token.includes('SGB')) {
-    return 'songbird'
-  } else if (token.includes('AVAX')) {
-    return 'avalanche'
+export function symbolToChain(token: string): Chain {
+  if (token.includes(C.FLR_SYMBOL)) {
+    return Chain.FLARE
+  } else if (token.includes(C.SGB_SYMBOL)) {
+    return Chain.SONGBIRD
+  } else if (token.includes(C.AVAX_SYMBOL)) {
+    return Chain.AVALANCHE
   }
 }
 
-export function chainToChainId(chain: string): string | null {
-  if (chain == 'flare') {
-    return flareChainId
-  } else if (chain == 'songbird') {
-    return songbirdChainId
-  } else if (chain == 'avalanche') {
-    return avalancheChainId
+export function chainToChainId(chain: Chain): string | null {
+  if (chain == Chain.FLARE) {
+    return C.flareChainId
+  } else if (chain == Chain.SONGBIRD) {
+    return C.songbirdChainId
+  } else if (chain == Chain.AVALANCHE) {
+    return C.avalancheChainId
   } else {
     return null
   }
+}
+
+export function chainToSymbol(chain: Chain): string | null {
+  if (chain == Chain.FLARE) {
+    return C.FLR_SYMBOL
+  } else if (chain == Chain.SONGBIRD) {
+    return C.SGB_SYMBOL
+  } else if (chain == Chain.AVALANCHE) {
+    return C.AVAX_SYMBOL
+  } else {
+    return null
+  }
+}
+
+export function chainToDivBorderClassName(chain: Chain): string {
+  if (chain == Chain.FLARE) {
+    return 'flare-div-border'
+  } else if (chain == Chain.SONGBIRD) {
+    return 'songbird-div-border'
+  } else if (chain == Chain.AVALANCHE) {
+    return 'avalanche-div-border'
+  }
+  return ''
 }

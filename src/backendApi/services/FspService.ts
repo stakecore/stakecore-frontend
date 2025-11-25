@@ -3,8 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { ApiResponseDto_FspDelegatorInfoDto } from '../models/ApiResponseDto_FspDelegatorInfoDto';
-import type { ApiResponseDto_FspGraphicsDataDto } from '../models/ApiResponseDto_FspGraphicsDataDto';
-import type { ApiResponseDto_FspInfoDto } from '../models/ApiResponseDto_FspInfoDto';
+import type { ApiResponseDto_FspPageDataDto } from '../models/ApiResponseDto_FspPageDataDto';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
@@ -12,32 +11,15 @@ export class FspService {
     /**
      * Frontend page info for the Flare FSP
      * @param chain
-     * @returns ApiResponseDto_FspInfoDto
+     * @returns ApiResponseDto_FspPageDataDto
      * @throws ApiError
      */
     public static fspControllerGetFlareFspPageInfo(
         chain: string,
-    ): CancelablePromise<ApiResponseDto_FspInfoDto> {
+    ): CancelablePromise<ApiResponseDto_FspPageDataDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/fsp/info/{chain}',
-            path: {
-                'chain': chain,
-            },
-        });
-    }
-    /**
-     * Frontend page graphics data for the Flare FSP
-     * @param chain
-     * @returns ApiResponseDto_FspGraphicsDataDto
-     * @throws ApiError
-     */
-    public static fspControllerGetFlareFspGraphicsData(
-        chain: string,
-    ): CancelablePromise<ApiResponseDto_FspGraphicsDataDto> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/api/fsp/graphics/{chain}',
             path: {
                 'chain': chain,
             },

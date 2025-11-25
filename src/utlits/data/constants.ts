@@ -37,10 +37,10 @@ export const flareFspAddressUrl = (address: string) => `${flareEvmExplorer}/prov
 
 export const flareDelegationAdr = '0x1e68DC808A240C096F0261144dc41fd4c883Cfb0'
 
-export const flareChainUrl = 'flare-api.flare.network'
+export const flareChainUrl = 'https://flare-api.flare.network/ext/C/rpc'
 export const flareChainId = '0xe'
 
-export const flareChainConfig = {
+export const flareWalletConfig = {
   chainName: 'Flare Network',
   chainId: flareChainId,
   nativeCurrency: {
@@ -48,7 +48,7 @@ export const flareChainConfig = {
     decimals: FLR_DECIMALS,
     symbol: FLR_SYMBOL
   },
-  rpcUrls: [`https://${flareChainUrl}/ext/C/rpc`]
+  rpcUrls: [flareChainUrl]
 }
 
 export const flareEpochConfig = {
@@ -75,10 +75,10 @@ export const songbirdFspAddressUrl = (address: string) => `${songbirdEvmExplorer
 
 export const songbirdDelegationAdr = '0x1e68DC808A240C096F0261144dc41fd4c883Cfb0'
 
-export const songbirdChainUrl = 'songbird-api.flare.network'
+export const songbirdChainUrl = 'https://songbird-api.flare.network/ext/C/rpc'
 export const songbirdChainId = '0x13'
 
-export const songbirdChainConfig = {
+export const songbirdWalletConfig = {
   chainName: 'Songbird Canary Network',
   chainId: songbirdChainId,
   nativeCurrency: {
@@ -86,7 +86,7 @@ export const songbirdChainConfig = {
     decimals: SGB_DECIMALS,
     symbol: SGB_SYMBOL
   },
-  rpcUrls: [`https://${songbirdChainUrl}/ext/C/rpc`]
+  rpcUrls: [songbirdChainUrl]
 }
 
 export const songbirdEpochConfig = {
@@ -114,6 +114,18 @@ export const avalancheDelegatorMinLockup = 1209600
 export const avalancheDelegatorMaxLockup = 31536000
 
 export const avalancheChainId = '0xa86a'
+export const avalancheChainUrl = 'https://avalanche-c-chain-rpc.publicnode.com'
+
+export const avalancheWalletConfig = {
+  chainName: 'Avalanche (C chain)',
+  chainId: avalancheChainId,
+  nativeCurrency: {
+    name: AVAX_SYMBOL,
+    decimals: AVAX_DECIMALS,
+    symbol: AVAX_SYMBOL
+  },
+  rpcUrls: [avalancheChainUrl]
+}
 
 // style
 

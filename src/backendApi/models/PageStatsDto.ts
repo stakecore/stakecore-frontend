@@ -6,6 +6,7 @@ import type { DelegationDto } from './DelegationDto';
 import type { ProjectDelegationDto } from './ProjectDelegationDto';
 export type PageStatsDto = {
     delegated: Array<ProjectDelegationDto>;
+    delegatedHistoric: Array<ProjectDelegationDto>;
     delegations: Array<DelegationDto>;
 };
 

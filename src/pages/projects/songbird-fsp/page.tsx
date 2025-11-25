@@ -1,16 +1,18 @@
 import useSWR from 'swr'
 import { SpinnerCircular } from 'spinners-react'
+import { Chain } from '~/constants'
 import ProjectTitle from "~/components/pages/title"
 import InfoComponent from "~/components/pages/info"
-import SongbirdFspStatsComponent from "./components/stats"
 import FspDataLayer from "../flare-fsp/data"
 import ProjectDescription from './components/description'
 import SongbirdFspLocalDelegateComponent from './components/delegateLocal'
 import { SONGBIRD_COLOR_CODE } from "~/utlits/data/constants"
+import FspStatsComponent from '~/components/pages/fsp-stats'
 
+const CHAIN = 'songbird'
 
 export const SongbirdFspPage = () => {
-  const { data, error, isLoading } = useSWR('songbird-fsp-page', (x) => FspDataLayer.getPageData('songbird'))
+  const { data, error, isLoading } = useSWR('sgb-fsp-page', (_) => FspDataLayer.getPageData(CHAIN))
 
   let component = null
   if (isLoading) {
@@ -23,9 +25,9 @@ export const SongbirdFspPage = () => {
     component = <div>error {String(error)}</div>
   } else {
     component = <>
-      <InfoComponent specs={data.specs} summary={data.summary} />
+      <InfoComponent specs={FspDataLayer.extractSpecs(data.info)} summary={FspDataLayer.extractSummary(CHAIN, data.info)} />
       <SongbirdFspLocalDelegateComponent />
-      <SongbirdFspStatsComponent />
+      <FspStatsComponent stats={data.statistics} chain={Chain.SONGBIRD} />
     </>
   }
 
