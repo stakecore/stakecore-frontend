@@ -16,24 +16,15 @@ const AvalancheValidatorStatisticsComponent = ({ config }: { config: IGraphics }
       <p>
         We picked some of the most important statistics for our validator to let you monitor Stakecore's activity.
       </p>
-      <div>
-        <MeterBar
-          name="Validator Uptime"
-          ranges={[80, 95]}
-          value={config.meterBar.validatorUptime.percent}
-        />
-        <MeterBar
-          name="Delegation Capacity"
-          ranges={[10, 50]}
-          value={config.meterBar.validatorLeftoverCapacity.percent}
-          text={config.meterBar.validatorLeftoverCapacity.amount}
-        />
-        <MeterBar
-          name="Validation Duration"
-          ranges={[10, 80]}
-          value={config.meterBar.validatorLeftoverDuration.percent}
-          text={config.meterBar.validatorLeftoverDuration.amount}
-        />
+      <div className="row">
+        <div className="col-lg-6">
+          <MeterBar name='Uptime' ranges={[80, 95]} value={config.meterBar.validatorUptime.percent} />
+          <MeterBar name='P-chain connected nodes' ranges={[75, 95]} value={config.meterBar.validatorConnectedPChain.percent} />
+        </div>
+        <div className="col-lg-6">
+          <MeterBar name='C-chain connected nodes' ranges={[75, 95]} value={config.meterBar.validatorConnectedCChain.percent} />
+          <MeterBar name='X-chain connected nodes' ranges={[75, 95]} value={config.meterBar.validatorConnectedXChain.percent} />
+        </div>
       </div>
     </div>
   )

@@ -305,12 +305,21 @@
                         "type": "number"
                     },
                     "totalDelegated": {
+                        "type": "string"
+                    },
+                    "validatorNetworkShare": {
                         "type": "number"
                     },
                     "validatorUptime": {
                         "type": "number"
                     },
-                    "validatorNetworkShare": {
+                    "pChainConnected": {
+                        "type": "number"
+                    },
+                    "cChainConnected": {
+                        "type": "number"
+                    },
+                    "xChainConnected": {
                         "type": "number"
                     }
                 },
@@ -327,8 +336,11 @@
                     "validatorEndTime",
                     "totalDelegators",
                     "totalDelegated",
+                    "validatorNetworkShare",
                     "validatorUptime",
-                    "validatorNetworkShare"
+                    "pChainConnected",
+                    "cChainConnected",
+                    "xChainConnected"
                 ]
             },
             "ApiResponseDto_AvalancheValidatorInfoDto": {
@@ -684,7 +696,8 @@
                         "type": "number",
                         "enum": [
                             0,
-                            1
+                            1,
+                            2
                         ]
                     },
                     "protocol": {

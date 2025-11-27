@@ -71,7 +71,7 @@ export namespace Formatter {
   }
 
   export function address(adr: string, num = 5): string {
-    if (adr.startsWith('0x')) {
+    if (adr.startsWith('0x') && adr.length == 42) {
       adr = getAddress(adr)
     }
     const start = adr.substring(0, 2 + num)

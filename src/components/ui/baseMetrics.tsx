@@ -21,8 +21,8 @@ const DelegatedStats = ({ data, isLoading, error }: {
     const _delegators1 = data.data.delegated.reduce((x, y) => x + y.delegators, 0)
     delegated = Formatter.number(_delegated1, 3)
     delegators = Formatter.number(_delegators1, 3)
-    delegatedDiff = Formatter.percent(_delegated1 / _delegated0 - 1, 1)
-    delegatorDiff = Formatter.percent(_delegators1 / _delegators0 - 1, 1)
+    delegatedDiff = Formatter.percent(_delegated1 / _delegated0 - 1, 0)
+    delegatorDiff = Formatter.percent(_delegators1 / _delegators0 - 1, 0)
   } else if (isLoading) {
     delegated = <span style={{ marginLeft: 15 }}><SpinnerCircular color='white' size={25} /></span>
     delegators = <span style={{ marginRight: 15 }}><SpinnerCircular color='white' size={25} /></span>
@@ -32,8 +32,8 @@ const DelegatedStats = ({ data, isLoading, error }: {
     console.log(String(error))
   }
 
-  const delegatedNeg = delegatedDiff != null && delegatedDiff.startsWith('-')
-  const delegatorNeg = delegatorDiff != null && delegatorDiff.startsWith('-')
+  const delegatedNeg = typeof delegatedDiff == 'string' && delegatedDiff.startsWith('-')
+  const delegatorNeg = typeof delegatorDiff == 'string' && delegatorDiff.startsWith('-')
 
   if (delegatedNeg) {
     delegatedDiff = delegatedDiff.slice(1)

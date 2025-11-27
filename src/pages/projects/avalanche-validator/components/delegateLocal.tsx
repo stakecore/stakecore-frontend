@@ -7,7 +7,7 @@ import { avalanchePChainAddressUrl } from "~/utlits/data/constants"
 import AvalancheValidatorDataAccess from "../data"
 import StakeFlow from "~/components/ui/stakeFlow"
 import DelegatorList from "~/components/ui/delegations"
-import { AddressLink } from "~/components/utils/links"
+import { HashLink } from "~/components/utils/links"
 import { IStakeFlow } from "~/components/types"
 import { toast } from "react-toastify"
 import { Formatter } from "~/utlits/misc/formatter"
@@ -155,7 +155,7 @@ const AvalancheValidatorLocalDelegateComponent = () => {
       <div>
         <div className="avalanche-stake-flow-container mt-40">
           <div style={{ textAlign: 'center' }}>
-            <AddressLink address={pchain} url={avalanchePChainAddressUrl(resp.data.pChain.address)} />
+            <HashLink address={pchain} url={avalanchePChainAddressUrl(resp.data.pChain.address)} />
           </div>
           <StakeFlow layout={C.DELEGATE_FLOW_LAYOUT} data={delegatorInfoToStakeFlow(resp.data)} />
         </div>

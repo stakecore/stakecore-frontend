@@ -14,8 +14,11 @@ export type AvalancheValidatorInfoDto = {
     validatorStartTime: number;
     validatorEndTime: number;
     totalDelegators: number;
-    totalDelegated: number;
-    validatorUptime: number;
+    totalDelegated: string;
     validatorNetworkShare: number;
+    validatorUptime: number;
+    pChainConnected: number;
+    cChainConnected: number;
+    xChainConnected: number;
 };
 

@@ -12,8 +12,9 @@ export type AvalancheData = {
 export type IGraphics = {
   meterBar: {
     validatorUptime: IMeterBar
-    validatorLeftoverCapacity: IMeterBar
-    validatorLeftoverDuration: IMeterBar
+    validatorConnectedPChain: IMeterBar
+    validatorConnectedCChain: IMeterBar
+    validatorConnectedXChain: IMeterBar
   }
   countdown: {
     endTime: Date

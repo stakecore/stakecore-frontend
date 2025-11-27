@@ -3,7 +3,7 @@ import { SpinnerCircular } from "spinners-react"
 import { ApiResponseDto_PageStatsDto, DelegationDto } from "~/backendApi"
 import { avalanchePChainTransactionUrl, flareEvmTransactionUrl, songbirdEvmTransactionUrl } from "~/utlits/data/constants"
 import { Formatter } from "~/utlits/misc/formatter"
-import { AddressLink } from "../utils/links"
+import { HashLink } from "../utils/links"
 import avalanche from "../../assets/images/networks/AVAX.webp"
 import flare from "../../assets/images/networks/FLR.webp"
 import songbird from "../../assets/images/networks/SGB.svg"
@@ -85,7 +85,7 @@ const TokenStats = ({ data, isLoading, error }: {
         return <React.Fragment key={i}>
           <div><img src={logo} width={25} />&nbsp;&nbsp;{symbol}</div>
           <div>{resolveProtocolName(delegation.protocol)}</div>
-          <div><AddressLink address={delegation.delegator} url={url} length={5} /></div>
+          <div><HashLink address={delegation.transaction} url={url} length={5} /></div>
           <div><NumberDiff value={BigInt(delegation.delegated)} text={delegated} /></div>
           <div>{Formatter.relativeDate(delegation.timestamp)}</div>
         </React.Fragment>

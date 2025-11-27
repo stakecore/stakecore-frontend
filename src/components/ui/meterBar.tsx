@@ -1,4 +1,4 @@
-import classNames from "classnames"
+import { Formatter } from "~/utlits/misc/formatter"
 
 const MAX_PERC = 100
 const LED_TOTAL = 70
@@ -44,7 +44,9 @@ const MeterBar = ({ name, value, text, ranges, height = 40, reverse = false }: a
   }
 
   const valuecolor = getLedColor(value)
-  const valuetext = text == null ? `${value}%` : text
+  if (text == null) {
+    text = Formatter.percent(value / 100, 0)
+  }
 
   let data: { color: string[], opacity: number }[] = []
   for (let i = 0; i < LED_TOTAL; i++) {
@@ -64,7 +66,7 @@ const MeterBar = ({ name, value, text, ranges, height = 40, reverse = false }: a
               key={i} style={{ background: d.color[1], opacity: d.opacity }}></span>
           })
         }
-        <span className='meter-bar-desc' style={{ color: valuecolor[0] }}>{ valuetext }</span>
+        <span className='meter-bar-desc' style={{ color: valuecolor[0] }}>{ text }</span>
       </div>
     </div>
   );

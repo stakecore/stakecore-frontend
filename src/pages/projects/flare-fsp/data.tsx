@@ -1,6 +1,6 @@
 import { FspDelegatorInfoDto, FspInfoDto, FspPageDataDto, FspService } from "~/backendApi"
 import { flareEvmAddressUrl, flareFspAddressUrl } from "~/utlits/data/constants"
-import { AddressLink } from "~/components/utils/links"
+import { HashLink } from "~/components/utils/links"
 import type { ISpecs, ISummary } from "~/components/types"
 
 
@@ -28,9 +28,9 @@ namespace FspDataLayer {
 
   export function extractSpecs(info: FspInfoDto): ISpecs {
     const delegationAddressUrl = flareEvmAddressUrl(info.delegationAddress)
-    const delegationAddressLink = <AddressLink url={delegationAddressUrl} address={info.delegationAddress} />
+    const delegationAddressLink = <HashLink url={delegationAddressUrl} address={info.delegationAddress} />
     const identityAddressUrl = flareFspAddressUrl(info.identityAddress)
-    const identityAddressLink = <AddressLink url={identityAddressUrl} address={info.identityAddress} />
+    const identityAddressLink = <HashLink url={identityAddressUrl} address={info.identityAddress} />
     return [
       [
         {

@@ -9,7 +9,8 @@ import AvalancheValidatorDataAccess from "./data"
 
 
 export const AvalancheValidatorPage = () => {
-  const { data, error, isLoading } = useSWR('avalanche-validator-page', (x) => AvalancheValidatorDataAccess.getAvalanchePageData())
+  const { data, error, isLoading } = useSWR('avalanche-validator-page', (_) => AvalancheValidatorDataAccess.getAvalanchePageData())
+  console.log(data)
 
   let component = null
   if (isLoading) {

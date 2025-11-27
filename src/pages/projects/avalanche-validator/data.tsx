@@ -1,5 +1,5 @@
 import { Formatter } from "~/utlits/misc/formatter"
-import { AddressLink } from "~/components/utils/links"
+import { HashLink } from "~/components/utils/links"
 import { avalanchePChainTransactionUrl, avalancheValidatorUrl } from "~/utlits/data/constants"
 import { ApiResponseDto_AvalancheDelegatorInfoDto, AvalancheValidatorInfoDto, ValidatorService } from "~/backendApi"
 import type { AvalancheData, IDelegation, IGraphics } from "./types"
@@ -37,11 +37,11 @@ export namespace AvalancheValidatorDataAccess {
   function getSpecs(data: AvalancheValidatorInfoDto): ISpecs {
     // avalanche validator transaction link
     const validatorTransactionUrl = avalanchePChainTransactionUrl(data.validatorTransactionHash)
-    const validatorTransactionLink = <AddressLink url={validatorTransactionUrl} address={data.validatorTransactionHash} />
+    const validatorTransactionLink = <HashLink url={validatorTransactionUrl} address={data.validatorTransactionHash} />
 
     // avalanche validator link
     const validatorUrl = avalancheValidatorUrl(data.validatorNodeId)
-    const validatorNodeIdLink = <AddressLink url={validatorUrl} address={data.validatorNodeId} />
+    const validatorNodeIdLink = <HashLink url={validatorUrl} address={data.validatorNodeId} />
 
     // validator duration
     const validatorStartTime = Formatter.date(data.validatorStartTime)
@@ -60,6 +60,16 @@ export namespace AvalancheValidatorDataAccess {
       ],
       [
         {
+          title: 'Delegation Fee',
+          value: data.validatorFee + '%',
+          tooltip: 'Fee charged to delegators',
+        },
+        {
+          title: 'Validator Owned Stake',
+          value: data.validatorOwnedStake + ' AVAX',
+          tooltip: 'Amount staked by Stakecore'
+        },
+        {
           title: 'Validator Start Time',
           value: validatorStartTime,
           tooltip: 'Time when we staked funds to our validator'
@@ -68,16 +78,6 @@ export namespace AvalancheValidatorDataAccess {
           title: 'Validator End Time',
           value: validatorEndTime,
           tooltip: 'Time when the stake to the validator expires'
-        },
-        {
-          title: 'Validator Owned Stake',
-          value: data.validatorOwnedStake + ' AVAX',
-          tooltip: 'Amount staked by Stakecore'
-        },
-        {
-          title: 'Delegation Fee',
-          value: data.validatorFee + '%',
-          tooltip: 'Fee charged to delegators',
         }
       ]
     ]
@@ -86,23 +86,19 @@ export namespace AvalancheValidatorDataAccess {
   }
 
   function getGraphics(data: AvalancheValidatorInfoDto): IGraphics {
-    const capacity = Number(data.validatorAvailableCapacity)
-    const validatorLeftoverCapactiy = capacity - data.totalDelegated
-    const validatorLeftoverCapacityPercent = 100 * (validatorLeftoverCapactiy / capacity)
-    const validatorUptimePercent = Math.round(1000 * data.validatorUptime) / 10
-
     return {
       meterBar: {
-        validatorLeftoverCapacity: {
-          percent: validatorLeftoverCapacityPercent,
-          amount: Math.round(validatorLeftoverCapactiy) + ' AVAX'
-        },
         validatorUptime: {
-          percent: validatorUptimePercent,
+          percent: data.validatorUptime
         },
-        validatorLeftoverDuration: {
-          percent: 20,
-          amount: '30 days'
+        validatorConnectedPChain: {
+          percent: data.pChainConnected
+        },
+        validatorConnectedCChain: {
+          percent: data.cChainConnected
+        },
+        validatorConnectedXChain: {
+          percent: data.xChainConnected
         }
       },
       countdown: {
@@ -113,7 +109,7 @@ export namespace AvalancheValidatorDataAccess {
 
   function getDelegation(data: AvalancheValidatorInfoDto): IDelegation {
     const validatorUrl = avalancheValidatorUrl(data.validatorNodeId)
-    const validatorLink = <AddressLink url={validatorUrl} address={data.validatorNodeId} />
+    const validatorLink = <HashLink url={validatorUrl} address={data.validatorNodeId} />
     return { validatorLink }
   }
 
