@@ -57,7 +57,7 @@ const NumberDiff = ({ text, value }: { text: string, value: bigint }) => {
   }
 }
 
-const TokenStats = ({ data, isLoading, error }: {
+const DelegationList = ({ data, isLoading, error }: {
   data: ApiResponseDto_PageStatsDto, isLoading: boolean, error: string
 }) => {
 
@@ -95,4 +95,4 @@ const TokenStats = ({ data, isLoading, error }: {
 }
 
 
-export default TokenStats
+export default DelegationList

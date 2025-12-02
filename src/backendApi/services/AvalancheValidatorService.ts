@@ -7,16 +7,16 @@ import type { ApiResponseDto_AvalancheValidatorInfoDto } from '../models/ApiResp
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-export class ValidatorService {
+export class AvalancheValidatorService {
     /**
      * Frontend page info for the Avalanche validator
      * @returns ApiResponseDto_AvalancheValidatorInfoDto
      * @throws ApiError
      */
-    public static validatorControllerGetAvalancheValidatorPageInfo(): CancelablePromise<ApiResponseDto_AvalancheValidatorInfoDto> {
+    public static avalancheValidatorControllerGetAvalancheValidatorPageInfo(): CancelablePromise<ApiResponseDto_AvalancheValidatorInfoDto> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/validator/avalanche/validator/info',
+            url: '/api/avalanche/validator/info',
         });
     }
     /**
@@ -26,13 +26,13 @@ export class ValidatorService {
      * @returns ApiResponseDto_AvalancheDelegatorInfoDto
      * @throws ApiError
      */
-    public static validatorControllerGetAvalancheDelegatorInfo(
+    public static avalancheValidatorControllerGetAvalancheDelegatorInfo(
         cChainAddress: string,
         pChainAddress?: string,
     ): CancelablePromise<ApiResponseDto_AvalancheDelegatorInfoDto> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/validator/avalanche/validator/delegator/{cChainAddress}',
+            url: '/api/avalanche/validator/delegator/{cChainAddress}',
             path: {
                 'cChainAddress': cChainAddress,
             },

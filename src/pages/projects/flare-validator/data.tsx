@@ -1,22 +1,22 @@
 import { Formatter } from "~/utlits/misc/formatter"
 import { HashLink } from "~/components/utils/links"
-import { avalanchePChainTransactionUrl, avalancheValidatorUrl } from "~/utlits/data/constants"
-import { ApiResponseDto_AvalancheDelegatorInfoDto, AvalancheValidatorInfoDto, AvalancheValidatorService } from "~/backendApi"
+import { flarePChainTransactionUrl, flareValidatorUrl } from "~/utlits/data/constants"
+import { ApiResponseDto_AvalancheDelegatorInfoDto, AvalancheValidatorInfoDto, FlareValidatorService } from "~/backendApi"
 import type { AvalancheData, IDelegation, IGraphics } from "./types"
 import type { ISpecs, ISummary } from "~/components/types"
 
-export namespace AvalancheValidatorDataAccess {
+export namespace FlareValidatorDataAccess {
 
   export async function getDelegatorInfo(address: string, pchain: string): Promise<ApiResponseDto_AvalancheDelegatorInfoDto> {
-    return await AvalancheValidatorService.avalancheValidatorControllerGetAvalancheDelegatorInfo(address, pchain)
+    return await FlareValidatorService.flareValidatorControllerGetFlareDelegatorInfo(address, pchain)
   }
 
   async function getPageData(): Promise<AvalancheValidatorInfoDto> {
-    const resp = await AvalancheValidatorService.avalancheValidatorControllerGetAvalancheValidatorPageInfo()
+    const resp = await FlareValidatorService.flareValidatorControllerGetFlareValidatorPageInfo()
     return resp.data
   }
 
-  export async function getAvalanchePageData(): Promise<AvalancheData> {
+  export async function getFlarePageData(): Promise<AvalancheData> {
     const base = await getPageData()
     const summary = getSummary(base)
     const specs = getSpecs(base)
@@ -27,7 +27,7 @@ export namespace AvalancheValidatorDataAccess {
 
   export function getSummary(data: AvalancheValidatorInfoDto): ISummary {
     return {
-      asset: 'AVAX',
+      asset: 'FLR',
       apy: data.apy + '%',
       risk: 'Low',
       lockup: '14-365 days'
@@ -36,11 +36,11 @@ export namespace AvalancheValidatorDataAccess {
 
   function getSpecs(data: AvalancheValidatorInfoDto): ISpecs {
     // avalanche validator transaction link
-    const validatorTransactionUrl = avalanchePChainTransactionUrl(data.validatorTransactionHash)
+    const validatorTransactionUrl = flarePChainTransactionUrl(data.validatorTransactionHash)
     const validatorTransactionLink = <HashLink url={validatorTransactionUrl} address={data.validatorTransactionHash} />
 
     // avalanche validator link
-    const validatorUrl = avalancheValidatorUrl(data.validatorNodeId)
+    const validatorUrl = flareValidatorUrl(data.validatorNodeId)
     const validatorNodeIdLink = <HashLink url={validatorUrl} address={data.validatorNodeId} />
 
     // validator duration
@@ -66,7 +66,7 @@ export namespace AvalancheValidatorDataAccess {
         },
         {
           title: 'Validator Owned Stake',
-          value: data.validatorOwnedStake + ' AVAX',
+          value: data.validatorOwnedStake + ' FLR',
           tooltip: 'Amount staked by Stakecore'
         },
         {
@@ -108,11 +108,11 @@ export namespace AvalancheValidatorDataAccess {
   }
 
   function getDelegation(data: AvalancheValidatorInfoDto): IDelegation {
-    const validatorUrl = avalancheValidatorUrl(data.validatorNodeId)
+    const validatorUrl = flareValidatorUrl(data.validatorNodeId)
     const validatorLink = <HashLink url={validatorUrl} address={data.validatorNodeId} />
     return { validatorLink }
   }
 
 }
 
-export default AvalancheValidatorDataAccess
+export default FlareValidatorDataAccess

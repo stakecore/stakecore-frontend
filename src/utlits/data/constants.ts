@@ -101,7 +101,9 @@ export const flareValidatorAdr = '0x868822C4A79ee2a18bedfdd5f1EF3b23B190cf1e'
 
 export const flarePChainExplorer = 'https://flare.space/dapp/p-chain-explorer'
 
-export const flareValidatorUrl = (nodeId: string) => `${flarePChainExplorer}/validator/NodeID-${nodeId}`
+export const flareValidatorUrl = (nodeId: string) => `${flarePChainExplorer}/validator/${nodeId}`
+export const flarePChainAddressUrl = (address: string) => `${flarePChainExplorer}/address/${address}`
+export const flarePChainTransactionUrl = (transaction: string) => `${flarePChainExplorer}/tx/${transaction}`
 
 // avalanche validator
 

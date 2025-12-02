@@ -1,4 +1,5 @@
 import { RiMailLine } from '@remixicon/react'
+import { toast } from 'react-toastify'
 import SlideUp from '../../../utlits/animations/slideUp'
 import { FormService, FormDto } from '../../../backendApi'
 
@@ -13,16 +14,27 @@ const ContactForm = () => {
 
     async function submitForm(e: any) {
         e.preventDefault()
+        const id = toast.loading('sending message to the server')
+
         const form = document.getElementById('contactForm') as HTMLFormElement
         const data = Object.fromEntries(new FormData(form).entries()) as FormDto
         if (!formIsValid(data)) return
         const response = await FormService.formControllerSubmitForm(data)
+
         if (response.status == 201) {
-            document.getElementById('msgSubmit').classList.add('text-success')
-            document.getElementById('msgSubmit').innerHTML = "Message Submitted Successfully"
+            toast.update(id, {
+                type: 'success',
+                render: 'message successfully sent',
+                isLoading: false,
+                autoClose: 3000
+            })
         } else {
-            document.getElementById('msgSubmit').classList.add('text-danger')
-            document.getElementById('msgSubmit').innerHTML = "Message Submitted Failed"
+            toast.update(id, {
+                type: 'error',
+                render: `message failed with ${response.error}`,
+                isLoading: false,
+                autoClose: 3000
+            })
         }
     }
 

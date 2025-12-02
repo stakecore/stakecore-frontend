@@ -5,7 +5,7 @@ import { PageDataService } from '~/backendApi'
 import profile from "../../assets/images/about/profile.svg"
 import SlideUp from '../../utlits/animations/slideUp'
 import DelegatedStats from '../ui/baseMetrics'
-import TokenStats from '../ui/delegationList'
+import DelegationList from '../ui/delegationList'
 
 
 const Hero = () => {
@@ -28,8 +28,8 @@ const Hero = () => {
               <div className="about-image-part">
                 <img src={profile} alt="About Us" />
                 <p style={{ marginTop: 30, marginBottom: 40 }}>
-                  Infrastructure provider for core protocols on various crypto networks.
-                  Provide security by delegating your assets and earn yield in return!
+                  Infrastructure provider for core crypto protocols on three networks.
+                  Provide security by delegating your dormant tokens to us and earn yield in return!
                 </p>
                 <div className="about-social text-center">
                   <ul>
@@ -52,7 +52,7 @@ const Hero = () => {
             </SlideUp>
             <SlideUp>
               <div className="about-content-part-bottom">
-                <TokenStats data={data} isLoading={isLoading} error={error} />
+                <DelegationList data={data} isLoading={isLoading} error={error} />
               </div>
             </SlideUp>
           </div>

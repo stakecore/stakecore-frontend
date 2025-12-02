@@ -8,13 +8,13 @@ export type AvalancheValidatorInfoDto = {
     apy: number;
     risk: string;
     validatorFee: number;
-    validatorOwnedStake: string;
-    validatorTotalStake: string;
-    validatorAvailableCapacity: string;
+    validatorOwnedStake: number;
+    validatorTotalStake: number;
+    validatorAvailableCapacity: number;
     validatorStartTime: number;
     validatorEndTime: number;
     totalDelegators: number;
-    totalDelegated: string;
+    totalDelegated: number;
     validatorNetworkShare: number;
     validatorUptime: number;
     pChainConnected: number;

@@ -60,9 +60,9 @@
                 ]
             }
         },
-        "/api/validator/avalanche/validator/info": {
+        "/api/avalanche/validator/info": {
             "get": {
-                "operationId": "ValidatorController_getAvalancheValidatorPageInfo",
+                "operationId": "AvalancheValidatorController_getAvalancheValidatorPageInfo",
                 "summary": "Frontend page info for the Avalanche validator",
                 "parameters": [],
                 "responses": {
@@ -78,13 +78,13 @@
                     }
                 },
                 "tags": [
-                    "Validator"
+                    "Avalanche Validator"
                 ]
             }
         },
-        "/api/validator/avalanche/validator/delegator/{cChainAddress}": {
+        "/api/avalanche/validator/delegator/{cChainAddress}": {
             "get": {
-                "operationId": "ValidatorController_getAvalancheDelegatorInfo",
+                "operationId": "AvalancheValidatorController_getAvalancheDelegatorInfo",
                 "summary": "Information about Stakecore's delegator requested by a given C-Chain address and an optional P-Chain address",
                 "parameters": [
                     {
@@ -118,7 +118,7 @@
                     }
                 },
                 "tags": [
-                    "Validator"
+                    "Avalanche Validator"
                 ]
             }
         },
@@ -213,6 +213,68 @@
                     "Page Data"
                 ]
             }
+        },
+        "/api/flare/validator/info": {
+            "get": {
+                "operationId": "FlareValidatorController_getFlareValidatorPageInfo",
+                "summary": "Frontend page info for the Avalanche validator",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseDto_AvalancheValidatorInfoDto"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Flare Validator"
+                ]
+            }
+        },
+        "/api/flare/validator/delegator/{cChainAddress}": {
+            "get": {
+                "operationId": "FlareValidatorController_getFlareDelegatorInfo",
+                "summary": "Information about Stakecore's delegator requested by a given C-Chain address and an optional P-Chain address",
+                "parameters": [
+                    {
+                        "name": "cChainAddress",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "pChainAddress",
+                        "required": false,
+                        "in": "query",
+                        "description": "User's explicit P-Chain address",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseDto_AvalancheDelegatorInfoDto"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Flare Validator"
+                ]
+            }
         }
     },
     "info": {
@@ -287,13 +349,13 @@
                         "type": "number"
                     },
                     "validatorOwnedStake": {
-                        "type": "string"
+                        "type": "number"
                     },
                     "validatorTotalStake": {
-                        "type": "string"
+                        "type": "number"
                     },
                     "validatorAvailableCapacity": {
-                        "type": "string"
+                        "type": "number"
                     },
                     "validatorStartTime": {
                         "type": "number"
@@ -305,7 +367,7 @@
                         "type": "number"
                     },
                     "totalDelegated": {
-                        "type": "string"
+                        "type": "number"
                     },
                     "validatorNetworkShare": {
                         "type": "number"

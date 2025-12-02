@@ -115,10 +115,11 @@ export namespace Formatter {
 
   function shiftleft(int: string, dec: string, n: number): [string, string] {
     if (n == 0) return [int, dec]
-    return [
+    const decshift = n > int.length ? n - int.length : 0
+    return decshift == 0 ? [
       int.slice(0, int.length - n),
       int.substring(int.length - n, int.length) + dec
-    ]
+    ] : ['', '0'.repeat(decshift) + int + dec]
   }
 
   function splitintfrac(s: string, n: number): [string, string] {

@@ -10,7 +10,6 @@ import AvalancheValidatorDataAccess from "./data"
 
 export const AvalancheValidatorPage = () => {
   const { data, error, isLoading } = useSWR('avalanche-validator-page', (_) => AvalancheValidatorDataAccess.getAvalanchePageData())
-  console.log(data)
 
   let component = null
   if (isLoading) {
@@ -32,7 +31,7 @@ export const AvalancheValidatorPage = () => {
 
   return <>
     <div className="single-project-page-design">
-      <ProjectTitle title='Avalanche Validator Delegation' suptitle='Secure The Avalanche Network' />
+      <ProjectTitle title='Avalanche Validator Delegation' suptitle='Secure Avalanche Network Consensus' />
       <div className="container pt-30">
         {component}
       </div>
