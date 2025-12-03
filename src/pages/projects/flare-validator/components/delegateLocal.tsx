@@ -1,7 +1,7 @@
 import useSWR from "swr"
 import { SpinnerCircular } from 'spinners-react'
 import { useCookies } from 'react-cookie'
-import { Eip1193Provider, recoverAddress, SigningKey, hashMessage, dataLength } from 'ethers'
+import { Eip1193Provider, recoverAddress, SigningKey, hashMessage } from 'ethers'
 import { useGlobalStore } from "~/utlits/store/global"
 import { flarePChainAddressUrl } from "~/utlits/data/constants"
 import StakeFlow from "~/components/ui/stakeFlow"

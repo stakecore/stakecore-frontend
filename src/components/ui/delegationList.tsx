@@ -85,7 +85,7 @@ const DelegationList = ({ data, isLoading, error }: {
         return <React.Fragment key={i}>
           <div><img src={logo} width={25} />&nbsp;&nbsp;{symbol}</div>
           <div>{resolveProtocolName(delegation.protocol)}</div>
-          <div><HashLink address={delegation.transaction} url={url} length={5} /></div>
+          <div><HashLink address={delegation.transaction} url={url} length={5} copy={false} /></div>
           <div><NumberDiff value={BigInt(delegation.delegated)} text={delegated} /></div>
           <div>{Formatter.relativeDate(delegation.timestamp)}</div>
         </React.Fragment>

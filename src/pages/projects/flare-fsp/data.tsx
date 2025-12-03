@@ -1,5 +1,6 @@
 import { FspDelegatorInfoDto, FspInfoDto, FspPageDataDto, FspService } from "~/backendApi"
 import { flareEvmAddressUrl, flareFspAddressUrl } from "~/utlits/data/constants"
+import { Formatter } from "~/utlits/misc/formatter"
 import { HashLink } from "~/components/utils/links"
 import type { ISpecs, ISummary } from "~/components/types"
 
@@ -20,7 +21,7 @@ namespace FspDataLayer {
     const symbol = chain == 'flare' ? 'FLR' : 'SGB'
     return {
       asset: symbol,
-      apy: `${info.apy}%`,
+      apy: Formatter.percent(info.apy, 0),
       risk: info.risk,
       lockup: 'None'
     }
@@ -47,7 +48,7 @@ namespace FspDataLayer {
       [
         {
           title: 'Provider Fee',
-          value: info.providerFee + '%',
+          value: Formatter.percent(info.providerFee, 0),
           tooltip: 'Fee charged for oracle services'
         }
       ]

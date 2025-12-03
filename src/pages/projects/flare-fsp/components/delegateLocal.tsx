@@ -59,9 +59,11 @@ const FlareFspLocalDelegateComponent = () => {
 
   let component = null
   if (walletAddress == null) {
-    component = <a onClick={connectWallet} className="theme-btn">
-      Connect Wallet To See Your Position
-    </a>
+    component = <div style={{ textAlign: 'center' }}>
+      <a onClick={connectWallet} className="theme-btn">
+        Connect Wallet To See Your Position
+      </a>
+    </div>
   } else if (isLoading) {
     component = <div style={{ textAlign: 'center' }}>
       <SpinnerCircular color={C.FLARE_COLOR_CODE} size={45} />

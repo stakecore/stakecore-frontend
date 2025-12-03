@@ -33,7 +33,7 @@ export const flareFspExplorer = 'https://flare-systems-explorer.flare.network'
 export const flareEvmAddressUrl = (address: string) => `${flareEvmExplorer}/address/${address}`
 export const flareEvmTransactionUrl = (hash: string) => `${flareEvmExplorer}/tx/${hash}`
 
-export const flareFspAddressUrl = (address: string) => `${flareEvmExplorer}/providers/fsp/${address}`
+export const flareFspAddressUrl = (address: string) => `${flareFspExplorer}/providers/fsp/${address}`
 
 export const flareDelegationAdr = '0x1e68DC808A240C096F0261144dc41fd4c883Cfb0'
 

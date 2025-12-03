@@ -16,12 +16,23 @@ const ContactForm = () => {
         e.preventDefault()
         const id = toast.loading('sending message to the server')
 
-        const form = document.getElementById('contactForm') as HTMLFormElement
-        const data = Object.fromEntries(new FormData(form).entries()) as FormDto
-        if (!formIsValid(data)) return
-        const response = await FormService.formControllerSubmitForm(data)
+        let success = false
+        let error = 'Failed'
+        try {
+            const form = document.getElementById('contactForm') as HTMLFormElement
+            const data = Object.fromEntries(new FormData(form).entries()) as FormDto
+            if (!formIsValid(data)) {
+                error = 'Email validation failed'
+            } else {
+                const response = await FormService.formControllerSubmitForm(data)
+                success = response.status == 201
+                error = response.error ?? error
+            }
+        } catch (e) {
+            error = e.message
+        }
 
-        if (response.status == 201) {
+        if (success) {
             toast.update(id, {
                 type: 'success',
                 render: 'message successfully sent',
@@ -31,7 +42,7 @@ const ContactForm = () => {
         } else {
             toast.update(id, {
                 type: 'error',
-                render: `message failed with ${response.error}`,
+                render: error,
                 isLoading: false,
                 autoClose: 3000
             })

@@ -12,10 +12,9 @@ export const CopyPasteButton = ({ text }) => {
   </Link>
 }
 
-export const HashLink = ({ address: hash, url, length = 10 }) => {
+export const HashLink = ({ address: hash, url, length = 10, copy = true }) => {
   return <span>
     <a style={{ fontFamily: 'monospace' }} href={url} target="_blank" rel="noopener noreferrer">{Formatter.address(hash, length)}</a>
-    &nbsp;&nbsp;
-    <CopyPasteButton text={hash} />
+    { copy && <>&nbsp;&nbsp; <CopyPasteButton text={hash} /></> }
   </span>
 }
