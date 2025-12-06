@@ -1,7 +1,8 @@
 import classNames from "classnames"
 import { SpinnerCircular } from "spinners-react"
 import { ApiResponseDto_PageStatsDto } from "~/backendApi"
-import { Formatter } from "~/utlits/misc/formatter"
+import { Formatter } from "~/utils/misc/formatter"
+import { PAGE_COLOR_CODE } from "~/constants"
 
 const DOWN_ARROW = "M6 9L12 15L18 9"
 const UP_ARROW = "M18 15L12 9L6 15"
@@ -9,6 +10,8 @@ const UP_ARROW = "M18 15L12 9L6 15"
 const DelegatedStats = ({ data, isLoading, error }: {
   data: ApiResponseDto_PageStatsDto, isLoading: boolean, error: string
 }) => {
+
+  console.log(data)
 
   let delegated = null
   let delegators = null
@@ -21,13 +24,13 @@ const DelegatedStats = ({ data, isLoading, error }: {
     const _delegators1 = data.data.delegated.reduce((x, y) => x + y.delegators, 0)
     delegated = Formatter.number(_delegated1, 3)
     delegators = Formatter.number(_delegators1, 3)
-    delegatedDiff = Formatter.percent(_delegated1 / _delegated0 - 1, 0)
-    delegatorDiff = Formatter.percent(_delegators1 / _delegators0 - 1, 0)
+    delegatedDiff = Formatter.percent(_delegated0 > 0 ? _delegated1 / _delegated0 - 1 : 0, 0)
+    delegatorDiff = Formatter.percent(_delegators0 > 0 ? _delegators1 / _delegators0 - 1 : 0, 0)
   } else if (isLoading) {
-    delegated = <span style={{ marginLeft: 15 }}><SpinnerCircular color='white' size={25} /></span>
-    delegators = <span style={{ marginRight: 15 }}><SpinnerCircular color='white' size={25} /></span>
-    delegatedDiff = <span style={{ marginRight: 15 }}><SpinnerCircular color='white' size={25} /></span>
-    delegatorDiff = <span style={{ marginRight: 15 }}><SpinnerCircular color='white' size={25} /></span>
+    delegated = <span style={{ marginLeft: 15 }}><SpinnerCircular color={PAGE_COLOR_CODE} size={25} /></span>
+    delegators = <span style={{ marginRight: 15 }}><SpinnerCircular color={PAGE_COLOR_CODE} size={25} /></span>
+    delegatedDiff = <span style={{ marginRight: 15 }}><SpinnerCircular color={PAGE_COLOR_CODE} size={25} /></span>
+    delegatorDiff = <span style={{ marginRight: 15 }}><SpinnerCircular color={PAGE_COLOR_CODE} size={25} /></span>
   } else {
     console.log(String(error))
   }

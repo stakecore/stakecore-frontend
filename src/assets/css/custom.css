@@ -52,15 +52,15 @@
 }
 
 .background.background-avalanche {
-  background-image: url('src/assets/images/projects/avalanche/validator/background.jpeg');
+  background-image: url('src/assets/images/protocols/avalanche/validator/background.jpeg');
 }
 
 .background.background-flare {
-  background-image: url('src/assets/images/projects/flare/validator/background.png');
+  background-image: url('src/assets/images/protocols/flare/logo.svg');
 }
 
 .background.background-songbird {
-  background-image: url('src/assets/images/projects/songbird/fsp/background.png');
+  background-image: url('src/assets/images/protocols/songbird/fsp/background.png');
 }
 
 .avalanche-div-border {
@@ -92,6 +92,9 @@
 .notification-block.danger {
   border-color: red;
 }
+
+
+/* DELEGATION LIST */
 
 
 .delegation-updates {

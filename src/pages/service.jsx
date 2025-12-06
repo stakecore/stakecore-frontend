@@ -1,12 +1,11 @@
-import React from 'react'
-import Pricing from '../components/sections/pricing'
+import Propositions from '../components/sections/propositions'
 import ServiceGrid from '../components/sections/serviceGrid'
 
 const Service = () => {
     return (
         <>
             <ServiceGrid />
-            <Pricing />
+            <Propositions />
         </>
     )
 }

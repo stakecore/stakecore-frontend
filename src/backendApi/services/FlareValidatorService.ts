@@ -9,7 +9,7 @@ import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class FlareValidatorService {
     /**
-     * Frontend page info for the Avalanche validator
+     * Frontend page info for the Flare validator
      * @returns ApiResponseDto_AvalancheValidatorInfoDto
      * @throws ApiError
      */

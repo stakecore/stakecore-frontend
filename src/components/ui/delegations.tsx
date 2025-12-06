@@ -1,7 +1,7 @@
 import useSWR from "swr"
 import { AvalancheDelegationDto } from "~/backendApi"
-import { Formatter } from "~/utlits/misc/formatter"
-import { unixnow } from "~/utlits/misc/time"
+import { Formatter } from "~/utils/misc/formatter"
+import { unixnow } from "~/utils/misc/time"
 
 
 const DelegatorList = ({ delegators }: { delegators: AvalancheDelegationDto[] }) => {

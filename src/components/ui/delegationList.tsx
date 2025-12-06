@@ -1,11 +1,11 @@
 import React from "react"
 import { SpinnerCircular } from "spinners-react"
 import { ApiResponseDto_PageStatsDto, DelegationDto } from "~/backendApi"
-import { avalanchePChainTransactionUrl, flareEvmTransactionUrl, songbirdEvmTransactionUrl } from "~/utlits/data/constants"
-import { Formatter } from "~/utlits/misc/formatter"
+import * as C from "~/constants"
+import { Formatter } from "~/utils/misc/formatter"
 import { HashLink } from "../utils/links"
 import avalanche from "../../assets/images/networks/AVAX.webp"
-import flare from "../../assets/images/networks/FLR.webp"
+import flare from "../../assets/images/networks/FLR.svg"
 import songbird from "../../assets/images/networks/SGB.svg"
 
 
@@ -21,11 +21,11 @@ function chainToLogoUrl(chain: DelegationDto.chain): string {
 
 function chainToTransactionUrl(chain: DelegationDto.chain, hash: string): string {
   if (chain == DelegationDto.chain._0) {
-    return flareEvmTransactionUrl(hash)
+    return C.flareEvmTransactionUrl(hash)
   } else if (chain == DelegationDto.chain._1) {
-    return songbirdEvmTransactionUrl(hash)
+    return C.songbirdEvmTransactionUrl(hash)
   } else {
-    return avalanchePChainTransactionUrl(hash)
+    return C.avalanchePChainTransactionUrl(hash)
   }
 }
 
@@ -65,7 +65,7 @@ const DelegationList = ({ data, isLoading, error }: {
   if (data?.data != null) {
     delegations = data.data.delegations
   } else if (isLoading) {
-    return <span style={{ marginLeft: 15 }}><SpinnerCircular color='white' size={25} /></span>
+    return <span style={{ marginLeft: 15 }}><SpinnerCircular color={C.PAGE_COLOR_CODE} size={25} /></span>
   } else {
     return <span>{String(error)}</span>
   }
@@ -83,7 +83,7 @@ const DelegationList = ({ data, isLoading, error }: {
         const delegated = Formatter.number(delegation.delegated, 3, 18)
         const symbol = chainToSymbol(delegation.chain)
         return <React.Fragment key={i}>
-          <div><img src={logo} width={25} />&nbsp;&nbsp;{symbol}</div>
+          <div><img src={logo} width={25} /></div>
           <div>{resolveProtocolName(delegation.protocol)}</div>
           <div><HashLink address={delegation.transaction} url={url} length={5} copy={false} /></div>
           <div><NumberDiff value={BigInt(delegation.delegated)} text={delegated} /></div>

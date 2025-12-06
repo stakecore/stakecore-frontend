@@ -1,6 +1,6 @@
 import { RiFileCopyLine } from '@remixicon/react'
 import { Link } from 'react-router-dom'
-import { Formatter } from '~/utlits/misc/formatter'
+import { Formatter } from '~/utils/misc/formatter'
 
 
 export const CopyPasteButton = ({ text }) => {

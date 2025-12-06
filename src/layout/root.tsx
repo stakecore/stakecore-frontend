@@ -1,8 +1,8 @@
 import { Outlet, useLocation } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
-import { useGlobalStore } from '~/utlits/store/global'
-import { onInternalChainSwitch } from '~/utlits/eip6963/hook'
-import { chainFromRoute, chainToChainId } from '../utlits/misc/translations'
+import { useGlobalStore } from '~/utils/store/global'
+import { onInternalChainSwitch } from '~/utils/eip6963/hook'
+import { chainFromRoute, chainToChainId } from '../utils/misc/translations'
 import Header from '../components/sections/header'
 import Footer from '../components/sections/footer'
 import CallToAction from '../components/sections/callToAction'
@@ -12,7 +12,7 @@ import ScrollToTop from '../components/sections/scrollToTop'
 import { Tooltip } from 'react-tooltip'
 import { useEffect } from 'react'
 import { CookiesProvider } from 'react-cookie'
-import { Chain } from '~/constants'
+import { Chain } from '~/enums'
 
 
 function chainToClassName(chain: Chain): string {

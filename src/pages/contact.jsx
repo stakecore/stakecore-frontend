@@ -1,4 +1,3 @@
-import React from 'react'
 import ContactOption from '../components/sections/contact/contactOption'
 import ContactForm from '../components/sections/contact/contactForm'
 

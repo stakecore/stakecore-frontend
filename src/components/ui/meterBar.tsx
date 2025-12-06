@@ -1,4 +1,4 @@
-import { Formatter } from "~/utlits/misc/formatter"
+import { Formatter } from "~/utils/misc/formatter"
 
 const MAX_PERC = 100
 const LED_TOTAL = 70

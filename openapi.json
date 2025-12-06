@@ -214,10 +214,41 @@
                 ]
             }
         },
+        "/api/page/user-info/{user}": {
+            "get": {
+                "operationId": "PageController_getUserInfo",
+                "summary": "Stakecore user info",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseDto_PageUserInfoDto"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Page Data"
+                ]
+            }
+        },
         "/api/flare/validator/info": {
             "get": {
                 "operationId": "FlareValidatorController_getFlareValidatorPageInfo",
-                "summary": "Frontend page info for the Avalanche validator",
+                "summary": "Frontend page info for the Flare validator",
                 "parameters": [],
                 "responses": {
                     "200": {
@@ -831,6 +862,105 @@
                     },
                     "data": {
                         "$ref": "#/components/schemas/PageStatsDto"
+                    },
+                    "error": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "status"
+                ]
+            },
+            "BalanceDto": {
+                "type": "object",
+                "properties": {
+                    "chain": {
+                        "type": "string"
+                    },
+                    "token": {
+                        "type": "string"
+                    },
+                    "amount": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "chain",
+                    "token",
+                    "amount"
+                ]
+            },
+            "ApyDto": {
+                "type": "object",
+                "properties": {
+                    "chain": {
+                        "type": "string"
+                    },
+                    "protocol": {
+                        "type": "string"
+                    },
+                    "apy": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "chain",
+                    "protocol",
+                    "apy"
+                ]
+            },
+            "PriceDto": {
+                "type": "object",
+                "properties": {
+                    "avax": {
+                        "type": "number"
+                    },
+                    "flr": {
+                        "type": "number"
+                    },
+                    "sgb": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "avax",
+                    "flr",
+                    "sgb"
+                ]
+            },
+            "PageUserInfoDto": {
+                "type": "object",
+                "properties": {
+                    "balances": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/BalanceDto"
+                        }
+                    },
+                    "apys": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ApyDto"
+                        }
+                    },
+                    "prices": {
+                        "$ref": "#/components/schemas/PriceDto"
+                    }
+                },
+                "required": [
+                    "balances",
+                    "apys",
+                    "prices"
+                ]
+            },
+            "ApiResponseDto_PageUserInfoDto": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "number"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/PageUserInfoDto"
                     },
                     "error": {
                         "type": "string"

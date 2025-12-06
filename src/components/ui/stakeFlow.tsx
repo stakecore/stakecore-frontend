@@ -2,8 +2,8 @@ import { useState } from "react"
 import classNames from "classnames"
 import { RiArrowDownLine, RiArrowUpLine } from "@remixicon/react"
 import { toast } from 'react-toastify'
-import { sleep } from "~/utlits/misc/time"
-import { Formatter } from "~/utlits/misc/formatter"
+import { sleep } from "~/utils/misc/time"
+import { Formatter } from "~/utils/misc/formatter"
 import type { IStakeFlow, IStakeFlowBarAction, IStakeFlowDataPart, IStakeFlowLayoutPart } from "../types"
 
 

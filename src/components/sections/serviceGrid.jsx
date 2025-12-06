@@ -1,6 +1,5 @@
 import { RiGlobalFill, RiPantoneFill, RiQuillPenLine } from '@remixicon/react'
-import React from 'react'
-import SlideUp from '../../utlits/animations/slideUp'
+import SlideUp from '../../utils/animations/slideUp'
 
 const ServiceGrid = () => {
     return (

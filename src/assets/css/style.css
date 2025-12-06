@@ -1871,7 +1871,7 @@ ul.extra-skills li i {
     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
 }
 
-/* Project Details */
+/* Protocol Details */
 .project-details-content h3 {
     margin-bottom: 35px;
 }
@@ -2113,11 +2113,11 @@ ul.extra-skills li i {
     font-size: 16px;
     font-weight: 400;
     color: var(--main-color);
-    content: '/Hour';
+    content: '/year';
 }
 
 .pricing-item .pricing-details {
-    padding: 20px 20px;
+    padding: 20px 20px 0 20px;
 }
 
 

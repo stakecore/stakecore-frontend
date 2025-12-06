@@ -1,9 +1,9 @@
 import { ResponsiveLine } from "@nivo/line"
 import classNames from "classnames"
-import { Formatter } from "~/utlits/misc/formatter"
+import { Formatter } from "~/utils/misc/formatter"
 import MeterBar from "~/components/ui/meterBar"
-import { Chain } from "~/constants"
-import { chainToDivBorderClassName, chainToSymbol } from "~/utlits/misc/translations"
+import { Chain } from "~/enums"
+import { chainToDivBorderClassName, chainToSymbol } from "~/utils/misc/translations"
 import type { FspStatisticsDto } from "~/backendApi"
 
 

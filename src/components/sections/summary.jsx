@@ -1,7 +1,7 @@
 import React from 'react'
 import { RiMailSendLine } from '@remixicon/react'
 import { Link } from 'react-router-dom'
-import SlideUp from '../../utlits/animations/slideUp'
+import SlideUp from '../../utils/animations/slideUp'
 import profile from "../../assets/images/about/profile.svg"
 
 
@@ -10,31 +10,36 @@ const Summary = () => {
         <section id="about" className="about-single-area innerpage-single-area">
             <div className="container">
                 <div className="row">
-                    {/* <!-- START ABOUT IMAGE DESIGN AREA --> */}
-                    <div className="col-lg-4">
+{/*                     <div className="col-lg-4">
                         <SlideUp>
                             <div className="about-image-part">
                                 <img src={profile} alt="Stakecore Logo" />
                             </div>
                         </SlideUp>
-                    </div>
-                    {/* <!-- / END ABOUT IMAGE DESIGN AREA -->
-                    <!-- START ABOUT TEXT DESIGN AREA --> */}
-                    <div className="col-lg-8">
+                    </div> */}
+                    <div className="col-lg-12">
                         <SlideUp>
                             <div className="about-content-part">
                                 <h2>
-                                    We are stakecore, a staking service provider for the Flare Network.
+                                    Who are we?
                                 </h2>
                                 <p>
-                                    We formed in 2024 around a core member stemming from the Flare development team.
-                                    All of us are based in Slovenia, keeping a close eye on crypto developments.
-                                    Stakecore is a start-up in its infancy, and we are looking to expand our services in the near future.
-                                    If want to join our team or have any questions, feel free to contact us.
+                                    In short, StakeCore enables risk-free yield through crypto protocol infrastructure provision.
+                                    But what does that mean?
+                                    <br /><br />
+                                    The crypto space is based on decentralized principles and runs on independant infrastructure,
+                                    provided by economically vested individualy such us ourselves. Usually crypto protocols enable
+                                    delegation programs that allow regular users to provide assets to the provider in order to
+                                    increase their consensus power. In return those users earn yield, while the provider charges some fee.
+                                    <br /><br />
+                                    But why is it risk-free? The protocols we expose delegation to, are core to the delegated token.
+                                    If the protocol fails or gets hacked, your token will lose value eitherway.
+                                    Therefore, when delegating to us, you are not exposed to risk other than that which already exists due to holding the token.
+                                    <br /><br />
+                                    So, let's say you own 10 AVAX that you're hodling because you believe in the Avalanche network.
+                                    If you view the AVAX token as an investment bound to desirable price changes, and are not
+                                    thinking of token being anything more, you should rethink your position. That token can and should earn yield.
                                 </p>
-                                <div className="hero-btns">
-                                    <Link to="/contact" className="theme-btn">Get In touch<i> <RiMailSendLine size={16} /> </i></Link>
-                                </div>
                             </div>
                         </SlideUp>
                     </div>

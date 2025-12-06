@@ -7,8 +7,8 @@ import 'swiper/css/navigation';
 
 
 import { RiArrowLeftSLine, RiArrowRightSLine } from '@remixicon/react';
-import { testimonialsData } from '../../utlits/fackData/testimonialsData';
-import SlideUp from '../../utlits/animations/slideUp';
+import { testimonialsData } from '../../utils/data/testimonials';
+import SlideUp from '../../utils/animations/slideUp';
 
 
 const Testimonials = () => {

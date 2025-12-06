@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { menuList } from '../../utlits/fackData/menuList'
-import { useGlobalStore } from '../../utlits/store/global'
-import { Formatter } from '../../utlits/misc/formatter'
+import { menuList } from '../../utils/data/menu'
+import { useGlobalStore } from '../../utils/store/global'
+import { Formatter } from '../../utils/misc/formatter'
 
 
 const ChooseWalletButton = () => {

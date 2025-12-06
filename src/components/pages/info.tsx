@@ -1,7 +1,8 @@
 import React from "react"
 import classNames from "classnames"
+import SlideUp from '../../utils/animations/slideUp'
 import SpecsTooltip from "./tooltip"
-import { chainToDivBorderClassName, symbolToChain } from "~/utlits/misc/translations"
+import { chainToDivBorderClassName, symbolToChain } from "~/utils/misc/translations"
 import type { ISpecs } from "../types"
 
 
@@ -12,14 +13,18 @@ const InfoComponent = ({ summary, specs }) => {
   return <>
     <div className="row">
       <div className="col-lg-3">
-        <div className={classNames('single-project-page-left wow fadeInUp delay-0-2s', { [classname]: true })}>
-          <ProjectInfoSummary {...summary} />
-        </div>
+        <SlideUp>
+          <div className={classNames('single-project-page-left wow fadeInUp delay-0-2s', { [classname]: true })}>
+            <ProjectInfoSummary {...summary} />
+          </div>
+        </SlideUp>
       </div>
       <div className="col-lg-9">
-        <div className={classNames('single-project-page-right wow fadeInUp delay-0-4s', { [classname]: true })}>
-          <Specs config={specs} />
-        </div>
+        <SlideUp>
+          <div className={classNames('single-project-page-right wow fadeInUp delay-0-4s', { [classname]: true })}>
+            <Specs config={specs} />
+          </div>
+        </SlideUp>
       </div>
     </div>
   </>

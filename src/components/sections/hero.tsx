@@ -3,7 +3,7 @@ import { RiGithubLine, RiTwitterXLine } from '@remixicon/react'
 import useSWR from 'swr'
 import { PageDataService } from '~/backendApi'
 import profile from "../../assets/images/about/profile.svg"
-import SlideUp from '../../utlits/animations/slideUp'
+import SlideUp from '../../utils/animations/slideUp'
 import DelegatedStats from '../ui/baseMetrics'
 import DelegationList from '../ui/delegationList'
 

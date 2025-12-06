@@ -3,11 +3,11 @@ import RootLayout from "../layout/root";
 import Home from "../pages/home";
 import Contact from "../pages/contact";
 import About from "../pages/about";
-import AvalancheValidatorProject from "../pages/projects/avalanche-validator/page";
-import FlareValidatorProject from "../pages/projects/flare-validator/page";
-import FlareFspProject from "../pages/projects/flare-fsp/page";
-import SongbirdFspProject from "../pages/projects/songbird-fsp/page";
-import Projects from "../pages/projects";
+import AvalancheValidatorProject from "../pages/protocols/avalanche-validator/page";
+import FlareValidatorProject from "../pages/protocols/flare-validator/page";
+import FlareFspProject from "../pages/protocols/flare-fsp/page";
+import SongbirdFspProject from "../pages/protocols/songbird-fsp/page";
+import Protocols from "../pages/protocols";
 
 
 export const router = createHashRouter([
@@ -32,8 +32,8 @@ export const router = createHashRouter([
                 element: <Service />
             }, */
             {
-                path: "/projects",
-                element: <Projects />
+                path: "/protocols",
+                element: <Protocols />
             },
             {
                 path: "/avalanche/validator",

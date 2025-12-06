@@ -1,4 +1,4 @@
-import type { Status } from "~/constants"
+import type { Status } from "~/enums"
 
 
 export type ISpecs = ISpec[][]

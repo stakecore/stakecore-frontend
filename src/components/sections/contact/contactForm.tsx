@@ -1,6 +1,6 @@
 import { RiMailLine } from '@remixicon/react'
 import { toast } from 'react-toastify'
-import SlideUp from '../../../utlits/animations/slideUp'
+import SlideUp from '../../../utils/animations/slideUp'
 import { FormService, FormDto } from '../../../backendApi'
 
 
