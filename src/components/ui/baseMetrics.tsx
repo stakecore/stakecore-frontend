@@ -10,9 +10,6 @@ const UP_ARROW = "M18 15L12 9L6 15"
 const DelegatedStats = ({ data, isLoading, error }: {
   data: ApiResponseDto_PageStatsDto, isLoading: boolean, error: string
 }) => {
-
-  console.log(data)
-
   let delegated = null
   let delegators = null
   let delegatedDiff = null

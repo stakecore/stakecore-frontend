@@ -1695,6 +1695,8 @@ ul.extra-skills li i {
 
 .project-image img, project-image h1 {
     width: 100%;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
 }
 
 .project-content {}
@@ -1736,6 +1738,8 @@ ul.extra-skills li i {
     opacity: 0;
     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
     background-color: var(--black-color);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
 }
 
 .project-item.style-two .project-image:before {
