@@ -1,5 +1,6 @@
 import { PageUserInfoDto, ApyDto, BalanceDto } from "~/backendApi"
 import { Formatter } from "../misc/formatter"
+import * as C from "../../constants"
 
 function structureApyData(apys: ApyDto[]): Map<string, Map<string, number>> {
   const mp = new Map()
@@ -20,7 +21,12 @@ function structureBalanceData(balances: BalanceDto[]): Map<string, number> {
   return mp
 }
 
-export const getPropositionData = (info: PageUserInfoDto) => {
+function joinTokenValues(values: number[], svalues: string[], names: string[]): string {
+  const s = values.map((v, i) => (v > 0) ? svalues[i] + ' ' + names[i] : '')
+  return s.join(' and ')
+}
+
+export const getProposalData = (info: PageUserInfoDto) => {
   const apydata = structureApyData(info.apys)
   const baldata = structureBalanceData(info.balances)
 
@@ -37,34 +43,26 @@ export const getPropositionData = (info: PageUserInfoDto) => {
     const apyVal = apydata.get('Flare').get('Validator')
     const earned = apyVal * (totalFlr + totalWFlr) * info.prices.flr
 
-    let str = ''
-    if (totalFlr > 0) {
-      const fTotalFlr = Formatter.number(totalFlr, 3)
-      str += fTotalFlr + ' FLR'
-    }
-
-    if (totalWFlr > 0) {
-      if (str.length > 0) {
-        str += ' and '
-      }
-      const fTotalWFlr = Formatter.number(totalWFlr, 3)
-      str += fTotalWFlr + ' WFLR'
-    }
+    const capital = joinTokenValues(
+      [totalFlr, totalWFlr],
+      [Formatter.number(totalFlr, 3), Formatter.number(totalWFlr, 3)],
+      [C.FLR_SYMBOL, C.WFLR_SYMBOL]
+    )
 
     ret.push({
       id: 1,
       title: "Flare Network",
       price: Formatter.number(earned, 3),
-      sortInfo: `Invest your ${str} into our protocols to earn up to`,
+      sortInfo: `Invest your ${capital} into our protocols to earn up to`,
       features: [
         {
           id: 1,
-          feature: `Earn ${Formatter.percent(apyVal, 0)} APY by delegating FLR to our validator`,
+          feature: `Earn ${Formatter.percent(apyVal, 0)} APY by delegating ${C.FLR_SYMBOL} to our validator`,
           link: '/flare/validator'
         },
         {
           id: 2,
-          feature: `Earn ${Formatter.percent(apyFsp, 0)} APY by delegating WFLR to our FSP provider`,
+          feature: `Earn ${Formatter.percent(apyFsp, 0)} APY by delegating ${C.WFLR_SYMBOL} to our FSP provider`,
           link: '/flare/fsp'
         }
       ]
@@ -81,11 +79,11 @@ export const getPropositionData = (info: PageUserInfoDto) => {
       id: 2,
       title: "Avalanche",
       price: Formatter.number(earned, 3),
-      sortInfo: `Invest your ${fTotalAvax} AVAX into our protocols to earn up to`,
+      sortInfo: `Invest your ${fTotalAvax} ${C.AVAX_SYMBOL} into our protocols to earn up to`,
       features: [
         {
           id: 1,
-          feature: `Earn ${Formatter.percent(apyVal, 0)} APY by delegating AVAX to our validator`,
+          feature: `Earn ${Formatter.percent(apyVal, 0)} APY by delegating ${C.AVAX_SYMBOL} to our validator`,
           link: '/avalanche/validator'
         }
       ]
@@ -96,18 +94,21 @@ export const getPropositionData = (info: PageUserInfoDto) => {
     const apyFsp = apydata.get('Songbird').get('FSP')
     const earned = (totalSgb + totalWSgb) * apyFsp * info.prices.sgb
 
-    const fTotalSgb = Formatter.number(totalSgb, 3)
-    const fTotalWSgb = Formatter.number(totalWSgb, 3)
+    const capital = joinTokenValues(
+      [totalSgb, totalWSgb],
+      [Formatter.number(totalSgb, 3), Formatter.number(totalWSgb, 3)],
+      [C.SGB_SYMBOL, C.WSGB_SYMBOL]
+    )
 
     ret.push({
       id: 3,
       title: "Songbird Canary Network",
       price: Formatter.number(earned, 3),
-      sortInfo: `Invest your ${fTotalSgb} SGB and ${fTotalWSgb} WSGB into our protocols to earn up to`,
+      sortInfo: `Invest your ${capital} into our protocols to earn up to`,
       features: [
         {
           id: 1,
-          feature: `Earn ${Formatter.percent(apyFsp, 0)} APY by delegating WSGB to our FSP provider`,
+          feature: `Earn ${Formatter.percent(apyFsp, 0)} APY by delegating ${C.WSGB_SYMBOL} to our FSP provider`,
           link: '/songbird/fsp'
         }
       ]

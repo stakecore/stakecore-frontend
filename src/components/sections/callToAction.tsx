@@ -1,8 +1,8 @@
 import useSWR from 'swr'
 import { SpinnerCircular } from 'spinners-react'
 import SlideUp from '../../utils/animations/slideUp'
-import { getPropositionData } from "../../utils/data/propositions"
-import Propositions from './propositions'
+import { getProposalData } from "../../utils/data/proposals"
+import Proposal from './proposal'
 import { useGlobalStore } from "~/utils/store/global"
 import { PageDataService } from '../../backendApi'
 import { PAGE_COLOR_CODE } from '../../constants'
@@ -37,15 +37,14 @@ const CallToAction = () => {
   } else if (data == null) {
     component = <div>Error</div>
   } else {
-    const proposition = getPropositionData(data)
-    return <Propositions priceData={proposition} />
+    const proposal = getProposalData(data)
+    return <Proposal priceData={proposal} />
   }
 
   return (
     <section className="call-to-action-area">
       <div className="container">
         <div className="row">
-          {/* <!-- START ABOUT TEXT DESIGN AREA --> */}
           <div className="col-lg-12">
             <SlideUp>
               <div className="about-content-part call-to-action-part text-center">
@@ -54,7 +53,6 @@ const CallToAction = () => {
               </div>
             </SlideUp>
           </div>
-          {/* <!-- / END ABOUT TEXT DESIGN AREA --> */}
         </div>
       </div>
     </section>

@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { RiArrowRightLine } from '@remixicon/react'
 import SlideUp from '../../utils/animations/slideUp'
 
-const Propositions = ({ priceData }: any) => {
+const Proposal = ({ priceData }: any) => {
     return (
         <section className="pricing-area">
             <div className="container">
@@ -27,7 +27,7 @@ const Propositions = ({ priceData }: any) => {
     )
 }
 
-export default Propositions
+export default Proposal
 
 
 const Card = ({id, title, price, sortInfo, features }) => {

@@ -1,11 +1,11 @@
-import Propositions from '../components/sections/propositions'
+import Proposal from '../components/sections/proposal'
 import ServiceGrid from '../components/sections/serviceGrid'
 
 const Service = () => {
     return (
         <>
             <ServiceGrid />
-            <Propositions />
+            <Proposal />
         </>
     )
 }
