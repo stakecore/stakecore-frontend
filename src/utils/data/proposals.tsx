@@ -30,11 +30,11 @@ export const getProposalData = (info: PageUserInfoDto) => {
   const apydata = structureApyData(info.apys)
   const baldata = structureBalanceData(info.balances)
 
-  const totalFlr = baldata.get('FLR')
-  const totalWFlr = baldata.get('WFLR')
-  const totalSgb = baldata.get('SGB')
-  const totalWSgb = baldata.get('WSGB')
-  const totalAvax = baldata.get('AVAX')
+  const totalFlr = baldata.get(C.FLR_SYMBOL)
+  const totalWFlr = baldata.get(C.WFLR_SYMBOL)
+  const totalSgb = baldata.get(C.SGB_SYMBOL)
+  const totalWSgb = baldata.get(C.WSGB_SYMBOL)
+  const totalAvax = baldata.get(C.AVAX_SYMBOL)
 
   const ret = []
 
@@ -45,24 +45,24 @@ export const getProposalData = (info: PageUserInfoDto) => {
 
     const capital = joinTokenValues(
       [totalFlr, totalWFlr],
-      [Formatter.number(totalFlr, 3), Formatter.number(totalWFlr, 3)],
+      [Formatter.number(totalFlr, C.NUMBER_DISPLAY_LENGTH), Formatter.number(totalWFlr, C.NUMBER_DISPLAY_LENGTH)],
       [C.FLR_SYMBOL, C.WFLR_SYMBOL]
     )
 
     ret.push({
       id: 1,
       title: "Flare Network",
-      price: Formatter.number(earned, 3),
+      price: Formatter.number(earned, C.NUMBER_DISPLAY_LENGTH),
       sortInfo: `Invest your ${capital} into our protocols to earn up to`,
       features: [
         {
           id: 1,
-          feature: `Earn ${Formatter.percent(apyVal, 0)} APY by delegating ${C.FLR_SYMBOL} to our validator`,
+          feature: `Earn ${Formatter.percent(apyVal)} APY by delegating ${C.FLR_SYMBOL} to our validator`,
           link: '/flare/validator'
         },
         {
           id: 2,
-          feature: `Earn ${Formatter.percent(apyFsp, 0)} APY by delegating ${C.WFLR_SYMBOL} to our FSP provider`,
+          feature: `Earn ${Formatter.percent(apyFsp)} APY by delegating ${C.WFLR_SYMBOL} to our FSP provider`,
           link: '/flare/fsp'
         }
       ]
@@ -73,17 +73,17 @@ export const getProposalData = (info: PageUserInfoDto) => {
     const apyVal = apydata.get('Avalanche').get('Validator')
     const earned = totalAvax * apyVal * info.prices.avax
 
-    const fTotalAvax = Formatter.number(totalAvax, 3)
+    const fTotalAvax = Formatter.number(totalAvax, C.NUMBER_DISPLAY_LENGTH)
 
     ret.push({
       id: 2,
       title: "Avalanche",
-      price: Formatter.number(earned, 3),
+      price: Formatter.number(earned, C.NUMBER_DISPLAY_LENGTH),
       sortInfo: `Invest your ${fTotalAvax} ${C.AVAX_SYMBOL} into our protocols to earn up to`,
       features: [
         {
           id: 1,
-          feature: `Earn ${Formatter.percent(apyVal, 0)} APY by delegating ${C.AVAX_SYMBOL} to our validator`,
+          feature: `Earn ${Formatter.percent(apyVal)} APY by delegating ${C.AVAX_SYMBOL} to our validator`,
           link: '/avalanche/validator'
         }
       ]
@@ -96,19 +96,19 @@ export const getProposalData = (info: PageUserInfoDto) => {
 
     const capital = joinTokenValues(
       [totalSgb, totalWSgb],
-      [Formatter.number(totalSgb, 3), Formatter.number(totalWSgb, 3)],
+      [Formatter.number(totalSgb, C.NUMBER_DISPLAY_LENGTH), Formatter.number(totalWSgb, C.NUMBER_DISPLAY_LENGTH)],
       [C.SGB_SYMBOL, C.WSGB_SYMBOL]
     )
 
     ret.push({
       id: 3,
       title: "Songbird Canary Network",
-      price: Formatter.number(earned, 3),
+      price: Formatter.number(earned, C.NUMBER_DISPLAY_LENGTH),
       sortInfo: `Invest your ${capital} into our protocols to earn up to`,
       features: [
         {
           id: 1,
-          feature: `Earn ${Formatter.percent(apyFsp, 0)} APY by delegating ${C.WSGB_SYMBOL} to our FSP provider`,
+          feature: `Earn ${Formatter.percent(apyFsp)} APY by delegating ${C.WSGB_SYMBOL} to our FSP provider`,
           link: '/songbird/fsp'
         }
       ]

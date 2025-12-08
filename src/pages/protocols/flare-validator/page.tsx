@@ -1,6 +1,8 @@
 import useSWR from 'swr'
 import { SpinnerCircular } from 'spinners-react'
+import ServerError from '~/components/ui/serverError'
 import ProjectTitle from "~/components/pages/title"
+import ProjectDescription from './components/description'
 import InfoComponent from "~/components/pages/info"
 import FlareValidatorStatisticsComponent from "./components/statistics"
 import FlareValidatorOfficialDelegateComponent from "./components/delegateOfficial"
@@ -19,8 +21,8 @@ export const FlareValidatorPage = () => {
         <SpinnerCircular color={FLARE_COLOR_CODE} size={100} />
       </div>
     </>
-  } else if (error != null || data == null) {
-    component = <div>error {String(error)}</div>
+  } else if (error != null) {
+    component = <ServerError status={500} message={error} />
   } else {
     component = <>
       <InfoComponent specs={data.specs} summary={data.summary} />
@@ -34,6 +36,7 @@ export const FlareValidatorPage = () => {
     <div className="single-project-page-design">
       <ProjectTitle title='Flare Validator Delegation' suptitle='Secure Flare Network Consensus' />
       <div className="container pt-30">
+        <ProjectDescription />
         {component}
       </div>
     </div>

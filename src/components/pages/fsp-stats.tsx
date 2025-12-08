@@ -4,6 +4,7 @@ import { Formatter } from "~/utils/misc/formatter"
 import MeterBar from "~/components/ui/meterBar"
 import { Chain } from "~/enums"
 import { chainToDivBorderClassName, chainToSymbol } from "~/utils/misc/translations"
+import { NUMBER_DISPLAY_LENGTH } from "~/constants"
 import type { FspStatisticsDto } from "~/backendApi"
 
 
@@ -74,7 +75,7 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
             axisTop={null}
             axisLeft={null}
             axisRight={null}
-            yFormat={v => Formatter.number(v, 3)}
+            yFormat={v => Formatter.number(v, NUMBER_DISPLAY_LENGTH)}
             margin={{ top: 30, right: 30, bottom: 20, left: 20 }}
             yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: false, reverse: false }}
             pointSize={10}
@@ -104,7 +105,7 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
             axisTop={null}
             axisLeft={null}
             axisRight={null}
-            yFormat={v => Formatter.number(v, 3)}
+            yFormat={v => Formatter.number(v, NUMBER_DISPLAY_LENGTH)}
             margin={{ top: 30, right: 30, bottom: 20, left: 20 }}
             yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: false, reverse: false }}
             pointSize={10}
@@ -134,7 +135,7 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
             axisTop={null}
             axisLeft={null}
             axisRight={null}
-            yFormat={v => Formatter.number(v, 3)}
+            yFormat={v => Formatter.number(v, NUMBER_DISPLAY_LENGTH)}
             margin={{ top: 30, right: 30, bottom: 20, left: 20 }}
             yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: false, reverse: false }}
             pointSize={10}

@@ -4,7 +4,7 @@ type intish = bigint | number | string
 
 export namespace Formatter {
 
-  export function percent(value: number, length: number): string {
+  export function percent(value: number, length: number = 0): string {
     return number(100 * value, 3 + length) + '%'
   }
 

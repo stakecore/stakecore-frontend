@@ -1,6 +1,7 @@
 import useSWR from 'swr'
 import { SpinnerCircular } from 'spinners-react'
 import { Chain } from '~/enums'
+import ServerError from '~/components/ui/serverError'
 import ProjectTitle from "~/components/pages/title"
 import InfoComponent from "~/components/pages/info"
 import FspDataLayer from "../flare-fsp/data"
@@ -22,7 +23,7 @@ export const SongbirdFspPage = () => {
       </div>
     </>
   } else if (data == null) {
-    component = <div>error {String(error)}</div>
+    component = <ServerError status={500} message={error} />
   } else {
     component = <>
       <InfoComponent specs={FspDataLayer.extractSpecs(data.info)} summary={FspDataLayer.extractSummary(CHAIN, data.info)} />

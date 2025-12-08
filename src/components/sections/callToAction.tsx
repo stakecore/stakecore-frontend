@@ -1,8 +1,9 @@
 import useSWR from 'swr'
 import { SpinnerCircular } from 'spinners-react'
 import SlideUp from '../../utils/animations/slideUp'
-import { getProposalData } from "../../utils/data/proposals"
+import ServerError from '../ui/serverError'
 import Proposal from './proposal'
+import { getProposalData } from "../../utils/data/proposals"
 import { useGlobalStore } from "~/utils/store/global"
 import { PageDataService } from '../../backendApi'
 import { PAGE_COLOR_CODE } from '../../constants'
@@ -23,6 +24,7 @@ const CallToAction = () => {
     setWalletChoiceVisible(true)
   }
 
+  let renderr = false
   let component = null
   if (walletAddress == null) {
     component = <div className="hero-btns">
@@ -35,10 +37,14 @@ const CallToAction = () => {
       <SpinnerCircular color={PAGE_COLOR_CODE} size={100} />
     </div>
   } else if (data == null) {
-    component = <div>Error</div>
+    renderr = true
+    component = <ServerError status={500} message={error} />
   } else {
     const proposal = getProposalData(data)
-    return <Proposal priceData={proposal} />
+    if (proposal.length > 0) {
+      return <Proposal priceData={proposal} />
+    }
+    component = <div>You have no FLR, AVAX, or SGB</div>
   }
 
   return (
@@ -48,7 +54,7 @@ const CallToAction = () => {
           <div className="col-lg-12">
             <SlideUp>
               <div className="about-content-part call-to-action-part text-center">
-                <h2>Earn yield for your dormant FLR, AVAX, or SGB without any additional risk</h2>
+                { !renderr && <h2>Earn yield for your dormant FLR, AVAX, or SGB without any additional risk</h2> }
                 {component}
               </div>
             </SlideUp>

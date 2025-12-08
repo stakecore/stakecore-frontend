@@ -3,7 +3,8 @@ import { SpinnerCircular } from 'spinners-react'
 import { useCookies } from 'react-cookie'
 import { Eip1193Provider, recoverAddress, SigningKey, hashMessage } from 'ethers'
 import { useGlobalStore } from "~/utils/store/global"
-import { flarePChainAddressUrl } from "~/constants"
+import { flarePChainAddressUrl, REFRESH_QUERY_FAST_MS } from "~/constants"
+import ServerError from "~/components/ui/serverError"
 import StakeFlow from "~/components/ui/stakeFlow"
 import DelegatorList from "~/components/ui/delegations"
 import { HashLink } from "~/components/utils/links"
@@ -103,7 +104,7 @@ const FlareValidatorLocalDelegateComponent = () => {
       }
       return FlareValidatorDataAccess.getDelegatorInfo(cchain, pchain)
     }, {
-    refreshInterval: 10_000,
+    refreshInterval: REFRESH_QUERY_FAST_MS,
     revalidateOnReconnect: true
   })
 
@@ -148,8 +149,8 @@ const FlareValidatorLocalDelegateComponent = () => {
         </a>
       </div>
     </div>
-  } else if (resp?.data == null || error != null) {
-    component = <div>error {String(error)}</div>
+  } else if (resp?.data == null) {
+    component = <ServerError status={500} message={error} />
   } else if (resp?.data != null) {
     component = <>
       <div>
@@ -173,7 +174,7 @@ const FlareValidatorLocalDelegateComponent = () => {
     <div className="single-project-page-right wow fadeInUp delay-0-4s flare-div-border mt-30">
       <h2>How To Delegate</h2>
       <p>
-        Delegating AVAX involves moving it from C-Chain to P-Chain, where you then sign the add delegator transaction.
+        Delegating FLR involves moving it from C-Chain to P-Chain, where you then sign the add delegator transaction.
         After the set delegation lockup time expires, funds are automatically returned to your P-Chain account.
       </p>
       {component}

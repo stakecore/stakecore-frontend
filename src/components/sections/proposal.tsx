@@ -11,7 +11,8 @@ const Proposal = ({ priceData }: any) => {
                         <div className="col-xl-12 col-lg-12">
                             <SlideUp>
                                 <div className="section-title text-center">
-                                    <h2>Earn yield for your dormant FLR, AVAX, or SGB without any additional risk</h2>
+                                    <h2>Put your assets to work</h2>
+                                    <p>Earn yield on your dormant FLR, AVAX, or SGB without any additional risk.</p>
                                 </div>
                             </SlideUp>
                         </div>

@@ -1,6 +1,7 @@
 import useSWR from "swr"
 import { SpinnerCircular } from 'spinners-react'
 import { useGlobalStore } from "~/utils/store/global"
+import ServerError from "~/components/ui/serverError"
 import StakeFlow from "~/components/ui/stakeFlow"
 import { IStakeFlow } from "~/components/types"
 import { injectActionArg } from "../../utils"
@@ -48,7 +49,7 @@ const FlareFspLocalDelegateComponent = () => {
     if (address == null) return null
     return FspDataLayer.getDelegatorInfo('flare', address)
   }, {
-    refreshInterval: 10_000,
+    refreshInterval: C.REFRESH_QUERY_FAST_MS,
     revalidateOnReconnect: true
   })
 
@@ -68,8 +69,8 @@ const FlareFspLocalDelegateComponent = () => {
     component = <div style={{ textAlign: 'center' }}>
       <SpinnerCircular color={C.FLARE_COLOR_CODE} size={45} />
     </div>
-  } else if (data == null || error != null) {
-    component = <div>error {String(error)}</div>
+  } else if (data == null) {
+    component = <ServerError status={500} message={error} />
   } else {
     component = <>
       <div className="mb-40">

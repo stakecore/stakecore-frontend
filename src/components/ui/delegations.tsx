@@ -2,20 +2,21 @@ import useSWR from "swr"
 import { AvalancheDelegationDto } from "~/backendApi"
 import { Formatter } from "~/utils/misc/formatter"
 import { unixnow } from "~/utils/misc/time"
+import { NUMBER_DISPLAY_LENGTH, REFRESH_QUERY_FAST_MS } from "~/constants"
 
 
 const DelegatorList = ({ delegators }: { delegators: AvalancheDelegationDto[] }) => {
-  let { data: now } = useSWR('delegator-list-refresh', (_) => null, { refreshInterval: 10_000 })
+  let { data: now } = useSWR('delegator-list-refresh', (_) => null, { refreshInterval: REFRESH_QUERY_FAST_MS })
   now = unixnow()
 
   const delegations = Array.from(delegators).map((v, i) => {
     const duration = v.endTime - v.startTime
-    const perc = Formatter.number(Math.min((now - v.startTime) / duration, 100), 3)
+    const perc = Formatter.number(Math.min((now - v.startTime) / duration, 100), NUMBER_DISPLAY_LENGTH)
 
     const str = Formatter.date(v.startTime)
     const end = Formatter.date(v.endTime)
-    const del = Formatter.number(v.delegated, 3)
-    const rew = Formatter.number(v.reward + v.delegated, 3)
+    const del = Formatter.number(v.delegated, NUMBER_DISPLAY_LENGTH)
+    const rew = Formatter.number(v.reward + v.delegated, NUMBER_DISPLAY_LENGTH)
 
     return <div key={i}>
       <div>

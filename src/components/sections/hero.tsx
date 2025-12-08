@@ -4,8 +4,10 @@ import useSWR from 'swr'
 import { PageDataService } from '~/backendApi'
 import profile from "../../assets/images/about/profile.svg"
 import SlideUp from '../../utils/animations/slideUp'
+import ServerError from '../ui/serverError'
 import DelegatedStats from '../ui/baseMetrics'
 import DelegationList from '../ui/delegationList'
+import { REFRESH_QUERY_SLOW_MS } from '~/constants'
 
 
 const Hero = () => {
@@ -14,9 +16,29 @@ const Hero = () => {
     if (resp?.data == null) throw new Error(resp.error)
     return resp
   }, {
-    refreshInterval: 30_000,
+    refreshInterval: REFRESH_QUERY_SLOW_MS,
     revalidateOnReconnect: true
   })
+
+  let component = null
+  if (!isLoading && data == null) {
+    component = <div className="about-content-part">
+      <ServerError status={500} message={error} />
+    </div>
+  } else {
+    component = <>
+      <SlideUp>
+        <div className="about-content-part">
+          <DelegatedStats data={data} isLoading={isLoading} error={error} />
+        </div>
+      </SlideUp>
+      <SlideUp>
+        <div className="about-content-part-bottom">
+          <DelegationList data={data} isLoading={isLoading} error={error} />
+        </div>
+      </SlideUp>
+    </>
+  }
 
   return (
     <section id="about" className="about-area">
@@ -45,16 +67,7 @@ const Hero = () => {
           {/* <!-- / END ABOUT IMAGE DESIGN AREA -->
           <!-- START ABOUT TEXT DESIGN AREA --> */}
           <div className="col-lg-8">
-            <SlideUp>
-              <div className="about-content-part">
-                <DelegatedStats data={data} isLoading={isLoading} error={error} />
-              </div>
-            </SlideUp>
-            <SlideUp>
-              <div className="about-content-part-bottom">
-                <DelegationList data={data} isLoading={isLoading} error={error} />
-              </div>
-            </SlideUp>
+            {component}
           </div>
           {/* <!-- / END ABOUT TEXT DESIGN AREA --> */}
         </div>

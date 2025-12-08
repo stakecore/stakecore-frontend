@@ -65,9 +65,11 @@ const DelegationList = ({ data, isLoading, error }: {
   if (data?.data != null) {
     delegations = data.data.delegations
   } else if (isLoading) {
-    return <span style={{ marginLeft: 15 }}><SpinnerCircular color={C.PAGE_COLOR_CODE} size={25} /></span>
+    return <div style={{ textAlign: 'center' }}>
+      <SpinnerCircular color={C.PAGE_COLOR_CODE} size={40} />
+    </div>
   } else {
-    return <span>{String(error)}</span>
+    console.log(String(error)) // should not hapen
   }
 
   return <>
@@ -80,7 +82,7 @@ const DelegationList = ({ data, isLoading, error }: {
       {delegations.map((delegation, i) => {
         const logo = chainToLogoUrl(delegation.chain)
         const url = chainToTransactionUrl(delegation.chain, delegation.transaction)
-        const delegated = Formatter.number(delegation.delegated, 3, 18)
+        const delegated = Formatter.number(delegation.delegated, C.NUMBER_DISPLAY_LENGTH, 18)
         const symbol = chainToSymbol(delegation.chain)
         return <React.Fragment key={i}>
           <div><img src={logo} width={25} /></div>

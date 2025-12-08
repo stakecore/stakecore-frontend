@@ -15,6 +15,7 @@ import './assets/css/investFlow.scss'
 import './assets/css/progressBar.css'
 import './assets/css/specs.css'
 import './assets/css/pageStatsPanel.scss'
+import './assets/css/error.scss'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

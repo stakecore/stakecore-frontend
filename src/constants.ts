@@ -1,4 +1,9 @@
 export const MAX_BIPS = 10_000
+export const NUMBER_DISPLAY_LENGTH = 3
+
+// server query
+export const REFRESH_QUERY_FAST_MS = 10_000
+export const REFRESH_QUERY_SLOW_MS = 30_000
 
 // tokens
 
@@ -131,7 +136,7 @@ export const avalancheWalletConfig = {
 
 // style
 
-export const PAGE_COLOR_CODE = '#eb5d3a'
+export const PAGE_COLOR_CODE = 'white'
 export const FLARE_COLOR_CODE = '#E62058'
 export const AVALANCHE_COLOR_CODE = '#FF394A'
 export const SONGBIRD_COLOR_CODE = '#253c4d'
