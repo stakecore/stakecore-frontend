@@ -1,8 +1,4 @@
-import React from 'react'
-import { RiMailSendLine } from '@remixicon/react'
-import { Link } from 'react-router-dom'
 import SlideUp from '../../utils/animations/slideUp'
-import profile from "../../assets/images/about/profile.svg"
 
 
 const Summary = () => {

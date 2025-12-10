@@ -1,14 +1,16 @@
 import useSWR from 'swr'
 import { SpinnerCircular } from 'spinners-react'
+import { HashLink } from '~/components/utils/links'
 import ServerError from '~/components/ui/serverError'
 import ProjectTitle from "~/components/pages/title"
 import InfoComponent from "~/components/pages/info"
 import FspStatsComponent from "../../../components/pages/fsp-stats"
 import FspDataLayer from "./data"
 import ProjectDescription from './components/description'
+import FlareFspOfficialDelegateComponent from './components/delegateOfficial'
 import FlareFspLocalDelegateComponent from './components/delegateLocal'
-import { FLARE_COLOR_CODE } from "~/constants"
 import { Chain } from '~/enums'
+import { FLARE_COLOR_CODE, flareEvmAddressUrl } from "~/constants"
 
 
 const CHAIN = 'flare'
@@ -26,9 +28,11 @@ export const FlareFspPage = () => {
   } else if (data == null) {
     component = <ServerError status={500} message={error} />
   } else {
+    const delegator = <HashLink url={flareEvmAddressUrl(data.info.delegationAddress)} address={data.info.delegationAddress} />
     component = <>
       <InfoComponent specs={FspDataLayer.extractSpecs(data.info)} summary={FspDataLayer.extractSummary(CHAIN, data.info)} />
       <FlareFspLocalDelegateComponent />
+      <FlareFspOfficialDelegateComponent validatorLink={delegator} />
       <FspStatsComponent stats={data.statistics} chain={Chain.FLARE} />
     </>
   }

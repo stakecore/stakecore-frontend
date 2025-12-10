@@ -1,6 +1,7 @@
 import useSWR from 'swr'
 import { SpinnerCircular } from 'spinners-react'
 import { Chain } from '~/enums'
+import { HashLink } from '~/components/utils/links'
 import ServerError from '~/components/ui/serverError'
 import ProjectTitle from "~/components/pages/title"
 import InfoComponent from "~/components/pages/info"
@@ -8,7 +9,8 @@ import FspDataLayer from "../flare-fsp/data"
 import ProjectDescription from './components/description'
 import SongbirdFspLocalDelegateComponent from './components/delegateLocal'
 import FspStatsComponent from '~/components/pages/fsp-stats'
-import { SONGBIRD_COLOR_CODE } from "~/constants"
+import { SONGBIRD_COLOR_CODE, songbirdEvmAddressUrl } from "~/constants"
+import SongbirdFspOfficialDelegateComponent from './components/delegateOfficial'
 
 const CHAIN = 'songbird'
 
@@ -25,9 +27,11 @@ export const SongbirdFspPage = () => {
   } else if (data == null) {
     component = <ServerError status={500} message={error} />
   } else {
+    const link = <HashLink url={songbirdEvmAddressUrl(data.info.delegationAddress)} address={data.info.delegationAddress} />
     component = <>
       <InfoComponent specs={FspDataLayer.extractSpecs(data.info)} summary={FspDataLayer.extractSummary(CHAIN, data.info)} />
       <SongbirdFspLocalDelegateComponent />
+      <SongbirdFspOfficialDelegateComponent validatorLink={link} />
       <FspStatsComponent stats={data.statistics} chain={Chain.SONGBIRD} />
     </>
   }

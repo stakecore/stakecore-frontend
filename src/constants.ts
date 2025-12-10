@@ -141,6 +141,13 @@ export const FLARE_COLOR_CODE = '#E62058'
 export const AVALANCHE_COLOR_CODE = '#FF394A'
 export const SONGBIRD_COLOR_CODE = '#253c4d'
 
+// videos
+
+export const FLARE_FSP_VIDEO_ID = '3_APLXFycOU'
+export const SONGBIRD_FSP_VIDEO_ID = '3_APLXFycOU'
+export const FLARE_VALIDATOR_VIDEO_ID = 'JkYJ5wUi4Vc'
+export const AVALANCHE_VALIDATOR_VIDEO_ID = 'wRPxDEMgDdM'
+
 // hrps
 
 export const HRP = {
