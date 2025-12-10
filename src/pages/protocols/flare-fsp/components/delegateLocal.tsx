@@ -73,7 +73,7 @@ const FlareFspLocalDelegateComponent = () => {
     component = <ServerError status={500} message={error} />
   } else {
     component = <>
-      <div className="mb-40">
+      <div>
         <p>
           Delegating FLR involves wrapping it into WFLR, which you can then delegate to an FSP entity.
           The delegation in this case is liquid, meaning you can safely transfer WFLR or withdraw it.
@@ -82,7 +82,9 @@ const FlareFspLocalDelegateComponent = () => {
           New rewards are distributed every 3.5 days and are based on your balance at 3 block heights
           determined randomly at the end of each reward epoch.
         </p>
-        <StakeFlow layout={modifyStakeFlowLayout(data)} data={delegatorInfoToStakeFlow(data)} />
+        <div className="mt-40">
+          <StakeFlow layout={modifyStakeFlowLayout(data)} data={delegatorInfoToStakeFlow(data)} />
+        </div>
       </div>
     </>
   }

@@ -1,4 +1,5 @@
 import { getAddress } from "ethers"
+import { NUMBER_DISPLAY_LENGTH } from "~/constants"
 
 type intish = bigint | number | string
 
@@ -8,7 +9,7 @@ export namespace Formatter {
     return number(100 * value, 3 + length) + '%'
   }
 
-  export function number(value: intish, length: number, decimals = 0): string {
+  export function number(value: intish, length = NUMBER_DISPLAY_LENGTH, decimals = 0): string {
     let str = value.toString()
 
     let prefix = ''
@@ -101,6 +102,10 @@ export namespace Formatter {
     }
 
     return date(unix)
+  }
+
+  export function days(unix: number): string {
+    return number(unix / 86400, 1) + ' days'
   }
 
   export function error(msg: string): string {

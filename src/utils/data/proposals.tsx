@@ -45,14 +45,14 @@ export const getProposalData = (info: PageUserInfoDto) => {
 
     const capital = joinTokenValues(
       [totalFlr, totalWFlr],
-      [Formatter.number(totalFlr, C.NUMBER_DISPLAY_LENGTH), Formatter.number(totalWFlr, C.NUMBER_DISPLAY_LENGTH)],
+      [Formatter.number(totalFlr), Formatter.number(totalWFlr)],
       [C.FLR_SYMBOL, C.WFLR_SYMBOL]
     )
 
     ret.push({
       id: 1,
       title: "Flare Network",
-      price: Formatter.number(earned, C.NUMBER_DISPLAY_LENGTH),
+      price: Formatter.number(earned),
       sortInfo: `Invest your ${capital} into our protocols to earn up to`,
       features: [
         {
@@ -73,12 +73,12 @@ export const getProposalData = (info: PageUserInfoDto) => {
     const apyVal = apydata.get('Avalanche').get('Validator')
     const earned = totalAvax * apyVal * info.prices.avax
 
-    const fTotalAvax = Formatter.number(totalAvax, C.NUMBER_DISPLAY_LENGTH)
+    const fTotalAvax = Formatter.number(totalAvax)
 
     ret.push({
       id: 2,
       title: "Avalanche",
-      price: Formatter.number(earned, C.NUMBER_DISPLAY_LENGTH),
+      price: Formatter.number(earned),
       sortInfo: `Invest your ${fTotalAvax} ${C.AVAX_SYMBOL} into our protocols to earn up to`,
       features: [
         {
@@ -96,14 +96,14 @@ export const getProposalData = (info: PageUserInfoDto) => {
 
     const capital = joinTokenValues(
       [totalSgb, totalWSgb],
-      [Formatter.number(totalSgb, C.NUMBER_DISPLAY_LENGTH), Formatter.number(totalWSgb, C.NUMBER_DISPLAY_LENGTH)],
+      [Formatter.number(totalSgb), Formatter.number(totalWSgb)],
       [C.SGB_SYMBOL, C.WSGB_SYMBOL]
     )
 
     ret.push({
       id: 3,
       title: "Songbird Canary Network",
-      price: Formatter.number(earned, C.NUMBER_DISPLAY_LENGTH),
+      price: Formatter.number(earned),
       sortInfo: `Invest your ${capital} into our protocols to earn up to`,
       features: [
         {

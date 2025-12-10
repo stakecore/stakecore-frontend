@@ -2,7 +2,7 @@ import useSWR from "swr"
 import { AvalancheDelegationDto } from "~/backendApi"
 import { Formatter } from "~/utils/misc/formatter"
 import { unixnow } from "~/utils/misc/time"
-import { NUMBER_DISPLAY_LENGTH, REFRESH_QUERY_FAST_MS } from "~/constants"
+import { REFRESH_QUERY_FAST_MS } from "~/constants"
 
 
 const DelegatorList = ({ delegators }: { delegators: AvalancheDelegationDto[] }) => {
@@ -11,12 +11,12 @@ const DelegatorList = ({ delegators }: { delegators: AvalancheDelegationDto[] })
 
   const delegations = Array.from(delegators).map((v, i) => {
     const duration = v.endTime - v.startTime
-    const perc = Formatter.number(Math.min((now - v.startTime) / duration, 100), NUMBER_DISPLAY_LENGTH)
+    const perc = Formatter.number(Math.min((now - v.startTime) / duration, 100))
 
     const str = Formatter.date(v.startTime)
     const end = Formatter.date(v.endTime)
-    const del = Formatter.number(v.delegated, NUMBER_DISPLAY_LENGTH)
-    const rew = Formatter.number(v.reward + v.delegated, NUMBER_DISPLAY_LENGTH)
+    const del = Formatter.number(v.delegated)
+    const rew = Formatter.number(v.reward + v.delegated)
 
     return <div key={i}>
       <div>

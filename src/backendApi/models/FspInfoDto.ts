@@ -6,7 +6,7 @@ export type FspInfoDto = {
     delegationAddress: string;
     identityAddress: string;
     apy: number;
-    risk: string;
+    minimumDelegated: number;
     providerFee: number;
 };
 

@@ -30,12 +30,12 @@ const InfoComponent = ({ summary, specs }) => {
   </>
 }
 
-const ProjectInfoSummary = ({ asset, apy, risk, lockup }) => {
+const ProjectInfoSummary = ({ asset, apy, delegation, lockup }) => {
   return (
     <>
       <ProjectSingleInfo title='Asset' value={asset} />
       <ProjectSingleInfo title='APY' value={apy} />
-      <ProjectSingleInfo title='Risk Rating' value={risk} />
+      <ProjectSingleInfo title='Delegation' value={delegation} />
       <ProjectSingleInfo title='Lockup' value={lockup} />
     </>
   )

@@ -6,7 +6,7 @@ export type AvalancheValidatorInfoDto = {
     validatorNodeId: string;
     validatorTransactionHash: string;
     apy: number;
-    risk: string;
+    minimumDelegated: number;
     validatorFee: number;
     validatorOwnedStake: number;
     validatorTotalStake: number;

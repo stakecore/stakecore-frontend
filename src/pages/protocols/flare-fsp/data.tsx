@@ -22,8 +22,8 @@ namespace FspDataLayer {
     return {
       asset: symbol,
       apy: Formatter.percent(info.apy, 0),
-      risk: info.risk,
-      lockup: 'None'
+      delegation: 'No Limit',
+      lockup: 'No Limit'
     }
   }
 

@@ -11,7 +11,7 @@ export type ISpec = {
 export type ISummary = {
   asset: string
   apy: string
-  risk: string
+  delegation: string
   lockup: string
 }
 

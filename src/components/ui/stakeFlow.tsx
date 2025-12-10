@@ -4,7 +4,6 @@ import { RiArrowDownLine, RiArrowUpLine } from "@remixicon/react"
 import { toast } from 'react-toastify'
 import { sleep } from "~/utils/misc/time"
 import { Formatter } from "~/utils/misc/formatter"
-import { NUMBER_DISPLAY_LENGTH } from "~/constants"
 import type { IStakeFlow, IStakeFlowBarAction, IStakeFlowDataPart, IStakeFlowLayoutPart } from "../types"
 
 
@@ -82,8 +81,8 @@ const StakeFlowAction = ({ down, active, action, data, value, freeze }: IStakeFl
 
 const StakeFlowBar = ({ layout, state, data }: IStakeFlowBarArgs) => {
   const [dcurr, dnext] = data
-  const balance = Formatter.number(dcurr.balance, NUMBER_DISPLAY_LENGTH)
-  const uvalue = Formatter.number(dcurr.balance * dcurr.price, NUMBER_DISPLAY_LENGTH)
+  const balance = Formatter.number(dcurr.balance)
+  const uvalue = Formatter.number(dcurr.balance * dcurr.price)
 
   const civalue = dcurr.fixedInputValue ?? state.values[0] ?? 0
   const nivalue = dnext?.fixedInputValue ?? state.values[1] ?? 0

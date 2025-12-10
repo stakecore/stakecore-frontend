@@ -1,5 +1,6 @@
 import { Formatter } from "~/utils/misc/formatter"
 import { HashLink } from "~/components/utils/links"
+import { unixnow } from "~/utils/misc/time"
 import { flarePChainTransactionUrl, flareValidatorUrl } from "~/constants"
 import { ApiResponseDto_AvalancheDelegatorInfoDto, AvalancheValidatorInfoDto, FlareValidatorService } from "~/backendApi"
 import type { AvalancheData, IDelegation, IGraphics } from "./types"
@@ -26,11 +27,14 @@ export namespace FlareValidatorDataAccess {
   }
 
   export function getSummary(data: AvalancheValidatorInfoDto): ISummary {
+    const minDelegated = Formatter.number(data.minimumDelegated)
+    const maxDelegated = Formatter.number(data.validatorAvailableCapacity)
+    const maxLockup = Formatter.days(data.validatorEndTime - unixnow())
     return {
       asset: 'FLR',
       apy: Formatter.percent(data.apy, 0),
-      risk: 'Low',
-      lockup: '14-365 days'
+      delegation: minDelegated + ' - ' + maxDelegated,
+      lockup: `14 - ${maxLockup}`
     }
   }
 
@@ -66,7 +70,7 @@ export namespace FlareValidatorDataAccess {
         },
         {
           title: 'Validator Owned Stake',
-          value: data.validatorOwnedStake + ' FLR',
+          value: Formatter.number(data.validatorOwnedStake) + ' FLR',
           tooltip: 'Amount staked by Stakecore'
         },
         {

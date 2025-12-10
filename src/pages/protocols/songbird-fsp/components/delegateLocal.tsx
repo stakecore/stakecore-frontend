@@ -73,8 +73,8 @@ const SongbirdFspLocalDelegateComponent = () => {
     component = <ServerError status={500} message={error} />
   } else {
     component = <>
-      <div className="mb-40">
-        <p className="mb-40">
+      <div>
+        <p>
           Delegating SGB involves wrapping it into WSGB, which you can then delegate to an SSP entity.
           The delegation in this case is liquid, meaning you can safely transfer WSGB or withdraw it.
           Note however that sending WSGB to another address will contribute the stake to the other address.
@@ -82,7 +82,9 @@ const SongbirdFspLocalDelegateComponent = () => {
           New rewards are distributed every 3.5 days and are based on your balance at 3 block heights
           determined randomly at the end of each reward epoch.
         </p>
-        <StakeFlow layout={modifyStakeFlowLayout(data)} data={delegatorInfoToStakeFlow(data)} />
+        <div className="mt-40">
+          <StakeFlow layout={modifyStakeFlowLayout(data)} data={delegatorInfoToStakeFlow(data)} />
+        </div>
       </div>
     </>
   }

@@ -4,9 +4,7 @@ import { Formatter } from "~/utils/misc/formatter"
 import MeterBar from "~/components/ui/meterBar"
 import { Chain } from "~/enums"
 import { chainToDivBorderClassName, chainToSymbol } from "~/utils/misc/translations"
-import { NUMBER_DISPLAY_LENGTH } from "~/constants"
 import type { FspStatisticsDto } from "~/backendApi"
-
 
 
 const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: Chain }) => {
@@ -25,10 +23,10 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
       id: 'Primary Success Rate',
       data: stats.submissions.result.map(({ rewardEpoch: x, primary: y }) => ({ x, y }))
     },
-    /*       {
-            id: 'Secondary Success Rate',
-            data: data.submissions.result.map(({ rewardEpoch: x, secondary: y }) => ({ x, y }))
-          } */
+    {
+      id: 'Secondary Success Rate',
+      data: stats.submissions.result.map(({ rewardEpoch: x, secondary: y }) => ({ x, y }))
+    }
   ]
 
   const d3 = [
@@ -63,8 +61,9 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
           <MeterBar name='Uptime' ranges={[95, 98]} value={last.uptime} text={uptime} />
         </div>
       </div>
-      <div className="row mt-20">
-        <h5 className='meter-bar-title'>FTSO Statistics</h5>
+      <div className="row mt-50">
+        <h5 className='meter-bar-title'>FTSO</h5>
+        <p>Primary and secondary success rates.</p>
         <div style={{ height: 250 }}>
           <ResponsiveLine
             data={d2}
@@ -75,7 +74,7 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
             axisTop={null}
             axisLeft={null}
             axisRight={null}
-            yFormat={v => Formatter.number(v, NUMBER_DISPLAY_LENGTH)}
+            yFormat={v => Formatter.number(v)}
             margin={{ top: 30, right: 30, bottom: 20, left: 20 }}
             yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: false, reverse: false }}
             pointSize={10}
@@ -93,9 +92,10 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
         </div>
       </div>
 
-      <div className="row mt-20">
+      <div className="row mt-40">
         <h5 className='meter-bar-title'>Delegated W{symbol}</h5>
-        <div style={{ height: 250 }}>
+        <p>Total W{symbol} delegation weight, evaluated at each epoch's vote power block.</p>
+        <div style={{ height: 200 }}>
           <ResponsiveLine
             data={d1}
             axisBottom={{
@@ -105,8 +105,8 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
             axisTop={null}
             axisLeft={null}
             axisRight={null}
-            yFormat={v => Formatter.number(v, NUMBER_DISPLAY_LENGTH)}
-            margin={{ top: 30, right: 30, bottom: 20, left: 20 }}
+            yFormat={v => Formatter.number(v)}
+            margin={{ top: 20, right: 30, bottom: 20, left: 20 }}
             yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: false, reverse: false }}
             pointSize={10}
             pointColor='black'
@@ -123,9 +123,10 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
         </div>
       </div>
 
-      <div className="row mt-20">
+      <div className="row mt-40">
         <h5 className='meter-bar-title'>W{symbol} Delegators</h5>
-        <div style={{ height: 250 }}>
+        <p>Total W{symbol} delegators, evaluated at each epoch's vote power block.</p>
+        <div style={{ height: 200 }}>
           <ResponsiveLine
             data={d3}
             axisBottom={{
@@ -135,8 +136,8 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
             axisTop={null}
             axisLeft={null}
             axisRight={null}
-            yFormat={v => Formatter.number(v, NUMBER_DISPLAY_LENGTH)}
-            margin={{ top: 30, right: 30, bottom: 20, left: 20 }}
+            yFormat={v => Formatter.number(v)}
+            margin={{ top: 20, right: 30, bottom: 20, left: 20 }}
             yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: false, reverse: false }}
             pointSize={10}
             pointColor='black'

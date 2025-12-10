@@ -82,7 +82,7 @@ const DelegationList = ({ data, isLoading, error }: {
       {delegations.map((delegation, i) => {
         const logo = chainToLogoUrl(delegation.chain)
         const url = chainToTransactionUrl(delegation.chain, delegation.transaction)
-        const delegated = Formatter.number(delegation.delegated, C.NUMBER_DISPLAY_LENGTH, 18)
+        const delegated = Formatter.number(delegation.delegated, undefined, 18)
         const symbol = chainToSymbol(delegation.chain)
         return <React.Fragment key={i}>
           <div><img src={logo} width={25} /></div>

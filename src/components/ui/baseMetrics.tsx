@@ -2,7 +2,7 @@ import classNames from "classnames"
 import { SpinnerCircular } from "spinners-react"
 import { ApiResponseDto_PageStatsDto } from "~/backendApi"
 import { Formatter } from "~/utils/misc/formatter"
-import { NUMBER_DISPLAY_LENGTH, PAGE_COLOR_CODE } from "~/constants"
+import { PAGE_COLOR_CODE } from "~/constants"
 
 const DOWN_ARROW = "M6 9L12 15L18 9"
 const UP_ARROW = "M18 15L12 9L6 15"
@@ -19,8 +19,8 @@ const DelegatedStats = ({ data, isLoading, error }: {
     const _delegated1 = data.data.delegated.reduce((x, y) => x + y.delegatedUsd, 0)
     const _delegators0 = data.data.delegatedHistoric.reduce((x, y) => x + y.delegators, 0)
     const _delegators1 = data.data.delegated.reduce((x, y) => x + y.delegators, 0)
-    delegated = Formatter.number(_delegated1, NUMBER_DISPLAY_LENGTH)
-    delegators = Formatter.number(_delegators1, NUMBER_DISPLAY_LENGTH)
+    delegated = Formatter.number(_delegated1)
+    delegators = Formatter.number(_delegators1)
     delegatedDiff = Formatter.percent(_delegated0 > 0 ? _delegated1 / _delegated0 - 1 : 0, 0)
     delegatorDiff = Formatter.percent(_delegators0 > 0 ? _delegators1 / _delegators0 - 1 : 0, 0)
   } else if (isLoading) {

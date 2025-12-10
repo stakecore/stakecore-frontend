@@ -373,8 +373,8 @@
                     "apy": {
                         "type": "number"
                     },
-                    "risk": {
-                        "type": "string"
+                    "minimumDelegated": {
+                        "type": "number"
                     },
                     "validatorFee": {
                         "type": "number"
@@ -420,7 +420,7 @@
                     "validatorNodeId",
                     "validatorTransactionHash",
                     "apy",
-                    "risk",
+                    "minimumDelegated",
                     "validatorFee",
                     "validatorOwnedStake",
                     "validatorTotalStake",
@@ -546,8 +546,8 @@
                     "apy": {
                         "type": "number"
                     },
-                    "risk": {
-                        "type": "string"
+                    "minimumDelegated": {
+                        "type": "number"
                     },
                     "providerFee": {
                         "type": "number"
@@ -557,7 +557,7 @@
                     "delegationAddress",
                     "identityAddress",
                     "apy",
-                    "risk",
+                    "minimumDelegated",
                     "providerFee"
                 ]
             },
