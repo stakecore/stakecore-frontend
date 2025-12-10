@@ -75,9 +75,10 @@ const SongbirdFspLocalDelegateComponent = () => {
           Delegating SGB involves wrapping it into WSGB, which you can then delegate to an SSP entity.
           The delegation in this case is liquid, meaning you can safely transfer WSGB or withdraw it.
           Note however that sending WSGB to another address will contribute the stake to the other address.
-
-          New rewards are distributed every 3.5 days and are based on your balance at 3 block heights
-          determined randomly at the end of each reward epoch.
+          <br /><br />
+          Note that delegation is determined as a percentage of funds delegated, and we will always
+          use 100% when delegating here, regardless of your input. If wanting to delegate to multiple
+          providers, see video below to delegate on official Flare network interface.
         </p>
         <div className="mt-40">
           <StakeFlow layout={modifyStakeFlowLayout(data)} data={delegatorInfoToStakeFlow(data)} />
@@ -88,7 +89,7 @@ const SongbirdFspLocalDelegateComponent = () => {
 
   return (
     <div className="single-project-page-right wow fadeInUp delay-0-4s songbird-div-border mt-30">
-      <h2>How To Delegate</h2>
+      <h2>Delegate On Our Website</h2>
       {component}
     </div>
   )

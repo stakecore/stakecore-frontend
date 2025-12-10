@@ -7,9 +7,9 @@ const SongbirdFspOfficialDelegateComponent = ({ validatorLink }) => {
       <h2>Delegate On The Official Flare Network Site</h2>
       <p>
         Users can choose to delegate to the Stakecore delegation address {validatorLink}.
-        Note that rewards distributed in 3.5-day cycles are bound to the delegated provider's performance
-        during that epoch. If provider fails to meet minimal conditions it can result in reward loss for its delegators.
-        Follow the below video to delegate to Stakecore's FSP provider.
+        Note that the rewards distributed are bound to the delegated provider's performance
+        during that epoch. If provider fails to meet minimal conditions, it can result in reward loss for the delegators.
+        Follow the video below to delegate to Stakecore's SSP provider.
       </p>
       <div className="video-container mb-30">
         <MovieClip videoId={SONGBIRD_FSP_VIDEO_ID} />

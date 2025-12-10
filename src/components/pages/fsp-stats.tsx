@@ -13,19 +13,19 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
 
   const d1 = [
     {
-      id: `${symbol} Delegated`,
-      data: stats.delegations.result.map(({ rewardEpoch: x, delegated: y }) => ({ x, y }))
-    }
-  ]
-
-  const d2 = [
-    {
       id: 'Primary Success Rate',
       data: stats.submissions.result.map(({ rewardEpoch: x, primary: y }) => ({ x, y }))
     },
     {
       id: 'Secondary Success Rate',
       data: stats.submissions.result.map(({ rewardEpoch: x, secondary: y }) => ({ x, y }))
+    }
+  ]
+
+  const d2 = [
+    {
+      id: `${symbol} Delegated`,
+      data: stats.delegations.result.map(({ rewardEpoch: x, delegated: y }) => ({ x, y }))
     }
   ]
 
@@ -46,27 +46,32 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
       <h2>Provider Statistics</h2>
       <p>
         We value transparency, and stream a part of our monitoring to this site,
-        so you can see live data of the provider's performance for the current reward epoch {last.rewardEpoch}.
+        so you can see live data of our provider's performance for the current reward epoch {last.rewardEpoch}.
         Below we also display the historical data for some relevant metrics over the past 25 reward epochs (90 days).
       </p>
       <div className="row">
         <div className="col-lg-6">
           <MeterBar name='Primary Success' ranges={[20, 50]} value={last.primary} text={primary} />
           <MeterBar name='Secondary Success' ranges={[80, 95]} value={last.secondary} text={secondary} />
-          <MeterBar name='Uptime' ranges={[95, 98]} value={last.uptime} text={uptime} />
         </div>
         <div className="col-lg-6">
-          <MeterBar name='Primary Success' ranges={[20, 50]} value={last.primary} text={primary} />
-          <MeterBar name='Secondary Success' ranges={[80, 95]} value={last.secondary} text={secondary} />
+          <MeterBar name='Uptime' ranges={[95, 98]} value={last.uptime} text={uptime} />
           <MeterBar name='Uptime' ranges={[95, 98]} value={last.uptime} text={uptime} />
         </div>
       </div>
       <div className="row mt-50">
-        <h5 className='meter-bar-title'>FTSO</h5>
-        <p>Primary and secondary success rates.</p>
+        <h5 className='meter-bar-title'>FTSO primary and secondary success rates</h5>
+        <p>
+          Prices on Flare are submitted in 90 second epochs called rounds. Each round, all FSP providers
+          are required to submit a price for each of the ~60 crypto tickers. When the submitted price
+          falls between the 1st and 3rd stake-weighted quartile of all submissions, it is considered a primary success for the submitting provider.
+          When the submitted price falls within the percentage band (defined separately for each ticker) of the accepted median, it is considered a secondary
+          success. Each reward epoch is a sequence of 3360 rounds, during which each provider's results are evaluated with the provider
+          rewarded accordingly, along with its delegators.
+        </p>
         <div style={{ height: 250 }}>
           <ResponsiveLine
-            data={d2}
+            data={d1}
             axisBottom={{
               legend: true,
               legendPosition: 'end'
@@ -93,11 +98,15 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
       </div>
 
       <div className="row mt-40">
-        <h5 className='meter-bar-title'>Delegated W{symbol}</h5>
-        <p>Total W{symbol} delegation weight, evaluated at each epoch's vote power block.</p>
+        <h5 className='meter-bar-title'>Total delegated weight</h5>
+        <p>
+          At the end of each reward epoch, delegated W{symbol} of each provider is evaluated according
+          to the state from a randomly selected <i>vote power block</i> within that epoch. Said delegation amount is then
+          used as the provider's weight for the next epoch, and serves as the APY basis.
+        </p>
         <div style={{ height: 200 }}>
           <ResponsiveLine
-            data={d1}
+            data={d2}
             axisBottom={{
               legend: true,
               legendPosition: 'end'
@@ -124,8 +133,10 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
       </div>
 
       <div className="row mt-40">
-        <h5 className='meter-bar-title'>W{symbol} Delegators</h5>
-        <p>Total W{symbol} delegators, evaluated at each epoch's vote power block.</p>
+        <h5 className='meter-bar-title'>Total weight delegators</h5>
+        <p>
+          Total W{symbol} delegators, evaluated at each epoch's <i>vote power block</i>.
+        </p>
         <div style={{ height: 200 }}>
           <ResponsiveLine
             data={d3}
