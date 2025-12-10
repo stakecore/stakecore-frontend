@@ -48,10 +48,7 @@ const SongbirdFspLocalDelegateComponent = () => {
   const { data, error, isLoading } = useSWR(['songbird-delegate', walletAddress], ([_, address]) => {
     if (address == null) return null
     return FspDataLayer.getDelegatorInfo('songbird', address)
-  }, {
-    refreshInterval: C.REFRESH_QUERY_FAST_MS,
-    revalidateOnReconnect: true
-  })
+  }, { refreshInterval: C.REFRESH_QUERY_FAST_MS })
 
   async function connectWallet() {
     if (walletChoiceVisible || walletAddress != null) return

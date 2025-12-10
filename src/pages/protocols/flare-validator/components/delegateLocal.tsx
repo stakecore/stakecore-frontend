@@ -103,10 +103,7 @@ const FlareValidatorLocalDelegateComponent = () => {
         throw new Error('not ready')
       }
       return FlareValidatorDataAccess.getDelegatorInfo(cchain, pchain)
-    }, {
-    refreshInterval: REFRESH_QUERY_FAST_MS,
-    revalidateOnReconnect: true
-  })
+    }, { refreshInterval: REFRESH_QUERY_FAST_MS })
 
   async function onRequestSignature() {
     if (walletChoiceVisible || walletAddress == null) return

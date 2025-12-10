@@ -15,10 +15,7 @@ const Hero = () => {
     const resp = await PageDataService.pageControllerGetPageInfo()
     if (resp?.data == null) throw new Error(resp.error)
     return resp
-  }, {
-    refreshInterval: REFRESH_QUERY_SLOW_MS,
-    revalidateOnReconnect: true
-  })
+  }, { refreshInterval: REFRESH_QUERY_SLOW_MS })
 
   let component = null
   if (!isLoading && data == null) {

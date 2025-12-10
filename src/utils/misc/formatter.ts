@@ -99,9 +99,10 @@ export namespace Formatter {
     } else if (dif < 86400_000) {
       const hours = number(dif / 3600_000, 1)
       return `${hours} hours ago`
+    } else {
+      const days = number(dif / 86400_000, 1)
+      return `${days} days ago`
     }
-
-    return date(unix)
   }
 
   export function days(unix: number): string {
