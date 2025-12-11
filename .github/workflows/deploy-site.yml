@@ -7,8 +7,6 @@ permissions:
 jobs:
   build-test-deploy:
     runs-on: ubuntu-latest
-    env:
-      API_BASE_URL: ${{ secrets.API_BASE_URL }}
     steps:
       - name: git checkout
         uses: actions/checkout@v4
@@ -25,8 +23,6 @@ jobs:
           cache: yarn
       - name: Install Dependencies
         run: yarn
-      - name: Modify OpenAPI Base URL
-        run: sed -i "s|http://localhost:3000|${API_BASE_URL}|g" ./src/backendApi/core/OpenAPI.ts
       - name: Compile Project
         run: yarn build-all
       - name: deploy page
