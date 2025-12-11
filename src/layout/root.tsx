@@ -13,15 +13,18 @@ import { Tooltip } from 'react-tooltip'
 import { useEffect } from 'react'
 import { CookiesProvider } from 'react-cookie'
 import { Chain } from '~/enums'
+import flareImg from '../assets/images/protocols/flare/validator/background.png'
+import songbirdImg from '../assets/images/protocols/songbird/fsp/background.png'
+import avalancheImg from '../assets/images/protocols/avalanche/validator/background.jpeg'
 
 
-function chainToClassName(chain: Chain): string {
+function chainToBackgroundImage(chain: Chain): string {
   if (chain == Chain.FLARE) {
-    return 'background background-flare'
+    return flareImg
   } else if (chain == Chain.SONGBIRD) {
-    return 'background background-songbird'
+    return songbirdImg
   } else if (chain == Chain.AVALANCHE) {
-    return 'background background-avalanche'
+    return avalancheImg
   }
   return ''
 }
@@ -30,7 +33,7 @@ const RootLayout = () => {
   const { pathname } = useLocation()
   const chain = chainFromRoute(pathname)
   const chainId = chainToChainId(chain)
-  const classname = chainToClassName(chain)
+  const image = chainToBackgroundImage(chain)
 
   const setChain = useGlobalStore(state => state.setChain)
   const setWallet = useGlobalStore(state => state.setWalletAddress)
@@ -49,7 +52,7 @@ const RootLayout = () => {
     <>
       <Preloader />
       <Header />
-      <div className={classname}>
+      <div className='background' style={{ backgroundImage: `url(${image})` }}>
         <CookiesProvider>
           <Outlet />
           <CallToAction />
