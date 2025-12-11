@@ -18,7 +18,7 @@ namespace FspDataLayer {
   }
 
   export function extractSummary(chain: string, info: FspInfoDto): ISummary {
-    const symbol = chain == 'flare' ? 'FLR' : 'SGB'
+    const symbol = chain == 'flare' ? 'WFLR' : 'WSGB'
     return {
       asset: symbol,
       apy: Formatter.percent(info.apy, 0),

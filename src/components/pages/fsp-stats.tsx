@@ -10,6 +10,7 @@ import type { FspStatisticsDto } from "~/backendApi"
 const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: Chain }) => {
   const symbol = chainToSymbol(chain)
   const classname = chainToDivBorderClassName(chain)
+  const lastDelegationEpoch = Math.max(...stats.delegations.result.map(x => x.rewardEpoch))
 
   const d1 = [
     {
@@ -46,8 +47,9 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
       <h2>Provider Statistics</h2>
       <p>
         We value transparency, and stream a part of our monitoring to this site,
-        so you can see live data of our provider's performance for the current reward epoch {last.rewardEpoch}.
-        Below we also display the historical data for some relevant metrics over the past 25 reward epochs (90 days).
+        so you can see live data of our provider's performance for the current <i>reward epoch</i> {last.rewardEpoch}.
+        We also display the historical data for some relevant metrics over the past 25 reward epochs (90 days),
+        and provide a deeper understanding of the protocol.
       </p>
       <div className="row">
         <div className="col-lg-6">
@@ -66,7 +68,7 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
           are required to submit a price for each of the ~60 crypto tickers. When the submitted price
           falls between the 1st and 3rd stake-weighted quartile of all submissions, it is considered a primary success for the submitting provider.
           When the submitted price falls within the percentage band (defined separately for each ticker) of the accepted median, it is considered a secondary
-          success. Each reward epoch is a sequence of 3360 rounds, during which each provider's results are evaluated with the provider
+          success. Each <i>reward epoch</i> is a sequence of 3360 rounds (3.5 days), after which each provider's results are evaluated and they are
           rewarded accordingly, along with its delegators.
         </p>
         <div style={{ height: 250 }}>
@@ -79,7 +81,7 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
             axisTop={null}
             axisLeft={null}
             axisRight={null}
-            yFormat={v => Formatter.number(v)}
+            yFormat={v => Formatter.number(100 * v)}
             margin={{ top: 30, right: 30, bottom: 20, left: 20 }}
             yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: false, reverse: false }}
             pointSize={10}
@@ -100,9 +102,11 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
       <div className="row mt-40">
         <h5 className='meter-bar-title'>Total delegated weight</h5>
         <p>
-          At the end of each reward epoch, delegated W{symbol} of each provider is evaluated according
-          to the state from a randomly selected <i>vote power block</i> within that epoch. Said delegation amount is then
+          At the end of each <i>reward epoch</i>, delegated W{symbol} of each provider is evaluated according
+          to the state from a randomly selected <i>vote power block</i> within that epoch. That delegation amount is then
           used as the provider's weight for the next epoch, and serves as the APY basis.
+          In the graphs below we also append the current state of our delegations as an approximation
+          for the provider's weight in the following epoch {lastDelegationEpoch}.
         </p>
         <div style={{ height: 200 }}>
           <ResponsiveLine
@@ -115,7 +119,7 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
             axisLeft={null}
             axisRight={null}
             yFormat={v => Formatter.number(v)}
-            margin={{ top: 20, right: 30, bottom: 20, left: 20 }}
+            margin={{ top: 30, right: 30, bottom: 20, left: 20 }}
             yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: false, reverse: false }}
             pointSize={10}
             pointColor='black'
@@ -148,7 +152,7 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
             axisLeft={null}
             axisRight={null}
             yFormat={v => Formatter.number(v)}
-            margin={{ top: 20, right: 30, bottom: 20, left: 20 }}
+            margin={{ top: 30, right: 30, bottom: 20, left: 20 }}
             yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: false, reverse: false }}
             pointSize={10}
             pointColor='black'

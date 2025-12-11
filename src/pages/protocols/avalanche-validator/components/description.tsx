@@ -5,10 +5,6 @@ const ProjectDescription = () => {
     Snowball requires validators to stake AVAX, which allows them to
     validate and broadcast network transactions. In return, validators are rewarded with network's inflation.
 
-    <div className="notification-block note mt-10 mb-20">
-      Note that transaction fees on Avalanche are burned and are not rewarded to validators.
-    </div>
-
     Delegators can choose to contribute to validator's staked AVAX, earning the share of the
     inflation reward rate, offset by a small fee percentage that is defined via each validator defines.
 

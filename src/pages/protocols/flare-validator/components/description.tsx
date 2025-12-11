@@ -7,6 +7,10 @@ const ProjectDescription = () => {
 
     However, Flare modifies the rewarding structure by binding it to the Flare Systems Protocol performance and distributing
     rewards in 14 day cycles on C-chain (EVM chain) instead of the P-chain (platform chain).
+
+    <div className="notification-block warning mt-10 mb-20">
+      Even though Flare staking rewards are distributed on the C-chain, staking still takes place on its platform chain (P-chain).
+    </div>
   </div>
 }
 

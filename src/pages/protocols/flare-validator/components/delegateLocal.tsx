@@ -119,9 +119,11 @@ const FlareValidatorLocalDelegateComponent = () => {
 
   let component = null
   if (walletAddress == null) {
-    component = <a onClick={onConnectWallet} className="theme-btn">
-      Connect Wallet To See Your Position
-    </a>
+    component = <div style={{ textAlign: 'center' }}>
+      <a onClick={onConnectWallet} className="theme-btn">
+        Connect Wallet To See Your Position
+      </a>
+    </div>
   } else if (isLoading && resp?.data == null && resp?.status != 404) {
     component = <div style={{ textAlign: 'center' }}>
       <SpinnerCircular color="firebrick" size={45} />
