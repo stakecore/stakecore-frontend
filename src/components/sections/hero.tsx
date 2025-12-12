@@ -5,8 +5,8 @@ import { PageDataService } from '~/backendApi'
 import profile from "../../assets/images/about/profile.svg"
 import SlideUp from '../../utils/animations/slideUp'
 import ServerError from '../ui/serverError'
-import DelegatedStats from '../ui/baseMetrics'
-import DelegationList from '../ui/delegationList'
+import DelegationSummary from '../ui/delegationSummary'
+import DelegationUpdates from '../ui/delegationUpdates'
 import { REFRESH_QUERY_SLOW_MS } from '~/constants'
 
 
@@ -26,12 +26,12 @@ const Hero = () => {
     component = <>
       <SlideUp>
         <div className="about-content-part">
-          <DelegatedStats data={data} isLoading={isLoading} error={error} />
+          <DelegationSummary data={data} isLoading={isLoading} error={error} />
         </div>
       </SlideUp>
       <SlideUp>
         <div className="about-content-part-bottom">
-          <DelegationList data={data} isLoading={isLoading} error={error} />
+          <DelegationUpdates data={data} isLoading={isLoading} error={error} />
         </div>
       </SlideUp>
     </>

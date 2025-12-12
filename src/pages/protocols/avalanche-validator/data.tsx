@@ -32,7 +32,7 @@ export namespace AvalancheValidatorDataAccess {
     const maxLockup = Formatter.days(data.validatorEndTime - unixnow())
     return {
       asset: 'AVAX',
-      apy: Formatter.percent(data.apy, 0),
+      apy: Formatter.percent(data.apy),
       delegation: minDelegated + ' - ' + maxDelegated,
       lockup: `14 - ${maxLockup}`
     }

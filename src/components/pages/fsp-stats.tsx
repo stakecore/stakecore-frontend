@@ -54,7 +54,7 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
       <div className="row">
         <div className="col-lg-6">
           <MeterBar name='Primary Success' ranges={[20, 50]} value={last.primary} text={primary} />
-          <MeterBar name='Secondary Success' ranges={[80, 95]} value={last.secondary} text={secondary} />
+          <MeterBar name='Secondary Success' ranges={[75, 90]} value={last.secondary} text={secondary} />
         </div>
         <div className="col-lg-6">
           <MeterBar name='Uptime' ranges={[95, 98]} value={last.uptime} text={uptime} />

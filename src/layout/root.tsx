@@ -15,7 +15,7 @@ import { CookiesProvider } from 'react-cookie'
 import { Chain } from '~/enums'
 import flareImg from '../assets/images/protocols/flare/validator/background.png'
 import songbirdImg from '../assets/images/protocols/songbird/fsp/background.png'
-import avalancheImg from '../assets/images/protocols/avalanche/validator/background.jpeg'
+import avalancheImg from '../assets/images/protocols/avalanche/validator/background.png'
 
 
 function chainToBackgroundImage(chain: Chain): string {

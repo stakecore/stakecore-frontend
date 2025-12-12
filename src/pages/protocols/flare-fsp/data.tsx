@@ -21,7 +21,7 @@ namespace FspDataLayer {
     const symbol = chain == 'flare' ? 'WFLR' : 'WSGB'
     return {
       asset: symbol,
-      apy: Formatter.percent(info.apy, 0),
+      apy: Formatter.percent(info.apy),
       delegation: 'No Limit',
       lockup: 'No Limit'
     }
@@ -48,7 +48,7 @@ namespace FspDataLayer {
       [
         {
           title: 'Provider Fee',
-          value: Formatter.percent(info.providerFee, 0),
+          value: Formatter.percent(info.providerFee),
           tooltip: 'Fee charged for oracle services'
         }
       ]

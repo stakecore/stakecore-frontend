@@ -57,7 +57,7 @@ const NumberDiff = ({ text, value }: { text: string, value: bigint }) => {
   }
 }
 
-const DelegationList = ({ data, isLoading, error }: {
+const DelegationUpdates = ({ data, isLoading, error }: {
   data: ApiResponseDto_PageStatsDto, isLoading: boolean, error: string
 }) => {
 
@@ -97,4 +97,4 @@ const DelegationList = ({ data, isLoading, error }: {
 }
 
 
-export default DelegationList
+export default DelegationUpdates

@@ -1,7 +1,10 @@
 import { Formatter } from "~/utils/misc/formatter"
 
 const MAX_PERC = 100
-const LED_TOTAL = 70
+
+const LEDS_PER_PIXEL = 0.035
+const MIN_LEDS = 10
+const MAX_LEDS = 70
 
 const OPACITY_BEFORE = 0.25
 const OPACITY_AFTER = 1
@@ -20,40 +23,45 @@ type args = {
   reverse?: boolean
 }
 
-const MeterBar = ({ name, value, text, ranges, height = 40, reverse = false }: args) => {
+const MeterBar = ({ name, value, text, ranges, height = 40 }: args) => {
+  const leds = Math.min(Math.max(LEDS_PER_PIXEL * window.innerWidth, MIN_LEDS), MAX_LEDS)
+
   value = value * MAX_PERC
+  let valueidx = 0
 
   function getRatio(index: number) {
-    return Math.floor(MAX_PERC * index / LED_TOTAL)
+    return Math.floor(MAX_PERC * index / leds)
   }
 
   function getLedOpacity(ratio: number) {
     return value < ratio ? OPACITY_BEFORE : OPACITY_AFTER
   }
 
-  function getLedColor(ratio: number) {
+  function getColorIdx(ratio: number): number {
+    if (ratio < value) {
+      return valueidx
+    }
     let coloridx = null
     for (let i = 0; i < ranges.length; i++) {
-      if (ratio < ranges[i]) {
+      if (ranges[i] >= ratio) {
         coloridx = i
         break
       }
     }
-    if (coloridx == null) coloridx = ranges.length
-    return reverse ? COLORS[ranges.length-coloridx] : COLORS[coloridx]
+    if (coloridx == null) {
+      coloridx = ranges.length
+    }
+    return coloridx
   }
 
-  const valuecolor = getLedColor(value)
-  if (text == null) {
-    text = Formatter.percent(value / 100, 0)
-  }
+  valueidx = getColorIdx(value)
 
   let data: { color: string[], opacity: number }[] = []
-  for (let i = 0; i < LED_TOTAL; i++) {
+  for (let i = 0; i < leds; i++) {
     const ratio = getRatio(i)
-    const color = getLedColor(ratio)
+    const color = getColorIdx(ratio)
     const opacity = getLedOpacity(ratio)
-    data.push({ color, opacity })
+    data.push({ color: COLORS[color], opacity })
   }
 
   return (
@@ -66,7 +74,9 @@ const MeterBar = ({ name, value, text, ranges, height = 40, reverse = false }: a
               key={i} style={{ background: d.color[1], opacity: d.opacity }}></span>
           })
         }
-        <span className='meter-bar-desc' style={{ color: valuecolor[0] }}>{ text }</span>
+        <span className='meter-bar-desc' style={{ color: COLORS[valueidx][0] }}>
+          { text ?? Formatter.percent(value / MAX_PERC) }
+        </span>
       </div>
     </div>
   );

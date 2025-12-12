@@ -7,7 +7,7 @@ import { PAGE_COLOR_CODE } from "~/constants"
 const DOWN_ARROW = "M6 9L12 15L18 9"
 const UP_ARROW = "M18 15L12 9L6 15"
 
-const DelegatedStats = ({ data, isLoading, error }: {
+const DelegationSummary = ({ data, isLoading, error }: {
   data: ApiResponseDto_PageStatsDto, isLoading: boolean, error: string
 }) => {
   let delegated = null
@@ -21,8 +21,8 @@ const DelegatedStats = ({ data, isLoading, error }: {
     const _delegators1 = data.data.delegated.reduce((x, y) => x + y.delegators, 0)
     delegated = Formatter.number(_delegated1)
     delegators = Formatter.number(_delegators1)
-    delegatedDiff = Formatter.percent(_delegated0 > 0 ? _delegated1 / _delegated0 - 1 : 0, 0)
-    delegatorDiff = Formatter.percent(_delegators0 > 0 ? _delegators1 / _delegators0 - 1 : 0, 0)
+    delegatedDiff = Formatter.percent(_delegated0 > 0 ? _delegated1 / _delegated0 - 1 : 0)
+    delegatorDiff = Formatter.percent(_delegators0 > 0 ? _delegators1 / _delegators0 - 1 : 0)
   } else if (isLoading) {
     return <div style={{ textAlign: 'center' }}>
       <SpinnerCircular color={PAGE_COLOR_CODE} size={40} />
@@ -82,4 +82,4 @@ const DelegatedStats = ({ data, isLoading, error }: {
   </div>
 }
 
-export default DelegatedStats
+export default DelegationSummary

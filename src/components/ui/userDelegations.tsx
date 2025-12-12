@@ -5,7 +5,7 @@ import { unixnow } from "~/utils/misc/time"
 import { REFRESH_QUERY_FAST_MS } from "~/constants"
 
 
-const DelegatorList = ({ delegators }: { delegators: AvalancheDelegationDto[] }) => {
+const UserDelegations = ({ delegators }: { delegators: AvalancheDelegationDto[] }) => {
   let { data: now } = useSWR('delegator-list-refresh', (_) => null, { refreshInterval: REFRESH_QUERY_FAST_MS })
   now = unixnow()
 
@@ -37,4 +37,4 @@ const DelegatorList = ({ delegators }: { delegators: AvalancheDelegationDto[] })
 
 }
 
-export default DelegatorList
+export default UserDelegations

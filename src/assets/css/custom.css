@@ -84,10 +84,10 @@
 
 /* DELEGATION LIST */
 
-
 .delegation-updates {
   display: grid;
   grid-template-columns: auto auto auto auto auto;
+  white-space: nowrap;
   overflow-x: auto;
 }
 

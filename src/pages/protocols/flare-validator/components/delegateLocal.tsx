@@ -6,7 +6,7 @@ import { useGlobalStore } from "~/utils/store/global"
 import { flarePChainAddressUrl, REFRESH_QUERY_FAST_MS } from "~/constants"
 import ServerError from "~/components/ui/serverError"
 import StakeFlow from "~/components/ui/stakeFlow"
-import DelegatorList from "~/components/ui/delegations"
+import UserDelegations from "~/components/ui/userDelegations"
 import { HashLink } from "~/components/utils/links"
 import { IStakeFlow } from "~/components/types"
 import { toast } from "react-toastify"
@@ -163,7 +163,7 @@ const FlareValidatorLocalDelegateComponent = () => {
           <p>
             Below are active delegations from your account.
           </p>
-          <DelegatorList delegators={resp.data.delegations} />
+          <UserDelegations delegators={resp.data.delegations} />
         </div>
       </div>
     </>
