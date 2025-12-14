@@ -90,19 +90,23 @@ export namespace Formatter {
     const thn = new Date(unix * 1000)
     const dif = now.getTime() - thn.getTime()
 
+    let ret = ''
     if (dif < 60_000) {
       const seconds = number(dif / 1000, 1)
-      return `${seconds} seconds ago`
+      ret = `${seconds} second`
     } else if (dif < 3600_000) {
       const minutes = number(dif / 60_000, 1)
-      return `${minutes} minutes ago`
+      ret = `${minutes} minute`
     } else if (dif < 86400_000) {
       const hours = number(dif / 3600_000, 1)
-      return `${hours} hours ago`
+      ret = `${hours} hour`
     } else {
       const days = number(dif / 86400_000, 1)
-      return `${days} days ago`
+      ret = `${days} day`
     }
+
+    const plural = parseInt(ret) != 1
+    return ret + (plural ? 's' : '') + ' ago'
   }
 
   export function days(unix: number): string {
