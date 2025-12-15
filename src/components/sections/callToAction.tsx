@@ -5,7 +5,7 @@ import ServerError from '../ui/serverError'
 import Proposal from './proposal'
 import { getProposalData } from "../../utils/data/proposals"
 import { useGlobalStore } from "~/utils/store/global"
-import { PageDataService } from '../../backendApi'
+import { LandingPageService } from '../../backendApi'
 import { PAGE_COLOR_CODE } from '../../constants'
 
 
@@ -16,7 +16,7 @@ const CallToAction = () => {
 
   const { data, isLoading, error } = useSWR(['page-user-info', walletAddress], async ([_, address]) => {
     if (address == null) return null
-    return PageDataService.pageControllerGetUserInfo(address).then(resp => resp.data)
+    return LandingPageService.pageControllerGetUserInfo(address).then(resp => resp.data)
   })
 
   async function onConnectWallet() {

@@ -38,9 +38,7 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
   ]
 
   const last = stats.submissions.result[stats.submissions.result.length - 1]
-  const uptime = Formatter.percent(last.uptime, 1)
-  const primary = Formatter.percent(last.primary, 1)
-  const secondary = Formatter.percent(last.secondary, 1)
+  console.log(last)
 
   const component = <>
     <div className={classNames('single-project-page-right wow fadeInUp delay-0-4s mt-30', { [classname]: true })}>
@@ -53,12 +51,12 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
       </p>
       <div className="row">
         <div className="col-lg-6">
-          <MeterBar name='Primary Success' ranges={[20, 50]} value={last.primary} text={primary} />
-          <MeterBar name='Secondary Success' ranges={[75, 90]} value={last.secondary} text={secondary} />
+          <MeterBar name='Primary Success' ranges={[20, 50]} value={last.primary} text={Formatter.percent(last.primary, 1)} />
+          <MeterBar name='Secondary Success' ranges={[75, 90]} value={last.secondary} text={Formatter.percent(last.secondary, 1)} />
         </div>
         <div className="col-lg-6">
-          <MeterBar name='Uptime' ranges={[95, 98]} value={last.uptime} text={uptime} />
-          <MeterBar name='Uptime' ranges={[95, 98]} value={last.uptime} text={uptime} />
+          <MeterBar name='Minimal Success' ranges={[95, 98]} value={last.minimal} text={Formatter.percent(last.minimal, 1)} />
+          <MeterBar name='Uptime' ranges={[85, 95]} value={last.uptime} text={Formatter.percent(last.uptime, 1)} />
         </div>
       </div>
       <div className="row mt-50">

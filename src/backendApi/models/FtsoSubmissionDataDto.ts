@@ -7,5 +7,6 @@ export type FtsoSubmissionDataDto = {
     uptime: number;
     primary: number;
     secondary: number;
+    minimal: number;
 };
 

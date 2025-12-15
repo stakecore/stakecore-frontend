@@ -1,7 +1,7 @@
 import { RiMailLine } from '@remixicon/react'
 import { toast } from 'react-toastify'
 import SlideUp from '../../../utils/animations/slideUp'
-import { FormService, FormDto } from '../../../backendApi'
+import { LandingPageService, FormDto } from '../../../backendApi'
 
 
 const reemail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
@@ -24,7 +24,7 @@ const ContactForm = () => {
             if (!formIsValid(data)) {
                 error = 'Email validation failed'
             } else {
-                const response = await FormService.formControllerSubmitForm(data)
+                const response = await LandingPageService.pageControllerSubmitForm(data)
                 success = response.status == 201
                 error = response.error ?? error
             }

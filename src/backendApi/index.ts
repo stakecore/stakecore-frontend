@@ -39,6 +39,5 @@ export type { ProjectDelegationDto } from './models/ProjectDelegationDto';
 
 export { AvalancheValidatorService } from './services/AvalancheValidatorService';
 export { FlareValidatorService } from './services/FlareValidatorService';
-export { FormService } from './services/FormService';
 export { FspService } from './services/FspService';
-export { PageDataService } from './services/PageDataService';
+export { LandingPageService } from './services/LandingPageService';

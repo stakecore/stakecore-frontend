@@ -1,9 +1,62 @@
 {
     "openapi": "3.0.0",
     "paths": {
-        "/api/form/submit": {
+        "/api/page/info": {
+            "get": {
+                "operationId": "PageController_getPageInfo",
+                "summary": "Stakecore frontend page info",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseDto_PageStatsDto"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Landing Page"
+                ]
+            }
+        },
+        "/api/page/info/{user}": {
+            "get": {
+                "operationId": "PageController_getUserInfo",
+                "summary": "Stakecore user info",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiResponseDto_PageUserInfoDto"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Landing Page"
+                ]
+            }
+        },
+        "/api/page/form/submit": {
             "post": {
-                "operationId": "FormController_submitForm",
+                "operationId": "PageController_submitForm",
                 "summary": "Submit form data",
                 "parameters": [],
                 "requestBody": {
@@ -29,13 +82,13 @@
                     }
                 },
                 "tags": [
-                    "Form"
+                    "Landing Page"
                 ]
             }
         },
-        "/api/form/messages": {
+        "/api/page/form/messages": {
             "get": {
-                "operationId": "FormController_getMessages",
+                "operationId": "PageController_getMessages",
                 "summary": "Get all messages",
                 "parameters": [],
                 "responses": {
@@ -51,74 +104,12 @@
                     }
                 },
                 "tags": [
-                    "Form"
+                    "Landing Page"
                 ],
                 "security": [
                     {
                         "x-apikey": []
                     }
-                ]
-            }
-        },
-        "/api/avalanche/validator/info": {
-            "get": {
-                "operationId": "AvalancheValidatorController_getAvalancheValidatorPageInfo",
-                "summary": "Frontend page info for the Avalanche validator",
-                "parameters": [],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiResponseDto_AvalancheValidatorInfoDto"
-                                }
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "Avalanche Validator"
-                ]
-            }
-        },
-        "/api/avalanche/validator/delegator/{cChainAddress}": {
-            "get": {
-                "operationId": "AvalancheValidatorController_getAvalancheDelegatorInfo",
-                "summary": "Information about Stakecore's delegator requested by a given C-Chain address and an optional P-Chain address",
-                "parameters": [
-                    {
-                        "name": "cChainAddress",
-                        "required": true,
-                        "in": "path",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "pChainAddress",
-                        "required": false,
-                        "in": "query",
-                        "description": "User's explicit P-Chain address",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ApiResponseDto_AvalancheDelegatorInfoDto"
-                                }
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "Avalanche Validator"
                 ]
             }
         },
@@ -192,10 +183,10 @@
                 ]
             }
         },
-        "/api/page/info": {
+        "/api/avalanche/validator/info": {
             "get": {
-                "operationId": "PageController_getPageInfo",
-                "summary": "Stakecore frontend page info",
+                "operationId": "AvalancheValidatorController_getAvalancheValidatorPageInfo",
+                "summary": "Frontend page info for the Avalanche validator",
                 "parameters": [],
                 "responses": {
                     "200": {
@@ -203,26 +194,35 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ApiResponseDto_PageStatsDto"
+                                    "$ref": "#/components/schemas/ApiResponseDto_AvalancheValidatorInfoDto"
                                 }
                             }
                         }
                     }
                 },
                 "tags": [
-                    "Page Data"
+                    "Avalanche Validator"
                 ]
             }
         },
-        "/api/page/user-info/{user}": {
+        "/api/avalanche/validator/delegator/{cChainAddress}": {
             "get": {
-                "operationId": "PageController_getUserInfo",
-                "summary": "Stakecore user info",
+                "operationId": "AvalancheValidatorController_getAvalancheDelegatorInfo",
+                "summary": "Information about Stakecore's delegator requested by a given C-Chain address and an optional P-Chain address",
                 "parameters": [
                     {
-                        "name": "user",
+                        "name": "cChainAddress",
                         "required": true,
                         "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "pChainAddress",
+                        "required": false,
+                        "in": "query",
+                        "description": "User's explicit P-Chain address",
                         "schema": {
                             "type": "string"
                         }
@@ -234,14 +234,14 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ApiResponseDto_PageUserInfoDto"
+                                    "$ref": "#/components/schemas/ApiResponseDto_AvalancheDelegatorInfoDto"
                                 }
                             }
                         }
                     }
                 },
                 "tags": [
-                    "Page Data"
+                    "Avalanche Validator"
                 ]
             }
         },
@@ -325,25 +325,6 @@
             }
         },
         "schemas": {
-            "FormDto": {
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string"
-                    },
-                    "email": {
-                        "type": "string"
-                    },
-                    "message": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "name",
-                    "email",
-                    "message"
-                ]
-            },
             "ApiResponseDto": {
                 "type": "object",
                 "properties": {
@@ -352,400 +333,6 @@
                     },
                     "data": {
                         "type": "object"
-                    },
-                    "error": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "status"
-                ]
-            },
-            "AvalancheValidatorInfoDto": {
-                "type": "object",
-                "properties": {
-                    "validatorNodeId": {
-                        "type": "string"
-                    },
-                    "validatorTransactionHash": {
-                        "type": "string"
-                    },
-                    "apy": {
-                        "type": "number"
-                    },
-                    "minimumDelegated": {
-                        "type": "number"
-                    },
-                    "validatorFee": {
-                        "type": "number"
-                    },
-                    "validatorOwnedStake": {
-                        "type": "number"
-                    },
-                    "validatorTotalStake": {
-                        "type": "number"
-                    },
-                    "validatorAvailableCapacity": {
-                        "type": "number"
-                    },
-                    "validatorStartTime": {
-                        "type": "number"
-                    },
-                    "validatorEndTime": {
-                        "type": "number"
-                    },
-                    "totalDelegators": {
-                        "type": "number"
-                    },
-                    "totalDelegated": {
-                        "type": "number"
-                    },
-                    "validatorNetworkShare": {
-                        "type": "number"
-                    },
-                    "validatorUptime": {
-                        "type": "number"
-                    },
-                    "pChainConnected": {
-                        "type": "number"
-                    },
-                    "cChainConnected": {
-                        "type": "number"
-                    },
-                    "xChainConnected": {
-                        "type": "number"
-                    }
-                },
-                "required": [
-                    "validatorNodeId",
-                    "validatorTransactionHash",
-                    "apy",
-                    "minimumDelegated",
-                    "validatorFee",
-                    "validatorOwnedStake",
-                    "validatorTotalStake",
-                    "validatorAvailableCapacity",
-                    "validatorStartTime",
-                    "validatorEndTime",
-                    "totalDelegators",
-                    "totalDelegated",
-                    "validatorNetworkShare",
-                    "validatorUptime",
-                    "pChainConnected",
-                    "cChainConnected",
-                    "xChainConnected"
-                ]
-            },
-            "ApiResponseDto_AvalancheValidatorInfoDto": {
-                "type": "object",
-                "properties": {
-                    "status": {
-                        "type": "number"
-                    },
-                    "data": {
-                        "$ref": "#/components/schemas/AvalancheValidatorInfoDto"
-                    },
-                    "error": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "status"
-                ]
-            },
-            "AvalancheSubChainBalanceDto": {
-                "type": "object",
-                "properties": {
-                    "address": {
-                        "type": "string"
-                    },
-                    "balance": {
-                        "type": "number"
-                    },
-                    "price": {
-                        "type": "number"
-                    }
-                },
-                "required": [
-                    "address",
-                    "balance",
-                    "price"
-                ]
-            },
-            "AvalancheDelegationDto": {
-                "type": "object",
-                "properties": {
-                    "delegated": {
-                        "type": "number"
-                    },
-                    "reward": {
-                        "type": "number"
-                    },
-                    "startTime": {
-                        "type": "number"
-                    },
-                    "endTime": {
-                        "type": "number"
-                    }
-                },
-                "required": [
-                    "delegated",
-                    "reward",
-                    "startTime",
-                    "endTime"
-                ]
-            },
-            "AvalancheDelegatorInfoDto": {
-                "type": "object",
-                "properties": {
-                    "cChain": {
-                        "$ref": "#/components/schemas/AvalancheSubChainBalanceDto"
-                    },
-                    "pChain": {
-                        "$ref": "#/components/schemas/AvalancheSubChainBalanceDto"
-                    },
-                    "delegations": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/AvalancheDelegationDto"
-                        }
-                    }
-                },
-                "required": [
-                    "cChain",
-                    "pChain",
-                    "delegations"
-                ]
-            },
-            "ApiResponseDto_AvalancheDelegatorInfoDto": {
-                "type": "object",
-                "properties": {
-                    "status": {
-                        "type": "number"
-                    },
-                    "data": {
-                        "$ref": "#/components/schemas/AvalancheDelegatorInfoDto"
-                    },
-                    "error": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "status"
-                ]
-            },
-            "FspInfoDto": {
-                "type": "object",
-                "properties": {
-                    "delegationAddress": {
-                        "type": "string"
-                    },
-                    "identityAddress": {
-                        "type": "string"
-                    },
-                    "apy": {
-                        "type": "number"
-                    },
-                    "minimumDelegated": {
-                        "type": "number"
-                    },
-                    "providerFee": {
-                        "type": "number"
-                    }
-                },
-                "required": [
-                    "delegationAddress",
-                    "identityAddress",
-                    "apy",
-                    "minimumDelegated",
-                    "providerFee"
-                ]
-            },
-            "FspDelegationTimeSeries": {
-                "type": "object",
-                "properties": {
-                    "rewardEpoch": {
-                        "type": "number"
-                    },
-                    "delegated": {
-                        "type": "number"
-                    },
-                    "delegators": {
-                        "type": "number"
-                    }
-                },
-                "required": [
-                    "rewardEpoch",
-                    "delegated",
-                    "delegators"
-                ]
-            },
-            "FspDelegationTimeSeriesDto": {
-                "type": "object",
-                "properties": {
-                    "result": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/FspDelegationTimeSeries"
-                        }
-                    }
-                },
-                "required": [
-                    "result"
-                ]
-            },
-            "FtsoSubmissionDataDto": {
-                "type": "object",
-                "properties": {
-                    "rewardEpoch": {
-                        "type": "number"
-                    },
-                    "uptime": {
-                        "type": "number"
-                    },
-                    "primary": {
-                        "type": "number"
-                    },
-                    "secondary": {
-                        "type": "number"
-                    }
-                },
-                "required": [
-                    "rewardEpoch",
-                    "uptime",
-                    "primary",
-                    "secondary"
-                ]
-            },
-            "FtsoSubmissionTimeSeriesDto": {
-                "type": "object",
-                "properties": {
-                    "result": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/FtsoSubmissionDataDto"
-                        }
-                    }
-                },
-                "required": [
-                    "result"
-                ]
-            },
-            "FspStatisticsDto": {
-                "type": "object",
-                "properties": {
-                    "delegations": {
-                        "$ref": "#/components/schemas/FspDelegationTimeSeriesDto"
-                    },
-                    "submissions": {
-                        "$ref": "#/components/schemas/FtsoSubmissionTimeSeriesDto"
-                    }
-                },
-                "required": [
-                    "delegations",
-                    "submissions"
-                ]
-            },
-            "FspPageDataDto": {
-                "type": "object",
-                "properties": {
-                    "info": {
-                        "$ref": "#/components/schemas/FspInfoDto"
-                    },
-                    "statistics": {
-                        "$ref": "#/components/schemas/FspStatisticsDto"
-                    }
-                },
-                "required": [
-                    "info",
-                    "statistics"
-                ]
-            },
-            "ApiResponseDto_FspPageDataDto": {
-                "type": "object",
-                "properties": {
-                    "status": {
-                        "type": "number"
-                    },
-                    "data": {
-                        "$ref": "#/components/schemas/FspPageDataDto"
-                    },
-                    "error": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "status"
-                ]
-            },
-            "FspDelegatorRewardDto": {
-                "type": "object",
-                "properties": {
-                    "rewardEpoch": {
-                        "type": "number"
-                    },
-                    "amount": {
-                        "type": "number"
-                    }
-                },
-                "required": [
-                    "rewardEpoch",
-                    "amount"
-                ]
-            },
-            "FspDelegatorTokenInfoDto": {
-                "type": "object",
-                "properties": {
-                    "address": {
-                        "type": "string"
-                    },
-                    "balance": {
-                        "type": "number"
-                    },
-                    "price": {
-                        "type": "number"
-                    }
-                },
-                "required": [
-                    "address",
-                    "balance",
-                    "price"
-                ]
-            },
-            "FspDelegatorInfoDto": {
-                "type": "object",
-                "properties": {
-                    "delegated": {
-                        "type": "number"
-                    },
-                    "rewards": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/FspDelegatorRewardDto"
-                        }
-                    },
-                    "nat": {
-                        "$ref": "#/components/schemas/FspDelegatorTokenInfoDto"
-                    },
-                    "wnat": {
-                        "$ref": "#/components/schemas/FspDelegatorTokenInfoDto"
-                    }
-                },
-                "required": [
-                    "delegated",
-                    "rewards",
-                    "nat",
-                    "wnat"
-                ]
-            },
-            "ApiResponseDto_FspDelegatorInfoDto": {
-                "type": "object",
-                "properties": {
-                    "status": {
-                        "type": "number"
-                    },
-                    "data": {
-                        "$ref": "#/components/schemas/FspDelegatorInfoDto"
                     },
                     "error": {
                         "type": "string"
@@ -961,6 +548,423 @@
                     },
                     "data": {
                         "$ref": "#/components/schemas/PageUserInfoDto"
+                    },
+                    "error": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "status"
+                ]
+            },
+            "FormDto": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "name",
+                    "email",
+                    "message"
+                ]
+            },
+            "FspInfoDto": {
+                "type": "object",
+                "properties": {
+                    "delegationAddress": {
+                        "type": "string"
+                    },
+                    "identityAddress": {
+                        "type": "string"
+                    },
+                    "apy": {
+                        "type": "number"
+                    },
+                    "minimumDelegated": {
+                        "type": "number"
+                    },
+                    "providerFee": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "delegationAddress",
+                    "identityAddress",
+                    "apy",
+                    "minimumDelegated",
+                    "providerFee"
+                ]
+            },
+            "FspDelegationTimeSeries": {
+                "type": "object",
+                "properties": {
+                    "rewardEpoch": {
+                        "type": "number"
+                    },
+                    "delegated": {
+                        "type": "number"
+                    },
+                    "delegators": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "rewardEpoch",
+                    "delegated",
+                    "delegators"
+                ]
+            },
+            "FspDelegationTimeSeriesDto": {
+                "type": "object",
+                "properties": {
+                    "result": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/FspDelegationTimeSeries"
+                        }
+                    }
+                },
+                "required": [
+                    "result"
+                ]
+            },
+            "FtsoSubmissionDataDto": {
+                "type": "object",
+                "properties": {
+                    "rewardEpoch": {
+                        "type": "number"
+                    },
+                    "uptime": {
+                        "type": "number"
+                    },
+                    "primary": {
+                        "type": "number"
+                    },
+                    "secondary": {
+                        "type": "number"
+                    },
+                    "minimal": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "rewardEpoch",
+                    "uptime",
+                    "primary",
+                    "secondary",
+                    "minimal"
+                ]
+            },
+            "FtsoSubmissionTimeSeriesDto": {
+                "type": "object",
+                "properties": {
+                    "result": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/FtsoSubmissionDataDto"
+                        }
+                    }
+                },
+                "required": [
+                    "result"
+                ]
+            },
+            "FspStatisticsDto": {
+                "type": "object",
+                "properties": {
+                    "delegations": {
+                        "$ref": "#/components/schemas/FspDelegationTimeSeriesDto"
+                    },
+                    "submissions": {
+                        "$ref": "#/components/schemas/FtsoSubmissionTimeSeriesDto"
+                    }
+                },
+                "required": [
+                    "delegations",
+                    "submissions"
+                ]
+            },
+            "FspPageDataDto": {
+                "type": "object",
+                "properties": {
+                    "info": {
+                        "$ref": "#/components/schemas/FspInfoDto"
+                    },
+                    "statistics": {
+                        "$ref": "#/components/schemas/FspStatisticsDto"
+                    }
+                },
+                "required": [
+                    "info",
+                    "statistics"
+                ]
+            },
+            "ApiResponseDto_FspPageDataDto": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "number"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/FspPageDataDto"
+                    },
+                    "error": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "status"
+                ]
+            },
+            "FspDelegatorRewardDto": {
+                "type": "object",
+                "properties": {
+                    "rewardEpoch": {
+                        "type": "number"
+                    },
+                    "amount": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "rewardEpoch",
+                    "amount"
+                ]
+            },
+            "FspDelegatorTokenInfoDto": {
+                "type": "object",
+                "properties": {
+                    "address": {
+                        "type": "string"
+                    },
+                    "balance": {
+                        "type": "number"
+                    },
+                    "price": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "address",
+                    "balance",
+                    "price"
+                ]
+            },
+            "FspDelegatorInfoDto": {
+                "type": "object",
+                "properties": {
+                    "delegated": {
+                        "type": "number"
+                    },
+                    "rewards": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/FspDelegatorRewardDto"
+                        }
+                    },
+                    "nat": {
+                        "$ref": "#/components/schemas/FspDelegatorTokenInfoDto"
+                    },
+                    "wnat": {
+                        "$ref": "#/components/schemas/FspDelegatorTokenInfoDto"
+                    }
+                },
+                "required": [
+                    "delegated",
+                    "rewards",
+                    "nat",
+                    "wnat"
+                ]
+            },
+            "ApiResponseDto_FspDelegatorInfoDto": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "number"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/FspDelegatorInfoDto"
+                    },
+                    "error": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "status"
+                ]
+            },
+            "AvalancheValidatorInfoDto": {
+                "type": "object",
+                "properties": {
+                    "validatorNodeId": {
+                        "type": "string"
+                    },
+                    "validatorTransactionHash": {
+                        "type": "string"
+                    },
+                    "apy": {
+                        "type": "number"
+                    },
+                    "minimumDelegated": {
+                        "type": "number"
+                    },
+                    "validatorFee": {
+                        "type": "number"
+                    },
+                    "validatorOwnedStake": {
+                        "type": "number"
+                    },
+                    "validatorTotalStake": {
+                        "type": "number"
+                    },
+                    "validatorAvailableCapacity": {
+                        "type": "number"
+                    },
+                    "validatorStartTime": {
+                        "type": "number"
+                    },
+                    "validatorEndTime": {
+                        "type": "number"
+                    },
+                    "totalDelegators": {
+                        "type": "number"
+                    },
+                    "totalDelegated": {
+                        "type": "number"
+                    },
+                    "validatorNetworkShare": {
+                        "type": "number"
+                    },
+                    "validatorUptime": {
+                        "type": "number"
+                    },
+                    "pChainConnected": {
+                        "type": "number"
+                    },
+                    "cChainConnected": {
+                        "type": "number"
+                    },
+                    "xChainConnected": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "validatorNodeId",
+                    "validatorTransactionHash",
+                    "apy",
+                    "minimumDelegated",
+                    "validatorFee",
+                    "validatorOwnedStake",
+                    "validatorTotalStake",
+                    "validatorAvailableCapacity",
+                    "validatorStartTime",
+                    "validatorEndTime",
+                    "totalDelegators",
+                    "totalDelegated",
+                    "validatorNetworkShare",
+                    "validatorUptime",
+                    "pChainConnected",
+                    "cChainConnected",
+                    "xChainConnected"
+                ]
+            },
+            "ApiResponseDto_AvalancheValidatorInfoDto": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "number"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/AvalancheValidatorInfoDto"
+                    },
+                    "error": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "status"
+                ]
+            },
+            "AvalancheSubChainBalanceDto": {
+                "type": "object",
+                "properties": {
+                    "address": {
+                        "type": "string"
+                    },
+                    "balance": {
+                        "type": "number"
+                    },
+                    "price": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "address",
+                    "balance",
+                    "price"
+                ]
+            },
+            "AvalancheDelegationDto": {
+                "type": "object",
+                "properties": {
+                    "delegated": {
+                        "type": "number"
+                    },
+                    "reward": {
+                        "type": "number"
+                    },
+                    "startTime": {
+                        "type": "number"
+                    },
+                    "endTime": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "delegated",
+                    "reward",
+                    "startTime",
+                    "endTime"
+                ]
+            },
+            "AvalancheDelegatorInfoDto": {
+                "type": "object",
+                "properties": {
+                    "cChain": {
+                        "$ref": "#/components/schemas/AvalancheSubChainBalanceDto"
+                    },
+                    "pChain": {
+                        "$ref": "#/components/schemas/AvalancheSubChainBalanceDto"
+                    },
+                    "delegations": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AvalancheDelegationDto"
+                        }
+                    }
+                },
+                "required": [
+                    "cChain",
+                    "pChain",
+                    "delegations"
+                ]
+            },
+            "ApiResponseDto_AvalancheDelegatorInfoDto": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "number"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/AvalancheDelegatorInfoDto"
                     },
                     "error": {
                         "type": "string"

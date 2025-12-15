@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { RiGithubLine, RiTwitterXLine } from '@remixicon/react'
 import useSWR from 'swr'
-import { PageDataService } from '~/backendApi'
+import { LandingPageService } from '~/backendApi'
 import profile from "../../assets/images/about/profile.svg"
 import SlideUp from '../../utils/animations/slideUp'
 import ServerError from '../ui/serverError'
@@ -12,7 +12,7 @@ import { REFRESH_QUERY_SLOW_MS } from '~/constants'
 
 const Hero = () => {
   const { data, isLoading, error } = useSWR(['page-info'], async (_) => {
-    const resp = await PageDataService.pageControllerGetPageInfo()
+    const resp = await LandingPageService.pageControllerGetPageInfo()
     if (resp?.data == null) throw new Error(resp.error)
     return resp
   }, { refreshInterval: REFRESH_QUERY_SLOW_MS })

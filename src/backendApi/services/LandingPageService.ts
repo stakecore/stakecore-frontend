@@ -2,12 +2,14 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { ApiResponseDto } from '../models/ApiResponseDto';
 import type { ApiResponseDto_PageStatsDto } from '../models/ApiResponseDto_PageStatsDto';
 import type { ApiResponseDto_PageUserInfoDto } from '../models/ApiResponseDto_PageUserInfoDto';
+import type { FormDto } from '../models/FormDto';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-export class PageDataService {
+export class LandingPageService {
     /**
      * Stakecore frontend page info
      * @returns ApiResponseDto_PageStatsDto
@@ -30,10 +32,37 @@ export class PageDataService {
     ): CancelablePromise<ApiResponseDto_PageUserInfoDto> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/page/user-info/{user}',
+            url: '/api/page/info/{user}',
             path: {
                 'user': user,
             },
+        });
+    }
+    /**
+     * Submit form data
+     * @param requestBody
+     * @returns ApiResponseDto Successful form submission
+     * @throws ApiError
+     */
+    public static pageControllerSubmitForm(
+        requestBody: FormDto,
+    ): CancelablePromise<ApiResponseDto> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/page/form/submit',
+            body: requestBody,
+            mediaType: 'application/json',
+        });
+    }
+    /**
+     * Get all messages
+     * @returns ApiResponseDto Fetched all messages
+     * @throws ApiError
+     */
+    public static pageControllerGetMessages(): CancelablePromise<ApiResponseDto> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/page/form/messages',
         });
     }
 }
