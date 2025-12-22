@@ -47,10 +47,10 @@ function resolveProtocolName(protocol: DelegationDto.protocol): string {
   }
 }
 
-const NumberDiff = ({ text, value }: { text: string, value: bigint }) => {
-  if (value > 0n) {
+const NumberDiff = ({ text, value }: { text: string, value: number }) => {
+  if (value > 0) {
     return <span style={{ color: '#50e3c2' }}>+{text}</span>
-  } else if (value < 0n) {
+  } else if (value < 0) {
     return <span style={{ color: '#ff3e55' }}>{text}</span>
   } else {
     return <span style={{ color: 'white' }}>0</span>
@@ -87,7 +87,7 @@ const DelegationUpdates = ({ data, isLoading, error }: {
           <div><img src={logo} width={25} /></div>
           <div>{resolveProtocolName(delegation.protocol)}</div>
           <div><HashLink address={delegation.transaction} url={url} length={5} copy={false} /></div>
-          <div><NumberDiff value={BigInt(delegation.delegated)} text={delegated} /></div>
+          <div><NumberDiff value={Number(delegation.delegated)} text={delegated} /></div>
           <div>{Formatter.relativeDate(delegation.timestamp)}</div>
         </React.Fragment>
       })}
