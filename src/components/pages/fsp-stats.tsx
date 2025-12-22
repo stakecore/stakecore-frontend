@@ -66,8 +66,8 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
           are required to submit a price for each of the ~60 crypto tickers. When the submitted price
           falls between the 1st and 3rd stake-weighted quartile of all submissions, it is considered a primary success for the submitting provider.
           When the submitted price falls within the percentage band (defined separately for each ticker) of the accepted median, it is considered a secondary
-          success. Each <i>reward epoch</i> is a sequence of 3360 rounds (3.5 days), after which each provider's results are evaluated and they are
-          rewarded accordingly, along with its delegators.
+          success. Each <i>reward epoch</i> is a sequence of 3360 rounds (3.5 days), after which each provider's results are evaluated and the provider,
+          along with its delegators, rewarded accordingly.
         </p>
         <div style={{ height: 250 }}>
           <ResponsiveLine

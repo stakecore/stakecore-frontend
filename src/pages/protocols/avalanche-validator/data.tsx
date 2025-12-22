@@ -33,8 +33,8 @@ export namespace AvalancheValidatorDataAccess {
     return {
       asset: 'AVAX',
       apy: Formatter.percent(data.apy),
-      delegation: minDelegated + ' - ' + maxDelegated,
-      lockup: `14 - ${maxLockup}`
+      delegation: minDelegated + ' to ' + maxDelegated,
+      lockup: `14 to ${maxLockup}`
     }
   }
 

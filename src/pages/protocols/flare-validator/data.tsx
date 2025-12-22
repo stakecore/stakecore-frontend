@@ -33,8 +33,8 @@ export namespace FlareValidatorDataAccess {
     return {
       asset: 'FLR',
       apy: Formatter.percent(data.apy),
-      delegation: minDelegated + ' - ' + maxDelegated,
-      lockup: `14 - ${maxLockup}`
+      delegation: minDelegated + ' to ' + maxDelegated,
+      lockup: `14 to ${maxLockup}`
     }
   }
 
