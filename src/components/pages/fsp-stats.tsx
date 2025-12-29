@@ -38,7 +38,6 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
   ]
 
   const last = stats.submissions.result[stats.submissions.result.length - 1]
-  console.log(last)
 
   const component = <>
     <div className={classNames('single-project-page-right wow fadeInUp delay-0-4s mt-30', { [classname]: true })}>
