@@ -54,7 +54,10 @@ const CallToAction = () => {
           <div className="col-lg-12">
             <SlideUp>
               <div className="about-content-part call-to-action-part text-center">
-                { !renderr && <h2>Earn yield for your dormant FLR, AVAX, or SGB without any additional risk</h2> }
+                { !renderr && <>
+                  <h2>Earn yield</h2>
+                  <p>Put your dormant FLR, AVAX, or SGB to work and earn without any introducing any additional risk.</p>
+                </> }
                 {component}
               </div>
             </SlideUp>

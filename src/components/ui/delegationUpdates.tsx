@@ -4,9 +4,9 @@ import { ApiResponseDto_PageStatsDto, DelegationDto } from "~/backendApi"
 import * as C from "~/constants"
 import { Formatter } from "~/utils/misc/formatter"
 import { HashLink } from "../utils/links"
-import avalanche from "../../assets/images/networks/AVAX.webp"
-import flare from "../../assets/images/networks/FLR.svg"
-import songbird from "../../assets/images/networks/SGB.svg"
+import avalanche from "../../assets/images/tokens/AVAX.svg"
+import flare from "../../assets/images/tokens/FLR.svg"
+import songbird from "../../assets/images/tokens/SGB.svg"
 
 
 function chainToLogoUrl(chain: DelegationDto.chain): string {

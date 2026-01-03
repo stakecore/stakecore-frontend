@@ -6,8 +6,8 @@ import { claim, delegate, deposit, withdraw } from "./contracts"
 import * as C from '~/constants'
 import { flareDelegationAdr } from "~/constants"
 import { Formatter } from "~/utils/misc/formatter"
-import SGB from '~/assets/images/networks/SGB.svg'
-import WSGB from '~/assets/images/networks/WSGB.svg'
+import SGB from '~/assets/images/tokens/SGB.svg'
+import WSGB from '~/assets/images/tokens/WSGB.svg'
 
 
 export const SGB_TO_WSGB_FACTOR = (x: number) => x

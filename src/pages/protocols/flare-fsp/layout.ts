@@ -6,8 +6,8 @@ import { flareDelegationAdr } from "~/constants"
 import { Formatter } from "~/utils/misc/formatter"
 import { actionStatusMessage, contractCallAdapter } from "../utils"
 import { claim, delegate, deposit, withdraw } from "./contracts"
-import FLR from '~/assets/images/networks/FLR.svg'
-import WFLR from '~/assets/images/networks/WFLR.svg'
+import FLR from '~/assets/images/tokens/FLR.svg'
+import WFLR from '~/assets/images/tokens/WFLR.svg'
 
 
 export const FLR_TO_WFLR_FACTOR = (x: number) => x

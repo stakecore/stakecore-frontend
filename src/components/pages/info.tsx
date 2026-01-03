@@ -35,8 +35,8 @@ const ProjectInfoSummary = ({ asset, apy, delegation, lockup }) => {
     <>
       <ProjectSingleInfo title='Asset' value={asset} />
       <ProjectSingleInfo title='APY' value={apy} />
-      <ProjectSingleInfo title='Min to Max Delegation' value={delegation} />
-      <ProjectSingleInfo title='Min to Max Lockup' value={lockup} />
+      <ProjectSingleInfo title='Delegation Amount' value={delegation} />
+      <ProjectSingleInfo title='Lockup Time' value={lockup} />
     </>
   )
 }

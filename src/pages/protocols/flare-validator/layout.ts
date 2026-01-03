@@ -1,4 +1,4 @@
-import FLR from "~/assets/images/networks/FLR.svg"
+import FLR from "~/assets/images/tokens/FLR.svg"
 import { Eip1193Provider } from "ethers"
 import { contractCallAdapter } from "../utils"
 import type { IStakeFlow } from "~/components/types"

@@ -45,22 +45,22 @@
 }
 
 .background {
-  background-size: cover;
+  background-size: auto 75%;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
 }
 
 .avalanche-div-border {
-  border: 1.25px solid #FF394A;
+  border: none;
 }
 
 .flare-div-border {
-  border: 1.25px solid #E62058;
+  border: none;
 }
 
 .songbird-div-border {
-  border: 1.25px solid #253c4d;
+  border: none;
 }
 
 .notification-block {

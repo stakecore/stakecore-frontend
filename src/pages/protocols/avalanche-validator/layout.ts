@@ -1,5 +1,5 @@
 import type { IStakeFlow } from "~/components/types"
-import logo from "~/assets/images/networks/AVAX.webp"
+import logo from "~/assets/images/tokens/AVAX.svg"
 import { Eip1193Provider } from "ethers"
 import { contractCallAdapter } from "../utils"
 
