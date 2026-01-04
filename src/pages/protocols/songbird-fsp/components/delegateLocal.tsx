@@ -59,7 +59,7 @@ const SongbirdFspLocalDelegateComponent = () => {
   if (walletAddress == null) {
     component = <div style={{ textAlign: 'center' }}>
       <a onClick={connectWallet} className="theme-btn">
-        Connect Wallet To See Your Position
+        Connect Wallet
       </a>
     </div>
   } else if (isLoading) {

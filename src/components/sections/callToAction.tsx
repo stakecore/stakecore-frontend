@@ -29,7 +29,7 @@ const CallToAction = () => {
   if (walletAddress == null) {
     component = <div className="hero-btns">
       <a onClick={onConnectWallet} className="theme-btn">
-        Connect Wallet To See Your Options
+        Connect Wallet
       </a>
     </div>
   } else if (isLoading) {

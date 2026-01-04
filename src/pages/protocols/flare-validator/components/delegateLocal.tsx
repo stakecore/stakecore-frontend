@@ -121,7 +121,7 @@ const FlareValidatorLocalDelegateComponent = () => {
   if (walletAddress == null) {
     component = <div style={{ textAlign: 'center' }}>
       <a onClick={onConnectWallet} className="theme-btn">
-        Connect Wallet To See Your Position
+        Connect Wallet
       </a>
     </div>
   } else if (isLoading && resp?.data == null && resp?.status != 404) {

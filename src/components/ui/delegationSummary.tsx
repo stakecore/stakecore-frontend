@@ -1,11 +1,10 @@
-import classNames from "classnames"
 import { SpinnerCircular } from "spinners-react"
 import { ApiResponseDto_PageStatsDto } from "~/backendApi"
 import { Formatter } from "~/utils/misc/formatter"
+import { Diff } from "../pages/diff"
 import { PAGE_COLOR_CODE } from "~/constants"
 
-const DOWN_ARROW = "M6 9L12 15L18 9"
-const UP_ARROW = "M18 15L12 9L6 15"
+
 
 const DelegationSummary = ({ data, isLoading, error }: {
   data: ApiResponseDto_PageStatsDto, isLoading: boolean, error: string
@@ -31,20 +30,10 @@ const DelegationSummary = ({ data, isLoading, error }: {
     console.log(String(error)) // should not happen
   }
 
-  const delegatedNeg = typeof delegatedDiff == 'string' && delegatedDiff.startsWith('-')
-  const delegatorNeg = typeof delegatorDiff == 'string' && delegatorDiff.startsWith('-')
-
-  if (delegatedNeg) {
-    delegatedDiff = delegatedDiff.slice(1)
-  }
-  if (delegatorNeg) {
-    delegatorDiff = delegatorDiff.slice(1)
-  }
-
   return <div className="page-stats-container">
     <div className="dashboard loading">
-
       <div className="metrics-grid">
+
         <div className="metric-card" data-start="0" data-end="7489" data-increment="1" data-speed="10">
           <div className="metric-title">
             Total Delegated
@@ -53,11 +42,8 @@ const DelegationSummary = ({ data, isLoading, error }: {
             <span className="counter-unit">$</span>
             <div className="counter" id="counter-1">{delegated}</div>
           </div>
-          <div className={classNames('metric-trend', { 'trend-down': delegatedNeg, 'trend-up': !delegatedNeg })}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d={delegatedNeg ? DOWN_ARROW : UP_ARROW} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            <span>{delegatedDiff} in 24h</span>
+          <div className="metric-trend">
+            <Diff diff={delegatedDiff} unit={"in 24h"} />
           </div>
         </div>
 
@@ -69,11 +55,8 @@ const DelegationSummary = ({ data, isLoading, error }: {
             <div className="counter" id="counter-2">{delegators}</div>
             <span className="counter-unit">users</span>
           </div>
-          <div className={classNames('metric-trend', { 'trend-down': delegatorNeg, 'trend-up': !delegatorNeg })}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d={delegatorNeg ? DOWN_ARROW : UP_ARROW} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            <span>{delegatorDiff} in 24h</span>
+          <div className="metric-trend">
+            <Diff diff={delegatorDiff} unit={"in 24h"} />
           </div>
         </div>
 

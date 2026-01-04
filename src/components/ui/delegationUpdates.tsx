@@ -1,9 +1,10 @@
 import React from "react"
 import { SpinnerCircular } from "spinners-react"
 import { ApiResponseDto_PageStatsDto, DelegationDto } from "~/backendApi"
-import * as C from "~/constants"
 import { Formatter } from "~/utils/misc/formatter"
 import { HashLink } from "../utils/links"
+import { Diff } from "../pages/diff"
+import * as C from "~/constants"
 import avalanche from "../../assets/images/tokens/AVAX.svg"
 import flare from "../../assets/images/tokens/FLR.svg"
 import songbird from "../../assets/images/tokens/SGB.svg"
@@ -59,16 +60,6 @@ function resolveProtocolName(protocol: DelegationDto.protocol): string {
   }
 }
 
-const NumberDiff = ({ text, value }: { text: string, value: number }) => {
-  if (value > 0) {
-    return <span style={{ color: '#50e3c2' }}>+{text}</span>
-  } else if (value < 0) {
-    return <span style={{ color: '#ff3e55' }}>{text}</span>
-  } else {
-    return <span style={{ color: 'white' }}>0</span>
-  }
-}
-
 const DelegationUpdates = ({ data, isLoading, error }: {
   data: ApiResponseDto_PageStatsDto, isLoading: boolean, error: string
 }) => {
@@ -94,12 +85,12 @@ const DelegationUpdates = ({ data, isLoading, error }: {
       {delegations.map((delegation, i) => {
         const logo = chainToLogoUrl(delegation.chain)
         const url = chainToTransactionUrl(delegation.chain, delegation.protocol, delegation.transaction)
-        const delegated = Formatter.number(delegation.delegated)
+        const diff = Formatter.number(delegation.delegated)
         return <React.Fragment key={i}>
           <div><img src={logo} width={25} /></div>
           <div>{resolveProtocolName(delegation.protocol)}</div>
           <div><HashLink address={delegation.transaction} url={url} length={5} copy={false} /></div>
-          <div><NumberDiff value={Number(delegation.delegated)} text={delegated} /></div>
+          <div style={{ textAlign: 'center' }}><Diff diff={diff} unit={chainToSymbol(delegation.chain)} /></div>
           <div>{Formatter.relativeDate(delegation.timestamp)}</div>
         </React.Fragment>
       })}
