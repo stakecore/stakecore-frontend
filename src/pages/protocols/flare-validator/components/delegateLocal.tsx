@@ -170,7 +170,7 @@ const FlareValidatorLocalDelegateComponent = () => {
   }
 
   return (
-    <div className="single-project-page-right wow fadeInUp delay-0-4s flare-div-border mt-30">
+    <div className="single-project-page-right wow fadeInUp delay-0-4s mt-30">
       <h2>Delegate On Our Website</h2>
       <p>
         Delegating FLR involves moving it from C-Chain to P-Chain, where you then sign the add delegator transaction.

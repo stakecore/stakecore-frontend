@@ -5,7 +5,7 @@ import type { IGraphics } from "../types"
 
 const FlareValidatorStatisticsComponent = ({ config }: { config: IGraphics }) => {
   return (
-    <div className="single-project-page-right wow fadeInUp delay-0-4s flare-div-border mt-30">
+    <div className="single-project-page-right wow fadeInUp delay-0-4s mt-30">
       <h2>Stakecore Statistics</h2>
       <p>
         Note that we restake our validators less than 24 hours after expiration.

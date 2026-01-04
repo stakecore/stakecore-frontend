@@ -1,15 +1,13 @@
 import { ResponsiveLine } from "@nivo/line"
-import classNames from "classnames"
 import { Formatter } from "~/utils/misc/formatter"
 import MeterBar from "~/components/ui/meterBar"
 import { Chain } from "~/enums"
-import { chainToDivBorderClassName, chainToSymbol } from "~/utils/misc/translations"
+import { chainToSymbol } from "~/utils/misc/translations"
 import type { FspStatisticsDto } from "~/backendApi"
 
 
 const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: Chain }) => {
   const symbol = chainToSymbol(chain)
-  const classname = chainToDivBorderClassName(chain)
   const lastDelegationEpoch = Math.max(...stats.delegations.result.map(x => x.rewardEpoch))
 
   const d1 = [
@@ -40,7 +38,7 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
   const last = stats.submissions.result[stats.submissions.result.length - 1]
 
   const component = <>
-    <div className={classNames('single-project-page-right wow fadeInUp delay-0-4s mt-30', { [classname]: true })}>
+    <div className='single-project-page-right wow fadeInUp delay-0-4s mt-30'>
       <h2>Provider Statistics</h2>
       <p>
         We value transparency, and stream a part of our monitoring to this site,

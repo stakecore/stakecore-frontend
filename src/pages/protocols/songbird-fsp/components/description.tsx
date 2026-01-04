@@ -1,5 +1,5 @@
 const ProjectDescription = () => {
-  return <div className="single-project-page-right wow fadeInUp delay-0-4s songbird-div-border mb-30">
+  return <div className="single-project-page-right wow fadeInUp delay-0-4s mb-30">
     <h2>Basic Information</h2>
     Songbird Systems Protocol (SSP) is a protocol consisting of three parts -
     STSO (Songbird Time Series Oracle), Fast Updates, and SDC (Songbird Data Connector).

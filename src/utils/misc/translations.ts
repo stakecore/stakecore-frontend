@@ -56,14 +56,3 @@ export function chainToSymbol(chain: Chain): string | null {
     return null
   }
 }
-
-export function chainToDivBorderClassName(chain: Chain): string {
-  if (chain == Chain.FLARE) {
-    return 'flare-div-border'
-  } else if (chain == Chain.SONGBIRD) {
-    return 'songbird-div-border'
-  } else if (chain == Chain.AVALANCHE) {
-    return 'avalanche-div-border'
-  }
-  return ''
-}

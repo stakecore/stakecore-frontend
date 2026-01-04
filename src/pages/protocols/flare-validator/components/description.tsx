@@ -1,5 +1,5 @@
 const ProjectDescription = () => {
-  return <div className="single-project-page-right wow fadeInUp delay-0-4s flare-div-border mb-30">
+  return <div className="single-project-page-right wow fadeInUp delay-0-4s mb-30">
     <h2>Basic Information</h2>
     Flare network adapts the Avalanche's proof of stake protocol named Snowball.
     The protocol is the basis for the network consensus, which requires validators

@@ -1,5 +1,5 @@
 const ProjectDescription = () => {
-  return <div className="single-project-page-right wow fadeInUp delay-0-4s avalanche-div-border mb-30">
+  return <div className="single-project-page-right wow fadeInUp delay-0-4s mb-30">
     <h2>Basic Information</h2>
     Avalanche runs on the proof of stake protocol called Snowball.
     Snowball requires validators to stake AVAX, which allows them to

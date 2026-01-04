@@ -3,7 +3,7 @@ import MovieClip from "../../../../components/ui/movieClip"
 
 const SongbirdFspOfficialDelegateComponent = ({ validatorLink }) => {
   return (
-    <div className="single-project-page-right wow fadeInUp delay-0-4s songbird-div-border mt-30">
+    <div className="single-project-page-right wow fadeInUp delay-0-4s mt-30">
       <h2>Delegate On The Official Flare Network Site</h2>
       <p>
         Users can choose to delegate to the Stakecore delegation address {validatorLink}.

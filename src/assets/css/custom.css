@@ -51,18 +51,6 @@
   background-attachment: fixed;
 }
 
-.avalanche-div-border {
-  border: none;
-}
-
-.flare-div-border {
-  border: none;
-}
-
-.songbird-div-border {
-  border: none;
-}
-
 .notification-block {
   border-left: 4px solid #999;
   padding: 0.5rem 1rem;
