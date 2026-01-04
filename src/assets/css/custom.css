@@ -45,7 +45,7 @@
 }
 
 .background {
-  background-size: auto 75%;
+  background-size: auto 400px;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
