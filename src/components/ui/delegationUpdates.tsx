@@ -19,13 +19,25 @@ function chainToLogoUrl(chain: DelegationDto.chain): string {
   }
 }
 
-function chainToTransactionUrl(chain: DelegationDto.chain, hash: string): string {
+function chainToTransactionUrl(
+  chain: DelegationDto.chain,
+  protocol: DelegationDto.protocol,
+  hash: string
+): string {
   if (chain == DelegationDto.chain._0) {
-    return C.flareEvmTransactionUrl(hash)
+    if (protocol == DelegationDto.protocol._0) {
+      return C.flareEvmTransactionUrl(hash)
+    } else if (protocol == DelegationDto.protocol._1) {
+      return C.flarePChainTransactionUrl(hash)
+    } else {
+      throw Error(`Invalid protocol ${chain}:${protocol}`)
+    }
   } else if (chain == DelegationDto.chain._1) {
     return C.songbirdEvmTransactionUrl(hash)
-  } else {
+  } else if (chain == DelegationDto.chain._2) {
     return C.avalanchePChainTransactionUrl(hash)
+  } else {
+    throw Error(`Invalid protocol ${chain}:${protocol}`)
   }
 }
 
@@ -81,7 +93,7 @@ const DelegationUpdates = ({ data, isLoading, error }: {
       <div>Timestamp</div>
       {delegations.map((delegation, i) => {
         const logo = chainToLogoUrl(delegation.chain)
-        const url = chainToTransactionUrl(delegation.chain, delegation.transaction)
+        const url = chainToTransactionUrl(delegation.chain, delegation.protocol, delegation.transaction)
         const delegated = Formatter.number(delegation.delegated)
         return <React.Fragment key={i}>
           <div><img src={logo} width={25} /></div>
