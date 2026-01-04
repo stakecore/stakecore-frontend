@@ -13,9 +13,9 @@ import { Tooltip } from 'react-tooltip'
 import { useEffect } from 'react'
 import { CookiesProvider } from 'react-cookie'
 import { Chain } from '~/enums'
-import flareImg from '../assets/images/protocols/flare/symbol.svg'
-import songbirdImg from '../assets/images/protocols/songbird/symbol.svg'
-import avalancheImg from '../assets/images/protocols/avalanche/symbol.svg'
+import flareImg from '../assets/images/protocols/flare/symbol.svg?url'
+import songbirdImg from '../assets/images/protocols/songbird/symbol.svg?url'
+import avalancheImg from '../assets/images/protocols/avalanche/symbol.svg?url'
 
 
 function chainToBackgroundImage(chain: Chain): string {
@@ -52,7 +52,7 @@ const RootLayout = () => {
     <>
       <Preloader />
       <Header />
-      <div className='background' style={{ backgroundImage: `url(${image})` }}>
+      <div className='background' style={{ backgroundImage: `url("${image}")` }}>
         <CookiesProvider>
           <Outlet />
           <CallToAction />
