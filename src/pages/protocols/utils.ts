@@ -54,3 +54,8 @@ export function injectActionArg(action: IStakeFlowBarAction, arg: any) {
   if (mod.original == null) mod.original = action.method
   action.method = (address, _1, _2) => mod.original(address, _1, _2, arg)
 }
+
+// this is specifically made for flare and avalanche info summary component
+export function checkRangeAvailable(min: number, max: number, available: string): string {
+  return min <= max ? available : 'Unavailable'
+}
