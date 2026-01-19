@@ -22,8 +22,8 @@ function structureBalanceData(balances: BalanceDto[]): Map<string, number> {
 }
 
 function joinTokenValues(values: number[], svalues: string[], names: string[]): string {
-  const s = values.map((v, i) => (v > 0) ? svalues[i] + ' ' + names[i] : '')
-  return s.join(' and ')
+  const nonzeros = Array(values.length).fill(0).map((_, i) => i).filter(i => values[i] > 0)
+  return nonzeros.map(i => svalues[i] + ' ' + names[i]).join(' and ')
 }
 
 export const getProposalData = (info: PageUserInfoDto) => {

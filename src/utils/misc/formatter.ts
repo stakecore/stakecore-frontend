@@ -62,8 +62,8 @@ export namespace Formatter {
         if (Number(int) != 0) {
           res = int
         } else {
-          const zeros = '0'.repeat(length - 3)
-          res = `< 0.${zeros}1`
+          const zeros = '0'.repeat(length - 2)
+          res = `<0.${zeros}1`
         }
       }
     }
