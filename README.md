@@ -10,4 +10,4 @@ Stakecore is a validator, FTSO and FDC provider on Flare network. To earn APY on
 
 ## TODO
 
--[ ] Last meter bar led should blink.
+-[ ] fix bug: connecting wallet with already opened wallet does nothing.
