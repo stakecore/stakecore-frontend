@@ -40,8 +40,12 @@
   text-align: center;
   position: relative;
   overflow: hidden;
+  margin-top: 15px;
+}
+
+.video-container > iframe {
   max-width: 100%;
-  padding-top: 30px;
+  aspect-ratio: 16 / 9;
 }
 
 .background {
