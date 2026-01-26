@@ -7,13 +7,6 @@ type MovieClipProps = {
 class MovieClip extends React.Component<MovieClipProps> {
 
   render() {
-    const options = {
-      hostname: 'https://www.youtube-nocookie.com',
-      playerVars: {
-        autoplay: 1,
-        controls: 1
-      }
-    }
     return <div className="video-container">
       <iframe
         src={`https://www.youtube-nocookie.com/embed/${this.props.videoId}`}
