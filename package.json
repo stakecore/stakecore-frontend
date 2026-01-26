@@ -24,7 +24,6 @@
     "bech32": "^2.0.0",
     "bootstrap": "^5.3.3",
     "classnames": "^2.5.1",
-    "dotenv": "^16.4.7",
     "ethers": "^6.13.5",
     "framer-motion": "^11.3.24",
     "react": "^19.2.3",
