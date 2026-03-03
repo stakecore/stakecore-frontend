@@ -12,6 +12,10 @@ export namespace Formatter {
   export function number(value: intish, length = NUMBER_DISPLAY_LENGTH, decimals = 0): string {
     let str = value.toString()
 
+    if (str.includes('e')) {
+      str = Number(str).toFixed(9)
+    }
+
     let prefix = ''
     if (str.startsWith('-')) {
       prefix = '-'
