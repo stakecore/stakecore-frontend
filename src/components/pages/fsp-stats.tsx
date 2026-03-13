@@ -35,6 +35,13 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
     }
   ]
 
+  const d4 = [
+    {
+      id: 'APY',
+      data: stats.apys.result.map(({ rewardEpoch: x, apy: y }) => ({ x, y }))
+    }
+  ]
+
   const last = stats.submissions.result[stats.submissions.result.length - 1]
 
   const component = <>
@@ -132,13 +139,14 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
       </div>
 
       <div className="row mt-40">
-        <h5 className='meter-bar-title'>Total weight delegators</h5>
+        <h5 className='meter-bar-title'>APY through reward epochs</h5>
         <p>
-          Total W{symbol} delegators, evaluated at each epoch's <i>vote power block</i>.
+          Annual percentage yield (APY) earned by delegators for each <i>reward epoch</i>, based on the
+          provider's performance and delegation weight during the vote power block.
         </p>
         <div style={{ height: 200 }}>
           <ResponsiveLine
-            data={d3}
+            data={d4}
             axisBottom={{
               legend: true,
               legendPosition: 'end'
@@ -146,7 +154,7 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
             axisTop={null}
             axisLeft={null}
             axisRight={null}
-            yFormat={v => Formatter.number(v)}
+            yFormat={v => Formatter.number(100 * v, 3)}
             margin={{ top: 30, right: 30, bottom: 20, left: 20 }}
             yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: false, reverse: false }}
             pointSize={10}
@@ -163,7 +171,6 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
           />
         </div>
       </div>
-
 
     </div>
   </>
