@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 
 *:Zone.Identifier
+
+*.env

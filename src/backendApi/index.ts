@@ -14,14 +14,16 @@ export type { ApiResponseDto_FspDelegatorInfoDto } from './models/ApiResponseDto
 export type { ApiResponseDto_FspPageDataDto } from './models/ApiResponseDto_FspPageDataDto';
 export type { ApiResponseDto_PageStatsDto } from './models/ApiResponseDto_PageStatsDto';
 export type { ApiResponseDto_PageUserInfoDto } from './models/ApiResponseDto_PageUserInfoDto';
-export type { ApyDto } from './models/ApyDto';
+export { ApyDto } from './models/ApyDto';
 export type { AvalancheDelegationDto } from './models/AvalancheDelegationDto';
 export type { AvalancheDelegatorInfoDto } from './models/AvalancheDelegatorInfoDto';
 export type { AvalancheSubChainBalanceDto } from './models/AvalancheSubChainBalanceDto';
 export type { AvalancheValidatorInfoDto } from './models/AvalancheValidatorInfoDto';
-export type { BalanceDto } from './models/BalanceDto';
+export { BalanceDto } from './models/BalanceDto';
 export { DelegationDto } from './models/DelegationDto';
 export type { FormDto } from './models/FormDto';
+export type { FspApyTimeSeries } from './models/FspApyTimeSeries';
+export type { FspApyTimeSeriesDto } from './models/FspApyTimeSeriesDto';
 export type { FspDelegationTimeSeries } from './models/FspDelegationTimeSeries';
 export type { FspDelegationTimeSeriesDto } from './models/FspDelegationTimeSeriesDto';
 export type { FspDelegatorInfoDto } from './models/FspDelegatorInfoDto';
@@ -35,7 +37,8 @@ export type { FtsoSubmissionTimeSeriesDto } from './models/FtsoSubmissionTimeSer
 export type { PageStatsDto } from './models/PageStatsDto';
 export type { PageUserInfoDto } from './models/PageUserInfoDto';
 export type { PriceDto } from './models/PriceDto';
-export type { ProjectDelegationDto } from './models/ProjectDelegationDto';
+export { ProjectDelegationDto } from './models/ProjectDelegationDto';
+export { RewardClaimDto } from './models/RewardClaimDto';
 
 export { AvalancheValidatorService } from './services/AvalancheValidatorService';
 export { FlareValidatorService } from './services/FlareValidatorService';

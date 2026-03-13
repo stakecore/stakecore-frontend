@@ -2,15 +2,16 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type ProjectDelegationDto = {
-    chain: ProjectDelegationDto.chain;
-    protocol: ProjectDelegationDto.protocol;
-    token: string;
-    delegated: number;
-    delegatedUsd: number;
-    delegators: number;
+export type RewardClaimDto = {
+    chain: RewardClaimDto.chain;
+    protocol: RewardClaimDto.protocol;
+    delegatee: string;
+    recipient: string;
+    reward: string;
+    transaction: string;
+    timestamp: number;
 };
-export namespace ProjectDelegationDto {
+export namespace RewardClaimDto {
     export enum chain {
         '_0' = 0,
         '_1' = 1,

@@ -345,8 +345,20 @@
             "ProjectDelegationDto": {
                 "type": "object",
                 "properties": {
-                    "project": {
-                        "type": "string"
+                    "chain": {
+                        "type": "number",
+                        "enum": [
+                            0,
+                            1,
+                            2
+                        ]
+                    },
+                    "protocol": {
+                        "type": "number",
+                        "enum": [
+                            0,
+                            1
+                        ]
                     },
                     "token": {
                         "type": "string"
@@ -362,7 +374,8 @@
                     }
                 },
                 "required": [
-                    "project",
+                    "chain",
+                    "protocol",
                     "token",
                     "delegated",
                     "delegatedUsd",
@@ -413,16 +426,54 @@
                     "timestamp"
                 ]
             },
+            "RewardClaimDto": {
+                "type": "object",
+                "properties": {
+                    "chain": {
+                        "type": "number",
+                        "enum": [
+                            0,
+                            1,
+                            2
+                        ]
+                    },
+                    "protocol": {
+                        "type": "number",
+                        "enum": [
+                            0,
+                            1
+                        ]
+                    },
+                    "delegatee": {
+                        "type": "string"
+                    },
+                    "recipient": {
+                        "type": "string"
+                    },
+                    "reward": {
+                        "type": "string"
+                    },
+                    "transaction": {
+                        "type": "string"
+                    },
+                    "timestamp": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "chain",
+                    "protocol",
+                    "delegatee",
+                    "recipient",
+                    "reward",
+                    "transaction",
+                    "timestamp"
+                ]
+            },
             "PageStatsDto": {
                 "type": "object",
                 "properties": {
                     "delegated": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/ProjectDelegationDto"
-                        }
-                    },
-                    "delegatedHistoric": {
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/ProjectDelegationDto"
@@ -433,12 +484,25 @@
                         "items": {
                             "$ref": "#/components/schemas/DelegationDto"
                         }
+                    },
+                    "rewards": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/RewardClaimDto"
+                        }
+                    },
+                    "historicDelegations": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ProjectDelegationDto"
+                        }
                     }
                 },
                 "required": [
                     "delegated",
-                    "delegatedHistoric",
-                    "delegations"
+                    "delegations",
+                    "rewards",
+                    "historicDelegations"
                 ]
             },
             "ApiResponseDto_PageStatsDto": {
@@ -462,7 +526,12 @@
                 "type": "object",
                 "properties": {
                     "chain": {
-                        "type": "string"
+                        "type": "number",
+                        "enum": [
+                            0,
+                            1,
+                            2
+                        ]
                     },
                     "token": {
                         "type": "string"
@@ -481,10 +550,19 @@
                 "type": "object",
                 "properties": {
                     "chain": {
-                        "type": "string"
+                        "type": "number",
+                        "enum": [
+                            0,
+                            1,
+                            2
+                        ]
                     },
                     "protocol": {
-                        "type": "string"
+                        "type": "number",
+                        "enum": [
+                            0,
+                            1
+                        ]
                     },
                     "apy": {
                         "type": "number"
@@ -677,6 +755,35 @@
                     "result"
                 ]
             },
+            "FspApyTimeSeries": {
+                "type": "object",
+                "properties": {
+                    "rewardEpoch": {
+                        "type": "number"
+                    },
+                    "apy": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "rewardEpoch",
+                    "apy"
+                ]
+            },
+            "FspApyTimeSeriesDto": {
+                "type": "object",
+                "properties": {
+                    "result": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/FspApyTimeSeries"
+                        }
+                    }
+                },
+                "required": [
+                    "result"
+                ]
+            },
             "FspStatisticsDto": {
                 "type": "object",
                 "properties": {
@@ -685,11 +792,15 @@
                     },
                     "submissions": {
                         "$ref": "#/components/schemas/FtsoSubmissionTimeSeriesDto"
+                    },
+                    "apys": {
+                        "$ref": "#/components/schemas/FspApyTimeSeriesDto"
                     }
                 },
                 "required": [
                     "delegations",
-                    "submissions"
+                    "submissions",
+                    "apys"
                 ]
             },
             "FspPageDataDto": {
