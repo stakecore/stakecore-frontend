@@ -1,4 +1,4 @@
-import { ResponsiveLine } from "@nivo/line"
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip } from "recharts"
 import { Formatter } from "~/utils/misc/formatter"
 import MeterBar from "~/components/ui/meterBar"
 import { Chain } from "~/enums"
@@ -6,41 +6,54 @@ import { chainToSymbol } from "~/utils/misc/translations"
 import type { FspStatisticsDto } from "~/backendApi"
 
 
+const chartMargin = { top: 20, right: 20, bottom: 5, left: 20 }
+
+const StatsChart = ({ data, keys, formatY }: {
+  data: Record<string, number>[],
+  keys: string[],
+  formatY: (v: number) => string
+}) => (
+  <ResponsiveContainer width="100%" height="100%">
+    <LineChart data={data} margin={chartMargin}>
+      <XAxis dataKey="x" tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 12 }} tickLine={false} axisLine={false} />
+      <YAxis hide domain={['auto', 'auto']} />
+      <Tooltip
+        contentStyle={{ background: '#1a1a1a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8 }}
+        labelStyle={{ color: 'rgba(255,255,255,0.6)' }}
+        itemStyle={{ color: 'white' }}
+        formatter={(v: number) => formatY(v)}
+      />
+      {keys.map((key, i) => (
+        <Line
+          key={key}
+          type="monotone"
+          dataKey={key}
+          stroke={i === 0 ? 'white' : 'rgba(255,255,255,0.5)'}
+          strokeWidth={2}
+          dot={{ fill: 'black', stroke: i === 0 ? 'white' : 'rgba(255,255,255,0.5)', strokeWidth: 2, r: 4 }}
+          activeDot={{ r: 6 }}
+          name={key}
+        />
+      ))}
+    </LineChart>
+  </ResponsiveContainer>
+)
+
 const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: Chain }) => {
   const symbol = chainToSymbol(chain)
   const lastDelegationEpoch = Math.max(...stats.delegations.result.map(x => x.rewardEpoch))
 
-  const d1 = [
-    {
-      id: 'Primary Success Rate',
-      data: stats.submissions.result.map(({ rewardEpoch: x, primary: y }) => ({ x, y }))
-    },
-    {
-      id: 'Secondary Success Rate',
-      data: stats.submissions.result.map(({ rewardEpoch: x, secondary: y }) => ({ x, y }))
-    }
-  ]
+  const d1 = stats.submissions.result.map(({ rewardEpoch, primary, secondary }) => ({
+    x: rewardEpoch, 'Primary Success Rate': primary, 'Secondary Success Rate': secondary
+  }))
 
-  const d2 = [
-    {
-      id: `${symbol} Delegated`,
-      data: stats.delegations.result.map(({ rewardEpoch: x, delegated: y }) => ({ x, y }))
-    }
-  ]
+  const d2 = stats.delegations.result.map(({ rewardEpoch, delegated }) => ({
+    x: rewardEpoch, [`${symbol} Delegated`]: delegated
+  }))
 
-  const d3 = [
-    {
-      id: `${symbol} Delegators`,
-      data: stats.delegations.result.map(({ rewardEpoch: x, delegators: y }) => ({ x, y }))
-    }
-  ]
-
-  const d4 = [
-    {
-      id: 'APY',
-      data: stats.apys.result.map(({ rewardEpoch: x, apy: y }) => ({ x, y }))
-    }
-  ]
+  const d4 = stats.apys.result.map(({ rewardEpoch, apy }) => ({
+    x: rewardEpoch, 'APY': apy
+  }))
 
   const last = stats.submissions.result[stats.submissions.result.length - 1]
 
@@ -74,30 +87,7 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
           along with its delegators, rewarded accordingly.
         </p>
         <div style={{ height: 250 }}>
-          <ResponsiveLine
-            data={d1}
-            axisBottom={{
-              legend: true,
-              legendPosition: 'end'
-            }}
-            axisTop={null}
-            axisLeft={null}
-            axisRight={null}
-            yFormat={v => Formatter.number(100 * v)}
-            margin={{ top: 30, right: 30, bottom: 20, left: 20 }}
-            yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: false, reverse: false }}
-            pointSize={10}
-            pointColor='black'
-            colors='white'
-            pointBorderWidth={2}
-            pointBorderColor={{ from: 'seriesColor' }}
-            enablePointLabel={true}
-            enableGridX={false}
-            enableGridY={false}
-            pointLabelYOffset={-15}
-            enableTouchCrosshair={true}
-            useMesh={true}
-          />
+          <StatsChart data={d1} keys={['Primary Success Rate', 'Secondary Success Rate']} formatY={v => Formatter.number(100 * v)} />
         </div>
       </div>
 
@@ -111,30 +101,7 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
           for the provider's weight in the following epoch {lastDelegationEpoch}.
         </p>
         <div style={{ height: 200 }}>
-          <ResponsiveLine
-            data={d2}
-            axisBottom={{
-              legend: true,
-              legendPosition: 'end'
-            }}
-            axisTop={null}
-            axisLeft={null}
-            axisRight={null}
-            yFormat={v => Formatter.number(v)}
-            margin={{ top: 30, right: 30, bottom: 20, left: 20 }}
-            yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: false, reverse: false }}
-            pointSize={10}
-            pointColor='black'
-            colors='white'
-            pointBorderWidth={2}
-            pointBorderColor={{ from: 'seriesColor' }}
-            enablePointLabel={true}
-            enableGridX={false}
-            enableGridY={false}
-            pointLabelYOffset={-15}
-            enableTouchCrosshair={true}
-            useMesh={true}
-          />
+          <StatsChart data={d2} keys={[`${symbol} Delegated`]} formatY={v => Formatter.number(v)} />
         </div>
       </div>
 
@@ -146,30 +113,7 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
           Note that due to protocol's reward capping, high delegation volume can result in lower APY.
         </p>
         <div style={{ height: 200 }}>
-          <ResponsiveLine
-            data={d4}
-            axisBottom={{
-              legend: true,
-              legendPosition: 'end'
-            }}
-            axisTop={null}
-            axisLeft={null}
-            axisRight={null}
-            yFormat={v => Formatter.number(100 * v, 3)}
-            margin={{ top: 30, right: 30, bottom: 20, left: 20 }}
-            yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: false, reverse: false }}
-            pointSize={10}
-            pointColor='black'
-            colors='white'
-            pointBorderWidth={2}
-            pointBorderColor={{ from: 'seriesColor' }}
-            enablePointLabel={true}
-            enableGridX={false}
-            enableGridY={false}
-            pointLabelYOffset={-15}
-            enableTouchCrosshair={true}
-            useMesh={true}
-          />
+          <StatsChart data={d4} keys={['APY']} formatY={v => Formatter.number(100 * v, 3)} />
         </div>
       </div>
 
