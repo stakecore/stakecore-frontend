@@ -12,7 +12,8 @@ import { FLARE_COLOR_CODE } from '~/constants'
 
 
 export const FlareValidatorPage = () => {
-  const { data, error, isLoading } = useSWR('flare-validator-page', (_) => FlareValidatorDataAccess.getFlarePageData())
+  const { data, error, isLoading } = useSWR('flare-validator-page',
+    (_) => FlareValidatorDataAccess.getFlarePageData())
 
   let component = null
   if (isLoading) {

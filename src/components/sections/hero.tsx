@@ -6,7 +6,7 @@ import profile from "../../assets/images/about/profile.svg"
 import SlideUp from '../../utils/animations/slideUp'
 import ServerError from '../ui/serverError'
 import DelegationSummary from '../ui/delegationSummary'
-import DelegationUpdates from '../ui/delegationUpdates'
+import RewardClaims from '../ui/rewardClaims'
 import { REFRESH_QUERY_SLOW_MS } from '~/constants'
 
 
@@ -31,7 +31,7 @@ const Hero = () => {
       </SlideUp>
       <SlideUp>
         <div className="about-content-part-bottom">
-          <DelegationUpdates data={data} isLoading={isLoading} error={error} />
+          <RewardClaims data={data} isLoading={isLoading} error={error} />
         </div>
       </SlideUp>
     </>
@@ -47,8 +47,8 @@ const Hero = () => {
               <div className="about-image-part">
                 <img src={profile} alt="About Us" />
                 <p style={{ marginTop: 30, marginBottom: 40 }}>
-                  Infrastructure provider for core crypto protocols on three networks.
-                  Provide security by delegating your dormant tokens to us and earn yield in return!
+                  Infrastructure provider for core crypto protocols on Flare, Avalanche, and Songbird.
+                  Provide security by delegating your dormant tokens to us and earn RISK-FREE yield in return!
                 </p>
                 <div className="about-social text-center">
                   <ul>
