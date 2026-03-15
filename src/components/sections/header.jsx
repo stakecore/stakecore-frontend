@@ -28,11 +28,6 @@ const Header = () => {
         navbar_collapse.classList.remove("show")
     }, [pathName])
 
-    useEffect(() => {
-        window.addEventListener("scroll", stickyHeader)
-        return () => window.removeEventListener("scroll", stickyHeader)
-    }, [])
-
     const stickyHeader = () => {
         const scrollTop = window.scrollY
         if (scrollTop > 85) {
@@ -42,6 +37,11 @@ const Header = () => {
             setisSticky(false)
         }
     }
+
+    useEffect(() => {
+        window.addEventListener("scroll", stickyHeader)
+        return () => window.removeEventListener("scroll", stickyHeader)
+    }, [])
 
     return (
         <header className={`main-header ${isSticky ? "fixed-header" : ""}`}>
