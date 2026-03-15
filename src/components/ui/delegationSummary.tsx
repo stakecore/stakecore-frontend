@@ -14,9 +14,9 @@ const DelegationSummary = ({ data, isLoading, error }: {
   let delegatedDiff = null
   let delegatorDiff = null
   if (data?.data != null) {
-    const _delegated0 = data.data.delegatedHistoric.reduce((x, y) => x + y.delegatedUsd, 0)
+    const _delegated0 = data.data.historicDelegations.reduce((x, y) => x + y.delegatedUsd, 0)
     const _delegated1 = data.data.delegated.reduce((x, y) => x + y.delegatedUsd, 0)
-    const _delegators0 = data.data.delegatedHistoric.reduce((x, y) => x + y.delegators, 0)
+    const _delegators0 = data.data.historicDelegations.reduce((x, y) => x + y.delegators, 0)
     const _delegators1 = data.data.delegated.reduce((x, y) => x + y.delegators, 0)
     delegated = Formatter.number(_delegated1)
     delegators = Formatter.number(_delegators1)
