@@ -143,6 +143,7 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
         <p>
           Annual percentage yield (APY) earned by delegators for each <i>reward epoch</i>, based on the
           provider's performance and delegation weight during the vote power block.
+          Note that due to protocol's reward capping, high delegation volume can result in lower APY.
         </p>
         <div style={{ height: 200 }}>
           <ResponsiveLine
