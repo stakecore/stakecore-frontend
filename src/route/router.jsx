@@ -1,13 +1,16 @@
+import { lazy } from "react";
 import { createHashRouter } from "react-router-dom";
 import RootLayout from "../layout/root";
 import Home from "../pages/home";
-import Contact from "../pages/contact";
-import About from "../pages/about";
-import AvalancheValidatorProject from "../pages/protocols/avalanche-validator/page";
-import FlareValidatorProject from "../pages/protocols/flare-validator/page";
-import FlareFspProject from "../pages/protocols/flare-fsp/page";
-import SongbirdFspProject from "../pages/protocols/songbird-fsp/page";
-import Protocols from "../pages/protocols";
+import Lazy from "./lazy";
+
+const Contact = lazy(() => import("../pages/contact"));
+const About = lazy(() => import("../pages/about"));
+const Protocols = lazy(() => import("../pages/protocols"));
+const AvalancheValidatorProject = lazy(() => import("../pages/protocols/avalanche-validator/page"));
+const FlareValidatorProject = lazy(() => import("../pages/protocols/flare-validator/page"));
+const FlareFspProject = lazy(() => import("../pages/protocols/flare-fsp/page"));
+const SongbirdFspProject = lazy(() => import("../pages/protocols/songbird-fsp/page"));
 
 
 export const router = createHashRouter([
@@ -21,35 +24,31 @@ export const router = createHashRouter([
             },
             {
                 path: "/contact",
-                element: <Contact />
+                element: <Lazy><Contact /></Lazy>
             },
             {
                 path: "/about",
-                element: <About />
+                element: <Lazy><About /></Lazy>
             },
-            /* {
-                path: "/service",
-                element: <Service />
-            }, */
             {
                 path: "/protocols",
-                element: <Protocols />
+                element: <Lazy><Protocols /></Lazy>
             },
             {
                 path: "/avalanche/validator",
-                element: <AvalancheValidatorProject />
+                element: <Lazy><AvalancheValidatorProject /></Lazy>
             },
             {
                 path: "/flare/validator",
-                element: <FlareValidatorProject />
+                element: <Lazy><FlareValidatorProject /></Lazy>
             },
             {
                 path: "/flare/fsp",
-                element: <FlareFspProject />
+                element: <Lazy><FlareFspProject /></Lazy>
             },
             {
                 path: "/songbird/fsp",
-                element: <SongbirdFspProject />
+                element: <Lazy><SongbirdFspProject /></Lazy>
             }
         ]
     }

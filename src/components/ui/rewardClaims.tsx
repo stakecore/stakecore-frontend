@@ -79,7 +79,7 @@ const RewardClaims = ({ data, isLoading, error }: {
         const symbol = C.CHAIN_SYMBOL[reward.chain]
         const txUrl = chainToTransactionUrl(reward.chain, reward.protocol, reward.transaction)
         const addrUrl = chainToAddressUrl(reward.chain, reward.protocol, reward.recipient)
-        return <div className="reward-claim-card" key={`${reward.transaction}-${reward.recipient}`}>
+        return <div className="reward-claim-card" key={`${reward.transaction}-${reward.recipient}-${i}`}>
           <div className="reward-claim-card-top">
             <img src={logo} width={28} alt={symbol} />
             <span className="reward-claim-protocol">{C.PROTOCOL_NAME[reward.protocol]}</span>

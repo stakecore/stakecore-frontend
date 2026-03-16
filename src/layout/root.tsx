@@ -9,7 +9,6 @@ import Footer from '../components/sections/footer'
 import CallToAction from '../components/sections/callToAction'
 import Preloader from '../components/ui/preloader'
 import DiscoverWalletProviders from '../components/sections/eip6963'
-import ScrollToTop from '../components/sections/scrollToTop'
 import { Tooltip } from 'react-tooltip'
 import { useEffect } from 'react'
 import { CookiesProvider } from 'react-cookie'
@@ -63,7 +62,6 @@ const RootLayout = () => {
       <ToastContainer theme='dark' position='top-left' />
       <Tooltip id="tooltip" />
       <DiscoverWalletProviders />
-      <ScrollToTop />
     </>
   )
 }
