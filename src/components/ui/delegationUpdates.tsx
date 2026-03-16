@@ -41,8 +41,6 @@ const DelegationUpdates = ({ data, isLoading, error }: {
     return <div style={{ textAlign: 'center' }}>
       <SpinnerCircular color={C.PAGE_COLOR_CODE} size={40} />
     </div>
-  } else {
-    console.log(String(error)) // should not hapen
   }
 
   return <>
@@ -56,7 +54,7 @@ const DelegationUpdates = ({ data, isLoading, error }: {
         const logo = CHAIN_LOGO[delegation.chain]
         const url = chainToTransactionUrl(delegation.chain, delegation.protocol, delegation.transaction)
         const diff = Formatter.number(delegation.delegated)
-        return <React.Fragment key={i}>
+        return <React.Fragment key={`${delegation.transaction}-${delegation.timestamp}`}>
           <div><img src={logo} width={25} /></div>
           <div>{C.PROTOCOL_NAME[delegation.protocol]}</div>
           <div><HashLink address={delegation.transaction} url={url} length={5} copy={false} /></div>

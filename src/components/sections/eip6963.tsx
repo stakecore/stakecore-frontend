@@ -1,6 +1,7 @@
 import ReactDOM from 'react-dom'
 import { RiCloseCircleFill } from '@remixicon/react'
 import { useGlobalStore } from '../../utils/store/global'
+import { useShallow } from 'zustand/react/shallow'
 import { requestAccounts, switchNetworkIfNecessary } from '../../utils/eip6963/eip1193'
 import { changeOpacity } from '../utils/style'
 import { useExternalStore } from '../../utils/eip6963/discover'
@@ -8,10 +9,9 @@ import { useExternalStore } from '../../utils/eip6963/discover'
 
 export const Eip6963 = () => {
   const { walletProviders } = useExternalStore()
-  const walletChoiceVisible = useGlobalStore(state => state.walletChoiceVisible)
-  const setWalletChoiceVisible = useGlobalStore(state => state.setWalletChoiceVisible)
-  const setWalletAddress = useGlobalStore(state => state.setWalletAddress)
-  const chain = useGlobalStore(state => state.chain)
+  const { walletChoiceVisible, setWalletChoiceVisible, setWalletAddress, chain } = useGlobalStore(
+    useShallow(state => ({ walletChoiceVisible: state.walletChoiceVisible, setWalletChoiceVisible: state.setWalletChoiceVisible, setWalletAddress: state.setWalletAddress, chain: state.chain }))
+  )
 
   const executeConnect = async (detail: EIP6963ProviderDetail, address: string) => {
     const switched = await switchNetworkIfNecessary(chain, detail.provider)

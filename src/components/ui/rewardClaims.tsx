@@ -1,4 +1,4 @@
-import React, { useRef } from "react"
+import { useRef } from "react"
 import { SpinnerCircular } from "spinners-react"
 import { ApiResponseDto_PageStatsDto, RewardClaimDto } from "~/backendApi"
 import { Formatter } from "~/utils/misc/formatter"
@@ -55,13 +55,13 @@ const RewardClaims = ({ data, isLoading, error }: {
     return <div style={{ textAlign: 'center' }}>
       <SpinnerCircular color={C.PAGE_COLOR_CODE} size={40} />
     </div>
-  } else {
-    console.log(String(error))
   }
 
   const scroll = (direction: number) => {
     if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: direction * 260, behavior: 'smooth' })
+      const card = scrollRef.current.querySelector('.reward-claim-card') as HTMLElement
+      const distance = card ? card.offsetWidth + 10 : 260
+      scrollRef.current.scrollBy({ left: direction * distance, behavior: 'smooth' })
     }
   }
 
@@ -79,7 +79,7 @@ const RewardClaims = ({ data, isLoading, error }: {
         const symbol = C.CHAIN_SYMBOL[reward.chain]
         const txUrl = chainToTransactionUrl(reward.chain, reward.protocol, reward.transaction)
         const addrUrl = chainToAddressUrl(reward.chain, reward.protocol, reward.recipient)
-        return <div className="reward-claim-card" key={i}>
+        return <div className="reward-claim-card" key={`${reward.transaction}-${reward.recipient}`}>
           <div className="reward-claim-card-top">
             <img src={logo} width={28} alt={symbol} />
             <span className="reward-claim-protocol">{C.PROTOCOL_NAME[reward.protocol]}</span>

@@ -4,7 +4,6 @@ import { Formatter } from "~/utils/misc/formatter"
 import { Diff } from "../pages/diff"
 import FlipCounter from "./flipCounter"
 import { PAGE_COLOR_CODE } from "~/constants"
-import useSWR from "swr"
 
 
 const DelegationSummary = ({ data, isLoading, error }: {
@@ -28,8 +27,6 @@ const DelegationSummary = ({ data, isLoading, error }: {
     return <div style={{ textAlign: 'center' }}>
       <SpinnerCircular color={PAGE_COLOR_CODE} size={40} />
     </div>
-  } else {
-    console.log(String(error)) // should not happen
   }
 
   return <div className="metrics-grid loading">

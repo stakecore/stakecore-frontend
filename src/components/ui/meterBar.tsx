@@ -1,3 +1,4 @@
+import { useMemo } from "react"
 import { Formatter } from "~/utils/misc/formatter"
 
 const MAX_PERC = 100
@@ -26,43 +27,39 @@ type args = {
 const MeterBar = ({ name, value, text, ranges, height = 40 }: args) => {
   const leds = Math.min(Math.max(LEDS_PER_PIXEL * window.innerWidth, MIN_LEDS), MAX_LEDS)
 
-  value = value * MAX_PERC
-  let valueidx = 0
+  const scaledValue = value * MAX_PERC
 
-  function getRatio(index: number) {
-    return Math.floor(MAX_PERC * index / leds)
-  }
+  const { data, valueidx } = useMemo(() => {
+    let valueidx = 0
 
-  function getLedOpacity(ratio: number) {
-    return value < ratio ? OPACITY_BEFORE : OPACITY_AFTER
-  }
-
-  function getColorIdx(ratio: number): number {
-    if (ratio < value) {
-      return valueidx
+    function getRatio(index: number) {
+      return Math.floor(MAX_PERC * index / leds)
     }
-    let coloridx = null
-    for (let i = 0; i < ranges.length; i++) {
-      if (ranges[i] >= ratio) {
-        coloridx = i
-        break
+
+    function getColorIdx(ratio: number, val: number): number {
+      if (ratio < val) return valueidx
+      let coloridx = null
+      for (let i = 0; i < ranges.length; i++) {
+        if (ranges[i] >= ratio) {
+          coloridx = i
+          break
+        }
       }
+      return coloridx ?? ranges.length
     }
-    if (coloridx == null) {
-      coloridx = ranges.length
+
+    valueidx = getColorIdx(scaledValue, -1)
+
+    const data: { color: string[], opacity: number }[] = []
+    for (let i = 0; i < leds; i++) {
+      const ratio = getRatio(i)
+      const color = getColorIdx(ratio, scaledValue)
+      const opacity = scaledValue < ratio ? OPACITY_BEFORE : OPACITY_AFTER
+      data.push({ color: COLORS[color], opacity })
     }
-    return coloridx
-  }
 
-  valueidx = getColorIdx(value)
-
-  let data: { color: string[], opacity: number }[] = []
-  for (let i = 0; i < leds; i++) {
-    const ratio = getRatio(i)
-    const color = getColorIdx(ratio)
-    const opacity = getLedOpacity(ratio)
-    data.push({ color: COLORS[color], opacity })
-  }
+    return { data, valueidx }
+  }, [scaledValue, leds, ranges])
 
   return (
     <div className="meter-bar-container">
@@ -75,7 +72,7 @@ const MeterBar = ({ name, value, text, ranges, height = 40 }: args) => {
           })
         }
         <span className='meter-bar-desc' style={{ color: COLORS[valueidx][0] }}>
-          { text ?? Formatter.percent(value / MAX_PERC) }
+          { text ?? Formatter.percent(scaledValue / MAX_PERC) }
         </span>
       </div>
     </div>

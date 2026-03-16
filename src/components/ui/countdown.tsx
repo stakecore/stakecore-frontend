@@ -82,7 +82,7 @@ const Countdown = ({ launchDate }) => {
     return () => {
       clearInterval(intervalID)
     }
-  }, [])
+  }, [launchDate])
 
   const { days, hours, minutes, seconds } = remainingTime
   return (

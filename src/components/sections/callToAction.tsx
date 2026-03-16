@@ -5,14 +5,15 @@ import ServerError from '../ui/serverError'
 import Proposal from './proposal'
 import { getProposalData } from "../../utils/data/proposals"
 import { useGlobalStore } from "~/utils/store/global"
+import { useShallow } from "zustand/react/shallow"
 import { LandingPageService } from '../../backendApi'
 import { PAGE_COLOR_CODE } from '../../constants'
 
 
 const CallToAction = () => {
-  const setWalletChoiceVisible = useGlobalStore(state => state.setWalletChoiceVisible)
-  const walletChoiceVisible = useGlobalStore(state => state.walletChoiceVisible)
-  const walletAddress = useGlobalStore(state => state.walletAddress)
+  const { setWalletChoiceVisible, walletChoiceVisible, walletAddress } = useGlobalStore(
+    useShallow(state => ({ setWalletChoiceVisible: state.setWalletChoiceVisible, walletChoiceVisible: state.walletChoiceVisible, walletAddress: state.walletAddress }))
+  )
 
   const { data, isLoading, error } = useSWR(['page-user-info', walletAddress], async ([_, address]) => {
     if (address == null) return null

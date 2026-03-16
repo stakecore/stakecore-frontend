@@ -1,6 +1,7 @@
 import { Outlet, useLocation } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import { useGlobalStore } from '~/utils/store/global'
+import { useShallow } from 'zustand/react/shallow'
 import { onInternalChainSwitch } from '~/utils/eip6963/hook'
 import { chainFromRoute, chainToChainId } from '../utils/misc/translations'
 import Header from '../components/sections/header'
@@ -35,9 +36,9 @@ const RootLayout = () => {
   const chainId = chainToChainId(chain)
   const image = chainToBackgroundImage(chain)
 
-  const setChain = useGlobalStore(state => state.setChain)
-  const setWallet = useGlobalStore(state => state.setWalletAddress)
-  const wallet = useGlobalStore(state => state.walletProvider)
+  const { setChain, setWallet, wallet } = useGlobalStore(
+    useShallow(state => ({ setChain: state.setChain, setWallet: state.setWalletAddress, wallet: state.walletProvider }))
+  )
 
   useEffect(() => {
     setChain(chainId)

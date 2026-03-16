@@ -11,3 +11,26 @@
   background-color: FireBrick;
   animation: fill 5s linear forwards;
 }
+
+.user-del-left {
+  float: left;
+}
+
+.user-del-right {
+  float: right;
+}
+
+.user-del-progress {
+  position: relative;
+}
+
+.user-del-perc {
+  font-size: 16px;
+  position: absolute;
+}
+
+.user-del-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
