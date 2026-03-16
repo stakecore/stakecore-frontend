@@ -4,59 +4,29 @@ import { ApiResponseDto_PageStatsDto, DelegationDto } from "~/backendApi"
 import { Formatter } from "~/utils/misc/formatter"
 import { HashLink } from "../utils/links"
 import { Diff } from "../pages/diff"
+import { Chain, Protocol } from "~/enums"
 import * as C from "~/constants"
 import avalanche from "../../assets/images/tokens/AVAX.svg"
 import flare from "../../assets/images/tokens/FLR.svg"
 import songbird from "../../assets/images/tokens/SGB.svg"
 
-
-function chainToLogoUrl(chain: DelegationDto.chain): string {
-  if (chain == DelegationDto.chain._0) {
-    return flare
-  } else if (chain == DelegationDto.chain._1) {
-    return songbird
-  } else {
-    return avalanche
-  }
+const CHAIN_LOGO: Record<number, string> = {
+  [Chain.FLARE]: flare,
+  [Chain.SONGBIRD]: songbird,
+  [Chain.AVALANCHE]: avalanche,
 }
 
-function chainToTransactionUrl(
-  chain: DelegationDto.chain,
-  protocol: DelegationDto.protocol,
-  hash: string
-): string {
-  if (chain == DelegationDto.chain._0) {
-    if (protocol == DelegationDto.protocol._0) {
+function chainToTransactionUrl(chain: number, protocol: number, hash: string): string {
+  if (chain == Chain.FLARE) {
+    if (protocol == Protocol.FSP) {
       return C.flareEvmTransactionUrl(hash)
-    } else if (protocol == DelegationDto.protocol._1) {
-      return C.flarePChainTransactionUrl(hash)
     } else {
-      throw Error(`Invalid protocol ${chain}:${protocol}`)
+      return C.flarePChainTransactionUrl(hash)
     }
-  } else if (chain == DelegationDto.chain._1) {
+  } else if (chain == Chain.SONGBIRD) {
     return C.songbirdEvmTransactionUrl(hash)
-  } else if (chain == DelegationDto.chain._2) {
+  } else if (chain == Chain.AVALANCHE) {
     return C.avalanchePChainTransactionUrl(hash)
-  } else {
-    throw Error(`Invalid protocol ${chain}:${protocol}`)
-  }
-}
-
-function chainToSymbol(chain: DelegationDto.chain): string {
-  if (chain == DelegationDto.chain._0) {
-    return 'FLR'
-  } else if (chain == DelegationDto.chain._1) {
-    return 'SGB'
-  } else {
-    return 'AVAX'
-  }
-}
-
-function resolveProtocolName(protocol: DelegationDto.protocol): string {
-  if (protocol == DelegationDto.protocol._0) {
-    return 'FSP'
-  } else if (protocol == DelegationDto.protocol._1) {
-    return 'Validator'
   }
 }
 
@@ -83,14 +53,14 @@ const DelegationUpdates = ({ data, isLoading, error }: {
       <div>Delegated</div>
       <div>Timestamp</div>
       {delegations.map((delegation, i) => {
-        const logo = chainToLogoUrl(delegation.chain)
+        const logo = CHAIN_LOGO[delegation.chain]
         const url = chainToTransactionUrl(delegation.chain, delegation.protocol, delegation.transaction)
         const diff = Formatter.number(delegation.delegated)
         return <React.Fragment key={i}>
           <div><img src={logo} width={25} /></div>
-          <div>{resolveProtocolName(delegation.protocol)}</div>
+          <div>{C.PROTOCOL_NAME[delegation.protocol]}</div>
           <div><HashLink address={delegation.transaction} url={url} length={5} copy={false} /></div>
-          <div style={{ textAlign: 'center' }}><Diff diff={diff} unit={chainToSymbol(delegation.chain)} /></div>
+          <div style={{ textAlign: 'center' }}><Diff diff={diff} unit={C.CHAIN_SYMBOL[delegation.chain]} /></div>
           <div>{Formatter.relativeDate(delegation.timestamp)}</div>
         </React.Fragment>
       })}

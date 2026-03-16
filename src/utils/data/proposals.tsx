@@ -5,10 +5,12 @@ import * as C from "../../constants"
 function structureApyData(apys: ApyDto[]): Map<string, Map<string, number>> {
   const mp = new Map()
   for (const apy of apys) {
-    if (mp.get(apy.chain) == null) {
-      mp.set(apy.chain, new Map())
+    const chain = C.CHAIN_NAME[apy.chain]
+    if (mp.get(chain) == null) {
+      mp.set(chain, new Map())
     }
-    mp.get(apy.chain).set(apy.protocol, apy.apy)
+    const protocol = C.PROTOCOL_NAME[apy.protocol]
+    mp.get(chain).set(protocol, apy.apy)
   }
   return mp
 }

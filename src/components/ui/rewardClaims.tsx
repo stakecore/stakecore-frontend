@@ -3,81 +3,43 @@ import { SpinnerCircular } from "spinners-react"
 import { ApiResponseDto_PageStatsDto, RewardClaimDto } from "~/backendApi"
 import { Formatter } from "~/utils/misc/formatter"
 import { HashLink } from "../utils/links"
+import { Chain, Protocol } from "~/enums"
 import * as C from "~/constants"
 import avalanche from "../../assets/images/tokens/AVAX.svg"
 import flare from "../../assets/images/tokens/FLR.svg"
 import songbird from "../../assets/images/tokens/SGB.svg"
 
-
-function chainToLogoUrl(chain: RewardClaimDto.chain): string {
-  if (chain == RewardClaimDto.chain._0) {
-    return flare
-  } else if (chain == RewardClaimDto.chain._1) {
-    return songbird
-  } else {
-    return avalanche
-  }
+const CHAIN_LOGO: Record<number, string> = {
+  [Chain.FLARE]: flare,
+  [Chain.SONGBIRD]: songbird,
+  [Chain.AVALANCHE]: avalanche,
 }
 
-function chainToSymbol(chain: RewardClaimDto.chain): string {
-  if (chain == RewardClaimDto.chain._0) {
-    return 'FLR'
-  } else if (chain == RewardClaimDto.chain._1) {
-    return 'SGB'
-  } else {
-    return 'AVAX'
-  }
-}
-
-function chainToTransactionUrl(
-  chain: RewardClaimDto.chain,
-  protocol: RewardClaimDto.protocol,
-  hash: string
-): string {
-  if (chain == RewardClaimDto.chain._0) {
-    if (protocol == RewardClaimDto.protocol._0) {
+function chainToTransactionUrl(chain: number, protocol: number, hash: string): string {
+  if (chain == Chain.FLARE) {
+    if (protocol == Protocol.FSP) {
       return C.flareEvmTransactionUrl(hash)
-    } else if (protocol == RewardClaimDto.protocol._1) {
+    } else {
       return C.flarePChainTransactionUrl(hash)
-    } else {
-      throw Error(`Invalid protocol ${chain}:${protocol}`)
     }
-  } else if (chain == RewardClaimDto.chain._1) {
+  } else if (chain == Chain.SONGBIRD) {
     return C.songbirdEvmTransactionUrl(hash)
-  } else if (chain == RewardClaimDto.chain._2) {
+  } else if (chain == Chain.AVALANCHE) {
     return C.avalanchePChainTransactionUrl(hash)
-  } else {
-    throw Error(`Invalid protocol ${chain}:${protocol}`)
   }
 }
 
-function chainToAddressUrl(
-  chain: RewardClaimDto.chain,
-  protocol: RewardClaimDto.protocol,
-  address: string
-): string {
-  if (chain == RewardClaimDto.chain._0) {
-    if (protocol == RewardClaimDto.protocol._0) {
+function chainToAddressUrl(chain: number, protocol: number, address: string): string {
+  if (chain == Chain.FLARE) {
+    if (protocol == Protocol.FSP) {
       return C.flareEvmAddressUrl(address)
-    } else if (protocol == RewardClaimDto.protocol._1) {
-      return C.flarePChainAddressUrl(address)
     } else {
-      throw Error(`Invalid protocol ${chain}:${protocol}`)
+      return C.flarePChainAddressUrl(address)
     }
-  } else if (chain == RewardClaimDto.chain._1) {
+  } else if (chain == Chain.SONGBIRD) {
     return C.songbirdEvmAddressUrl(address)
-  } else if (chain == RewardClaimDto.chain._2) {
+  } else if (chain == Chain.AVALANCHE) {
     return C.avalanchePChainAddressUrl(address)
-  } else {
-    throw Error(`Invalid protocol ${chain}:${protocol}`)
-  }
-}
-
-function resolveProtocolName(protocol: RewardClaimDto.protocol): string {
-  if (protocol == RewardClaimDto.protocol._0) {
-    return 'FSP'
-  } else if (protocol == RewardClaimDto.protocol._1) {
-    return 'Validator'
   }
 }
 
@@ -113,14 +75,14 @@ const RewardClaims = ({ data, isLoading, error }: {
     </div>
     <div className="reward-claims-carousel" ref={scrollRef}>
       {rewards.map((reward, i) => {
-        const logo = chainToLogoUrl(reward.chain)
-        const symbol = chainToSymbol(reward.chain)
+        const logo = CHAIN_LOGO[reward.chain]
+        const symbol = C.CHAIN_SYMBOL[reward.chain]
         const txUrl = chainToTransactionUrl(reward.chain, reward.protocol, reward.transaction)
         const addrUrl = chainToAddressUrl(reward.chain, reward.protocol, reward.recipient)
         return <div className="reward-claim-card" key={i}>
           <div className="reward-claim-card-top">
             <img src={logo} width={28} alt={symbol} />
-            <span className="reward-claim-protocol">{resolveProtocolName(reward.protocol)}</span>
+            <span className="reward-claim-protocol">{C.PROTOCOL_NAME[reward.protocol]}</span>
           </div>
           <div className="reward-claim-amount">
             +{Formatter.number(reward.reward)} <span className="reward-claim-symbol">{symbol}</span>
@@ -128,11 +90,11 @@ const RewardClaims = ({ data, isLoading, error }: {
           <div className="reward-claim-details">
             <div className="reward-claim-row">
               <span className="reward-claim-label">Tx</span>
-              <HashLink address={reward.transaction} url={txUrl} length={6} copy={true} />
+              <HashLink address={reward.transaction} url={txUrl} length={6} copy={false} />
             </div>
             <div className="reward-claim-row">
               <span className="reward-claim-label">To</span>
-              <HashLink address={reward.recipient} url={addrUrl} length={6} copy={true} />
+              <HashLink address={reward.recipient} url={addrUrl} length={6} copy={false} />
             </div>
           </div>
           <div className="reward-claim-time">{Formatter.relativeDate(reward.timestamp)}</div>

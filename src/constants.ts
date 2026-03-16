@@ -1,5 +1,20 @@
+import { Chain, Protocol } from './enums'
+
 export const MAX_BIPS = 10_000
 export const NUMBER_DISPLAY_LENGTH = 3
+
+// chain & protocol name maps (keyed by API numeric IDs)
+
+export const CHAIN_NAME: Record<number, string> = {
+  [Chain.FLARE]: 'Flare',
+  [Chain.SONGBIRD]: 'Songbird',
+  [Chain.AVALANCHE]: 'Avalanche',
+}
+
+export const PROTOCOL_NAME: Record<number, string> = {
+  [Protocol.FSP]: 'FSP',
+  [Protocol.VALIDATOR]: 'Validator',
+}
 
 // server query
 export const REFRESH_QUERY_FAST_MS = 10_000
@@ -17,6 +32,12 @@ export const WSGB_SYMBOL = 'WSGB'
 
 export const AVAX_DECIMALS = 18
 export const AVAX_SYMBOL = 'AVAX'
+
+export const CHAIN_SYMBOL: Record<number, string> = {
+  [Chain.FLARE]: FLR_SYMBOL,
+  [Chain.SONGBIRD]: SGB_SYMBOL,
+  [Chain.AVALANCHE]: AVAX_SYMBOL,
+}
 
 // flare fsp
 

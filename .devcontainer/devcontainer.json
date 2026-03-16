@@ -5,7 +5,6 @@
     "image": "mcr.microsoft.com/devcontainers/typescript-node:20",
     "postCreateCommand": "npm install -g @anthropic-ai/claude-code",
     "mounts": [
-        "source=/dev/null,target=${containerWorkspaceFolder}/.env,type=bind,readonly",
         "source=${localEnv:HOME}/.claude,target=/home/node/.claude,type=bind",
         "source=${localEnv:HOME}/.claude.json,target=/home/node/.claude.json,type=bind"
     ],
