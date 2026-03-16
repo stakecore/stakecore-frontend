@@ -25,9 +25,7 @@ const Hero = () => {
   } else {
     component = <>
       <SlideUp>
-        <div className="about-content-part">
-          <DelegationSummary data={data} isLoading={isLoading} error={error} />
-        </div>
+        <DelegationSummary data={data} isLoading={isLoading} error={error} />
       </SlideUp>
       <SlideUp>
         <div className="about-content-part-bottom">
