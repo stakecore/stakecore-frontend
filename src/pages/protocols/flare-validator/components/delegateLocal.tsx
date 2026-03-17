@@ -6,7 +6,6 @@ import { useGlobalStore } from "~/utils/store/global"
 import { flarePChainAddressUrl, REFRESH_QUERY_FAST_MS } from "~/constants"
 import ServerError from "~/components/ui/serverError"
 import StakeFlow from "~/components/ui/stakeFlow"
-import UserDelegations from "~/components/ui/userDelegations"
 import { HashLink } from "~/components/utils/links"
 import { IStakeFlow } from "~/components/types"
 import { toast } from "react-toastify"
@@ -158,12 +157,6 @@ const FlareValidatorLocalDelegateComponent = () => {
             <HashLink address={pchain} url={flarePChainAddressUrl(resp.data.pChain.address)} />
           </div>
           <StakeFlow layout={C.DELEGATE_FLOW_LAYOUT} data={delegatorInfoToStakeFlow(resp.data)} />
-        </div>
-        <div className="flare-delegator-list-container mt-40">
-          <p>
-            Below are active delegations from your account.
-          </p>
-          <UserDelegations delegators={resp.data.delegations} />
         </div>
       </div>
     </>

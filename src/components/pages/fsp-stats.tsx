@@ -1,19 +1,23 @@
+import { useCallback } from "react"
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip } from "recharts"
 import { Formatter } from "~/utils/misc/formatter"
 import MeterBar from "~/components/ui/meterBar"
+import EpochProgress from "~/components/ui/epochProgress"
 import { Chain } from "~/enums"
 import { chainToSymbol } from "~/utils/misc/translations"
+import { FspEpoch, FTSO_CHAIN_CONFIG } from "~/utils/misc/flare"
 import type { FspStatisticsDto } from "~/backendApi"
 
 
 const chartMargin = { top: 20, right: 20, bottom: 5, left: 20 }
 
-const StatsChart = ({ data, keys, formatY }: {
+const StatsChart = ({ data, keys, formatY, height = 200 }: {
   data: Record<string, number>[],
   keys: string[],
-  formatY: (v: number) => string
+  formatY: (v: number) => string,
+  height?: number
 }) => (
-  <ResponsiveContainer width="100%" height="100%">
+  <ResponsiveContainer width="100%" height={height}>
     <LineChart data={data} margin={chartMargin}>
       <XAxis dataKey="x" tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 12 }} tickLine={false} axisLine={false} />
       <YAxis hide domain={['auto', 'auto']} />
@@ -43,6 +47,32 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
   const symbol = chainToSymbol(chain)
   const lastDelegationEpoch = Math.max(...stats.delegations.result.map(x => x.rewardEpoch))
 
+  const cfg = FTSO_CHAIN_CONFIG[chain as keyof typeof FTSO_CHAIN_CONFIG]
+
+  const epochPeriod = useCallback((now: number) => {
+    const round = FspEpoch.timestampToRound(chain, now)
+    const epoch = FspEpoch.roundToRewardEpoch(chain, round)
+    const epochStart = epoch * cfg.rewardEpochDurationRounds
+    return {
+      startMs: FspEpoch.roundToTimestamp(chain, epochStart),
+      endMs: FspEpoch.roundToTimestamp(chain, epochStart + cfg.rewardEpochDurationRounds),
+      metadata: [
+        { label: "Reward Epoch", value: epoch },
+        { label: "Round", value: `${round - epochStart} / ${cfg.rewardEpochDurationRounds}` },
+      ],
+    }
+  }, [chain, cfg])
+
+  const roundPeriod = useCallback((now: number) => {
+    const round = FspEpoch.timestampToRound(chain, now)
+    const startMs = FspEpoch.roundToTimestamp(chain, round)
+    return {
+      startMs,
+      endMs: startMs + cfg.roundDurationMs,
+      metadata: [{ label: "Current Round", value: round }],
+    }
+  }, [chain, cfg])
+
   const d1 = stats.submissions.result.map(({ rewardEpoch, primary, secondary }) => ({
     x: rewardEpoch, 'Primary Success Rate': primary, 'Secondary Success Rate': secondary
   }))
@@ -59,7 +89,14 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
 
   const component = <>
     <div className='single-project-page-right wow fadeInUp delay-0-4s mt-30'>
-      <h2>Provider Statistics</h2>
+      <div className="row mb-30">
+        <div className="col-lg-6">
+          <EpochProgress period={epochPeriod} color="FireBrick" />
+        </div>
+        <div className="col-lg-6">
+          <EpochProgress period={roundPeriod} color="#76B768" />
+        </div>
+      </div>
       <p>
         We value transparency, and stream a part of our monitoring to this site,
         so you can see live data of our provider's performance for the current <i>reward epoch</i> {last.rewardEpoch}.
@@ -86,9 +123,7 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
           success. Each <i>reward epoch</i> is a sequence of 3360 rounds (3.5 days), after which each provider's results are evaluated and the provider,
           along with its delegators, rewarded accordingly.
         </p>
-        <div style={{ height: 250 }}>
-          <StatsChart data={d1} keys={['Primary Success Rate', 'Secondary Success Rate']} formatY={v => Formatter.number(100 * v)} />
-        </div>
+        <StatsChart data={d1} keys={['Primary Success Rate', 'Secondary Success Rate']} formatY={v => Formatter.percent(v)} height={250} />
       </div>
 
       <div className="row mt-40">
@@ -100,9 +135,7 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
           In the graphs below we also append the current state of our delegations as an approximation
           for the provider's weight in the following epoch {lastDelegationEpoch}.
         </p>
-        <div style={{ height: 200 }}>
-          <StatsChart data={d2} keys={[`${symbol} Delegated`]} formatY={v => Formatter.number(v)} />
-        </div>
+        <StatsChart data={d2} keys={[`${symbol} Delegated`]} formatY={v => Formatter.number(v)} />
       </div>
 
       <div className="row mt-40">
@@ -112,9 +145,7 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
           provider's performance and delegation weight during the vote power block.
           Note that due to protocol's reward capping, high delegation volume can result in lower APY.
         </p>
-        <div style={{ height: 200 }}>
-          <StatsChart data={d4} keys={['APY']} formatY={v => Formatter.number(100 * v, 3)} />
-        </div>
+        <StatsChart data={d4} keys={['APY']} formatY={v => Formatter.percent(v)} />
       </div>
 
     </div>

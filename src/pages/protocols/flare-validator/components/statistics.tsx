@@ -1,20 +1,26 @@
-import Countdown from "../../../../components/ui/countdown"
+import { useCallback } from "react"
+import EpochProgress from "~/components/ui/epochProgress"
 import MeterBar from "../../../../components/ui/meterBar"
 import type { IGraphics } from "../types"
 
 
 const FlareValidatorStatisticsComponent = ({ config }: { config: IGraphics }) => {
+  const { startTimeMs, endTimeMs } = config.countdown
+
+  const validatorPeriod = useCallback((_now: number) => ({
+    startMs: startTimeMs,
+    endMs: endTimeMs,
+    metadata: [{ label: "Validator Expiration", value: new Date(endTimeMs).toISOString().split('T')[0] }],
+  }), [startTimeMs, endTimeMs])
+
   return (
     <div className="single-project-page-right wow fadeInUp delay-0-4s mt-30">
-      <h2>Stakecore Statistics</h2>
-      <p>
-        Note that we restake our validators less than 24 hours after expiration.
-      </p>
-      <div className="mt-40 mb-40">
-        <Countdown launchDate={config.countdown.endTime} />
+      <div className="mb-40">
+        <EpochProgress period={validatorPeriod} color="FireBrick" />
       </div>
       <p>
-        We picked some of the most important statistics for our validator to let you monitor Stakecore's activity.
+        Below we picked some of the most important statistics for our validator.
+        Note that we restake our validators less than 24 hours after expiration.
       </p>
       <div className="row">
         <div className="col-lg-6">

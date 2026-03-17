@@ -54,8 +54,8 @@ export namespace FlareValidatorDataAccess {
     const validatorNodeIdLink = <HashLink url={validatorUrl} address={data.validatorNodeId} />
 
     // validator duration
-    const validatorStartTime = Formatter.date(data.validatorStartTime)
-    const validatorEndTime = Formatter.date(data.validatorEndTime)
+    const validatorStartTime = Formatter.dateHuman(data.validatorStartTime)
+    const validatorEndTime = Formatter.dateHuman(data.validatorEndTime)
 
     const specs = [
       [
@@ -112,7 +112,8 @@ export namespace FlareValidatorDataAccess {
         }
       },
       countdown: {
-        endTime: new Date(data.validatorEndTime * 1000)
+        startTimeMs: data.validatorStartTime * 1000,
+        endTimeMs: data.validatorEndTime * 1000
       }
     }
   }

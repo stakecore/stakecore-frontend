@@ -17,7 +17,8 @@ export type IGraphics = {
     validatorConnectedXChain: IMeterBar
   }
   countdown: {
-    endTime: Date
+    startTimeMs: number
+    endTimeMs: number
   }
 }
 

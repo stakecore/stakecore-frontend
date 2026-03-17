@@ -89,6 +89,12 @@ export namespace Formatter {
     return d.toISOString().replace('T', ' ').split('.')[0];
   }
 
+  export function dateHuman(unix: number): string {
+    const d = new Date(unix * 1000)
+    return d.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
+      + ', ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })
+  }
+
   export function relativeDate(unix: number): string {
     const now = new Date(Date.now())
     const thn = new Date(unix * 1000)
@@ -115,6 +121,21 @@ export namespace Formatter {
 
   export function days(unix: number): string {
     return number(unix / 86400, 1) + ' days'
+  }
+
+  export function duration(ms: number): string {
+    if (ms <= 0) return "0s"
+    const s = Math.floor(ms / 1000)
+    const d = Math.floor(s / 86400)
+    const h = Math.floor((s % 86400) / 3600)
+    const m = Math.floor((s % 3600) / 60)
+    const sec = s % 60
+    const parts: string[] = []
+    if (d) parts.push(`${d}d`)
+    if (h) parts.push(`${h}h`)
+    if (m) parts.push(`${m}m`)
+    if (sec || parts.length === 0) parts.push(`${sec}s`)
+    return parts.join(" ")
   }
 
   export function error(msg: string): string {

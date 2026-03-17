@@ -3,7 +3,7 @@ import { SpinnerCircular } from "spinners-react"
 import { ApiResponseDto_PageStatsDto, RewardClaimDto } from "~/backendApi"
 import { Formatter } from "~/utils/misc/formatter"
 import { HashLink } from "../utils/links"
-import { Chain, Protocol } from "~/enums"
+import { Chain } from "~/enums"
 import * as C from "~/constants"
 import avalanche from "../../assets/images/tokens/AVAX.svg"
 import flare from "../../assets/images/tokens/FLR.svg"
@@ -17,11 +17,7 @@ const CHAIN_LOGO: Record<number, string> = {
 
 function chainToTransactionUrl(chain: number, protocol: number, hash: string): string {
   if (chain == Chain.FLARE) {
-    if (protocol == Protocol.FSP) {
-      return C.flareEvmTransactionUrl(hash)
-    } else {
-      return C.flarePChainTransactionUrl(hash)
-    }
+    return C.flareEvmTransactionUrl(hash)
   } else if (chain == Chain.SONGBIRD) {
     return C.songbirdEvmTransactionUrl(hash)
   } else if (chain == Chain.AVALANCHE) {
@@ -31,11 +27,7 @@ function chainToTransactionUrl(chain: number, protocol: number, hash: string): s
 
 function chainToAddressUrl(chain: number, protocol: number, address: string): string {
   if (chain == Chain.FLARE) {
-    if (protocol == Protocol.FSP) {
-      return C.flareEvmAddressUrl(address)
-    } else {
-      return C.flarePChainAddressUrl(address)
-    }
+    return C.flareEvmAddressUrl(address)
   } else if (chain == Chain.SONGBIRD) {
     return C.songbirdEvmAddressUrl(address)
   } else if (chain == Chain.AVALANCHE) {
