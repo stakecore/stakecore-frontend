@@ -169,11 +169,6 @@ Version      : 1.0
 /* Mobile Layout: 320px. */
 
 @media only screen and (max-width: 767px) {
-    body {
-        overflow-x: hidden;
-
-    }
-
     .innerpage-single-area {
         padding-top: 60px !important;
     }
