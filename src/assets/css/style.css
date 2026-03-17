@@ -56,7 +56,7 @@ Version      : 1.0
 
 html {
     overflow-x: hidden;
-    overscroll-behavior-x: none;
+    overscroll-behavior: none;
 }
 
 body {
