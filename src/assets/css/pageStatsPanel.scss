@@ -113,11 +113,16 @@
   animation: stats-fade-in 0.4s 0.1s ease-out both;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 991px) {
+  .metrics-grid {
+    margin-top: 30px;
+  }
+}
+
+@media (max-width: 767px) {
   .metrics-grid {
     grid-template-columns: 1fr;
     gap: 10px;
-    margin-top: 20px;
   }
 
   .metric-card {

@@ -73,15 +73,16 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
     }
   }, [chain, cfg])
 
-  const d1 = stats.submissions.result.map(({ rewardEpoch, primary, secondary }) => ({
-    x: rewardEpoch, 'Primary Success Rate': primary, 'Secondary Success Rate': secondary
+  const primarySRD = stats.submissions.result.map(({ rewardEpoch, primary }) => ({
+    x: rewardEpoch, 'Primary Success Rate': primary
   }))
-
-  const d2 = stats.delegations.result.map(({ rewardEpoch, delegated }) => ({
+  const secondarySRD = stats.submissions.result.map(({ rewardEpoch, secondary }) => ({
+    x: rewardEpoch, 'Secondary Success Rate': secondary
+  }))
+  const delegatedD = stats.delegations.result.map(({ rewardEpoch, delegated }) => ({
     x: rewardEpoch, [`${symbol} Delegated`]: delegated
   }))
-
-  const d4 = stats.apys.result.map(({ rewardEpoch, apy }) => ({
+  const apyD = stats.apys.result.map(({ rewardEpoch, apy }) => ({
     x: rewardEpoch, 'APY': apy
   }))
 
@@ -114,16 +115,24 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
         </div>
       </div>
       <div className="row mt-50">
-        <h5 className='meter-bar-title'>FTSO primary and secondary success rates</h5>
+        <h5 className='meter-bar-title'>Primary FTSO success rate</h5>
         <p>
           Prices on Flare are submitted in 90 second epochs called rounds. Each round, all FSP providers
           are required to submit a price for each of the ~60 crypto tickers. When the submitted price
           falls between the 1st and 3rd stake-weighted quartile of all submissions, it is considered a primary success for the submitting provider.
-          When the submitted price falls within the percentage band (defined separately for each ticker) of the accepted median, it is considered a secondary
-          success. Each <i>reward epoch</i> is a sequence of 3360 rounds (3.5 days), after which each provider's results are evaluated and the provider,
+          Each <i>reward epoch</i> is a sequence of 3360 rounds (3.5 days), after which each provider's results are evaluated and the provider,
           along with its delegators, rewarded accordingly.
         </p>
-        <StatsChart data={d1} keys={['Primary Success Rate', 'Secondary Success Rate']} formatY={v => Formatter.percent(v)} height={250} />
+        <StatsChart data={primarySRD} keys={['Primary Success Rate']} formatY={v => Formatter.percent(v)} height={250} />
+      </div>
+
+      <div className="row mt-50">
+        <h5 className='meter-bar-title'>Secondary FTSO success rate</h5>
+        <p>
+          When the submitted price falls within the percentage band (defined separately for each ticker) of the accepted median, it is considered a secondary
+          success. Secondary success was introduced due to the primary reward band becomming too competitive.
+        </p>
+        <StatsChart data={secondarySRD} keys={['Secondary Success Rate']} formatY={v => Formatter.percent(v)} height={250} />
       </div>
 
       <div className="row mt-40">
@@ -135,7 +144,7 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
           In the graphs below we also append the current state of our delegations as an approximation
           for the provider's weight in the following epoch {lastDelegationEpoch}.
         </p>
-        <StatsChart data={d2} keys={[`${symbol} Delegated`]} formatY={v => Formatter.number(v)} />
+        <StatsChart data={delegatedD} keys={[`${symbol} Delegated`]} formatY={v => Formatter.number(v)} />
       </div>
 
       <div className="row mt-40">
@@ -145,7 +154,7 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
           provider's performance and delegation weight during the vote power block.
           Note that due to protocol's reward capping, high delegation volume can result in lower APY.
         </p>
-        <StatsChart data={d4} keys={['APY']} formatY={v => Formatter.percent(v)} />
+        <StatsChart data={apyD} keys={['APY']} formatY={v => Formatter.percent(v)} />
       </div>
 
     </div>

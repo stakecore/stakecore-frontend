@@ -220,7 +220,7 @@
 @media only screen and (max-width: 767px) {
   /* Tighter reward claim cards */
   .reward-claim-card {
-    flex: 0 0 calc(75vw - 24px);
+    flex: 0 0 190px;
     padding: 14px;
     border-radius: 10px;
   }
