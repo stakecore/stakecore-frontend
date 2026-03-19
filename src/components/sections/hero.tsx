@@ -6,7 +6,7 @@ import profile from "../../assets/images/about/profile.svg"
 import SlideUp from '../../utils/animations/slideUp'
 import ServerError from '../ui/serverError'
 import DelegationSummary from '../ui/delegationSummary'
-import RewardClaims from '../ui/rewardClaims'
+import RecentActivity from '../ui/recentActivity'
 import { REFRESH_QUERY_SLOW_MS } from '~/constants'
 
 
@@ -29,7 +29,7 @@ const Hero = () => {
       </SlideUp>
       <SlideUp>
         <div className="about-content-part-bottom">
-          <RewardClaims data={data} isLoading={isLoading} error={error} />
+          <RecentActivity data={data} isLoading={isLoading} error={error} />
         </div>
       </SlideUp>
     </>

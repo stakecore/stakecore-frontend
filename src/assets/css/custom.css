@@ -94,28 +94,28 @@
   font-weight: bold;
 }
 
-/* REWARD CLAIMS CAROUSEL */
+/* RECENT ACTIVITY CAROUSEL */
 
-.reward-claims-header {
+.activity-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
 }
 
-.reward-claims-header h5 {
+.activity-header h5 {
   margin: 0;
   font-size: 16px;
   font-weight: 600;
   color: white;
 }
 
-.reward-claims-nav {
+.activity-nav {
   display: flex;
   gap: 8px;
 }
 
-.reward-claims-nav button {
+.activity-nav button {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
@@ -130,11 +130,11 @@
   transition: background 0.2s;
 }
 
-.reward-claims-nav button:hover {
+.activity-nav button:hover {
   background: rgba(255, 255, 255, 0.15);
 }
 
-.reward-claims-carousel {
+.activity-carousel {
   display: flex;
   gap: 14px;
   overflow-x: auto;
@@ -144,11 +144,11 @@
   padding-bottom: 4px;
 }
 
-.reward-claims-carousel::-webkit-scrollbar {
+.activity-carousel::-webkit-scrollbar {
   display: none;
 }
 
-.reward-claim-card {
+.activity-card {
   flex: 0 0 230px;
   scroll-snap-align: start;
   background: rgba(255, 255, 255, 0.04);
@@ -158,18 +158,18 @@
   transition: border-color 0.2s;
 }
 
-.reward-claim-card:hover {
+.activity-card:hover {
   border-color: rgba(255, 255, 255, 0.2);
 }
 
-.reward-claim-card-top {
+.activity-card-top {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-bottom: 12px;
 }
 
-.reward-claim-protocol {
+.activity-protocol {
   font-size: 12px;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.5);
@@ -177,40 +177,63 @@
   letter-spacing: 0.5px;
 }
 
-.reward-claim-amount {
+.activity-type {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.activity-type.claimed {
+  color: #50e3c2;
+  background: rgba(80, 227, 194, 0.12);
+}
+
+.activity-type.delegated {
+  color: #7b9cff;
+  background: rgba(123, 156, 255, 0.12);
+}
+
+.activity-amount {
   font-size: 20px;
   font-weight: 700;
-  color: #50e3c2;
   margin-bottom: 14px;
 }
 
-.reward-claim-symbol {
+.activity-amount.reward {
+  color: #50e3c2;
+}
+
+.activity-symbol {
   font-size: 13px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.5);
 }
 
-.reward-claim-details {
+.activity-details {
   display: flex;
   flex-direction: column;
   gap: 6px;
   margin-bottom: 12px;
 }
 
-.reward-claim-row {
+.activity-row {
   display: flex;
   align-items: center;
   gap: 8px;
   font-size: 13px;
 }
 
-.reward-claim-label {
+.activity-label {
   color: rgba(255, 255, 255, 0.35);
   font-size: 12px;
   min-width: 20px;
 }
 
-.reward-claim-time {
+.activity-time {
   font-size: 12px;
   color: rgba(255, 255, 255, 0.35);
 }
@@ -218,27 +241,26 @@
 /* MOBILE OVERRIDES */
 
 @media only screen and (max-width: 767px) {
-  /* Tighter reward claim cards */
-  .reward-claim-card {
+  .activity-card {
     flex: 0 0 190px;
     padding: 14px;
     border-radius: 10px;
   }
 
-  .reward-claim-card-top {
+  .activity-card-top {
     margin-bottom: 8px;
   }
 
-  .reward-claim-amount {
+  .activity-amount {
     font-size: 17px;
     margin-bottom: 10px;
   }
 
-  .reward-claim-details {
+  .activity-details {
     margin-bottom: 8px;
   }
 
-  .reward-claims-carousel {
+  .activity-carousel {
     gap: 10px;
     scroll-padding-left: 0;
   }
