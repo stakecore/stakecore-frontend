@@ -122,6 +122,21 @@ export namespace Formatter {
     return number(unix / 86400, 1) + ' days'
   }
 
+  export function duration(ms: number): string {
+    if (ms <= 0) return "0s"
+    const s = Math.floor(ms / 1000)
+    const d = Math.floor(s / 86400)
+    const h = Math.floor((s % 86400) / 3600)
+    const m = Math.floor((s % 3600) / 60)
+    const sec = s % 60
+    const parts: string[] = []
+    if (d) parts.push(`${d}d`)
+    if (h) parts.push(`${h}h`)
+    if (m) parts.push(`${m}m`)
+    if (sec || parts.length === 0) parts.push(`${sec}s`)
+    return parts.join(" ")
+  }
+
   export function error(msg: string): string {
     const regex = /user rejected action\s*\(action="([^"]+)"/i
     const match = msg.match(regex)
