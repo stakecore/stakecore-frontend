@@ -1,4 +1,4 @@
-export const Diff = ({ diff, unit, pill = false }) => {
+export const Diff = ({ diff, unit = "", pill = false }) => {
   let color = '#50e3c2'
   const neg = typeof diff == 'string' && diff.startsWith('-')
   if (neg) {

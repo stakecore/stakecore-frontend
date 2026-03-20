@@ -1,6 +1,6 @@
 import { useRef } from "react"
 import { SpinnerCircular } from "spinners-react"
-import { ApiResponseDto_PageStatsDto, RewardClaimDto, DelegationDto } from "~/backendApi"
+import { ApiResponseDto_PageStatsDto, PageActivityDto } from "~/backendApi"
 import { Formatter } from "~/utils/misc/formatter"
 import { HashLink } from "../utils/links"
 import { Diff } from "../pages/diff"
@@ -44,20 +44,14 @@ function chainToAddressUrl(chain: number, protocol: number, address: string): st
   }
 }
 
-type ActivityItem =
-  | { type: 'reward'; data: RewardClaimDto }
-  | { type: 'delegation'; data: DelegationDto }
-
 const RecentActivity = ({ data, isLoading }: {
   data: ApiResponseDto_PageStatsDto, isLoading: boolean, error: string
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null)
 
-  let items: ActivityItem[] | null = null
+  let items: PageActivityDto[] | null = null
   if (data?.data != null) {
-    const rewards: ActivityItem[] = (data.data.rewards ?? []).map(r => ({ type: 'reward' as const, data: r }))
-    const delegations: ActivityItem[] = (data.data.delegations ?? []).map(d => ({ type: 'delegation' as const, data: d }))
-    items = [...rewards, ...delegations].sort((a, b) => b.data.timestamp - a.data.timestamp)
+    items = [...(data.data.activity ?? [])].sort((a, b) => b.timestamp - a.timestamp)
   } else if (isLoading) {
     return <div style={{ textAlign: 'center' }}>
       <SpinnerCircular color={C.PAGE_COLOR_CODE} size={40} />
@@ -81,73 +75,45 @@ const RecentActivity = ({ data, isLoading }: {
       </div>
     </div>
     <div className="activity-carousel" ref={scrollRef}>
-      {items.map((item, i) => {
-        if (item.type === 'reward') {
-          return <RewardCard key={`r-${item.data.transaction}-${item.data.recipient}-${i}`} reward={item.data} />
-        } else {
-          return <DelegationCard key={`d-${item.data.transaction}-${item.data.timestamp}-${i}`} delegation={item.data} />
-        }
-      })}
+      {items.map((item, i) =>
+        <ActivityCard key={`${item.type}-${item.transaction}-${i}`} activity={item} />
+      )}
     </div>
   </>
 }
 
-const RewardCard = ({ reward }: { reward: RewardClaimDto }) => {
-  const logo = CHAIN_LOGO[reward.chain]
-  const symbol = C.CHAIN_SYMBOL[reward.chain]
-  const txUrl = chainToTransactionUrl(reward.chain, reward.protocol, reward.transaction)
-  const addrUrl = chainToAddressUrl(reward.chain, reward.protocol, reward.recipient)
-
-  return <div className="activity-card">
-    <div className="activity-card-top">
-      <img src={logo} width={28} alt={symbol} />
-      <span className="activity-protocol">{C.PROTOCOL_NAME[reward.protocol]}</span>
-      <span className="activity-type claimed">Claimed</span>
-    </div>
-    <div className="activity-amount reward">
-      +{Formatter.number(reward.reward)} <span className="activity-symbol">{symbol}</span>
-    </div>
-    <div className="activity-details">
-      <div className="activity-row">
-        <span className="activity-label">Tx</span>
-        <HashLink address={reward.transaction} url={txUrl} length={6} copy={false} />
-      </div>
-      <div className="activity-row">
-        <span className="activity-label">To</span>
-        <HashLink address={reward.recipient} url={addrUrl} length={6} copy={false} />
-      </div>
-    </div>
-    <div className="activity-time">{Formatter.relativeDate(reward.timestamp)}</div>
-  </div>
+const ACTIVITY_CONFIG = {
+  [PageActivityDto.type.CLAIM]: { label: 'Claimed', cssType: 'claimed', cssAmount: 'reward', addrLabel: 'To' },
+  [PageActivityDto.type.DELEGATION]: { label: 'Delegated', cssType: 'delegated', cssAmount: 'delegation', addrLabel: 'By' },
 }
 
-const DelegationCard = ({ delegation }: { delegation: DelegationDto }) => {
-  const logo = CHAIN_LOGO[delegation.chain]
-  const symbol = C.CHAIN_SYMBOL[delegation.chain]
-  const txUrl = chainToTransactionUrl(delegation.chain, delegation.protocol, delegation.transaction)
-  const addrUrl = chainToAddressUrl(delegation.chain, delegation.protocol, delegation.delegator)
-  const diff = Formatter.number(delegation.delegated)
+const ActivityCard = ({ activity }: { activity: PageActivityDto }) => {
+  const config = ACTIVITY_CONFIG[activity.type]
+  const logo = CHAIN_LOGO[activity.chain]
+  const symbol = C.CHAIN_SYMBOL[activity.chain]
+  const txUrl = chainToTransactionUrl(activity.chain, activity.protocol, activity.transaction)
+  const addrUrl = chainToAddressUrl(activity.chain, activity.protocol, activity.delegator)
 
   return <div className="activity-card">
     <div className="activity-card-top">
       <img src={logo} width={28} alt={symbol} />
-      <span className="activity-protocol">{C.PROTOCOL_NAME[delegation.protocol]}</span>
-      <span className="activity-type delegated">Delegated</span>
+      <span className="activity-protocol">{C.PROTOCOL_NAME[activity.protocol]}</span>
+      <span className={`activity-type ${config.cssType}`}>{config.label}</span>
     </div>
-    <div className="activity-amount delegation">
-      <Diff diff={diff} unit={symbol} />
+    <div className={`activity-amount ${config.cssAmount}`}>
+      <Diff diff={Formatter.number(activity.amount)} /> <span className="activity-symbol">{symbol}</span>
     </div>
     <div className="activity-details">
       <div className="activity-row">
         <span className="activity-label">Tx</span>
-        <HashLink address={delegation.transaction} url={txUrl} length={6} copy={false} />
+        <HashLink address={activity.transaction} url={txUrl} length={6} copy={false} />
       </div>
       <div className="activity-row">
-        <span className="activity-label">By</span>
-        <HashLink address={delegation.delegator} url={addrUrl} length={6} copy={false} />
+        <span className="activity-label">{config.addrLabel}</span>
+        <HashLink address={activity.delegator} url={addrUrl} length={6} copy={false} />
       </div>
     </div>
-    <div className="activity-time">{Formatter.relativeDate(delegation.timestamp)}</div>
+    <div className="activity-time">{Formatter.relativeDate(activity.timestamp)}</div>
   </div>
 }
 

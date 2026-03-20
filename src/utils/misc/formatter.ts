@@ -3,6 +3,13 @@ import { NUMBER_DISPLAY_LENGTH } from "~/constants"
 
 type intish = bigint | number | string
 
+const UNITS: [number, string][] = [
+  [86400_000, 'day'],
+  [3600_000, 'hour'],
+  [60_000, 'minute'],
+  [1000, 'second'],
+]
+
 export namespace Formatter {
 
   export function percent(value: number, length: number = 0): string {
@@ -95,47 +102,24 @@ export namespace Formatter {
       + ', ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })
   }
 
-  export function relativeDate(unix: number): string {
-    const now = new Date(Date.now())
-    const thn = new Date(unix * 1000)
-    const dif = now.getTime() - thn.getTime()
+  export function relativeDate(unix: number, n = 1): string {
+    let dif = Date.now() - unix * 1000
+    const parts: string[] = []
 
-    let ret = ''
-    if (dif < 60_000) {
-      const seconds = number(dif / 1000, 1)
-      ret = `${seconds} second`
-    } else if (dif < 3600_000) {
-      const minutes = number(dif / 60_000, 1)
-      ret = `${minutes} minute`
-    } else if (dif < 86400_000) {
-      const hours = number(dif / 3600_000, 1)
-      ret = `${hours} hour`
-    } else {
-      const days = number(dif / 86400_000, 1)
-      ret = `${days} day`
+    for (const [ms, label] of UNITS) {
+      if (parts.length >= n) break
+      const count = Math.floor(dif / ms)
+      if (count > 0) {
+        parts.push(`${count} ${label}${count != 1 ? 's' : ''}`)
+        dif -= count * ms
+      }
     }
 
-    const plural = parseInt(ret) != 1
-    return ret + (plural ? 's' : '') + ' ago'
+    return (parts.length > 0 ? parts.join(' ') : '0 seconds') + ' ago'
   }
 
   export function days(unix: number): string {
     return number(unix / 86400, 1) + ' days'
-  }
-
-  export function duration(ms: number): string {
-    if (ms <= 0) return "0s"
-    const s = Math.floor(ms / 1000)
-    const d = Math.floor(s / 86400)
-    const h = Math.floor((s % 86400) / 3600)
-    const m = Math.floor((s % 3600) / 60)
-    const sec = s % 60
-    const parts: string[] = []
-    if (d) parts.push(`${d}d`)
-    if (h) parts.push(`${h}h`)
-    if (m) parts.push(`${m}m`)
-    if (sec || parts.length === 0) parts.push(`${sec}s`)
-    return parts.join(" ")
   }
 
   export function error(msg: string): string {

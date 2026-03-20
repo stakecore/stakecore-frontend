@@ -2,16 +2,21 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type RewardClaimDto = {
-    chain: RewardClaimDto.chain;
-    protocol: RewardClaimDto.protocol;
+export type PageActivityDto = {
+    type: PageActivityDto.type;
     delegatee: string;
-    recipient: string;
-    reward: string;
+    delegator: string;
+    amount: string;
     transaction: string;
     timestamp: number;
+    chain: PageActivityDto.chain;
+    protocol: PageActivityDto.protocol;
 };
-export namespace RewardClaimDto {
+export namespace PageActivityDto {
+    export enum type {
+        DELEGATION = 'delegation',
+        CLAIM = 'claim',
+    }
     export enum chain {
         '_0' = 0,
         '_1' = 1,

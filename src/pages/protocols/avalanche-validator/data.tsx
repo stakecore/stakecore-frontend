@@ -41,7 +41,7 @@ export namespace AvalancheValidatorDataAccess {
         data.validatorAvailableCapacity,
         `${minDelegated} to ${maxDelegated}`
       ),
-      lockup: checkRangeAvailable(14 * 3600, leftover, `14 to ${maxLockup}`)
+      lockup: checkRangeAvailable(14 * 86400, leftover, `14 to ${maxLockup}`)
     }
   }
 

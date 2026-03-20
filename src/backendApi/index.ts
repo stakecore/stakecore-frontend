@@ -20,7 +20,6 @@ export type { AvalancheDelegatorInfoDto } from './models/AvalancheDelegatorInfoD
 export type { AvalancheSubChainBalanceDto } from './models/AvalancheSubChainBalanceDto';
 export type { AvalancheValidatorInfoDto } from './models/AvalancheValidatorInfoDto';
 export { BalanceDto } from './models/BalanceDto';
-export { DelegationDto } from './models/DelegationDto';
 export type { FormDto } from './models/FormDto';
 export type { FspApyTimeSeries } from './models/FspApyTimeSeries';
 export type { FspApyTimeSeriesDto } from './models/FspApyTimeSeriesDto';
@@ -34,11 +33,11 @@ export type { FspPageDataDto } from './models/FspPageDataDto';
 export type { FspStatisticsDto } from './models/FspStatisticsDto';
 export type { FtsoSubmissionDataDto } from './models/FtsoSubmissionDataDto';
 export type { FtsoSubmissionTimeSeriesDto } from './models/FtsoSubmissionTimeSeriesDto';
+export { PageActivityDto } from './models/PageActivityDto';
 export type { PageStatsDto } from './models/PageStatsDto';
 export type { PageUserInfoDto } from './models/PageUserInfoDto';
 export type { PriceDto } from './models/PriceDto';
 export { ProjectDelegationDto } from './models/ProjectDelegationDto';
-export { RewardClaimDto } from './models/RewardClaimDto';
 
 export { AvalancheValidatorService } from './services/AvalancheValidatorService';
 export { FlareValidatorService } from './services/FlareValidatorService';
