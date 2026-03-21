@@ -162,6 +162,21 @@
   border-color: rgba(255, 255, 255, 0.2);
 }
 
+@keyframes slideInCard {
+  from {
+    opacity: 0;
+    transform: translateX(-40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+.activity-card-new {
+  animation: slideInCard 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 .activity-card-top {
   display: flex;
   align-items: center;

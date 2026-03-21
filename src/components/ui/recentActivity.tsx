@@ -1,4 +1,4 @@
-import { useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { SpinnerCircular } from "spinners-react"
 import { ApiResponseDto_PageStatsDto, PageActivityDto } from "~/backendApi"
 import { Formatter } from "~/utils/misc/formatter"
@@ -44,15 +44,50 @@ function chainToAddressUrl(chain: number, protocol: number, address: string): st
   }
 }
 
+function itemKey(item: PageActivityDto): string {
+  return `${item.type}-${item.transaction}`
+}
+
 const RecentActivity = ({ data, isLoading }: {
   data: ApiResponseDto_PageStatsDto, isLoading: boolean, error: string
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null)
+  const knownKeysRef = useRef<Set<string> | null>(null)
+  const [newKeys, setNewKeys] = useState<Set<string>>(new Set())
 
   let items: PageActivityDto[] | null = null
   if (data?.data != null) {
     items = [...(data.data.activity ?? [])].sort((a, b) => b.timestamp - a.timestamp)
-  } else if (isLoading) {
+  }
+
+  useEffect(() => {
+    if (!items) return
+    const currentKeys = new Set(items.map(itemKey))
+
+    if (knownKeysRef.current !== null) {
+      const added = new Set<string>()
+      for (const key of currentKeys) {
+        if (!knownKeysRef.current.has(key)) added.add(key)
+      }
+      if (added.size > 0) {
+        setNewKeys(added)
+        // Clear animation class after animation ends
+        const timer = setTimeout(() => setNewKeys(new Set()), 600)
+        return () => clearTimeout(timer)
+      }
+    }
+
+    knownKeysRef.current = currentKeys
+  }, [items])
+
+  // Also update known keys when newKeys clears (after animation)
+  useEffect(() => {
+    if (newKeys.size === 0 && items) {
+      knownKeysRef.current = new Set(items.map(itemKey))
+    }
+  }, [newKeys, items])
+
+  if (!items && isLoading) {
     return <div style={{ textAlign: 'center' }}>
       <SpinnerCircular color={C.PAGE_COLOR_CODE} size={40} />
     </div>
@@ -76,7 +111,11 @@ const RecentActivity = ({ data, isLoading }: {
     </div>
     <div className="activity-carousel" ref={scrollRef}>
       {items.map((item, i) =>
-        <ActivityCard key={`${item.type}-${item.transaction}-${i}`} activity={item} />
+        <ActivityCard
+          key={`${itemKey(item)}-${i}`}
+          activity={item}
+          isNew={newKeys.has(itemKey(item))}
+        />
       )}
     </div>
   </>
@@ -87,14 +126,14 @@ const ACTIVITY_CONFIG = {
   [PageActivityDto.type.DELEGATION]: { label: 'Delegated', cssType: 'delegated', cssAmount: 'delegation', addrLabel: 'By' },
 }
 
-const ActivityCard = ({ activity }: { activity: PageActivityDto }) => {
+const ActivityCard = ({ activity, isNew }: { activity: PageActivityDto, isNew?: boolean }) => {
   const config = ACTIVITY_CONFIG[activity.type]
   const logo = CHAIN_LOGO[activity.chain]
   const symbol = C.CHAIN_SYMBOL[activity.chain]
   const txUrl = chainToTransactionUrl(activity.chain, activity.protocol, activity.transaction)
   const addrUrl = chainToAddressUrl(activity.chain, activity.protocol, activity.delegator)
 
-  return <div className="activity-card">
+  return <div className={`activity-card${isNew ? ' activity-card-new' : ''}`}>
     <div className="activity-card-top">
       <img src={logo} width={28} alt={symbol} />
       <span className="activity-protocol">{C.PROTOCOL_NAME[activity.protocol]}</span>
