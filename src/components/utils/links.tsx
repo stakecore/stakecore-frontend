@@ -1,16 +1,19 @@
-import { RiFileCopyLine } from '@remixicon/react'
+import { useState } from 'react'
+import { RiCheckLine, RiFileCopyLine } from '@remixicon/react'
 import { Link } from 'react-router-dom'
-import { toast } from 'react-toastify'
 import { Formatter } from '~/utils/misc/formatter'
 
 
 export const CopyPasteButton = ({ text }) => {
+  const [copied, setCopied] = useState(false)
+
   return <Link onClick={(event) => {
     event.preventDefault()
     navigator.clipboard.writeText(text)
-    toast.success(`copied "${text}" to cipboard`)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
   }} to="javascript(0);" >
-    <RiFileCopyLine size={16} />
+    {copied ? <RiCheckLine size={16} color="var(--bs-success)" /> : <RiFileCopyLine size={16} />}
   </Link>
 }
 
