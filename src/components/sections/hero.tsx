@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { RiGithubLine, RiTwitterXLine } from '@remixicon/react'
+import { RiGithubLine, RiSendPlaneLine, RiTwitterXLine } from '@remixicon/react'
 import useSWR from 'swr'
 import { LandingPageService } from '~/backendApi'
 import profile from "../../assets/images/about/profile.svg"
@@ -50,9 +50,8 @@ const Hero = () => {
                 </p>
                 <div className="about-social text-center">
                   <ul>
-                    {/* <li><Link to=""><RiFacebookCircleFill size={20} /></Link></li> */}
                     <li><Link target="_blank" to="https://x.com/stake_core"><RiTwitterXLine size={20} /></Link></li>
-                    {/* <li><Link to=""><RiLinkedinFill size={20} /></Link></li> */}
+                    <li><Link target="_blank" to="https://t.me/+xZoChBQyyCo3OGY0"><RiSendPlaneLine size={20} /></Link></li>
                     <li><Link target="_blank" to="https://github.com/stakecore"><RiGithubLine size={20} /></Link></li>
                   </ul>
                 </div>
