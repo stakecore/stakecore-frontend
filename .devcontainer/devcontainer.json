@@ -19,7 +19,8 @@
                 "ms-azuretools.vscode-docker",
                 "christian-kohler.path-intellisense",
                 "wayou.vscode-todo-highlight",
-                "pkief.material-icon-theme"
+                "pkief.material-icon-theme",
+                "anthropic.claude-code"
             ],
             "settings": {
                 "[typescript]": {
@@ -29,20 +30,8 @@
                 "editor.insertSpaces": true,
                 "editor.detectIndentation": false,
                 "files.trimFinalNewlines": true,
-                "files.trimTrailingWhitespace": true,
-                "yaml.customTags": [
-                    "!reference sequence"
-                ]
+                "files.trimTrailingWhitespace": true
             }
         }
     }
-
-	// Features to add to the dev container. More info: https://containers.dev/features.
-	// "features": {},
-
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
-
-	// Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "devcontainer"
 }
