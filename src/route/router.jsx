@@ -1,16 +1,15 @@
-import { lazy } from "react";
 import { createHashRouter } from "react-router-dom";
 import RootLayout from "../layout/root";
 import Home from "../pages/home";
-import Lazy from "./lazy";
+import Lazy, { lazyWithReload } from "./lazy";
 
-const Contact = lazy(() => import("../pages/contact"));
-const About = lazy(() => import("../pages/about"));
-const Protocols = lazy(() => import("../pages/protocols"));
-const AvalancheValidatorProject = lazy(() => import("../pages/protocols/avalanche-validator/page"));
-const FlareValidatorProject = lazy(() => import("../pages/protocols/flare-validator/page"));
-const FlareFspProject = lazy(() => import("../pages/protocols/flare-fsp/page"));
-const SongbirdFspProject = lazy(() => import("../pages/protocols/songbird-fsp/page"));
+const Contact = lazyWithReload(() => import("../pages/contact"));
+const About = lazyWithReload(() => import("../pages/about"));
+const Protocols = lazyWithReload(() => import("../pages/protocols"));
+const AvalancheValidatorProject = lazyWithReload(() => import("../pages/protocols/avalanche-validator/page"));
+const FlareValidatorProject = lazyWithReload(() => import("../pages/protocols/flare-validator/page"));
+const FlareFspProject = lazyWithReload(() => import("../pages/protocols/flare-fsp/page"));
+const SongbirdFspProject = lazyWithReload(() => import("../pages/protocols/songbird-fsp/page"));
 
 
 export const router = createHashRouter([
