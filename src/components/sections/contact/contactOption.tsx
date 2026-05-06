@@ -1,4 +1,4 @@
-import { RiMailLine, RiMapPinLine, RiPhoneLine } from '@remixicon/react'
+import { RiMapPinLine, RiSendPlaneLine } from '@remixicon/react'
 import SlideUp from '../../../utils/animations/slideUp'
 
 const ContactOption = () => {
@@ -18,19 +18,14 @@ const ContactOption = () => {
                     <SlideUp delay={3}>
                         <div className="single-contact wow fadeInUp" data-wow-delay=".4s">
                             <div className="contact-icon">
-                                <i> <RiPhoneLine size={20} /></i>
+                                <i> <RiSendPlaneLine size={20} /></i>
                             </div>
-                            <h2>contact number:</h2>
-                            <p>+38640111887</p>
-                        </div>
-                    </SlideUp>
-                    <SlideUp delay={4}>
-                        <div className="single-contact wow fadeInUp" data-wow-delay=".6s">
-                            <div className="contact-icon">
-                                <i> <RiMailLine size={20} /></i>
-                            </div>
-                            <h2>Email us:</h2>
-                            <p>stakecore23@gmail.com</p>
+                            <h2>telegram channel:</h2>
+                            <p>
+                                <a href="https://t.me/+xZoChBQyyCo3OGY0" target="_blank" rel="noreferrer">
+                                    t.me/+xZoChBQyyCo3OGY0
+                                </a>
+                            </p>
                         </div>
                     </SlideUp>
                 </div>
