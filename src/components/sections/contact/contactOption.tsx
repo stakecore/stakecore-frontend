@@ -23,7 +23,7 @@ const ContactOption = () => {
                             <h2>telegram channel:</h2>
                             <p>
                                 <a href="https://t.me/+xZoChBQyyCo3OGY0" target="_blank" rel="noreferrer">
-                                    t.me/+xZoChBQyyCo3OGY0
+                                    t.me/stakecore
                                 </a>
                             </p>
                         </div>
