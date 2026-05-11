@@ -40,14 +40,14 @@ const Hero = () => {
       <div className="container">
         <div className="row">
           {/* <!-- START ABOUT IMAGE DESIGN AREA --> */}
-          <div className="col-lg-4">
+          <div className="col-xl-4">
             <SlideUp>
               <div className="about-image-part">
-                <img src={profile} alt="StakeCore" style={{ width: 215 }} />
-                <h2 style={{ marginTop: 20, marginBottom: 0, letterSpacing: '0.15em', textTransform: 'uppercase', fontSize: 32 }}>
+                <img src={profile} alt="StakeCore" style={{ width: 170 }} />
+                <h2 style={{ marginTop: 12, marginBottom: 0, letterSpacing: '0.15em', textTransform: 'uppercase', fontSize: 30 }}>
                   StakeCore
                 </h2>
-                <p style={{ marginTop: 30, marginBottom: 40 }}>
+                <p style={{ marginTop: 20, marginBottom: 20 }}>
                   Infrastructure provider for core crypto protocols on Flare, Avalanche, and Songbird.
                   Provide security by delegating your dormant tokens to us and earn RISK-FREE yield in return!
                 </p>
@@ -63,7 +63,7 @@ const Hero = () => {
           </div>
           {/* <!-- / END ABOUT IMAGE DESIGN AREA -->
           <!-- START ABOUT TEXT DESIGN AREA --> */}
-          <div className="col-lg-8">
+          <div className="col-xl-8">
             {component}
           </div>
           {/* <!-- / END ABOUT TEXT DESIGN AREA --> */}

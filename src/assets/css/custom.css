@@ -306,3 +306,33 @@
   color: rgba(255, 255, 255, 0.6);
   margin-bottom: 22px;
 }
+
+/* HERO: equalize left and right column heights at xl+ breakpoints.
+   Below 1200px the columns stack (col-xl-*), so no height matching is needed.
+   At xl and above, the right column's two stacked cards anchor the height
+   and the left .about-image-part stretches via flex to match. The left card's
+   natural content is intentionally kept shorter than the right's combined
+   height so this stretch direction holds at every side-by-side width. */
+@media (min-width: 1200px) {
+  .about-area .col-xl-4 {
+    display: flex;
+    flex-direction: column;
+  }
+  .about-area .col-xl-4 > div:first-child {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .about-area .about-image-part {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .about-area .about-image-part > img {
+    align-self: center;
+  }
+  .about-area .about-image-part .about-social {
+    margin-top: 20px;
+  }
+}
