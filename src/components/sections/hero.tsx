@@ -43,7 +43,10 @@ const Hero = () => {
           <div className="col-lg-4">
             <SlideUp>
               <div className="about-image-part">
-                <img src={profile} alt="About Us" />
+                <img src={profile} alt="StakeCore" style={{ width: 215 }} />
+                <h2 style={{ marginTop: 20, marginBottom: 0, letterSpacing: '0.15em', textTransform: 'uppercase', fontSize: 32 }}>
+                  StakeCore
+                </h2>
                 <p style={{ marginTop: 30, marginBottom: 40 }}>
                   Infrastructure provider for core crypto protocols on Flare, Avalanche, and Songbird.
                   Provide security by delegating your dormant tokens to us and earn RISK-FREE yield in return!
