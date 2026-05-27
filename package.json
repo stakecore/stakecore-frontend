@@ -61,6 +61,7 @@
     "vite": "^7.3.2"
   },
   "resolutions": {
-    "handlebars": "^4.7.9"
+    "handlebars": "^4.7.9",
+    "rollup": "^4.59.0"
   }
 }
