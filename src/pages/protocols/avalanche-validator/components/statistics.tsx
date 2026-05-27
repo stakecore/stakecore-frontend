@@ -14,7 +14,7 @@ const AvalancheValidatorStatisticsComponent = ({ config }: { config: IGraphics }
   }), [startTimeMs, endTimeMs])
 
   return (
-    <div className="single-project-page-right wow fadeInUp delay-0-4s mt-30">
+    <div className="single-project-page-right mt-30">
       <div className="mb-40">
         <EpochProgress period={validatorPeriod} color="FireBrick" />
       </div>

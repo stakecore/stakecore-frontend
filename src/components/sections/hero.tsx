@@ -1,77 +1,94 @@
-import { Link } from 'react-router-dom'
-import { RiGithubLine, RiSendPlaneLine, RiTwitterXLine } from '@remixicon/react'
 import useSWR from 'swr'
 import { LandingPageService } from '~/backendApi'
-import profile from "../../assets/images/about/profile.svg"
-import SlideUp from '../../utils/animations/slideUp'
+import profile from '../../assets/images/about/profile.svg'
 import ServerError from '../ui/serverError'
-import DelegationSummary from '../ui/delegationSummary'
 import RecentActivity from '../ui/recentActivity'
+import { Diff } from '../pages/diff'
+import { Formatter } from '~/utils/misc/formatter'
 import { REFRESH_QUERY_SLOW_MS } from '~/constants'
 import './hero.scss'
 
 
+type HeroStats = {
+  delegated: string
+  delegators: string
+  delegatedDiff: string
+  delegatorDiff: string
+}
+
 const Hero = () => {
-  const { data, isLoading, error } = useSWR(['page-info'], async (_) => {
+  const { data, isLoading, error } = useSWR(['page-info'], async () => {
     const resp = await LandingPageService.pageControllerGetPageInfo()
     if (resp?.data == null) throw new Error(resp.error)
     return resp
   }, { refreshInterval: REFRESH_QUERY_SLOW_MS })
 
-  let component = null
-  if (!isLoading && data == null) {
-    component = <div className="about-content-part">
-      <ServerError status={500} message={error} />
-    </div>
-  } else {
-    component = <>
-      <SlideUp>
-        <DelegationSummary data={data} isLoading={isLoading} error={error} />
-      </SlideUp>
-      <SlideUp>
-        <div className="about-content-part-bottom">
-          <RecentActivity data={data} isLoading={isLoading} error={error} />
-        </div>
-      </SlideUp>
-    </>
+  let stats: HeroStats | null = null
+  if (data?.data != null) {
+    const d0 = data.data.historicDelegations.reduce((x, y) => x + y.delegatedUsd, 0)
+    const d1 = data.data.delegated.reduce((x, y) => x + y.delegatedUsd, 0)
+    const u0 = data.data.historicDelegations.reduce((x, y) => x + y.delegators, 0)
+    const u1 = data.data.delegated.reduce((x, y) => x + y.delegators, 0)
+    stats = {
+      delegated: Formatter.number(d1),
+      delegators: Formatter.number(u1),
+      delegatedDiff: Formatter.percent(d0 > 0 ? d1 / d0 - 1 : 0),
+      delegatorDiff: Formatter.percent(u0 > 0 ? u1 / u0 - 1 : 0),
+    }
   }
 
+  const hasError = !isLoading && data == null
+
   return (
-    <section id="about" className="about-area">
+    <section className="hero">
+      <img src={profile} alt="" className="hero-watermark" aria-hidden />
       <div className="container">
-        <div className="row">
-          {/* <!-- START ABOUT IMAGE DESIGN AREA --> */}
-          <div className="col-xl-4">
-            <SlideUp>
-              <div className="about-image-part">
-                <img src={profile} alt="StakeCore" style={{ width: 170 }} />
-                <h2 style={{ marginTop: 12, marginBottom: 0, letterSpacing: '0.15em', textTransform: 'uppercase', fontSize: 30 }}>
-                  StakeCore
-                </h2>
-                <p style={{ marginTop: 20, marginBottom: 20 }}>
-                  Infrastructure provider for core crypto protocols on Flare, Avalanche, and Songbird.
-                  Provide security by delegating your dormant tokens to us and earn RISK-FREE yield in return!
-                </p>
-                <div className="about-social text-center">
-                  <ul>
-                    <li><Link target="_blank" to="https://x.com/stake_core"><RiTwitterXLine size={20} /></Link></li>
-                    <li><Link target="_blank" to="https://t.me/+xZoChBQyyCo3OGY0"><RiSendPlaneLine size={20} /></Link></li>
-                    <li><Link target="_blank" to="https://github.com/stakecore"><RiGithubLine size={20} /></Link></li>
-                  </ul>
-                </div>
-              </div>
-            </SlideUp>
+        <header className="hero-brand">
+          <h1 className="hero-wordmark">Stakecore</h1>
+          <p className="hero-tagline">
+            Validator infrastructure for Flare, Songbird, and Avalanche
+          </p>
+        </header>
+
+        {hasError ? (
+          <div className="hero-error">
+            <ServerError status={500} message={error} />
           </div>
-          {/* <!-- / END ABOUT IMAGE DESIGN AREA -->
-          <!-- START ABOUT TEXT DESIGN AREA --> */}
-          <div className="col-xl-8">
-            {component}
-          </div>
-          {/* <!-- / END ABOUT TEXT DESIGN AREA --> */}
-        </div>
+        ) : (
+          <>
+            <div className="hero-stats">
+              <Stat label="Total Delegated" prefix="$" value={stats?.delegated} diff={stats?.delegatedDiff} />
+              <Stat label="Delegators" value={stats?.delegators} diff={stats?.delegatorDiff} />
+            </div>
+
+            <div className="hero-activity">
+              <RecentActivity data={data} isLoading={isLoading} error={error} />
+            </div>
+          </>
+        )}
       </div>
     </section>
   )
 }
+
+const Stat = ({ label, value, diff, prefix }: {
+  label: string
+  value?: string
+  diff?: string
+  prefix?: string
+}) => (
+  <div className="hero-stat">
+    <div className="hero-stat-label">{label}</div>
+    <div className="hero-stat-value">
+      {prefix && <span className="hero-stat-affix">{prefix}</span>}
+      <span className="hero-stat-number">{value ?? '—'}</span>
+    </div>
+    {diff && (
+      <div className="hero-stat-diff">
+        <Diff diff={diff} unit="24h" pill />
+      </div>
+    )}
+  </div>
+)
 
 export default Hero

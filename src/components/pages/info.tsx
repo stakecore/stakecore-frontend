@@ -1,5 +1,4 @@
 import React from "react"
-import SlideUp from '../../utils/animations/slideUp'
 import SpecsTooltip from "./tooltip"
 import { symbolToChain } from "~/utils/misc/translations"
 import type { ISpecs } from "../types"
@@ -11,18 +10,14 @@ const InfoComponent = ({ summary, specs }) => {
   return <>
     <div className="row">
       <div className="col-lg-3">
-        <SlideUp>
-          <div className='single-project-page-left wow fadeInUp delay-0-2s'>
-            <ProjectInfoSummary {...summary} />
-          </div>
-        </SlideUp>
+        <div className='single-project-page-left'>
+          <ProjectInfoSummary {...summary} />
+        </div>
       </div>
       <div className="col-lg-9">
-        <SlideUp>
-          <div className='single-project-page-right wow fadeInUp delay-0-4s'>
-            <Specs config={specs} />
-          </div>
-        </SlideUp>
+        <div className='single-project-page-right'>
+          <Specs config={specs} />
+        </div>
       </div>
     </div>
   </>

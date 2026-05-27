@@ -1,10 +1,8 @@
 export const ServerError = ({ status, message }) => {
-  return <div className='error-container'>
-    <div id="error">SERVER ERROR</div>
-    <div className="error-num">{ status }
-      <div className="error-num__clip">{ status }</div>
-    </div>
-    <p id="desc">Server failed to return data due to: "{ String(message) }"</p>
+  return <div className="error-container">
+    <div className="error-status">{status}</div>
+    <div className="error-label">Server error</div>
+    <p className="error-desc">{String(message ?? 'The request failed.')}</p>
   </div>
 }
 

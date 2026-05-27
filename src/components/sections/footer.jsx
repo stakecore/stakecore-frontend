@@ -5,25 +5,19 @@ const Footer = () => {
     const year = new Date().getFullYear()
     return (
         <footer className="main-footer">
-            <div className="footer-bottom pt-50 pb-40">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-lg-6">
-                            <div className="copyright-text">
-                                <p>
-                                    Copyright @{year}, <Link to="/">stakecore</Link> All
-                                    Rights Reserved.
-                                </p>
-                            </div>
-                        </div>
-                        <div className="col-lg-6">
-                            <div className="copyright-text extra-copyright">
-                                <p>
-                                    Crafted with ❤️ theme_ocean
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+            <div className="container">
+                <p className="footer-risk">
+                    <span className="footer-risk-label">Risk warning.</span>{' '}
+                    Crypto-assets are highly volatile. Staking involves significant risks
+                    and may result in partial or total loss of your assets, including
+                    through validator slashing, network failures, or protocol changes.
+                    Nothing on this site constitutes investment, legal, tax, or financial
+                    advice. Crypto-assets are largely unregulated and are not covered by
+                    deposit guarantee or investor compensation schemes.
+                </p>
+                <div className="footer-meta">
+                    <Link to="/" className="footer-mark">Stakecore</Link>
+                    <span className="footer-copy">© {year} Stakecore. All rights reserved.</span>
                 </div>
             </div>
         </footer>

@@ -2,111 +2,141 @@
 
 // Contact page styles, co-located with contact.jsx (the route entry)
 // and its children contactForm.tsx / contactOption.tsx.
-//
-// Mobile-first: defaults target small phones; form gets a top margin
-// when the option block stacks above it (< lg). The .contact-area
-// padding has a tablet-only zero band that the original template
-// applied — preserved as a literal band query because it's neither
-// monotonic nor canonical.
 
 .contact-area {
-    padding-top: 15px;
-    padding-bottom: 15px;
+    padding: 32px 0;
+}
+
+.contact-header {
+    margin-bottom: 32px;
+    max-width: 720px;
+}
+
+.contact-header-sup {
+    font-family: var(--font-sans);
+    font-size: t.$text-xs;
+    font-weight: t.$weight-medium;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--main-color);
+    margin: 0 0 12px;
+}
+
+.contact-header-main {
+    font-family: t.$font-display;
+    font-size: 36px;
+    font-weight: t.$weight-extrabold;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    color: var(--heading-color);
+    margin: 0;
+
+    @include t.up(md) { font-size: 56px; }
+    @include t.up(lg) { font-size: 72px; }
 }
 
 .contact-content-part {
-    padding: 50px 30px 20px 40px;
-    border-radius: 10px;
-    border: 1px solid var(--border-color);
+    padding: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.02);
 }
 
 .contact-icon {
-    padding-bottom: 1px;
+    margin-bottom: 8px;
 
     i {
-        font-size: 20px;
-        color: var(--primary-color);
+        display: inline-flex;
+        font-size: 18px;
+        color: var(--main-color);
     }
 }
 
 .single-contact {
     padding-bottom: 20px;
 
+    &:last-child { padding-bottom: 0; }
+
     h2 {
-        font-size: 16px;
-        margin-top: 5px;
-        margin-bottom: 5px;
-        text-transform: capitalize;
-        font-weight: 500;
-        color: var(--subtitle-color);
-        transition: 0.3s;
+        font-family: var(--font-sans);
+        font-size: t.$text-xs;
+        font-weight: t.$weight-medium;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin: 0 0 6px;
+        color: var(--main-color);
+    }
+
+    p {
+        font-family: var(--font-sans);
+        font-size: t.$text-base;
+        color: var(--heading-color);
+        margin: 0;
+    }
+
+    p a {
+        color: var(--heading-color);
+        transition: color 150ms ease-out;
+
+        &:hover { color: var(--main-color); }
     }
 }
 
 .contact-form-area {
-    padding: 40px;
-    margin-top: 30px;
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
+    padding: 24px;
+    margin-top: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.02);
 
     .form-group {
-        margin-bottom: 32px;
+        margin-bottom: 20px;
+        position: relative;
 
         .for-icon {
-            right: 26px;
-            font-size: 16px;
-            margin-bottom: 0;
-            position: absolute;
-            margin-top: -45px;
-            color: #000;
+            display: none;
         }
 
         .form-control {
-            font-size: 16px;
-            color: #000;
-            font-weight: 400;
-            line-height: 1.3;
-            padding: 19px 20px;
-            background: #f9f9f9;
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
+            font-family: var(--font-sans);
+            font-size: t.$text-base;
+            color: var(--heading-color);
+            font-weight: t.$weight-regular;
+            line-height: 1.4;
+            padding: 12px 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: border-color 150ms ease-out, background-color 150ms ease-out;
+
+            &::placeholder { color: var(--heading-color); }
 
             &:focus {
                 box-shadow: none;
-                background: #f9f9f9;
-                border-color: var(--border-color);
+                background: rgba(255, 255, 255, 0.04);
+                border-color: rgba(255, 255, 255, 0.25);
             }
         }
 
         label {
-            font-size: 16px;
+            font-family: var(--font-sans);
+            font-size: t.$text-xs;
+            font-weight: t.$weight-medium;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
             color: var(--main-color);
-            font-weight: 500;
-            margin-bottom: 18px;
+            margin-bottom: 8px;
         }
     }
 }
 
 .has-error .help-block.with-errors {
-    margin-top: 5px;
-    color: red;
+    margin-top: 6px;
+    font-size: t.$text-xs;
+    color: #ff3e55;
 }
 
 #msgSubmit.h4 {
-    font-size: 20px;
-    margin-bottom: 0;
-    margin-top: 10px;
+    font-size: t.$text-base;
+    margin: 8px 0 0;
 }
-
-// Tablet (768..991): the template zeroes .contact-area vertical padding.
-@media (min-width: 768px) and (max-width: 991.98px) {
-    .contact-area {
-        padding-top: 0;
-        padding-bottom: 0;
-    }
-}
-
-// === lg (992+): side-by-side layout, drop the stacked-form margin ===
 
 @include t.up(lg) {
     .contact-form-area { margin-top: 0; }

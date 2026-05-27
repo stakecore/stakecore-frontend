@@ -6,19 +6,13 @@ const Contact = () => {
   return (
     <section id="contact" className="contact-area innerpage-single-area">
       <div className="container">
-        <div className="container-inner">
-          <div className="row">
-            <div className="col-xl-12 col-lg-12">
-              <div className="section-title text-center wow fadeInUp delay-0-2s">
-                <p>contact</p>
-                <h2>Get in Touch with Us!</h2>
-              </div>
-            </div>
-          </div>
-          <div className="row">
-            <ContactOption />
-            <ContactForm />
-          </div>
+        <header className="contact-header">
+          <p className="contact-header-sup">Contact</p>
+          <h1 className="contact-header-main">Get in touch</h1>
+        </header>
+        <div className="row">
+          <ContactOption />
+          <ContactForm />
         </div>
       </div>
     </section>

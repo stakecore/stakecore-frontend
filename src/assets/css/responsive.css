@@ -1,95 +1,23 @@
 /*
- * Responsive overrides for shared primitives that still live in style.css
- * (.section-title, .about-content-part, .innerpage-single-area, .row).
- *
- * Component-scoped rules previously here have all migrated to their
- * matching *.scss files (header, footer, hero, portfolio, protocols,
- * callToAction, contact, proposal, about). Mobile-first canonical
- * breakpoints from _tokens.scss are used in those files; this file
- * uses literal media queries because it stays plain CSS.
+ * Responsive overrides for shared primitives that still live in style.css.
+ * Component-scoped rules live in their matching *.scss files.
  */
 
-/* Bootstrap row gutter override applied to all .row instances. */
+/* Bootstrap row gutter applied to all .row instances. */
 .row {
     --bs-gutter-x: 30px;
 }
 
-/* === Mobile defaults (< 992) ===
- * .section-title compresses; .about-content-part headline shrinks;
- * inner page top padding tightens. */
-
-.section-title {
-    margin-bottom: 30px;
-}
-
-.section-title h2 {
-    font-size: 30px;
-}
-
-.section-title p {
-    margin-bottom: 0;
-    padding: 0;
-}
-
-.about-content-part {
-    margin-top: 30px;
-}
-
-.about-content-part h2 {
-    font-size: 30px;
-    line-height: 40px;
-    margin-bottom: 20px;
-    margin-top: 30px;
-}
-
+/* .innerpage-single-area: top padding scales up at desktop so inner pages
+ * (about, contact, /protocols) clear the fixed header by a comfortable
+ * margin. Used by 3 routes; the literal value covers header + breathing
+ * room across breakpoints. */
 .innerpage-single-area {
     padding-top: 60px !important;
 }
 
-/* === md (768+): tablet h2 grows back. === */
-
-@media (min-width: 768px) {
-    .about-content-part {
-        margin-top: 0;
-    }
-
-    .about-content-part h2 {
-        font-size: 40px;
-        line-height: 54px;
-        margin-top: 0;
-    }
-}
-
-/* === lg (992+): full desktop variants. === */
-
 @media (min-width: 992px) {
-    .section-title {
-        margin-bottom: 40px;
-    }
-
-    .section-title h2 {
-        font-size: 50px;
-    }
-
-    .section-title p {
-        padding: 0 100px;
-    }
-
-    .about-content-part h2 {
-        line-height: 50px;
-    }
-
     .innerpage-single-area {
         padding-top: 115px !important;
-    }
-}
-
-/* === Wide desktop (>= 1281): wider section-title p padding.
- * Literal breakpoint preserved from template — canonical xxl (1400)
- * would shift this visibly in the 1281-1399 range. === */
-
-@media (min-width: 1281px) {
-    .section-title p {
-        padding: 0 300px;
     }
 }

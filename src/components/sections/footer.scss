@@ -1,28 +1,55 @@
 @use '../../assets/css/tokens' as t;
 
-// Footer styles, co-located with footer.jsx.
-// Mobile-first: by default the two copyright lines stack and centre;
-// at lg+ they become a two-column layout with the right column right-aligned.
+// Footer — risk warning above identity row.
+// Mobile-first: stacks; meta row goes side-by-side at md+.
 
-.footer-bottom {
-    .copyright-text {
-        color: var(--main-color);
-        font-size: 14px;
-        line-height: 20px;
-        font-weight: 500;
-        text-align: center;
-    }
+.main-footer {
+    padding: 48px 0 32px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    margin-top: 64px;
+}
 
-    .copyright-text a {
-        color: var(--primary-color);
+.footer-risk {
+    font-family: var(--font-sans);
+    font-size: t.$text-xs;
+    line-height: 1.6;
+    color: var(--main-color);
+    margin: 0 0 32px;
+    max-width: 880px;
+}
+
+.footer-risk-label {
+    color: var(--heading-color);
+    font-weight: t.$weight-medium;
+}
+
+.footer-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+
+    @include t.up(md) {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
     }
 }
 
-.extra-copyright p {
-    text-align: center;
+.footer-mark {
+    font-family: var(--font-sans);
+    font-size: t.$text-sm;
+    font-weight: t.$weight-semibold;
+    letter-spacing: -0.01em;
+    color: var(--heading-color);
 }
 
-@include t.up(lg) {
-    .footer-bottom .copyright-text { text-align: left; }
-    .extra-copyright p { text-align: right; }
+.footer-mark:hover { color: var(--heading-color); }
+
+.footer-copy {
+    font-family: var(--font-sans);
+    font-size: t.$text-xs;
+    color: var(--main-color);
 }

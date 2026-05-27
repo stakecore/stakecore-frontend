@@ -31,17 +31,17 @@ export const Eip6963 = () => {
   return ReactDOM.createPortal(
     <div className="wallet-container">
       <div className="wallet">
-        <h2>Your Wallets:</h2>
+        <h2>Connect a wallet</h2>
         <div className="provider">
           {
             walletProviders.length > 0 ? walletProviders.map((provider: EIP6963ProviderDetail) => (
-              <button key={provider.info.uuid} onClick={() => handleConnect(provider)} >
+              <button key={provider.info.uuid} onClick={() => handleConnect(provider)}>
                 <img src={provider.info.icon} alt={provider.info.name} />
-                <div>{provider.info.name}</div>
+                <span>{provider.info.name}</span>
               </button>
             )) :
-              <div>
-                You Have No Browser Wallets Installed
+              <div className="wallet-empty">
+                No browser wallets detected.
               </div>
           }
         </div>

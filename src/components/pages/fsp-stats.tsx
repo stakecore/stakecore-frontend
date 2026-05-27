@@ -89,7 +89,7 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
   const last = stats.submissions.result[stats.submissions.result.length - 1]
 
   const component = <>
-    <div className='single-project-page-right wow fadeInUp delay-0-4s mt-30'>
+    <div className='single-project-page-right mt-30'>
       <div className="row mb-30">
         <div className="col-lg-6">
           <EpochProgress period={epochPeriod} color="FireBrick" />

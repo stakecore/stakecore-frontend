@@ -5,9 +5,13 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 
 export default [
+  // Global ignores: a config block with only `ignores` applies to every file.
+  // Build artifacts and minified vendor output should never be linted.
+  { ignores: ['dist/**', 'node_modules/**', '**/*.min.js'] },
+
+  // Application source (browser + JSX).
   {
     files: ['**/*.{js,jsx}'],
-    ignores: ['dist'],
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
@@ -33,6 +37,15 @@ export default [
         'warn',
         { allowConstantExport: true },
       ],
+    },
+  },
+
+  // Node-environment config files (vite, postcss, etc.) — they need __dirname,
+  // process, module, require, etc., which aren't in the browser globals set.
+  {
+    files: ['vite.config.js', '*.config.js'],
+    languageOptions: {
+      globals: globals.node,
     },
   },
 ]

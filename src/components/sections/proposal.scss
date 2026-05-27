@@ -5,99 +5,133 @@
 // Rendered by CallToAction once a wallet is connected and the user
 // holds non-zero FLR / AVAX / SGB. Markup carries pricing-* class
 // names from the template.
-//
-// Mobile-first: defaults are the narrower-viewport variant; the
-// xl+ block restores the wider-desktop spacing and price size.
 
 .pricing-area {
-    padding-top: 15px;
-    padding-bottom: 15px;
+    padding: 32px 0;
+
+    @include t.up(md) { padding: 48px 0; }
+}
+
+.pricing-header-section {
+    margin-bottom: 32px;
+    max-width: 720px;
+}
+
+.pricing-header-sup {
+    font-family: var(--font-sans);
+    font-size: t.$text-xs;
+    font-weight: t.$weight-medium;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--main-color);
+    margin: 0 0 12px;
+}
+
+.pricing-header-main {
+    font-family: t.$font-display;
+    font-size: 28px;
+    font-weight: t.$weight-extrabold;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    color: var(--heading-color);
+    margin: 0;
+
+    @include t.up(md) { font-size: 40px; }
 }
 
 .pricing-item {
-    padding: 10px;
-    margin-bottom: 30px;
-    border-radius: 16px;
-    border: 1px solid var(--border-color);
+    padding: 0;
+    margin-bottom: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.02);
+    transition: border-color 150ms ease-out;
+
+    &:hover { border-color: rgba(255, 255, 255, 0.2); }
 
     .pricing-header {
-        padding: 20px 25px;
-        border-radius: 16px;
-        border: 1px solid var(--border-color);
+        padding: 24px;
+        border: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 
         .save-percent {
-            margin-bottom: 20px;
-            color: rgb(119, 119, 125);
-            font-size: 20px;
-            line-height: 27px;
+            font-family: var(--font-sans);
+            font-size: t.$text-xs;
+            font-weight: t.$weight-medium;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--main-color);
+            margin: 0 0 16px;
 
-            span { color: var(--primary-color); }
+            span { color: var(--heading-color); }
         }
 
         .price {
-            font-size: 40px;
-            font-weight: 500;
-            color: var(--primary-color);
-            font-family: "Poppins", sans-serif;
+            font-family: var(--font-sans);
+            font-variant-numeric: tabular-nums;
+            font-feature-settings: 'tnum';
+            font-size: 36px;
+            font-weight: t.$weight-semibold;
+            letter-spacing: -0.02em;
+            line-height: 1;
+            color: var(--heading-color);
 
             &:before { content: '$'; }
 
             &:after {
                 content: '/year';
-                font-size: 16px;
-                font-weight: 400;
+                font-family: var(--font-sans);
+                font-size: t.$text-sm;
+                font-weight: t.$weight-regular;
+                letter-spacing: 0;
                 color: var(--main-color);
+                margin-left: 6px;
             }
         }
     }
 
     .pricing-details {
-        padding: 20px 25px 0;
-
-        p { margin-bottom: 35px; }
+        padding: 20px 24px 24px;
 
         ul {
-            padding-bottom: 12px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
 
             li {
-                color: rgb(119, 119, 125);
+                font-family: var(--font-sans);
+                font-size: t.$text-sm;
+                color: var(--main-color);
                 margin-bottom: 10px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
 
-                i { padding-right: 10px; }
-
-                &.unable {
+                i {
+                    display: inline-flex;
+                    align-items: center;
                     color: var(--main-color);
-                    opacity: 0.35;
                 }
 
-                &.unable:before { color: white; }
+                a {
+                    color: var(--heading-color);
+                    transition: color 150ms ease-out;
+                }
+
+                a:hover { color: var(--main-color); }
+
+                &.unable {
+                    opacity: 0.4;
+                }
             }
         }
     }
 }
 
 .pricing-header h4.title {
-    margin: 12px 0;
-    color: var(--subtitle-color);
-    font-size: 22px;
-    line-height: 29px;
-    padding-bottom: 20px;
-}
-
-// Very narrow phones (< 376): tighten the price + list font sizes.
-@media (max-width: 375px) {
-    .pricing-item .pricing-header .price { font-size: 35px; }
-    .pricing-item .pricing-details ul li { font-size: 18px; }
-}
-
-// === xl (1200+): wider desktop card padding and slightly smaller price ===
-
-@include t.up(xl) {
-    .pricing-item {
-        .pricing-header { padding: 20px; }
-
-        .pricing-header .price { font-size: 38px; }
-
-        .pricing-details { padding: 20px 20px 0; }
-    }
+    font-family: var(--font-sans);
+    font-size: t.$text-lg;
+    font-weight: t.$weight-medium;
+    line-height: 1.3;
+    color: var(--heading-color);
+    margin: 0 0 12px;
 }

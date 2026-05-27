@@ -7,7 +7,7 @@ import { chainFromRoute, chainToChainId } from '../utils/misc/translations'
 import Header from '../components/sections/header'
 import Footer from '../components/sections/footer'
 import CallToAction from '../components/sections/callToAction'
-import Preloader, { PreloaderContent } from '../components/ui/preloader'
+import { PreloaderContent } from '../components/ui/preloader'
 import DiscoverWalletProviders from '../components/sections/eip6963'
 import { Tooltip } from 'react-tooltip'
 import { useEffect, useState } from 'react'
@@ -71,10 +71,10 @@ const RootLayout = () => {
 
   return (
     <>
-      <Preloader />
       <NavigationPreloader />
       <Header />
-      <div className='background' style={{ backgroundImage: `url("${image}")` }}>
+      <div className='background'>
+        {image && <div className='background-image' style={{ backgroundImage: `url("${image}")` }} />}
         <CookiesProvider>
           <Outlet />
           <CallToAction />

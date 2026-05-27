@@ -8,20 +8,43 @@
 // padding and h1 size scale up at md and lg.
 
 .single-project-page-design {
-    padding-top: 100px;
+    padding-top: 80px;
 
-    h1 { font-size: 30px; }
+    h1 { font-size: t.$text-2xl; }
 }
 
+.project-title {
+    padding-bottom: 32px;
+    max-width: 880px;
+}
+
+.project-title-sup {
+    font-family: var(--font-sans);
+    font-size: t.$text-xs;
+    font-weight: t.$weight-medium;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--main-color);
+    margin: 0 0 12px;
+}
+
+.project-title-main {
+    font-family: t.$font-display;
+    font-weight: t.$weight-extrabold;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    color: var(--heading-color);
+    margin: 0;
+}
+
+// Flat, hairline-bordered panels. Transparent surface so the chain-logo
+// fixed background image bleeds through, dimmed by the filter applied
+// in custom.css to .background-image.
 .single-project-page-left,
 .single-project-page-right {
-    padding: 40px;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    border-radius: 15px;
-    box-shadow:
-        rgba(255, 255, 255, 0.025) 0px 0.362176px 0.651917px -1px inset,
-        rgba(255, 255, 255, 0.036) 0px 3px 5.4px -2px inset;
-    background-color: #121214;
+    padding: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: transparent;
 }
 
 // InfoComponent puts a single-project-page-right card inside a col-lg-9
@@ -33,35 +56,55 @@
 // OfficialDelegate / Statistics / FspStats further down each page,
 // all of which carry their own .mt-30 utility class and would otherwise
 // have it overridden by this selector.
-.col-lg-9 .single-project-page-right { margin-top: 30px; }
+.col-lg-9 .single-project-page-right { margin-top: 24px; }
 
 .single-info {
-    padding-bottom: 30px;
+    padding-bottom: 24px;
 
     &:last-child { padding-bottom: 0; }
 
-    h3 { font-size: 20px; }
-    p { margin-bottom: 0; }
+    p {
+        font-family: var(--font-sans);
+        font-size: t.$text-xs;
+        font-weight: t.$weight-medium;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--main-color);
+        margin: 0 0 8px;
+    }
+
+    h3 {
+        font-family: var(--font-sans);
+        font-size: t.$text-lg;
+        font-weight: t.$weight-medium;
+        line-height: 1.2;
+        color: var(--heading-color);
+        margin: 0;
+        font-variant-numeric: tabular-nums;
+        font-feature-settings: 'tnum';
+    }
 }
 
 // === md (768+): tablet ===
 
 @include t.up(md) {
     .single-project-page-design {
-        padding-top: 120px;
+        padding-top: 96px;
 
-        h1 { font-size: 40px; }
+        h1 { font-size: 48px; }
     }
+
+    .single-project-page-left,
+    .single-project-page-right { padding: 32px; }
 }
 
 // === lg (992+): desktop ===
 
 @include t.up(lg) {
     .single-project-page-design {
-        padding-top: 200px;
+        padding-top: 144px;
 
-        // Restore the global h1 size (58px in style.css §01.GLOBAL).
-        h1 { font-size: 58px; }
+        h1 { font-size: t.$text-hero; }
     }
 
     .col-lg-9 .single-project-page-right { margin-top: 0; }

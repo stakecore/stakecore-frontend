@@ -1,15 +1,4 @@
-.image-like {
-  width: 100%;
-  aspect-ratio: 1920 / 800;
-  text-align: center;
-}
-
-.center {
-  position: absolute;
-  bottom: 50%;
-  right: 50%;
-  transform: translate(50%, 60%);
-}
+/* OVERLAY (driven by changeOpacity / wallet modal) */
 
 #overlay {
   visibility: hidden;
@@ -27,6 +16,8 @@
   transition: opacity 1s;
 }
 
+/* VIDEO EMBED */
+
 .video-container {
   text-align: center;
   position: relative;
@@ -39,12 +30,34 @@
   aspect-ratio: 16 / 9;
 }
 
+/* CHAIN BACKGROUND ICON (root layout)
+ *
+ * The chain logo (FLR/SGB/AVAX) renders in a child .background-image
+ * element rather than on .background itself, so we can apply a filter
+ * that desaturates and darkens just the image without affecting content.
+ * isolation: isolate keeps the negative z-index contained within the
+ * .background stacking context — without it, z-index: -1 would push the
+ * image behind <body> and disappear.
+ */
+
 .background {
+  position: relative;
+  isolation: isolate;
+}
+
+.background-image {
+  position: fixed;
+  inset: 0;
   background-size: auto 400px;
   background-position: center;
   background-repeat: no-repeat;
-  background-attachment: fixed;
+  filter: grayscale(1) brightness(0.35);
+  opacity: 0.5;
+  z-index: -1;
+  pointer-events: none;
 }
+
+/* NOTIFICATION BLOCK */
 
 .notification-block {
   border-left: 4px solid #999;
@@ -52,120 +65,46 @@
   background: rgba(0, 0, 0, .5);
 }
 
-.notification-block.note {
-  border-color: lime;
+.notification-block.note { border-color: lime; }
+.notification-block.warning { border-color: orange; }
+.notification-block.danger { border-color: red; }
+
+/* RECENT ACTIVITY MARQUEE
+ *
+ * The marquee renders activity items twice in a single track and
+ * animates translateX(0 → -50%) so the seam between the duplicated
+ * halves lands exactly back at the start — seamless loop.
+ * Hover pauses so users can read.
+ */
+
+.activity-marquee {
+  overflow: hidden;
+  /* Soft edge mask so cards fade in/out instead of clipping hard. */
+  mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
 }
 
-.notification-block.warning {
-  border-color: orange;
-}
-
-.notification-block.danger {
-  border-color: red;
-}
-
-
-/* DELEGATION LIST */
-
-.delegation-updates {
-  display: grid;
-  grid-template-columns: auto auto auto auto auto;
-  white-space: nowrap;
-  overflow-x: auto;
-}
-
-.delegation-updates div {
-  padding: 5px 0;
-  text-align: center;
-  border-bottom: 1px solid rgba(0,0,0,.2);
-}
-
-.delegation-updates div:nth-child(-n + 5) {
-  color: white;
-  font-weight: bold;
-}
-
-/* RECENT ACTIVITY CAROUSEL */
-
-.activity-header {
+.activity-marquee-track {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
+  width: max-content;
+  animation: activity-marquee 115s linear infinite;
 }
 
-.activity-header h5 {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: white;
+.activity-marquee:hover .activity-marquee-track {
+  animation-play-state: paused;
 }
 
-.activity-nav {
-  display: flex;
-  gap: 8px;
-}
-
-.activity-nav button {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  color: white;
-  width: 32px;
-  height: 32px;
-  font-size: 20px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s;
-}
-
-.activity-nav button:hover {
-  background: rgba(255, 255, 255, 0.15);
-}
-
-.activity-carousel {
-  display: flex;
-  gap: 14px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  padding-bottom: 4px;
-}
-
-.activity-carousel::-webkit-scrollbar {
-  display: none;
+@keyframes activity-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
 
 .activity-card {
   flex: 0 0 230px;
-  scroll-snap-align: start;
-  background: rgba(255, 255, 255, 0.04);
+  margin-right: 14px;
+  background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 14px;
   padding: 18px;
-  transition: border-color 0.2s;
-}
-
-.activity-card:hover {
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
-@keyframes slideInCard {
-  from {
-    opacity: 0;
-    transform: translateX(-40px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0) scale(1);
-  }
-}
-
-.activity-card-new {
-  animation: slideInCard 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .activity-card-top {
@@ -194,27 +133,17 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   padding: 2px 7px;
-  border-radius: 4px;
-}
-
-.activity-type.claimed {
-  color: #50e3c2;
-  background: rgba(80, 227, 194, 0.12);
-}
-
-.activity-type.delegated {
-  color: #7b9cff;
-  background: rgba(123, 156, 255, 0.12);
+  color: var(--main-color);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .activity-amount {
   font-size: 20px;
-  font-weight: 700;
+  font-weight: 600;
   margin-bottom: 14px;
-}
-
-.activity-amount.reward {
-  color: #50e3c2;
+  color: var(--heading-color);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
 }
 
 .activity-symbol {
@@ -248,35 +177,24 @@
   color: rgba(255, 255, 255, 0.35);
 }
 
-/* MOBILE OVERRIDES */
-
 @media only screen and (max-width: 767px) {
   .activity-card {
     flex: 0 0 190px;
     padding: 14px;
-    border-radius: 10px;
+    margin-right: 10px;
   }
 
-  .activity-card-top {
-    margin-bottom: 8px;
-  }
+  .activity-card-top { margin-bottom: 8px; }
 
   .activity-amount {
     font-size: 17px;
     margin-bottom: 10px;
   }
 
-  .activity-details {
-    margin-bottom: 8px;
-  }
-
-  .activity-carousel {
-    gap: 10px;
-    scroll-padding-left: 0;
-  }
+  .activity-details { margin-bottom: 8px; }
 }
 
-/* LAZY LOAD ERROR FALLBACK */
+/* LAZY-LOAD ERROR FALLBACK */
 
 .lazy-load-error {
   max-width: 480px;
@@ -284,8 +202,7 @@
   padding: 32px;
   text-align: center;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.015);
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .lazy-load-error h3 {
@@ -296,34 +213,4 @@
 .lazy-load-error p {
   color: rgba(255, 255, 255, 0.6);
   margin-bottom: 22px;
-}
-
-/* HERO: equalize left and right column heights at xl+ breakpoints.
-   Below 1200px the columns stack (col-xl-*), so no height matching is needed.
-   At xl and above, the right column's two stacked cards anchor the height
-   and the left .about-image-part stretches via flex to match. The left card's
-   natural content is intentionally kept shorter than the right's combined
-   height so this stretch direction holds at every side-by-side width. */
-@media (min-width: 1200px) {
-  .about-area .col-xl-4 {
-    display: flex;
-    flex-direction: column;
-  }
-  .about-area .col-xl-4 > div:first-child {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-  .about-area .about-image-part {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  .about-area .about-image-part > img {
-    align-self: center;
-  }
-  .about-area .about-image-part .about-social {
-    margin-top: 20px;
-  }
 }

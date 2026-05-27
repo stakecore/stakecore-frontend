@@ -1,12 +1,10 @@
-const ProjectTitle = ({ title, suptitle}) => {
+const ProjectTitle = ({ title, suptitle }) => {
   return (
     <div className="container">
-      <div className="row">
-        <div className="col-lg-12 text-center pb-30">
-          <p>{suptitle}</p>
-          <h1>{title}</h1>
-        </div>
-      </div>
+      <header className="project-title">
+        <p className="project-title-sup">{suptitle}</p>
+        <h1 className="project-title-main">{title}</h1>
+      </header>
     </div>
   )
 }

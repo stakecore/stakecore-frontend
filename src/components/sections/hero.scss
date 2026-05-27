@@ -1,91 +1,161 @@
 @use '../../assets/css/tokens' as t;
 
-// Hero / landing section.
+// Hero — left-aligned, hairline-divided vertical stack.
 //
-// Mobile-first: defaults target small phones; padding and h2 scale up
-// at md / lg / xxl. The .about-content-part base styling stays in
-// style.css because that class is shared with summary / about / CTA.
-//
-// Note: hero.tsx markup uses .about-* class names (template quirk —
-// file is named hero but elements carry "about" classes).
+// Mobile-first. Wordmark and stats scale up at md / lg.
+// Color tokens reference existing dark-page variables (--heading-color
+// for ink, --main-color for muted, rgba white for borders) because the
+// global page background is still dark in this phase. The full light
+// theme flip is a later phase.
 
-.about-area {
-    padding-top: 60px;
-    padding-bottom: 15px;
+.hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: 48px 0 32px;
+
+    @include t.up(md) { padding: 80px 0 48px; }
+    @include t.up(lg) { padding: 120px 0 64px; }
 }
 
-.about-image-part {
+// Large decorative rune watermark. Hidden on phones (would overlap copy);
+// appears at md+ anchored to the right edge of the hero, behind the
+// container content. currentColor inherits the surrounding ink so the
+// SVG stroke matches the dark page treatment.
+.hero-watermark {
+    display: none;
+
+    @include t.up(md) {
+        display: block;
+        position: absolute;
+        top: 50%;
+        right: -40px;
+        transform: translateY(-50%);
+        width: 360px;
+        height: 360px;
+        opacity: 0.12;
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    @include t.up(lg) {
+        right: -20px;
+        width: 480px;
+        height: 480px;
+    }
+}
+
+.hero .container {
+    position: relative;
+}
+
+.hero-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 32px;
+
+    @include t.up(md) { margin-bottom: 48px; }
+}
+
+.hero-wordmark {
+    font-family: t.$font-display;
+    font-size: 48px;
+    font-weight: t.$weight-extrabold;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin: 0;
+    color: var(--heading-color);
+
+    @include t.up(md) { font-size: 72px; }
+    @include t.up(lg) { font-size: 88px; }
+}
+
+.hero-tagline {
+    font-family: var(--font-sans);
+    font-size: t.$text-lg;
+    font-weight: t.$weight-regular;
+    line-height: 1.4;
+    margin: 0;
+    color: var(--main-color);
+    max-width: 540px;
+}
+
+.hero-error {
+    padding: 32px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.hero-stats {
+    display: flex;
+    justify-content: space-evenly;
+    gap: 32px;
+    padding: 32px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+    @include t.up(md) {
+        gap: 64px;
+        padding: 48px 0;
+    }
+}
+
+// Immunefi-style stat block: large display number on top, muted body
+// description below, optional diff pill underneath. Each block is its
+// own centered column.
+.hero-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
-    padding: 40px;
-    padding-bottom: 30px;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    border-radius: 20px;
-    box-shadow:
-        rgba(255, 255, 255, 0.025) 0px 0.362176px 0.651917px -1px inset,
-        rgba(255, 255, 255, 0.036) 0px 3px 5.4px -2px inset;
-    background-color: #121214;
-
-    img { width: 300px; }
-    h2 { font-size: 40px; }
+    gap: 8px;
 }
 
-.about-content-part-bottom {
-    padding: 40px;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    border-radius: 20px;
-    box-shadow:
-        rgba(255, 255, 255, 0.025) 0px 0.362176px 0.651917px -1px inset,
-        rgba(255, 255, 255, 0.036) 0px 3px 5.4px -2px inset;
-    background-color: #121214;
-    margin-top: 30px;
+.hero-stat-value {
+    font-family: t.$font-display;
+    font-size: 34px;
+    font-weight: t.$weight-extrabold;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: var(--heading-color);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
 
-    h2 { margin-bottom: 35px; }
+    @include t.up(md) { font-size: 50px; }
+    @include t.up(lg) { font-size: 60px; }
 }
 
-.about-social {
-    margin-top: 30px;
-
-    ul { list-style: none; }
-
-    ul li {
-        display: inline-block;
-        margin: 0 15px;
-    }
-
-    ul li a {
-        font-size: 20px;
-        border: 1px solid rgb(255 255 255 / 5%);
-        padding: 10px 12px;
-        border-radius: 10px;
-    }
+// Smaller muted prefix/suffix (e.g. "$") sits inline with the big number.
+// Sized via em so it scales with the parent at every breakpoint.
+.hero-stat-affix {
+    font-size: 0.55em;
+    font-weight: t.$weight-regular;
+    color: var(--main-color);
+    vertical-align: baseline;
+    margin-right: 0.05em;
 }
 
-// Very narrow phones (< 376px): extra left padding inside the image
-// card. Literal breakpoint preserved from template — falls below sm.
-@media (max-width: 375px) {
-    .about-image-part { padding-left: 50px; }
+// Small eyebrow label sits ABOVE the big display value. Uppercase tracked
+// reads as a section header rather than a long muted caption.
+.hero-stat-label {
+    font-family: var(--font-sans);
+    font-size: t.$text-xs;
+    font-weight: t.$weight-medium;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--main-color);
+    line-height: 1.3;
+
+    @include t.up(md) { font-size: t.$text-sm; }
 }
 
-// === md (768+): tablet ===
-
-@include t.up(md) {
-    .about-area { padding-top: 80px; }
-    .about-image-part { padding-bottom: 40px; }
-    .about-social { margin-bottom: 30px; }
+.hero-stat-diff {
+    margin-top: 4px;
 }
 
-// === lg (992+): desktop ===
-
-@include t.up(lg) {
-    .about-area { padding-top: 115px; }
-    .about-image-part h2 { font-size: 30px; }
-    .about-social { margin-bottom: 0; }
-    .about-social ul li { margin: 15px 2px; }
-}
-
-// === xxl (1400+): wide desktop ===
-
-@include t.up(xxl) {
-    .about-image-part h2 { font-size: 40px; }
-    .about-social ul li { margin: 0 15px; }
+.hero-activity {
+    padding: 32px 0;
 }

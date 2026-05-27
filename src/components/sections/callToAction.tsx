@@ -1,6 +1,5 @@
 import useSWR from 'swr'
 import { SpinnerCircular } from 'spinners-react'
-import SlideUp from '../../utils/animations/slideUp'
 import ServerError from '../ui/serverError'
 import Proposal from './proposal'
 import { getProposalData } from "../../utils/data/proposals"
@@ -54,15 +53,13 @@ const CallToAction = () => {
       <div className="container">
         <div className="row">
           <div className="col-lg-12">
-            <SlideUp>
-              <div className="about-content-part call-to-action-part text-center">
-                { !renderr && <>
-                  <h2>Earn yield</h2>
-                  <p>Put your dormant FLR, AVAX, or SGB to work and earn yield without introducing any additional risk.</p>
-                </> }
-                {component}
-              </div>
-            </SlideUp>
+            <div className="call-to-action-part">
+              { !renderr && <>
+                <h2>Earn yield</h2>
+                <p>Put your dormant FLR, AVAX, or SGB to work and earn yield without introducing any additional risk.</p>
+              </> }
+              {component}
+            </div>
           </div>
         </div>
       </div>
