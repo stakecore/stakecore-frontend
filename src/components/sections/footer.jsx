@@ -18,7 +18,7 @@ const Footer = () => {
                 </p>
                 <div className="footer-meta">
                     <Link to="/" className="footer-mark">Stakecore</Link>
-                    <span className="footer-copy">© {year} Stakecore. All rights reserved.</span>
+                    <span className="footer-copy">© {year} Sarisoma d.o.o. All rights reserved.</span>
                 </div>
             </div>
         </footer>

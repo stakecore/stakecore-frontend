@@ -9,7 +9,10 @@ const ContactOption = () => {
                         <i> <RiMapPinLine size={20} /></i>
                     </div>
                     <h2>our office</h2>
-                    <p>Ljubljana, Slovenia</p>
+                    <p>
+                        Sarisoma d.o.o.<br />
+                        Ljubljana, Slovenia
+                    </p>
                 </div>
                 <div className="single-contact">
                     <div className="contact-icon">
