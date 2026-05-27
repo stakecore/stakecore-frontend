@@ -39,12 +39,39 @@
 
 // Flat, hairline-bordered panels. Solid body-coloured surface so the
 // chain-logo fixed background image doesn't bleed through and reduce
-// text contrast.
+// text contrast. On mobile (< md), the outer chrome is stripped — the
+// frame becomes dead weight when the inner FspLocalDelegate "Step 1 / 2"
+// boxes already announce their own sections, and on a 360px viewport
+// that reclaimed padding matters.
 .single-project-page-left,
 .single-project-page-right {
     padding: 24px;
     border: 1px solid rgba(255, 255, 255, 0.08);
     background: var(--body-background);
+}
+
+@include t.down(md) {
+    // Strip outer chrome — but replace it with a top hairline + 24px of
+    // breathing room so consecutive sections (description, info, local
+    // delegate, official delegate, statistics) still read as discrete
+    // chunks rather than one continuous wall of text.
+    .single-project-page-left,
+    .single-project-page-right {
+        margin: 0;
+        padding: 24px 0 0;
+        border: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        background: transparent;
+    }
+
+    // The InfoComponent right-column margin is redundant once the section
+    // divider above provides its own separation.
+    .col-lg-9 .single-project-page-right { margin-top: 0; }
+
+    // Centre the Asset/APY/Delegation/Lockup summary rows in the cardless
+    // mobile view — they're short values that read better stacked centred
+    // than left-aligned across an empty viewport.
+    .single-info { text-align: center; }
 }
 
 // InfoComponent puts a single-project-page-right card inside a col-lg-9

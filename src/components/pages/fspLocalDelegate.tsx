@@ -34,8 +34,8 @@ export type FspLocalDelegateProps = {
   onRefresh: () => void
 }
 
-// Each user action is its own single-transaction phase. Mutually exclusive
-// so a second click can't race a pending tx.
+type ActionKey = 'wrap' | 'delegate' | 'unwrap' | 'claim'
+
 type Phase =
   | { kind: 'idle' }
   | { kind: 'delegating' }
@@ -66,13 +66,22 @@ const FspLocalDelegate = ({
     .map(r => r.rewardEpoch)
     .sort((a, b) => a - b)
 
-  // Inputs: percentage (0..100), wrap amount, unwrap amount.
+  // Per-action input state. Persists across card switches so the user
+  // doesn't lose what they typed when they flip between actions.
   const [pctInput, setPctInput] = useState<string>(currentPct.toFixed(2))
   const [wrapInput, setWrapInput] = useState<string>('')
   const [unwrapInput, setUnwrapInput] = useState<string>('')
   const [phase, setPhase] = useState<Phase>({ kind: 'idle' })
 
-  // Re-sync the percentage input whenever the on-chain delegation changes.
+  // Default selection picks the most relevant action for the current state.
+  const initialAction: ActionKey = pendingRewards > 0
+    ? 'claim'
+    : flrBalance > 0 && delegated === 0
+      ? 'wrap'
+      : 'delegate'
+  const [active, setActive] = useState<ActionKey>(initialAction)
+
+  // Resync the percentage input with on-chain state after a refresh.
   useEffect(() => {
     setPctInput(currentPct.toFixed(2))
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -101,10 +110,7 @@ const FspLocalDelegate = ({
     const ok = status === StatusCode.CONTRACT_CALL_EXECUTED
     toast.update(toastId, {
       type: ok ? 'success' : 'error',
-      render: actionStatusMessage(
-        status,
-        `Delegation set to ${pctValue.toFixed(2)}% to ${delegationLabel}`,
-      ),
+      render: actionStatusMessage(status, `Delegation set to ${pctValue.toFixed(2)}% to ${delegationLabel}`),
       isLoading: false,
       autoClose: 3500,
     })
@@ -120,18 +126,12 @@ const FspLocalDelegate = ({
     const ok = status === StatusCode.CONTRACT_CALL_EXECUTED
     toast.update(toastId, {
       type: ok ? 'success' : 'error',
-      render: actionStatusMessage(
-        status,
-        `Wrapped ${wrapValue} ${symbol} into ${wrappedSymbol}`,
-      ),
+      render: actionStatusMessage(status, `Wrapped ${wrapValue} ${symbol} into ${wrappedSymbol}`),
       isLoading: false,
       autoClose: 3500,
     })
     setPhase({ kind: 'idle' })
-    if (ok) {
-      setWrapInput('')
-      onRefresh()
-    }
+    if (ok) { setWrapInput(''); onRefresh() }
   }
 
   async function onUnwrap() {
@@ -142,18 +142,12 @@ const FspLocalDelegate = ({
     const ok = status === StatusCode.CONTRACT_CALL_EXECUTED
     toast.update(toastId, {
       type: ok ? 'success' : 'error',
-      render: actionStatusMessage(
-        status,
-        `Unwrapped ${unwrapValue} ${wrappedSymbol} to ${symbol}`,
-      ),
+      render: actionStatusMessage(status, `Unwrapped ${unwrapValue} ${wrappedSymbol} to ${symbol}`),
       isLoading: false,
       autoClose: 3500,
     })
     setPhase({ kind: 'idle' })
-    if (ok) {
-      setUnwrapInput('')
-      onRefresh()
-    }
+    if (ok) { setUnwrapInput(''); onRefresh() }
   }
 
   async function onClaim() {
@@ -165,10 +159,7 @@ const FspLocalDelegate = ({
       const ok = status === StatusCode.CONTRACT_CALL_EXECUTED
       toast.update(toastId, {
         type: ok ? 'success' : 'error',
-        render: actionStatusMessage(
-          status,
-          `Claimed rewards for epoch ${epoch}`,
-        ),
+        render: actionStatusMessage(status, `Claimed rewards for epoch ${epoch}`),
         isLoading: false,
         autoClose: 3500,
       })
@@ -178,218 +169,259 @@ const FspLocalDelegate = ({
     onRefresh()
   }
 
-  // --- Derived display values ---
+  // --- Display helpers ---
 
   const flrFmt = Formatter.number(flrBalance)
   const wflrFmt = Formatter.number(wflrBalance)
-  const delegatedFmt = Formatter.number(delegated)
   const rewardsFmt = Formatter.number(pendingRewards)
+  const delegatedFmt = Formatter.number(delegated)
   const projectedDelegated = pctValid ? (pctBips / MAX_BIPS) * wflrBalance : 0
 
   return <div className="fsp-delegate">
 
-    {/* Position summary — read-only state. No inline actions. */}
-    <section className="fsp-delegate-position">
-      <h3 className="fsp-delegate-block-header">Your position</h3>
-      <div className="fsp-delegate-position-rows">
-        <SummaryRow label={`${symbol} balance`} value={flrFmt} suffix={symbol} />
-        <SummaryRow label={`${wrappedSymbol} balance`} value={wflrFmt} suffix={wrappedSymbol} />
-        <SummaryRow
-          label="Delegated"
-          value={delegatedFmt}
-          suffix={`${wrappedSymbol} (${currentPct.toFixed(2)}%)`}
-        />
-        <SummaryRow
-          label="Pending rewards"
-          value={rewardsFmt}
-          suffix={wrappedSymbol}
-        />
-      </div>
-    </section>
+    {/* Action card grid — visually matches the protocols-tile pattern. */}
+    <div className="fsp-action-cards">
+      <ActionCard
+        emoji="📦"
+        label="Wrap"
+        sub={flrBalance > 0 ? `${flrFmt} ${symbol} available` : `No ${symbol} to wrap`}
+        active={active === 'wrap'}
+        onClick={() => setActive('wrap')}
+      />
+      <ActionCard
+        emoji="🎯"
+        label="Delegate"
+        sub={`Currently ${currentPct.toFixed(2)}%`}
+        active={active === 'delegate'}
+        onClick={() => setActive('delegate')}
+      />
+      <ActionCard
+        emoji="📤"
+        label="Unwrap"
+        sub={wflrBalance > 0 ? `${wflrFmt} ${wrappedSymbol} wrapped` : `No ${wrappedSymbol} to unwrap`}
+        active={active === 'unwrap'}
+        onClick={() => setActive('unwrap')}
+      />
+      <ActionCard
+        emoji="🎁"
+        label="Claim"
+        sub={pendingRewards > 0 ? `${rewardsFmt} ${wrappedSymbol} pending` : 'No rewards yet'}
+        active={active === 'claim'}
+        onClick={() => setActive('claim')}
+      />
+    </div>
 
-    {/* Claim CTA — only when there's something to claim. Full-width so it
-        feels like a "do this right now" call to action rather than a chip
-        hiding inside a row. */}
-    {pendingRewards > 0 && (
-      <button
-        className="theme-btn fsp-delegate-claim-cta"
-        onClick={onClaim}
-        disabled={busy}
-      >
-        {phase.kind === 'claiming'
-          ? <><SpinnerCircular size={14} color={PAGE_COLOR_CODE} /> Claiming…</>
-          : <>Claim {rewardsFmt} {wrappedSymbol} in rewards</>}
-      </button>
-    )}
-
-    {/* Numbered flow: Wrap → Delegate. */}
-    <section className="fsp-delegate-flow">
-      <h3 className="fsp-delegate-block-header">How to delegate</h3>
-
-      <div className="fsp-delegate-step">
-        <div className="fsp-delegate-step-label">
-          <span className="fsp-delegate-step-num">Step 1</span>
-          <span className="fsp-delegate-step-title">Wrap {symbol}</span>
-        </div>
-        <p className="fsp-delegate-step-body">
-          Convert {symbol} into {wrappedSymbol} (1:1). Only {wrappedSymbol} can be
-          delegated and earns rewards. You can unwrap any time.
-        </p>
-        <div className="fsp-delegate-input-row">
-          <input
-            type="number"
-            inputMode="decimal"
-            placeholder="0"
-            min="0"
-            step="any"
-            value={wrapInput}
-            onChange={e => setWrapInput(e.target.value)}
+    {/* Selected action's panel */}
+    <div className="fsp-action-panel">
+      {active === 'wrap' && (
+        <ActionPanel
+          title={`Wrap ${symbol} into ${wrappedSymbol}`}
+          body={<>Convert {symbol} into {wrappedSymbol} (1:1). Only {wrappedSymbol} earns rewards. You can unwrap any time.</>}
+        >
+          <InputRow
+            input={
+              <input
+                type="number"
+                inputMode="decimal"
+                placeholder="0"
+                min="0"
+                step="any"
+                value={wrapInput}
+                onChange={e => setWrapInput(e.target.value)}
+                disabled={busy || flrBalance <= 0}
+                className="fsp-delegate-input"
+              />
+            }
+            suffix={symbol}
+            onMax={() => setWrapInput(flrBalance.toFixed(2))}
+            maxLabel="Max"
             disabled={busy || flrBalance <= 0}
-            className="fsp-delegate-input"
+            cta={
+              <button
+                className="theme-btn fsp-delegate-step-cta"
+                onClick={onWrap}
+                disabled={!wrapValid || busy}
+              >
+                {phase.kind === 'wrapping'
+                  ? <><SpinnerCircular size={14} color={PAGE_COLOR_CODE} /> Wrapping…</>
+                  : 'Wrap'}
+              </button>
+            }
           />
-          <span className="fsp-delegate-input-suffix">{symbol}</span>
-          <button
-            className="fsp-delegate-max"
-            onClick={() => setWrapInput(flrBalance.toFixed(2))}
-            disabled={busy || flrBalance <= 0}
-          >
-            Max ({flrFmt})
-          </button>
-          <button
-            className="theme-btn fsp-delegate-step-cta"
-            onClick={onWrap}
-            disabled={!wrapValid || busy}
-          >
-            {phase.kind === 'wrapping'
-              ? <><SpinnerCircular size={14} color={PAGE_COLOR_CODE} /> Wrapping…</>
-              : 'Wrap'}
-          </button>
-        </div>
-        {flrBalance <= 0 && (
+        </ActionPanel>
+      )}
+
+      {active === 'delegate' && (
+        <ActionPanel
+          title={`Set delegation percentage to ${delegationLabel}`}
+          body={<>Choose what percentage of your {wrappedSymbol} balance is delegated. The percentage is stored on-chain and applies to current and future {wrappedSymbol} automatically.</>}
+        >
+          <InputRow
+            input={
+              <input
+                type="number"
+                inputMode="decimal"
+                placeholder="0"
+                min="0"
+                max="100"
+                step="any"
+                value={pctInput}
+                onChange={e => setPctInput(e.target.value)}
+                disabled={busy}
+                className="fsp-delegate-input"
+              />
+            }
+            suffix="%"
+            onMax={() => setPctInput('100')}
+            maxLabel="Max"
+            disabled={busy}
+            cta={
+              <button
+                className="theme-btn fsp-delegate-step-cta"
+                onClick={onSetDelegation}
+                disabled={!pctValid || !pctChanged || busy}
+              >
+                {phase.kind === 'delegating'
+                  ? <><SpinnerCircular size={14} color={PAGE_COLOR_CODE} /> Updating…</>
+                  : 'Update'}
+              </button>
+            }
+          />
           <p className="fsp-delegate-step-note">
-            You don't have any {symbol} to wrap. Skip to Step 2 if you already
-            hold {wrappedSymbol}.
+            {!pctValid && (
+              <span className="fsp-delegate-preview-error">
+                Enter a percentage between 0 and 100.
+              </span>
+            )}
+            {pctValid && pctChanged && wflrBalance > 0 && (
+              <>Effective delegation: {Formatter.number(projectedDelegated)} {wrappedSymbol} (was {delegatedFmt} {wrappedSymbol}).</>
+            )}
+            {pctValid && pctChanged && wflrBalance === 0 && pctValue > 0 && (
+              <span className="fsp-delegate-preview-warn">
+                You have no {wrappedSymbol} to delegate — wrap {symbol} first.
+              </span>
+            )}
+            {pctValid && !pctChanged && (
+              <>Delegation is already at {currentPct.toFixed(2)}%.</>
+            )}
           </p>
-        )}
-      </div>
+        </ActionPanel>
+      )}
 
-      <div className="fsp-delegate-step">
-        <div className="fsp-delegate-step-label">
-          <span className="fsp-delegate-step-num">Step 2</span>
-          <span className="fsp-delegate-step-title">Set delegation percentage</span>
-        </div>
-        <p className="fsp-delegate-step-body">
-          Choose what percentage of your {wrappedSymbol} is delegated to {delegationLabel}.
-          Applies to your current and future {wrappedSymbol} balance until you change it.
-        </p>
-        <div className="fsp-delegate-input-row">
-          <input
-            type="number"
-            inputMode="decimal"
-            placeholder="0"
-            min="0"
-            max="100"
-            step="any"
-            value={pctInput}
-            onChange={e => setPctInput(e.target.value)}
-            disabled={busy}
-            className="fsp-delegate-input"
+      {active === 'unwrap' && (
+        <ActionPanel
+          title={`Unwrap ${wrappedSymbol} back to ${symbol}`}
+          body={<>Reduces your {wrappedSymbol} balance, which reduces your effective delegation amount proportionally. To stop delegating entirely, set delegation to 0% first.</>}
+        >
+          <InputRow
+            input={
+              <input
+                type="number"
+                inputMode="decimal"
+                placeholder="0"
+                min="0"
+                step="any"
+                value={unwrapInput}
+                onChange={e => setUnwrapInput(e.target.value)}
+                disabled={busy || wflrBalance <= 0}
+                className="fsp-delegate-input"
+              />
+            }
+            suffix={wrappedSymbol}
+            onMax={() => setUnwrapInput(wflrBalance.toFixed(2))}
+            maxLabel="Max"
+            disabled={busy || wflrBalance <= 0}
+            cta={
+              <button
+                className="theme-btn fsp-delegate-step-cta"
+                onClick={onUnwrap}
+                disabled={!unwrapValid || busy}
+              >
+                {phase.kind === 'unwrapping'
+                  ? <><SpinnerCircular size={14} color={PAGE_COLOR_CODE} /> Unwrapping…</>
+                  : 'Unwrap'}
+              </button>
+            }
           />
-          <span className="fsp-delegate-input-suffix">%</span>
-          <button
-            className="fsp-delegate-max"
-            onClick={() => setPctInput('100')}
-            disabled={busy}
-          >
-            Max
-          </button>
-          <button
-            className="theme-btn fsp-delegate-step-cta"
-            onClick={onSetDelegation}
-            disabled={!pctValid || !pctChanged || busy}
-          >
-            {phase.kind === 'delegating'
-              ? <><SpinnerCircular size={14} color={PAGE_COLOR_CODE} /> Updating…</>
-              : 'Update'}
-          </button>
-        </div>
-        <p className="fsp-delegate-step-note">
-          {!pctValid && (
-            <span className="fsp-delegate-preview-error">
-              Enter a percentage between 0 and 100.
-            </span>
-          )}
-          {pctValid && pctChanged && wflrBalance > 0 && (
-            <>Effective delegation: {Formatter.number(projectedDelegated)} {wrappedSymbol}{' '}
-            (was {delegatedFmt} {wrappedSymbol}).</>
-          )}
-          {pctValid && pctChanged && wflrBalance === 0 && pctValue > 0 && (
-            <span className="fsp-delegate-preview-warn">
-              You have no {wrappedSymbol} yet — complete Step 1 first.
-            </span>
-          )}
-          {pctValid && !pctChanged && (
-            <>Delegation is already at {currentPct.toFixed(2)}%.</>
-          )}
-        </p>
-      </div>
-    </section>
+        </ActionPanel>
+      )}
 
-    {/* Unwrap — collapsed by default. */}
-    {wflrBalance > 0 && (
-      <details className="fsp-delegate-unwrap">
-        <summary>Unwrap {wrappedSymbol} back to {symbol}</summary>
-        <p className="fsp-delegate-step-note">
-          Reduces your {wrappedSymbol} balance — and therefore your effective
-          delegation amount proportionally. To stop delegating entirely, set
-          Step 2 to 0% before unwrapping.
-        </p>
-        <div className="fsp-delegate-input-row">
-          <input
-            type="number"
-            inputMode="decimal"
-            placeholder="0"
-            min="0"
-            step="any"
-            value={unwrapInput}
-            onChange={e => setUnwrapInput(e.target.value)}
-            disabled={busy}
-            className="fsp-delegate-input"
-          />
-          <span className="fsp-delegate-input-suffix">{wrappedSymbol}</span>
+      {active === 'claim' && (
+        <ActionPanel
+          title="Claim pending rewards"
+          body={pendingRewards > 0
+            ? <>Rewards across {claimableEpochs.length} reward {claimableEpochs.length === 1 ? 'epoch' : 'epochs'} totaling {rewardsFmt} {wrappedSymbol}. Each epoch requires a separate signature.</>
+            : <>No rewards available to claim right now. Rewards become claimable at the end of each reward epoch your {wrappedSymbol} was delegated during.</>}
+        >
           <button
-            className="fsp-delegate-max"
-            onClick={() => setUnwrapInput(wflrBalance.toFixed(2))}
-            disabled={busy}
+            className="theme-btn fsp-action-panel-claim"
+            onClick={onClaim}
+            disabled={busy || pendingRewards === 0}
           >
-            Max ({wflrFmt})
+            {phase.kind === 'claiming'
+              ? <><SpinnerCircular size={14} color={PAGE_COLOR_CODE} /> Claiming epoch {phase.epoch}…</>
+              : pendingRewards > 0
+                ? `Claim ${rewardsFmt} ${wrappedSymbol}`
+                : 'Nothing to claim'}
           </button>
-          <button
-            className="theme-btn fsp-delegate-step-cta"
-            onClick={onUnwrap}
-            disabled={!unwrapValid || busy}
-          >
-            {phase.kind === 'unwrapping'
-              ? <><SpinnerCircular size={14} color={PAGE_COLOR_CODE} /> Unwrapping…</>
-              : 'Unwrap'}
-          </button>
-        </div>
-      </details>
-    )}
+        </ActionPanel>
+      )}
+    </div>
 
   </div>
 }
 
-const SummaryRow = ({ label, value, suffix }: {
+// --- Sub-components ---
+
+const ActionCard = ({ emoji, label, sub, active, onClick }: {
+  emoji: string
   label: string
-  value: string
-  suffix: string
+  sub: string
+  active: boolean
+  onClick: () => void
 }) => (
-  <div className="fsp-delegate-summary-row">
-    <span className="fsp-delegate-summary-label">{label}</span>
-    <span className="fsp-delegate-summary-value">
-      {value} <span className="fsp-delegate-summary-suffix">{suffix}</span>
-    </span>
+  <button
+    type="button"
+    className={`fsp-action-card${active ? ' active' : ''}`}
+    onClick={onClick}
+  >
+    <span className="fsp-action-card-emoji" aria-hidden>{emoji}</span>
+    <span className="fsp-action-card-label">{label}</span>
+    <span className="fsp-action-card-sub">{sub}</span>
+  </button>
+)
+
+const ActionPanel = ({ title, body, children }: {
+  title: string
+  body: React.ReactNode
+  children: React.ReactNode
+}) => (
+  <div className="fsp-action-panel-inner">
+    <h3 className="fsp-action-panel-title">{title}</h3>
+    <p className="fsp-action-panel-body">{body}</p>
+    {children}
+  </div>
+)
+
+const InputRow = ({ input, suffix, onMax, maxLabel, disabled, cta }: {
+  input: React.ReactNode
+  suffix: string
+  onMax: () => void
+  maxLabel: string
+  disabled: boolean
+  cta: React.ReactNode
+}) => (
+  <div className="fsp-delegate-input-row">
+    {input}
+    <span className="fsp-delegate-input-suffix">{suffix}</span>
+    <button
+      className="fsp-delegate-max"
+      onClick={onMax}
+      disabled={disabled}
+    >
+      {maxLabel}
+    </button>
+    {cta}
   </div>
 )
 
