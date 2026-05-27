@@ -25,8 +25,12 @@ const Header = () => {
     const [openDropdown, setOpenDropdown] = useState(null)
     const [drawerOpen, setDrawerOpen] = useState(false)
 
+    // On route change, dismiss the mobile drawer and any open submenu.
+    // react-hooks/set-state-in-effect prefers derived state, but neither
+    // value can be derived: both also change on user clicks. This is a
+    // legitimate route-driven reset.
     useEffect(() => {
-        setDrawerOpen(false)
+        setDrawerOpen(false) // eslint-disable-line react-hooks/set-state-in-effect
         setOpenDropdown(null)
     }, [pathName])
 
