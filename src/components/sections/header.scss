@@ -1,9 +1,13 @@
-// Header / top navigation styles, co-located with header.jsx.
+@use '../../assets/css/tokens' as t;
+
+// Header / top navigation.
 //
-// Media-query breakpoints are preserved verbatim from the original
-// template (the source previously lived split across style.css §03.MENU
-// and several blocks in responsive.css). They will be normalised to the
-// canonical sm/md/lg/xl/xxl set in a follow-up mobile pass.
+// Mobile-first: default rules render the hamburger-driven drawer
+// (below lg / 992px). At lg+ the menu becomes the inline desktop
+// navbar with the underline hover effect. xl/xxl breakpoints tweak
+// container padding and item spacing.
+
+// === Mobile defaults (< lg) ===
 
 .main-header {
     position: relative;
@@ -26,7 +30,9 @@
         background: var(--body-background);
     }
 
+    // Drawer pattern uses .mobile-logo; hide the desktop logo wrapper.
     .logo-outer {
+        display: none;
         flex: none;
     }
 
@@ -36,9 +42,7 @@
         position: relative;
     }
 
-    .logo img {
-        width: 120px;
-    }
+    .logo img { width: 120px; }
 
     &.fixed-header .header-upper {
         top: 0;
@@ -49,7 +53,7 @@
 }
 
 .header-inner {
-    padding: 30px 0;
+    padding: 10px 0;
     transition: all 500ms ease;
 }
 
@@ -59,46 +63,62 @@
     border-bottom: 1px solid rgba(119, 119, 125, 0.2);
 }
 
-.fixed-header .main-menu .navbar-collapse li a:hover {
-    color: var(--primary-color);
-}
-
 .nav-outer {
     margin-left: auto;
+    width: 100%;
 }
 
+// .menu-btns wraps the wallet button. Hidden on mobile (existing UX);
+// shown again at lg+.
+.menu-btns { display: none; }
+
 .main-menu {
+    width: 100%;
+
     .mobile-logo {
         margin-right: auto;
+        max-width: 150px; // safeguard on tiny phones (< sm)
     }
 
-    .mobile-logo img {
-        width: 75px;
-    }
+    .mobile-logo img { width: 75px; }
+
+    .collapse { overflow: auto; }
 
     .navbar-collapse {
         padding: 0;
+        position: absolute;
+        left: 45%;
+        width: 50%;
     }
 
     .navbar-collapse > ul {
-        display: flex;
+        display: block;
+        padding: 25px 0;
+        overflow-x: hidden;
+        background: #333;
+        max-height: calc(100vh - 100px);
+    }
+
+    .navbar-collapse > ul > li:last-child {
+        border-bottom: 1px solid var(--border-color);
     }
 
     .navbar-collapse li {
-        padding: 12px 5px 12px 20px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+        display: block;
+        padding: 0 15px;
+        border-top: 1px solid var(--border-color);
     }
 
     .navbar-collapse li a {
         opacity: 1;
         display: block;
+        padding: 10px;
+        line-height: 22px;
         font-size: 16px;
         font-weight: 500;
         position: relative;
         text-transform: capitalize;
-        color: rgb(206, 206, 206);
+        color: rgb(255 255 255 / 0.7);
         transition: all 500ms ease;
     }
 
@@ -107,18 +127,10 @@
         text-decoration: none;
     }
 
-    .navbar-collapse li ul li {
-        width: 100%;
-        padding: 7px 20px;
-    }
-
-    .navbar-collapse li ul li ul {
-        left: 100%;
-        top: 0;
-    }
-
     .navbar-header {
-        display: none;
+        display: flex;
+        align-items: center;
+        justify-content: start;
     }
 
     .navbar-header .navbar-toggle {
@@ -146,138 +158,91 @@
     }
 }
 
-// --- Responsive overrides (verbatim breakpoints from template) ---
+// === sm (576+): release tiny-phone mobile-logo cap ===
 
-@media only screen and (min-width: 1200px) {
+@include t.up(sm) {
+    .main-menu .mobile-logo { max-width: none; }
+}
+
+// === md (768+): tablet header padding ===
+
+@include t.up(md) {
+    .header-inner { padding: 15px 0; }
+}
+
+// === lg (992+): switch to inline desktop navbar ===
+
+@include t.up(lg) {
+    .main-header .logo-outer { display: block; }
+    .header-inner { padding: 30px 0; }
+    .menu-btns { display: block; }
+    .nav-outer { width: auto; }
+
+    .main-menu {
+        width: auto;
+
+        .navbar-collapse {
+            position: static;
+            left: auto;
+            width: auto;
+        }
+
+        .navbar-collapse > ul {
+            display: flex;
+            padding: 0;
+            overflow: visible;
+            background: transparent;
+            max-height: none;
+        }
+
+        .navbar-collapse > ul > li:last-child {
+            border-bottom: none;
+        }
+
+        .navbar-collapse li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: none;
+            padding: 12px 10px;
+        }
+
+        .navbar-collapse li a {
+            padding: 0;
+            line-height: inherit;
+            color: rgb(206, 206, 206);
+        }
+
+        // Underline hover effect.
+        .navbar-collapse li a:after {
+            content: '';
+            opacity: 0;
+            position: absolute;
+            left: 0;
+            top: 115%;
+            width: 100%;
+            height: 2px;
+            background: var(--primary-color);
+            transition: 0.5s;
+        }
+
+        .navbar-header { display: none; }
+    }
+}
+
+// === xl (1200+): wider container padding ===
+
+@include t.up(xl) {
     .main-header .container-fluid {
         padding-left: 55px;
         padding-right: 55px;
     }
 }
 
-@media only screen and (max-width: 1399px) {
+// === xxl (1400+): widen menu items ===
+
+@include t.up(xxl) {
     .main-menu .navbar-collapse li {
-        padding-left: 10px;
-        padding-right: 10px;
+        padding: 12px 5px 12px 20px;
     }
-}
-
-@media only screen and (min-width: 992px) {
-    .main-menu .navbar-collapse li a:after {
-        content: '';
-        opacity: 0;
-        position: absolute;
-        left: 0;
-        top: 115%;
-        transition: 0.5s;
-        width: 100%;
-        height: 2px;
-        background: var(--primary-color);
-    }
-}
-
-@media only screen and (max-width: 991px) {
-    .main-header .logo-outer { display: none; }
-
-    .nav-outer { width: 100%; }
-
-    .main-menu { width: 100%; }
-    .main-menu .collapse { overflow: auto; }
-
-    .main-menu .navbar-collapse {
-        left: 45%;
-        width: 50%;
-        position: absolute;
-    }
-
-    .main-menu .navbar-collapse > ul {
-        display: block;
-        padding: 25px 0;
-        overflow-x: hidden;
-        background: #333;
-        max-height: calc(100vh - 100px);
-    }
-
-    .main-menu .navbar-collapse > ul > li:last-child {
-        border-bottom: 1px solid var(--border-color);
-    }
-
-    .main-menu .navbar-collapse li {
-        display: block;
-        padding: 0 15px;
-        border-top: 1px solid var(--border-color);
-    }
-
-    .main-menu .navbar-collapse li a {
-        padding: 10px 10px;
-        line-height: 22px;
-        color: #fff;
-        opacity: 0.7;
-    }
-
-    .main-menu .navbar-collapse li ul {
-        position: relative;
-        display: none;
-        width: 100%;
-        box-shadow: none;
-    }
-
-    .main-menu .navbar-collapse li ul:after {
-        display: block;
-        clear: both;
-        content: "";
-    }
-
-    .main-menu .navbar-collapse li ul li {
-        padding: 0 15px;
-    }
-
-    .main-menu .navbar-collapse li ul li ul {
-        left: auto;
-    }
-
-    .main-menu .navbar-header {
-        display: flex;
-        align-items: center;
-        justify-content: start;
-    }
-}
-
-@media only screen and (max-width: 991px) and (max-width: 375px) {
-    .main-menu .navbar-collapse li ul { min-width: auto; }
-}
-
-@media only screen and (min-width: 767px) and (max-width: 991px) {
-    .main-menu .navbar-collapse li a:hover {
-        color: #fff;
-        text-decoration: none;
-    }
-    .fixed-header .main-menu .navbar-collapse li a:hover {
-        color: var(--primary-color);
-    }
-    .main-menu .navbar-collapse li a:hover {
-        color: var(--primary-color);
-    }
-    .menu-btns { display: none; }
-    .header-inner { padding: 15px 0; }
-}
-
-@media only screen and (max-width: 767px) {
-    .menu-btns { display: none; }
-    .main-menu .navbar-collapse li a:hover {
-        color: #fff;
-        text-decoration: none;
-    }
-    .header-inner { padding: 10px 0; }
-    .fixed-header .main-menu .navbar-collapse li a { color: #fff; }
-    .fixed-header .main-menu .navbar-collapse li a:hover {
-        color: var(--primary-color);
-    }
-    .main-menu .navbar-collapse li a:hover {
-        color: var(--primary-color);
-    }
-}
-
-@media only screen and (max-width: 575px) {
-    .main-menu .mobile-logo { max-width: 150px; }
 }
