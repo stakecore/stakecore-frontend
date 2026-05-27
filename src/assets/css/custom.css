@@ -87,7 +87,7 @@
 .activity-marquee-track {
   display: flex;
   width: max-content;
-  animation: activity-marquee 115s linear infinite;
+  animation: activity-marquee 150s linear infinite;
 }
 
 .activity-marquee:hover .activity-marquee-track {
