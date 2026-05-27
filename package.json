@@ -58,6 +58,6 @@
     "openapi-typescript": "^7.6.1",
     "openapi-typescript-codegen": "^0.29.0",
     "sass-embedded": "^1.93.2",
-    "vite": "^7.3.1"
+    "vite": "^7.3.2"
   }
 }
