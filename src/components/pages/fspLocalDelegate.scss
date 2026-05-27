@@ -1,0 +1,286 @@
+@use '../../assets/css/tokens' as t;
+
+// Goal-oriented FSP local-delegate UI for Flare-FSP and Songbird-FSP.
+//
+// Layout zones (top → bottom):
+//   1. Position summary (read-only state)
+//   2. Claim CTA (full-width, only when rewards > 0)
+//   3. "How to delegate" — numbered Step 1 (wrap) and Step 2 (set %)
+//   4. Unwrap (collapsed by default)
+
+.fsp-delegate {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+// Block header used by Position and "How to delegate" zones.
+.fsp-delegate-block-header {
+    font-family: var(--font-sans);
+    font-size: t.$text-xs;
+    font-weight: t.$weight-medium;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--main-color);
+    margin: 0 0 12px;
+}
+
+// --- Position ---
+
+.fsp-delegate-position {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 20px 24px;
+    background: var(--body-background);
+}
+
+.fsp-delegate-position-rows {
+    display: flex;
+    flex-direction: column;
+}
+
+.fsp-delegate-summary-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+
+    &:first-child { border-top: none; }
+}
+
+.fsp-delegate-summary-label {
+    font-family: var(--font-sans);
+    font-size: t.$text-xs;
+    font-weight: t.$weight-medium;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--main-color);
+}
+
+.fsp-delegate-summary-value {
+    font-family: var(--font-sans);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
+    font-size: t.$text-lg;
+    font-weight: t.$weight-medium;
+    letter-spacing: -0.01em;
+    color: var(--heading-color);
+}
+
+.fsp-delegate-summary-suffix {
+    font-size: t.$text-sm;
+    color: var(--main-color);
+    margin-left: 4px;
+    font-weight: t.$weight-regular;
+}
+
+// --- Claim full-width CTA ---
+
+.fsp-delegate-claim-cta {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: t.$text-base;
+}
+
+// --- How to delegate flow ---
+
+.fsp-delegate-flow {
+    display: flex;
+    flex-direction: column;
+}
+
+.fsp-delegate-step {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px 24px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--body-background);
+
+    & + & {
+        // Stacked steps share a border between them rather than doubling.
+        border-top: none;
+    }
+}
+
+.fsp-delegate-step-label {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+}
+
+.fsp-delegate-step-num {
+    font-family: var(--font-sans);
+    font-size: t.$text-xs;
+    font-weight: t.$weight-semibold;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--main-color);
+    padding: 4px 8px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.fsp-delegate-step-title {
+    font-family: var(--font-sans);
+    font-size: t.$text-lg;
+    font-weight: t.$weight-semibold;
+    letter-spacing: -0.01em;
+    color: var(--heading-color);
+}
+
+.fsp-delegate-step-body {
+    font-family: var(--font-sans);
+    font-size: t.$text-sm;
+    line-height: 1.5;
+    color: var(--main-color);
+    margin: 0;
+    max-width: 640px;
+}
+
+.fsp-delegate-step-note {
+    font-family: var(--font-sans);
+    font-size: t.$text-xs;
+    line-height: 1.5;
+    color: var(--main-color);
+    margin: 0;
+    min-height: 1.2em;
+}
+
+.fsp-delegate-preview-error {
+    color: #ff3e55;
+}
+
+.fsp-delegate-preview-warn {
+    color: rgba(255, 165, 0, 0.9);
+}
+
+// --- Input row (used in steps and unwrap) ---
+
+.fsp-delegate-input-row {
+    display: flex;
+    align-items: stretch;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.fsp-delegate-input {
+    flex: 1;
+    min-width: 140px;
+    font-family: var(--font-sans);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
+    font-size: t.$text-lg;
+    font-weight: t.$weight-medium;
+    line-height: 1.4;
+    color: var(--heading-color);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 10px 14px;
+    transition: border-color 150ms ease-out, background-color 150ms ease-out;
+
+    &::placeholder { color: rgba(255, 255, 255, 0.3); }
+    &:focus {
+        outline: none;
+        border-color: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.05);
+    }
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    -moz-appearance: textfield;
+}
+
+.fsp-delegate-input-suffix {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 12px;
+    font-family: var(--font-sans);
+    font-size: t.$text-sm;
+    font-weight: t.$weight-medium;
+    color: var(--main-color);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.fsp-delegate-max {
+    font-family: var(--font-sans);
+    font-size: t.$text-xs;
+    font-weight: t.$weight-medium;
+    color: var(--main-color);
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 6px 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 150ms ease-out, border-color 150ms ease-out;
+
+    &:hover:not(:disabled) {
+        color: var(--heading-color);
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+.fsp-delegate-step-cta {
+    min-width: 120px;
+}
+
+// --- Unwrap (collapsible) ---
+
+.fsp-delegate-unwrap {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--body-background);
+
+    > summary {
+        list-style: none;
+        cursor: pointer;
+        padding: 16px 24px;
+        font-family: var(--font-sans);
+        font-size: t.$text-xs;
+        font-weight: t.$weight-medium;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--main-color);
+        transition: color 150ms ease-out;
+    }
+    > summary:hover { color: var(--heading-color); }
+    > summary::-webkit-details-marker { display: none; }
+    > summary::after {
+        content: ' +';
+        font-family: var(--font-mono);
+        margin-left: 6px;
+    }
+    &[open] > summary {
+        color: var(--heading-color);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    &[open] > summary::after {
+        content: ' −';
+    }
+
+    .fsp-delegate-step-note,
+    .fsp-delegate-input-row {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+
+    .fsp-delegate-step-note {
+        padding-top: 16px;
+        padding-bottom: 8px;
+    }
+
+    .fsp-delegate-input-row {
+        padding-bottom: 20px;
+    }
+}

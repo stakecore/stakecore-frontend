@@ -1,51 +1,23 @@
-import useSWR from "swr"
+import useSWR, { useSWRConfig } from "swr"
 import { SpinnerCircular } from 'spinners-react'
 import { useGlobalStore } from "~/utils/store/global"
 import ServerError from "~/components/ui/serverError"
-import StakeFlow from "~/components/ui/stakeFlow"
-import { IStakeFlow } from "~/components/types"
-import { injectActionArg } from "../../utils"
+import FspLocalDelegate from "~/components/pages/fspLocalDelegate"
+import { contractCallAdapter } from "../../utils"
 import FspDataLayer from "../../flare-fsp/data"
-import * as L from '../layout'
+import { claim, delegate, deposit, withdraw } from "../contracts"
+import { expbigint } from "~/utils/misc/bigint"
 import * as C from "~/constants"
-import type { FspDelegatorInfoDto } from "~/backendApi"
 
-
-function delegatorInfoToStakeFlow(position: FspDelegatorInfoDto): IStakeFlow['data'] {
-  const rewards = position.rewards.reduce((x, y) => x + y.amount, 0)
-  return [{
-    address: position.nat.address,
-    balance: position.nat.balance,
-    price: position.nat.price,
-    fixedInputValue: null,
-    conversions: [L.SGB_TO_WSGB_FACTOR, L.WSGB_TO_SGB_FACTOR]
-  }, {
-    address: position.wnat.address,
-    balance: position.wnat.balance,
-    price: position.wnat.price,
-    fixedInputValue: null,
-    conversions: [L.SGB_TO_WSGB_FACTOR, null]
-  }, {
-    address: position.wnat.address,
-    balance: position.delegated,
-    price: position.wnat.price,
-    fixedInputValue: rewards,
-    conversions: [null, null]
-  }]
-}
-
-function modifyStakeFlowLayout(position: FspDelegatorInfoDto) {
-  const epoch = Math.max(...position.rewards.map(x => x.rewardEpoch))
-  injectActionArg(L.DELEGATE_FLOW_LAYOUT[1].actions.up, epoch)
-  return L.DELEGATE_FLOW_LAYOUT
-}
 
 const SongbirdFspLocalDelegateComponent = () => {
   const setWalletChoiceVisible = useGlobalStore(state => state.setWalletChoiceVisible)
   const walletAddress = useGlobalStore(state => state.walletAddress)
   const walletChoiceVisible = useGlobalStore(state => state.walletChoiceVisible)
+  const { mutate } = useSWRConfig()
 
-  const { data, error, isLoading } = useSWR(['songbird-delegate', walletAddress], ([_, address]) => {
+  const swrKey = ['songbird-delegate', walletAddress] as const
+  const { data, error, isLoading } = useSWR(swrKey, ([_, address]) => {
     if (address == null) return null
     return FspDataLayer.getDelegatorInfo('songbird', address)
   }, { refreshInterval: C.REFRESH_QUERY_FAST_MS })
@@ -53,6 +25,18 @@ const SongbirdFspLocalDelegateComponent = () => {
   async function connectWallet() {
     if (walletChoiceVisible || walletAddress != null) return
     setWalletChoiceVisible(true)
+  }
+
+  // Contract-call adapters for SSP — same pattern as the Flare-FSP wiring.
+  const actions = {
+    deposit: (address: string, amount: number) =>
+      contractCallAdapter(deposit, address, [expbigint(amount, C.SGB_DECIMALS)]),
+    withdraw: (address: string, amount: number) =>
+      contractCallAdapter(withdraw, address, [expbigint(amount, C.SGB_DECIMALS)]),
+    delegate: (address: string, bips: number) =>
+      contractCallAdapter(delegate, address, [bips]),
+    claim: (address: string, epoch: number) =>
+      contractCallAdapter(claim, address, [epoch]),
   }
 
   let component = null
@@ -70,19 +54,23 @@ const SongbirdFspLocalDelegateComponent = () => {
     component = <ServerError status={500} message={error} />
   } else {
     component = <>
-      <div>
-        <p>
-          Delegating SGB involves wrapping it into WSGB, which you can then delegate to an SSP entity.
-          The delegation in this case is liquid, meaning you can safely transfer WSGB or withdraw it.
-          Note however that sending WSGB to another address will contribute the stake to the other address.
-          <br /><br />
-          Note that delegation is determined as a percentage of funds delegated, and we will always
-          use 100% when delegating here, regardless of your input. If wanting to delegate to multiple
-          providers, see video below to delegate on official Flare network interface.
-        </p>
-        <div className="mt-40">
-          <StakeFlow layout={modifyStakeFlowLayout(data)} data={delegatorInfoToStakeFlow(data)} />
-        </div>
+      <p>
+        Delegation on Songbird is stored as a percentage of your {C.WSGB_SYMBOL} balance.
+        To delegate {C.SGB_SYMBOL}, first wrap it into {C.WSGB_SYMBOL}, then set the
+        delegation percentage. The {C.WSGB_SYMBOL} stays in your wallet and can be
+        unwrapped or transferred at any time — moving it to another address reassigns
+        the stake to that address.
+      </p>
+      <div className="mt-30">
+        <FspLocalDelegate
+          data={data}
+          walletAddress={walletAddress}
+          symbol={C.SGB_SYMBOL}
+          wrappedSymbol={C.WSGB_SYMBOL}
+          delegationLabel="Stakecore"
+          actions={actions}
+          onRefresh={() => mutate(swrKey)}
+        />
       </div>
     </>
   }

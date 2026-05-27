@@ -14,7 +14,8 @@ export const SGB_TO_WSGB_FACTOR = (x: number) => x
 export const WSGB_TO_SGB_FACTOR = (x: number) => x
 
 const tobips = (balance: number, amount: number) => {
-  return Math.min(C.MAX_BIPS, Math.ceil(C.MAX_BIPS * Math.floor(amount / balance)))
+  if (balance <= 0) return 0
+  return Math.min(C.MAX_BIPS, Math.ceil(C.MAX_BIPS * (amount / balance)))
 }
 
 const adelegate: IStakeFlowBarAction = {

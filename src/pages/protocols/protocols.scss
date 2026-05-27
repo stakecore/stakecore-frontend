@@ -37,14 +37,14 @@
     margin: 0;
 }
 
-// Flat, hairline-bordered panels. Transparent surface so the chain-logo
-// fixed background image bleeds through, dimmed by the filter applied
-// in custom.css to .background-image.
+// Flat, hairline-bordered panels. Solid body-coloured surface so the
+// chain-logo fixed background image doesn't bleed through and reduce
+// text contrast.
 .single-project-page-left,
 .single-project-page-right {
     padding: 24px;
     border: 1px solid rgba(255, 255, 255, 0.08);
-    background: transparent;
+    background: var(--body-background);
 }
 
 // InfoComponent puts a single-project-page-right card inside a col-lg-9

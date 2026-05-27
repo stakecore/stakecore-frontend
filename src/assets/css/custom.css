@@ -102,7 +102,7 @@
 .activity-card {
   flex: 0 0 230px;
   margin-right: 14px;
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--body-background);
   border: 1px solid rgba(255, 255, 255, 0.08);
   padding: 18px;
 }
