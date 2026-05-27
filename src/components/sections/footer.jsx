@@ -8,12 +8,13 @@ const Footer = () => {
             <div className="container">
                 <p className="footer-risk">
                     <span className="footer-risk-label">Risk warning.</span>{' '}
-                    Crypto-assets are highly volatile. Staking involves significant risks
-                    and may result in partial or total loss of your assets, including
-                    through validator slashing, network failures, or protocol changes.
-                    Nothing on this site constitutes investment, legal, tax, or financial
-                    advice. Crypto-assets are largely unregulated and are not covered by
-                    deposit guarantee or investor compensation schemes.
+                    Crypto-assets are highly volatile and their value may fluctuate
+                    significantly. The staking protocols offered by Stakecore are
+                    non-slashing, but staked assets may still be affected by network
+                    failures, protocol changes, or other technical issues. Nothing on
+                    this site constitutes investment, legal, tax, or financial advice.
+                    Crypto-assets are largely unregulated and are not covered by deposit
+                    guarantee or investor compensation schemes.
                 </p>
                 <div className="footer-meta">
                     <Link to="/" className="footer-mark">Stakecore</Link>

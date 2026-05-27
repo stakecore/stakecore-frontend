@@ -37,7 +37,7 @@ const Mission = () => (
                     Stakecore operates validator and protocol-signing infrastructure for the
                     Flare, Avalanche, and Songbird networks. Protocols, custodians, and
                     treasuries delegate their FLR, AVAX, and SGB to us — earning rewards
-                    with a risk profile equivalent to simply holding the asset.
+                    with a risk profile close to that of simply holding the asset.
                 </p>
             </header>
         </div>
@@ -87,7 +87,7 @@ const valueProps = [
     {
         icon: <RiShieldCheckLine size={28} />,
         title: 'Risk-equivalent to holding the asset',
-        body: 'Delegated tokens never leave your wallet. No smart contracts in the path, no bridges, no liquid-staking derivative. The only risk you take on is the same risk you took when you bought the token.',
+        body: 'Delegated tokens never leave your wallet — no smart contracts in the path, no bridges, no liquid-staking derivatives. The risk profile stays close to that of simply holding the asset.',
     },
     {
         icon: <RiLineChartLine size={28} />,

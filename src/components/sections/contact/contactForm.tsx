@@ -56,7 +56,7 @@ const ContactForm = () => {
                         <div className="col-md-6">
                             <div className="form-group">
                                 <label htmlFor="name">Full Name</label>
-                                <input type="text" id="name" name="name" className="form-control" placeholder="Steve Milner" required={true} minLength={4} maxLength={25} data-error="Please enter your Name" />
+                                <input type="text" id="name" name="name" className="form-control" placeholder="Jane Doe" required={true} minLength={4} maxLength={25} data-error="Please enter your Name" />
                                 <label htmlFor="name" className="for-icon"><i className="far fa-user"></i></label>
                                 <div className="help-block with-errors"></div>
                             </div>
@@ -72,7 +72,7 @@ const ContactForm = () => {
                         <div className="col-md-12">
                             <div className="form-group">
                                 <label htmlFor="message">Your Message</label>
-                                <textarea name="message" id="message" className="form-control" rows={4} placeholder="Write Your message" required={true} minLength={10} maxLength={250} data-error="Please Write your Message"></textarea>
+                                <textarea name="message" id="message" className="form-control" rows={4} placeholder="Write your message" required={true} minLength={10} maxLength={250} data-error="Please Write your Message"></textarea>
                                 <div className="help-block with-errors"></div>
                             </div>
                         </div>

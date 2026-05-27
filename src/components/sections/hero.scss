@@ -18,28 +18,27 @@
     @include t.up(lg) { padding: 120px 0 64px; }
 }
 
-// Large decorative rune watermark. Hidden on phones (would overlap copy);
-// appears at md+ anchored to the right edge of the hero, behind the
-// container content. currentColor inherits the surrounding ink so the
-// SVG stroke matches the dark page treatment.
-.hero-watermark {
+// Fixed-grid ASCII display. Per-cell intensity = base sampled from the
+// rune SVG + a radial sine wave breathing outward. The rune is drawn as
+// dense glyphs; the wave makes everything pulse. No CSS mask needed —
+// the rune shape comes from the grid itself.
+.hero-rune-canvas {
     display: none;
 
     @include t.up(md) {
         display: block;
         position: absolute;
         top: 50%;
-        right: -40px;
-        transform: translateY(-50%);
+        left: 50%;
+        transform: translate(-50%, -50%);
         width: 360px;
         height: 360px;
-        opacity: 0.12;
+        opacity: 0.3;
         pointer-events: none;
         z-index: -1;
     }
 
     @include t.up(lg) {
-        right: -20px;
         width: 480px;
         height: 480px;
     }

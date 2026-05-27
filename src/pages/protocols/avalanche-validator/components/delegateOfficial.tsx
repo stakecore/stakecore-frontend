@@ -8,7 +8,7 @@ const AvalancheValidatorOfficialDelegateComponent = ({ validatorLink }) => {
       <p>
         Users can choose to delegate to the Stakecore validator {validatorLink}.
         Note that validators failing to deliver 80% uptime will cause reward losses to its delegators.
-        Due to security reasons we require users to interact with the official Avalanche website when signing transactions,
+        For security reasons we require users to interact with the official Avalanche website when signing transactions,
         while providing only the necessary information here. Follow the video below to delegate to Stakecore's validator node.
       </p>
       <div className="video-container mb-30">

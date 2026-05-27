@@ -1,7 +1,7 @@
 const ProjectDescription = () => {
   return <div className="single-project-page-right mb-30">
     <h2>Basic Information</h2>
-    Flare network adapts the Avalanche's proof of stake protocol named Snowball.
+    Flare network adapts Avalanche's Snowball proof-of-stake protocol.
     The protocol is the basis for the network consensus, which requires validators
     to stake funds, and broadcast and validate network transactions.
 

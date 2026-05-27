@@ -45,7 +45,7 @@ const CallToAction = () => {
     if (proposal.length > 0) {
       return <Proposal priceData={proposal} />
     }
-    component = <div>You have no FLR, AVAX, or SGB</div>
+    component = <div>No FLR, AVAX, or SGB detected in this wallet.</div>
   }
 
   return (
@@ -56,7 +56,7 @@ const CallToAction = () => {
             <div className="call-to-action-part">
               { !renderr && <>
                 <h2>Earn yield</h2>
-                <p>Put your dormant FLR, AVAX, or SGB to work and earn yield without introducing any additional risk.</p>
+                <p>Put your dormant FLR, AVAX, or SGB to work and earn yield with a risk profile close to simply holding the asset.</p>
               </> }
               {component}
             </div>

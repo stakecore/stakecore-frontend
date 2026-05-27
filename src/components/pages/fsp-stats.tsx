@@ -99,7 +99,7 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
         </div>
       </div>
       <p>
-        We value transparency, and stream a part of our monitoring to this site,
+        We value transparency, and stream part of our monitoring to this site,
         so you can see live data of our provider's performance for the current <i>reward epoch</i> {last.rewardEpoch}.
         We also display the historical data for some relevant metrics over the past 25 reward epochs (90 days),
         and provide a deeper understanding of the protocol.
@@ -130,7 +130,7 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
         <h5 className='meter-bar-title'>Secondary FTSO success rate</h5>
         <p>
           When the submitted price falls within the percentage band (defined separately for each ticker) of the accepted median, it is considered a secondary
-          success. Secondary success was introduced due to the primary reward band becomming too competitive.
+          success. Secondary success was introduced after the primary reward band became too competitive.
         </p>
         <StatsChart data={secondarySRD} keys={['Secondary Success Rate']} formatY={v => Formatter.percent(v)} height={250} />
       </div>

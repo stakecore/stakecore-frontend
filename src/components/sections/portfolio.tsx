@@ -23,7 +23,7 @@ const Portfolio = ({ className = '' }) => {
                     <h2 className="protocols-title">Protocols</h2>
                     <p className="protocols-blurb">
                         Validator and protocol-signing services on Flare, Avalanche, and
-                        the Songbird test network. Each protocol specifies its own rules
+                        the Songbird canary network. Each protocol specifies its own rules
                         and reward structure.
                     </p>
                 </header>

@@ -72,7 +72,7 @@ const FlareFspLocalDelegateComponent = () => {
     component = <>
       <div>
         <p>
-          Delegating FLR involves wrapping it into WFLR, which you can then delegate to an FSP entity.
+          Delegating FLR involves wrapping it into WFLR, which you can then delegate to an FSP provider.
           The delegation in this case is liquid, meaning you can safely transfer WFLR or withdraw it.
           Note however that sending WFLR to another address will contribute the stake to the other address.
           <br /><br />
