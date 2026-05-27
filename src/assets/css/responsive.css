@@ -737,38 +737,6 @@ Version      : 1.0
 }
 
 
-@media only screen and (max-width: 1199px) {
-    .pricing-item .pricing-header {
-        padding-left: 25px;
-        padding-right: 25px;
-    }
-}
-
-@media only screen and (max-width: 1199px) {
-    .pricing-item .pricing-header .price {
-        font-size: 40px;
-    }
-}
-
-@media only screen and (max-width: 375px) {
-    .pricing-item .pricing-header .price {
-        font-size: 35px;
-    }
-}
-
-@media only screen and (max-width: 1199px) {
-    .pricing-item .pricing-details {
-        padding-left: 25px;
-        padding-right: 25px;
-    }
-}
-
-@media only screen and (max-width: 375px) {
-    .pricing-item .pricing-details ul li {
-        font-size: 18px;
-    }
-}
-
 @media only screen and (max-width: 991px) {
     .client-logo-wrap .client-logo-item {
         width: calc(25% - 60px);

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { RiArrowRightLine } from '@remixicon/react'
 import SlideUp from '../../utils/animations/slideUp'
+import './proposal.scss'
 
 const Proposal = ({ priceData }: any) => {
     return (

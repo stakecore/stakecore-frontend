@@ -1,0 +1,103 @@
+@use '../../assets/css/tokens' as t;
+
+// Proposal (pricing-card) section, co-located with proposal.tsx.
+//
+// Rendered by CallToAction once a wallet is connected and the user
+// holds non-zero FLR / AVAX / SGB. Markup carries pricing-* class
+// names from the template.
+//
+// Mobile-first: defaults are the narrower-viewport variant; the
+// xl+ block restores the wider-desktop spacing and price size.
+
+.pricing-area {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.pricing-item {
+    padding: 10px;
+    margin-bottom: 30px;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+
+    .pricing-header {
+        padding: 20px 25px;
+        border-radius: 16px;
+        border: 1px solid var(--border-color);
+
+        .save-percent {
+            margin-bottom: 20px;
+            color: rgb(119, 119, 125);
+            font-size: 20px;
+            line-height: 27px;
+
+            span { color: var(--primary-color); }
+        }
+
+        .price {
+            font-size: 40px;
+            font-weight: 500;
+            color: var(--primary-color);
+            font-family: "Poppins", sans-serif;
+
+            &:before { content: '$'; }
+
+            &:after {
+                content: '/year';
+                font-size: 16px;
+                font-weight: 400;
+                color: var(--main-color);
+            }
+        }
+    }
+
+    .pricing-details {
+        padding: 20px 25px 0;
+
+        p { margin-bottom: 35px; }
+
+        ul {
+            padding-bottom: 12px;
+
+            li {
+                color: rgb(119, 119, 125);
+                margin-bottom: 10px;
+
+                i { padding-right: 10px; }
+
+                &.unable {
+                    color: var(--main-color);
+                    opacity: 0.35;
+                }
+
+                &.unable:before { color: white; }
+            }
+        }
+    }
+}
+
+.pricing-header h4.title {
+    margin: 12px 0;
+    color: var(--subtitle-color);
+    font-size: 22px;
+    line-height: 29px;
+    padding-bottom: 20px;
+}
+
+// Very narrow phones (< 376): tighten the price + list font sizes.
+@media (max-width: 375px) {
+    .pricing-item .pricing-header .price { font-size: 35px; }
+    .pricing-item .pricing-details ul li { font-size: 18px; }
+}
+
+// === xl (1200+): wider desktop card padding and slightly smaller price ===
+
+@include t.up(xl) {
+    .pricing-item {
+        .pricing-header { padding: 20px; }
+
+        .pricing-header .price { font-size: 38px; }
+
+        .pricing-details { padding: 20px 20px 0; }
+    }
+}

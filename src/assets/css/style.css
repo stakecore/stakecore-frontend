@@ -15,7 +15,6 @@ Version      : 1.0
 * 06.SERVICE CSS STYLE
 * 08.RESUME CSS STYLE
 * 10.TESTIMONIALS CSS STYLE
-* 11.PRICING CSS STYLE
 * 15.PRELOADER & BOUNCE CCS STYLE
 * ----------------------------------------------------------------------------------------
 */
@@ -1404,106 +1403,6 @@ html {
 }
 
 
-
-
-
-
-/*
-* ----------------------------------------------------------------------------------------
-* 11.PRICING CSS STYLE
-* ----------------------------------------------------------------------------------------
-*/
-.pricing-area {
-    padding-top: 15px;
-    padding-bottom: 15px;
-}
-
-.pricing-item {
-    padding: 10px;
-    border-radius: 16px;
-    margin-bottom: 30px;
-    border: 1px solid var(--border-color);
-
-}
-
-.pricing-item .pricing-header {
-    padding: 20px 20px;
-    border-radius: 16px;
-    border: 1px solid var(--border-color);
-}
-
-.pricing-header h4.title {
-    margin: 12px 0px;
-    color: var(--subtitle-color);
-    font-size: 22px;
-    line-height: 29px;
-    padding-bottom: 20px;
-}
-
-.pricing-item .pricing-header .save-percent {
-    margin-bottom: 20px;
-    color: rgb(119, 119, 125);
-    font-size: 20px;
-    line-height: 27px;
-}
-
-.pricing-item .pricing-header .save-percent span {
-    color: var(--primary-color);
-}
-
-.pricing-item .pricing-header .price {
-    font-size: 38px;
-    font-weight: 500;
-    color: var(--primary-color);
-    font-family: "Poppins", sans-serif;
-}
-
-
-
-.pricing-item .pricing-header .price:before {
-    content: '$';
-}
-
-.pricing-item .pricing-header .price:after {
-    font-size: 16px;
-    font-weight: 400;
-    color: var(--main-color);
-    content: '/year';
-}
-
-.pricing-item .pricing-details {
-    padding: 20px 20px 0 20px;
-}
-
-
-
-.pricing-item .pricing-details p {
-    margin-bottom: 35px;
-}
-
-.pricing-item .pricing-details ul {
-    padding-bottom: 12px;
-}
-
-.pricing-item .pricing-details ul li {
-    color: rgb(119, 119, 125);
-    margin-bottom: 10px;
-}
-
-.pricing-item .pricing-details ul li i {
-    padding-right: 10px;
-}
-
-
-.pricing-item .pricing-details ul li.unable {
-    color: var(--main-color);
-    opacity: 0.35;
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=35)";
-}
-
-.pricing-item .pricing-details ul li.unable:before {
-    color: white;
-}
 
 
 
