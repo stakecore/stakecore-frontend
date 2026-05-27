@@ -276,11 +276,6 @@ label {
 
 /* ---- 06. Preloader ---- */
 
-body.loaded {
-    overflow: hidden !important;
-    height: 100% !important;
-}
-
 .preloader {
     position: fixed;
     z-index: 99999999;
@@ -304,7 +299,6 @@ body.loaded {
 
 .preloader .preloader-heading .load-text {
     font-size: 20px;
-    font-weight: 200;
     letter-spacing: 15px;
     text-transform: uppercase;
     z-index: 20;
