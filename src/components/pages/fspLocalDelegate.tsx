@@ -32,6 +32,9 @@ export type FspLocalDelegateProps = {
   wrappedSymbol: string  // WFLR / WSGB
   delegationLabel: string  // displayed in success toasts, e.g. "Stakecore"
   actions: FspLocalDelegateActions
+  // Builds an explorer URL for a given tx hash on the relevant chain.
+  // Used in success toasts so users can verify the tx landed on-chain.
+  explorerTxUrl: (hash: string) => string
   onRefresh: () => void
 }
 
@@ -51,6 +54,7 @@ const FspLocalDelegate = ({
   wrappedSymbol,
   delegationLabel,
   actions,
+  explorerTxUrl,
   onRefresh,
 }: FspLocalDelegateProps) => {
 
@@ -103,17 +107,28 @@ const FspLocalDelegate = ({
 
   // --- Action handlers ---
 
+  // Tiny helper — append a clickable "view tx" link to the success
+  // message when the contract call returned a hash. On error the hash
+  // is undefined and the message renders as plain text.
+  const renderToast = (message: string, hash?: string) =>
+    hash
+      ? <>{message} · <a href={explorerTxUrl(hash)} target="_blank" rel="noreferrer">view tx ↗</a></>
+      : message
+
   async function onSetDelegation() {
     if (!pctValid || !pctChanged || busy) return
     setPhase({ kind: 'delegating' })
     const toastId = toast.loading(`Setting delegation to ${pctValue.toFixed(2)}%…`)
-    const { status } = await actions.delegate(walletAddress, pctBips)
+    const { status, hash } = await actions.delegate(walletAddress, pctBips)
     const ok = status === StatusCode.CONTRACT_CALL_EXECUTED
     toast.update(toastId, {
       type: ok ? 'success' : 'error',
-      render: actionStatusMessage(status, `Delegation set to ${pctValue.toFixed(2)}% to ${delegationLabel}`),
+      render: renderToast(
+        actionStatusMessage(status, `Delegation set to ${pctValue.toFixed(2)}% to ${delegationLabel}`),
+        hash,
+      ),
       isLoading: false,
-      autoClose: 3500,
+      autoClose: 5000,
     })
     setPhase({ kind: 'idle' })
     if (ok) onRefresh()
@@ -123,13 +138,16 @@ const FspLocalDelegate = ({
     if (!wrapValid || busy) return
     setPhase({ kind: 'wrapping' })
     const toastId = toast.loading(`Wrapping ${wrapValue} ${symbol} → ${wrappedSymbol}…`)
-    const { status } = await actions.deposit(walletAddress, wrapValue)
+    const { status, hash } = await actions.deposit(walletAddress, wrapValue)
     const ok = status === StatusCode.CONTRACT_CALL_EXECUTED
     toast.update(toastId, {
       type: ok ? 'success' : 'error',
-      render: actionStatusMessage(status, `Wrapped ${wrapValue} ${symbol} into ${wrappedSymbol}`),
+      render: renderToast(
+        actionStatusMessage(status, `Wrapped ${wrapValue} ${symbol} into ${wrappedSymbol}`),
+        hash,
+      ),
       isLoading: false,
-      autoClose: 3500,
+      autoClose: 5000,
     })
     setPhase({ kind: 'idle' })
     if (ok) { setWrapInput(''); onRefresh() }
@@ -139,13 +157,16 @@ const FspLocalDelegate = ({
     if (!unwrapValid || busy) return
     setPhase({ kind: 'unwrapping' })
     const toastId = toast.loading(`Unwrapping ${unwrapValue} ${wrappedSymbol} → ${symbol}…`)
-    const { status } = await actions.withdraw(walletAddress, unwrapValue)
+    const { status, hash } = await actions.withdraw(walletAddress, unwrapValue)
     const ok = status === StatusCode.CONTRACT_CALL_EXECUTED
     toast.update(toastId, {
       type: ok ? 'success' : 'error',
-      render: actionStatusMessage(status, `Unwrapped ${unwrapValue} ${wrappedSymbol} to ${symbol}`),
+      render: renderToast(
+        actionStatusMessage(status, `Unwrapped ${unwrapValue} ${wrappedSymbol} to ${symbol}`),
+        hash,
+      ),
       isLoading: false,
-      autoClose: 3500,
+      autoClose: 5000,
     })
     setPhase({ kind: 'idle' })
     if (ok) { setUnwrapInput(''); onRefresh() }
@@ -156,13 +177,16 @@ const FspLocalDelegate = ({
     for (const epoch of claimableEpochs) {
       setPhase({ kind: 'claiming', epoch })
       const toastId = toast.loading(`Claiming rewards (epoch ${epoch})…`)
-      const { status } = await actions.claim(walletAddress, epoch)
+      const { status, hash } = await actions.claim(walletAddress, epoch)
       const ok = status === StatusCode.CONTRACT_CALL_EXECUTED
       toast.update(toastId, {
         type: ok ? 'success' : 'error',
-        render: actionStatusMessage(status, `Claimed rewards for epoch ${epoch}`),
+        render: renderToast(
+          actionStatusMessage(status, `Claimed rewards for epoch ${epoch}`),
+          hash,
+        ),
         isLoading: false,
-        autoClose: 3500,
+        autoClose: 5000,
       })
       if (!ok) break
     }

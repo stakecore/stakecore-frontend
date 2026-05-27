@@ -69,6 +69,7 @@ const SongbirdFspLocalDelegateComponent = () => {
           wrappedSymbol={C.WSGB_SYMBOL}
           delegationLabel="Stakecore"
           actions={actions}
+          explorerTxUrl={C.songbirdEvmTransactionUrl}
           onRefresh={() => mutate(swrKey)}
         />
       </div>

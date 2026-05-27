@@ -50,8 +50,59 @@ export async function contractCallAdapter<T>(
     const hash = await fun(provider, address, args)
     return { status: StatusCode.CONTRACT_CALL_EXECUTED, hash }
   } catch (e: any) {
-    return { status: e?.message ?? 'unknown error' }
+    return { status: extractFriendlyError(e) }
   }
+}
+
+// Maps the most common error shapes from EIP-1193 wallets and ethers
+// into short, user-readable strings. Anything not recognised falls back
+// to the underlying message — never throws, never crashes.
+//
+// Standard codes covered:
+//   EIP-1193: 4001 (rejected), 4100 (unauthorized), 4900 (disconnected)
+//   JSON-RPC: -32002 (pending), -32603 (internal)
+//   ethers:   ACTION_REJECTED, INSUFFICIENT_FUNDS, UNPREDICTABLE_GAS_LIMIT,
+//             CALL_EXCEPTION (revert), NETWORK_ERROR
+export function extractFriendlyError(e: any): string {
+  if (e == null) return 'unknown error'
+
+  // Wallets sometimes nest the original error under .info.error or .error.
+  const inner = e?.info?.error ?? e?.error ?? e
+  const code = inner?.code ?? e?.code
+
+  // User-rejected paths.
+  if (code === 4001 || code === 'ACTION_REJECTED') {
+    return 'rejected in wallet'
+  }
+  // Pending request — wallet already has one open.
+  if (code === -32002) {
+    return 'wallet has a pending request — open it to approve or reject'
+  }
+  // Wallet returned an internal error (often transient).
+  if (code === -32603) {
+    return 'wallet returned an internal error — please try again'
+  }
+  // Unauthorized — wallet has not granted account permission.
+  if (code === 4100) {
+    return 'wallet has not granted account permission'
+  }
+  // Wallet disconnected from all chains.
+  if (code === 4900 || code === 4901) {
+    return 'wallet is disconnected'
+  }
+  // Insufficient funds for gas + value.
+  if (code === 'INSUFFICIENT_FUNDS') {
+    return 'insufficient funds for gas + transaction value'
+  }
+  // On-chain revert — ethers exposes the reason at .reason / .shortMessage.
+  if (code === 'CALL_EXCEPTION' || e?.reason) {
+    return e?.reason ? `reverted: ${e.reason}` : 'transaction reverted on-chain'
+  }
+  // Generic ethers short message (v6) — usually the most useful summary.
+  if (e?.shortMessage) return e.shortMessage
+
+  // Final fallback to the raw message, trimmed.
+  return Formatter.error(e?.message ?? String(e))
 }
 
 export function actionStatusMessage(status: Status, msg: string): string {

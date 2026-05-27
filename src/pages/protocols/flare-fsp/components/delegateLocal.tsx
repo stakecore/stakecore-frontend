@@ -73,6 +73,7 @@ const FlareFspLocalDelegateComponent = () => {
           wrappedSymbol={C.WFLR_SYMBOL}
           delegationLabel="Stakecore"
           actions={actions}
+          explorerTxUrl={C.flareEvmTransactionUrl}
           onRefresh={() => mutate(swrKey)}
         />
       </div>
