@@ -8,6 +8,7 @@ import ServerError from '../ui/serverError'
 import DelegationSummary from '../ui/delegationSummary'
 import RecentActivity from '../ui/recentActivity'
 import { REFRESH_QUERY_SLOW_MS } from '~/constants'
+import './hero.scss'
 
 
 const Hero = () => {

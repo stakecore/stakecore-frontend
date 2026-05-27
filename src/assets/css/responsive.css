@@ -17,26 +17,15 @@ Version      : 1.0
     .section-title p {
         padding: 0px 100px;
     }
-    .about-image-part h2 {
-    font-size: 30px;
-}
-.about-social ul li {
-    display: inline-block;
-    margin: 15px 2px 15px 2px;
-}
-.call-to-action-part {
-    padding: 60px 60px;
-}
+    .call-to-action-part {
+        padding: 60px 60px;
+    }
 }
 
 
 /* Tablet Layout: 768px. */
 
 @media only screen and (min-width: 767px) and (max-width: 991px) {
-    .about-social {
-        margin-bottom: 30px;
-    }
-
     .call-to-action-part {
         padding: 50px;
     }
@@ -48,11 +37,6 @@ Version      : 1.0
 
     .main-hero-area {
         padding-top: 100px;
-    }
-
-
-    .about-area {
-        padding-top: 80px;
     }
 
     .resume-area {
@@ -190,10 +174,6 @@ Version      : 1.0
         line-height: 40px;
     }
 
-    .about-area {
-        padding-top: 60px;
-    }
-
     .about-content-part {
         margin-top: 30px;
     }
@@ -212,10 +192,6 @@ Version      : 1.0
 
     .single-project-page-design h1 {
         font-size: 30px;
-    }
-
-    .about-image-part {
-        padding-bottom: 30px;
     }
 
     .contact-form-area {
@@ -440,11 +416,6 @@ Version      : 1.0
 
 
 
-@media only screen and (max-width: 375px) {
-    .about-image-part {
-        padding-left: 50px;
-    }
-}
 
 
 

@@ -1031,11 +1031,6 @@ html {
 * 05.ABOUT CSS STYLE
 * ----------------------------------------------------------------------------------------
 */
-.about-area {
-    padding-top: 115px;
-    padding-bottom: 15px;
-}
-
 .about-single-area {
     padding-bottom: 15px;
 }
@@ -1083,40 +1078,12 @@ html {
     background-color: #121214;
 }
 
-.about-content-part {}
-
-.about-image-part {
-    text-align: center;
+.about-content-part {
     padding: 40px;
     border: 1px solid rgba(0, 0, 0, 0.05);
     border-radius: 20px;
     box-shadow: rgba(255, 255, 255, 0.025) 0px 0.362176px 0.651917px -1px inset, rgba(255, 255, 255, 0.036) 0px 3px 5.4px -2px inset;
     background-color: #121214;
-}
-
-.about-content-part,
-.about-content-part-bottom {
-    padding: 40px;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    border-radius: 20px;
-    box-shadow: rgba(255, 255, 255, 0.025) 0px 0.362176px 0.651917px -1px inset, rgba(255, 255, 255, 0.036) 0px 3px 5.4px -2px inset;
-    background-color: #121214;
-}
-
-.about-content-part-bottom {
-    margin-top: 30px;
-}
-
-.about-content-part-bottom h2 {
-    margin-bottom: 35px;
-}
-
-.about-image-part img {
-    width: 300px;
-}
-
-.about-image-part h2 {
-    font-size: 40px;
 }
 
 .about-content-part h2 {
@@ -1140,34 +1107,6 @@ html {
     font-size: 13px;
 }
 
-
-.about-social {
-    margin-top: 30px;
-}
-
-.about-social ul {
-    list-style: none;
-}
-
-.about-social ul li {
-    display: inline-block;
-    margin: 0px 15px;
-}
-
-.about-social ul li a {
-    font-size: 20px;
-    border: 1px solid rgb(255 255 255 / 5%);
-    padding: 10px 12px;
-    border-radius: 10px;
-}
-
-.about-image-part .dot-shape {
-    position: absolute;
-    left: -10%;
-    top: 25%;
-    -webkit-animation: rotated_circle linear 10s infinite;
-    animation: rotated_circle linear 10s infinite;
-}
 
 .about-btn {
     display: inline-flex;
