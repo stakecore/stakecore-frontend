@@ -48,17 +48,8 @@ Version      : 1.0
         padding-top: 50px;
     }
 
-    .contact-form-area {
-        margin-top: 30px;
-    }
-
     .client-logo-area {
         padding-top: 50px;
-    }
-
-    .contact-area {
-        padding-top: 0;
-        padding-bottom: 0;
     }
 
     .blog-area {
@@ -151,10 +142,6 @@ Version      : 1.0
     }
 
     .experience-list {
-        margin-top: 30px;
-    }
-
-    .contact-form-area {
         margin-top: 30px;
     }
 
@@ -739,31 +726,6 @@ Version      : 1.0
     .service-item .content {
         margin-top: 25px;
         margin-bottom: 25px;
-    }
-}
-
-@media only screen and (max-width: 479px) {
-    .contact-page-form {
-        padding-left: 20px;
-        padding-right: 20px;
-    }
-}
-
-@media only screen and (max-width: 1399px) {
-    .our-location iframe {
-        height: 500px;
-    }
-}
-
-@media only screen and (max-width: 991px) {
-    .our-location iframe {
-        height: 400px;
-    }
-}
-
-@media only screen and (max-width: 575px) {
-    .our-location iframe {
-        height: 350px;
     }
 }
 

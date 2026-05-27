@@ -1,5 +1,6 @@
 import ContactOption from '../components/sections/contact/contactOption'
 import ContactForm from '../components/sections/contact/contactForm'
+import '../components/sections/contact/contact.scss'
 
 const Contact = () => {
   return (
