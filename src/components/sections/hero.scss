@@ -1,19 +1,23 @@
-// Hero / landing section styles, co-located with hero.tsx.
+@use '../../assets/css/tokens' as t;
+
+// Hero / landing section.
 //
-// Note: hero.tsx markup uses .about-* class names (a quirk inherited
-// from the original template — the file is named hero but the elements
-// carry "about" classes). The .about-content-part class itself is
-// shared with summary.jsx / about.jsx / callToAction.tsx and its
-// base styling stays in style.css §05.ABOUT.
+// Mobile-first: defaults target small phones; padding and h2 scale up
+// at md / lg / xxl. The .about-content-part base styling stays in
+// style.css because that class is shared with summary / about / CTA.
+//
+// Note: hero.tsx markup uses .about-* class names (template quirk —
+// file is named hero but elements carry "about" classes).
 
 .about-area {
-    padding-top: 115px;
+    padding-top: 60px;
     padding-bottom: 15px;
 }
 
 .about-image-part {
     text-align: center;
     padding: 40px;
+    padding-bottom: 30px;
     border: 1px solid rgba(0, 0, 0, 0.05);
     border-radius: 20px;
     box-shadow:
@@ -56,27 +60,32 @@
     }
 }
 
-// --- Responsive overrides (verbatim breakpoints from template) ---
-
-@media only screen and (min-width: 992px) and (max-width: 1280px) {
-    .about-image-part h2 { font-size: 30px; }
-
-    .about-social ul li {
-        display: inline-block;
-        margin: 15px 2px 15px 2px;
-    }
-}
-
-@media only screen and (min-width: 767px) and (max-width: 991px) {
-    .about-social { margin-bottom: 30px; }
-    .about-area { padding-top: 80px; }
-}
-
-@media only screen and (max-width: 767px) {
-    .about-area { padding-top: 60px; }
-    .about-image-part { padding-bottom: 30px; }
-}
-
-@media only screen and (max-width: 375px) {
+// Very narrow phones (< 376px): extra left padding inside the image
+// card. Literal breakpoint preserved from template — falls below sm.
+@media (max-width: 375px) {
     .about-image-part { padding-left: 50px; }
+}
+
+// === md (768+): tablet ===
+
+@include t.up(md) {
+    .about-area { padding-top: 80px; }
+    .about-image-part { padding-bottom: 40px; }
+    .about-social { margin-bottom: 30px; }
+}
+
+// === lg (992+): desktop ===
+
+@include t.up(lg) {
+    .about-area { padding-top: 115px; }
+    .about-image-part h2 { font-size: 30px; }
+    .about-social { margin-bottom: 0; }
+    .about-social ul li { margin: 15px 2px; }
+}
+
+// === xxl (1400+): wide desktop ===
+
+@include t.up(xxl) {
+    .about-image-part h2 { font-size: 40px; }
+    .about-social ul li { margin: 0 15px; }
 }
