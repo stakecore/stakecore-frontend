@@ -1,4 +1,8 @@
+@use '../../assets/css/tokens' as t;
+
 // Footer styles, co-located with footer.jsx.
+// Mobile-first: by default the two copyright lines stack and centre;
+// at lg+ they become a two-column layout with the right column right-aligned.
 
 .footer-bottom {
     .copyright-text {
@@ -6,6 +10,7 @@
         font-size: 14px;
         line-height: 20px;
         font-weight: 500;
+        text-align: center;
     }
 
     .copyright-text a {
@@ -14,21 +19,10 @@
 }
 
 .extra-copyright p {
-    text-align: right;
+    text-align: center;
 }
 
-// Verbatim media-query blocks from the original template.
-
-@media only screen and (min-width: 767px) and (max-width: 991px) {
-    .copyright-text,
-    .extra-copyright p {
-        text-align: center;
-    }
-}
-
-@media only screen and (max-width: 767px) {
-    .copyright-text,
-    .extra-copyright p {
-        text-align: center;
-    }
+@include t.up(lg) {
+    .footer-bottom .copyright-text { text-align: left; }
+    .extra-copyright p { text-align: right; }
 }
