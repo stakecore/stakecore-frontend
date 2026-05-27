@@ -14,7 +14,6 @@ Version      : 1.0
 * 05.ABOUT CSS STYLE
 * 06.SERVICE CSS STYLE
 * 08.RESUME CSS STYLE
-* 09.PORTFOLIO CSS STYLE
 * 10.TESTIMONIALS CSS STYLE
 * 11.PRICING CSS STYLE
 * 13.CONTACT CSS STYLE
@@ -1343,117 +1342,6 @@ html {
 
 
 
-
-
-
-/*
-* ----------------------------------------------------------------------------------------
-* 09.PORTFOLIO CSS STYLE
-* ----------------------------------------------------------------------------------------
-*/
-.single-project-page-right,
-.single-project-page-left {
-    padding: 40px;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    border-radius: 15px;
-    box-shadow: rgba(255, 255, 255, 0.025) 0px 0.362176px 0.651917px -1px inset, rgba(255, 255, 255, 0.036) 0px 3px 5.4px -2px inset;
-    background-color: #121214;
-}
-
-.single-project-page-design {
-    padding-top: 200px;
-}
-
-.single-project-image img {
-    width: 100%;
-}
-
-.single-info h3 {
-    font-size: 20px;
-}
-.single-image{
-    margin-bottom: 30px;
-}
-.single-info {
-    padding-bottom: 30px;
-}
-.single-info:last-child{
-    padding-bottom: 0px;
-}
-
-.single-info p {
-    margin-bottom: 0;
-}
-
-.single-project-item {
-    padding: 30px;
-    border: 1px solid var(--border-color);
-}
-
-/* Protocol Details */
-.project-details-content h3 {
-    margin-bottom: 35px;
-}
-
-.project-details-content .list-style-one {
-    max-width: 600px;
-    -webkit-box-pack: justify;
-    -ms-flex-pack: justify;
-    justify-content: space-between;
-}
-
-.project-details-content .list-style-one li {
-    font-size: 18px;
-    font-weight: 400;
-    margin-bottom: 20px;
-}
-
-.project-details-content .list-style-one li:before {
-    font-size: 24px;
-    margin-right: 15px;
-}
-
-.project-details-info {
-    padding: 40px 60px;
-    border-radius: 15px;
-    background-color: var(--primary-color);
-}
-
-
-.pd-info-item:not(:last-child) {
-    margin-bottom: 35px;
-}
-
-.pd-info-item span {
-    display: block;
-    color: var(--lighter-color);
-    font-family: "Poppins", sans-serif;
-}
-
-.pd-info-item h5 {
-    color: var(--lighter-color);
-    font-family: "Poppins", sans-serif;
-    y: "Syne", sans-serif;
-}
-
-
-.tag-share {
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-    padding: 20px 40px 0;
-    border-radius: 12px;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-    -webkit-box-pack: justify;
-    -ms-flex-pack: justify;
-    justify-content: space-between;
-    background: var(--lighter-color);
-    border: 1px solid var(--border-color);
-}
 
 
 

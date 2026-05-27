@@ -1,0 +1,40 @@
+// Shared styles for the four protocol detail pages
+// (flare-validator, flare-fsp, songbird-fsp, avalanche-validator).
+// Imported from each page.tsx.
+
+.single-project-page-design {
+    padding-top: 200px;
+}
+
+.single-project-page-right {
+    padding: 40px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 15px;
+    box-shadow:
+        rgba(255, 255, 255, 0.025) 0px 0.362176px 0.651917px -1px inset,
+        rgba(255, 255, 255, 0.036) 0px 3px 5.4px -2px inset;
+    background-color: #121214;
+}
+
+.single-info {
+    padding-bottom: 30px;
+
+    &:last-child { padding-bottom: 0; }
+
+    h3 { font-size: 20px; }
+    p { margin-bottom: 0; }
+}
+
+// --- Responsive overrides (verbatim breakpoints from template) ---
+
+@media only screen and (min-width: 767px) and (max-width: 991px) {
+    .single-project-page-design { padding-top: 120px; }
+    .single-project-page-design h1 { font-size: 40px; }
+    .single-project-page-right { margin-top: 30px; }
+}
+
+@media only screen and (max-width: 767px) {
+    .single-project-page-right { margin-top: 30px; }
+    .single-project-page-design { padding-top: 100px; }
+    .single-project-page-design h1 { font-size: 30px; }
+}

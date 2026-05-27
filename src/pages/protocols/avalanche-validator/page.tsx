@@ -8,6 +8,7 @@ import AvalancheValidatorStatisticsComponent from "./components/statistics"
 import AvalancheValidatorOfficialDelegateComponent from "./components/delegateOfficial"
 import AvalancheValidatorDataAccess from "./data"
 import { AVALANCHE_COLOR_CODE } from '~/constants'
+import '../protocols.scss'
 
 
 export const AvalancheValidatorPage = () => {

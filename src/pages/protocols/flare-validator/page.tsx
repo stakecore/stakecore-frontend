@@ -9,6 +9,7 @@ import FlareValidatorOfficialDelegateComponent from "./components/delegateOffici
 import FlareValidatorLocalDelegateComponent from "./components/delegateLocal"
 import FlareValidatorDataAccess from "./data"
 import { FLARE_COLOR_CODE } from '~/constants'
+import '../protocols.scss'
 
 
 export const FlareValidatorPage = () => {

@@ -11,6 +11,7 @@ import FlareFspOfficialDelegateComponent from './components/delegateOfficial'
 import FlareFspLocalDelegateComponent from './components/delegateLocal'
 import { Chain } from '~/enums'
 import { FLARE_COLOR_CODE, flareEvmAddressUrl } from "~/constants"
+import '../protocols.scss'
 
 
 const CHAIN = 'flare'

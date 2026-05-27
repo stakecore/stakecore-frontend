@@ -11,6 +11,7 @@ import SongbirdFspLocalDelegateComponent from './components/delegateLocal'
 import FspStatsComponent from '~/components/pages/fsp-stats'
 import { SONGBIRD_COLOR_CODE, songbirdEvmAddressUrl } from "~/constants"
 import SongbirdFspOfficialDelegateComponent from './components/delegateOfficial'
+import '../protocols.scss'
 
 const CHAIN = 'songbird'
 
