@@ -149,7 +149,9 @@
     }
 
     // Social row inside the mobile drawer.
-    .drawer-social {
+    // Selector specificity needs to beat `.navbar-collapse > ul` /
+    // `.navbar-collapse li` above, which otherwise stack the icons.
+    .navbar-collapse > .drawer-social {
         display: flex;
         list-style: none;
         margin: 8px 0 0;
@@ -157,12 +159,19 @@
         gap: 4px;
         border-top: 1px solid rgba(255, 255, 255, 0.06);
 
+        li {
+            display: inline-flex;
+            padding: 0;
+            border-top: none;
+        }
+
         li a {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             width: 36px;
             height: 36px;
+            padding: 0;
             color: var(--main-color);
             border-radius: t.$radius-sm;
             transition: color 150ms ease-out, background-color 150ms ease-out;
