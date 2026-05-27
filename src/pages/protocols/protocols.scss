@@ -16,6 +16,7 @@
 .single-project-page-left,
 .single-project-page-right {
     padding: 40px;
+    margin-bottom: 30px;
     border: 1px solid rgba(0, 0, 0, 0.05);
     border-radius: 15px;
     box-shadow:
@@ -23,10 +24,6 @@
         rgba(255, 255, 255, 0.036) 0px 3px 5.4px -2px inset;
     background-color: #121214;
 }
-
-// Right card sits below the left card on stacked (sub-lg) layouts;
-// add vertical spacing then reset side-by-side at lg+.
-.single-project-page-right { margin-top: 30px; }
 
 .single-info {
     padding-bottom: 30px;
@@ -55,9 +52,5 @@
 
         // Restore the global h1 size (58px in style.css §01.GLOBAL).
         h1 { font-size: 58px; }
-    }
-
-    .single-project-page-right {
-        margin-top: 0;
     }
 }
