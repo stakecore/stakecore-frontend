@@ -59,5 +59,8 @@
     "openapi-typescript-codegen": "^0.29.0",
     "sass-embedded": "^1.93.2",
     "vite": "^7.3.2"
+  },
+  "resolutions": {
+    "handlebars": "^4.7.9"
   }
 }
