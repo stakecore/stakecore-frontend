@@ -3,44 +3,17 @@ import { SpinnerCircular } from 'spinners-react'
 import { useCookies } from 'react-cookie'
 import { Eip1193Provider, recoverAddress, SigningKey, hashMessage } from 'ethers'
 import { useGlobalStore } from "~/utils/store/global"
-import { flarePChainAddressUrl, REFRESH_QUERY_FAST_MS } from "~/constants"
+import { flarePChainAddressUrl, FLR_SYMBOL, REFRESH_QUERY_FAST_MS } from "~/constants"
 import ServerError from "~/components/ui/serverError"
-import StakeFlow from "~/components/ui/stakeFlow"
 import { HashLink } from "~/components/utils/links"
-import { IStakeFlow } from "~/components/types"
 import { toast } from "react-toastify"
 import { Formatter } from "~/utils/misc/formatter"
 import { personalSign } from "~/utils/eip6963/eip1193"
 import { publicKeyToPAddress } from "~/utils/misc/addresses"
 import FlareValidatorDataAccess from "../data"
-import * as C from '../layout'
-import type { AvalancheDelegatorInfoDto } from "~/backendApi"
 
 
 const TEST_SIGN_MSG = 'STAKECORE-TEST-MESSAGE'
-
-function delegatorInfoToStakeFlow(position: AvalancheDelegatorInfoDto): IStakeFlow['data'] {
-  const delegated = position.delegations.reduce((x, y) => x + y.delegated, 0)
-  return [{
-    address: position.cChain.address,
-    balance: position.cChain.balance,
-    price: position.cChain.price,
-    conversions: [C.C_TO_P_FACTOR, C.P_TO_C_FACTOR],
-    fixedInputValue: null
-  }, {
-    address: position.pChain.address,
-    balance: position.pChain.balance,
-    price: position.pChain.price,
-    conversions: [C.C_TO_P_FACTOR, C.P_TO_C_FACTOR],
-    fixedInputValue: null
-  }, {
-    address: position.pChain.address,
-    balance: delegated,
-    price: position.pChain.price,
-    conversions: [null, null],
-    fixedInputValue: 0
-  }]
-}
 
 async function requestSignature(address: string, provider: Eip1193Provider) {
   const fadr = Formatter.address(address)
@@ -149,17 +122,31 @@ const FlareValidatorLocalDelegateComponent = () => {
     </div>
   } else if (resp?.data == null) {
     component = <ServerError status={500} message={error} />
-  } else if (resp?.data != null) {
-    component = <>
-      <div>
-        <div className="flare-stake-flow-container mt-40">
-          <div style={{ textAlign: 'center' }}>
-            <HashLink address={pchain} url={flarePChainAddressUrl(resp.data.pChain.address)} />
-          </div>
-          <StakeFlow layout={C.DELEGATE_FLOW_LAYOUT} data={delegatorInfoToStakeFlow(resp.data)} />
+  } else {
+    const delegated = resp.data.delegations.reduce((x, y) => x + y.delegated, 0)
+    component = <div>
+      <div style={{ textAlign: 'center' }} className="mb-20">
+        <HashLink address={pchain} url={flarePChainAddressUrl(resp.data.pChain.address)} />
+      </div>
+      <div className="balance-summary">
+        <div className="balance-row">
+          <span className="balance-label">C-chain balance</span>
+          <span className="balance-value">{Formatter.number(resp.data.cChain.balance)} {FLR_SYMBOL}</span>
+        </div>
+        <div className="balance-row">
+          <span className="balance-label">P-chain balance</span>
+          <span className="balance-value">{Formatter.number(resp.data.pChain.balance)} {FLR_SYMBOL}</span>
+        </div>
+        <div className="balance-row">
+          <span className="balance-label">Delegated</span>
+          <span className="balance-value">{Formatter.number(delegated)} {FLR_SYMBOL}</span>
         </div>
       </div>
-    </>
+      <p className="mt-20">
+        On-site delegation is not yet wired up for Flare validators. To delegate, use the
+        official Flare staking interface linked in the section below.
+      </p>
+    </div>
   }
 
   return (

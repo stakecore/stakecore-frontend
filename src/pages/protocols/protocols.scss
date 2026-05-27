@@ -136,3 +136,43 @@
 
     .col-lg-9 .single-project-page-right { margin-top: 0; }
 }
+
+// Read-only balance summary used by the Flare-validator local-delegate
+// panel. Three rows (C-chain / P-chain / Delegated) — the on-site
+// validator delegate flow is not yet wired up, so we show the position
+// and point users to the official interface below.
+.balance-summary {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--body-background);
+}
+
+.balance-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+
+    &:last-child { border-bottom: none; }
+}
+
+.balance-label {
+    font-family: var(--font-sans);
+    font-size: t.$text-xs;
+    font-weight: t.$weight-medium;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--main-color);
+}
+
+.balance-value {
+    font-family: var(--font-sans);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
+    font-size: t.$text-lg;
+    font-weight: t.$weight-medium;
+    color: var(--heading-color);
+}

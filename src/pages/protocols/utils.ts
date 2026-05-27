@@ -3,7 +3,6 @@ import { Status, StatusCode } from "~/enums"
 import { useGlobalStore } from "~/utils/store/global"
 import { requestAccounts, switchNetworkIfNecessary } from "~/utils/eip6963/eip1193"
 import type { Eip1193Provider } from "ethers"
-import type { IStakeFlowBarAction } from "~/components/types"
 
 
 // Result of a contract call attempt. `status` is always present (success
@@ -118,13 +117,6 @@ export function actionStatusMessage(status: Status, msg: string): string {
     default:
       return Formatter.error(status as string)
   }
-}
-
-export function injectActionArg(action: IStakeFlowBarAction, arg: any) {
-  if (!action.active) return
-  const mod = action as any as { original: any }
-  if (mod.original == null) mod.original = action.method
-  action.method = (address, _1, _2) => mod.original(address, _1, _2, arg)
 }
 
 // this is specifically made for flare and avalanche info summary component
