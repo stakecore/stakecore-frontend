@@ -6,8 +6,8 @@ import {
     RiServerLine,
     RiLineChartLine,
     RiPulseLine,
-    RiNodeTree,
 } from '@remixicon/react'
+import InfraConstellation from '../components/pages/infraConstellation'
 import './about.scss'
 
 
@@ -64,25 +64,6 @@ const audiences = [
 ]
 
 
-const stack = [
-    {
-        icon: <RiServerLine size={32} />,
-        title: 'Validator nodes',
-        body: 'Snowball consensus participation on Avalanche and Flare. Redundant deployments across regions.',
-    },
-    {
-        icon: <RiNodeTree size={32} />,
-        title: 'FSP & SSP signers',
-        body: 'Flare Systems Protocol and Songbird Systems Protocol signing infrastructure with sub-epoch reliability targets.',
-    },
-    {
-        icon: <RiPulseLine size={32} />,
-        title: '24/7 monitoring',
-        body: 'Automated alerting, on-call rotation, and a transparent uptime record published live on this site.',
-    },
-]
-
-
 const valueProps = [
     {
         icon: <RiShieldCheckLine size={28} />,
@@ -132,17 +113,17 @@ const Stack = () => (
     <section className="about-section">
         <div className="container">
             <header className="about-section-header">
-                <p className="about-section-header-sup">What we run</p>
-                <h2 className="about-section-header-main">The full consensus stack</h2>
+                <p className="about-section-header-sup">Infrastructure</p>
+                <h2 className="about-section-header-main">A small cluster, plenty of redundancy</h2>
             </header>
-            <div className="about-grid">
-                {stack.map(({ icon, title, body }, i) => (
-                    <article key={i} className="about-tile">
-                        <div className="about-tile-icon">{icon}</div>
-                        <h3 className="about-tile-title">{title}</h3>
-                        <p className="about-tile-body">{body}</p>
-                    </article>
-                ))}
+            <p className="about-section-body">
+                Three Nomad server nodes orchestrate the validators and FSP signers we
+                run across Flare, Songbird, and Avalanche. Any client node can host any
+                workload — failure of a single node is recovered automatically by
+                re-scheduling somewhere else in the cluster.
+            </p>
+            <div className="about-constellation-wrap">
+                <InfraConstellation />
             </div>
         </div>
     </section>

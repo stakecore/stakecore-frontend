@@ -76,6 +76,28 @@
     @include t.up(md) { font-size: 40px; }
 }
 
+// Section body paragraph used under the section header (e.g. the
+// Infrastructure section above the constellation viz).
+.about-section-body {
+    font-family: var(--font-sans);
+    font-size: t.$text-base;
+    line-height: 1.5;
+    color: var(--main-color);
+    margin: 16px 0 32px;
+    max-width: 640px;
+}
+
+// Reserves a generous square block for the constellation SVG and
+// centres it. The SVG itself is responsive (max-width: 600px,
+// aspect-ratio 1/1), so this just adds vertical breathing room.
+.about-constellation-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 24px 0;
+
+    @include t.up(md) { padding: 48px 0; }
+}
+
 .about-grid {
     display: grid;
     grid-template-columns: 1fr;

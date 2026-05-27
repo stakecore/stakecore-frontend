@@ -1,0 +1,88 @@
+@use '../../assets/css/tokens' as t;
+
+// Abstract Nomad-cluster visualisation.
+//
+// Behaviour model:
+//   - 12 workload nodes total, 3 per type × 4 types
+//   - 2 of each type are active (bright + connected); 1 is a hot spare
+//     (dim, no line)
+//   - Every ~3s a random active workload "fails"; a same-type spare
+//     fades in and inherits its server connection
+//
+// CSS responsibility: handle the opacity transitions for the dots,
+// halos, and lines based on their `.active` / `.flickering` classes.
+// React handles the timing + state.
+
+.infra-constellation {
+    display: block;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    overflow: visible;
+}
+
+// --- Connection lines ---
+
+.infra-line {
+    stroke: rgba(255, 255, 255, 0.18);
+    stroke-width: 1;
+    fill: none;
+    // Dashes moving from server end (x1, y1) toward workload (x2, y2)
+    // — read as control plane / heartbeat traffic.
+    stroke-dasharray: 3 9;
+    animation: infra-flow 2.2s linear infinite;
+    opacity: 0;
+    transition: opacity 400ms ease-out;
+}
+
+.infra-line.active {
+    opacity: 1;
+}
+
+@keyframes infra-flow {
+    to { stroke-dashoffset: -36; }
+}
+
+// --- Workload dots ---
+//
+// All 12 dots render. Spares (inactive) are dim — they signal "this
+// capacity is available, we're just not routing through it right now"
+// — and the 3 active dots are bright with live lines back to their
+// chain's server. When an active fails, a same-chain spare brightens
+// and takes over.
+
+.infra-workload {
+    opacity: 0.2;
+    transition: opacity 400ms ease-out;
+}
+
+.infra-workload.active {
+    opacity: 0.95;
+}
+
+// --- Workload halos (faint glow behind each dot, type-tinted) ---
+
+.infra-workload-halo {
+    opacity: 0;
+    transition: opacity 400ms ease-out;
+}
+
+.infra-workload-halo.active {
+    opacity: 0.12;
+}
+
+// --- Server cluster ---
+//
+// Subtle sage green so the coordination layer reads as visually
+// distinct from the chain-coloured workloads orbiting around it.
+
+.infra-server {
+    fill: #7fb88f;
+}
+
+.infra-server-halo {
+    fill: #7fb88f;
+    opacity: 0.18;
+}
