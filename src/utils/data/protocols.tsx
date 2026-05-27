@@ -1,7 +1,7 @@
-import avalancheValidatorThumbnail from "../../assets/images/protocols/avalanche/validator/thumbnail.png"
-import flareValidatorThumbnail from "../../assets/images/protocols/flare/validator/thumbnail.png"
-import flareFspThumbnail from "../../assets/images/protocols/flare/fsp/thumbnail.png"
-import songbirdFspThumbnail from "../../assets/images/protocols/songbird/fsp/thumbnail.png"
+import avalancheValidatorThumbnail from "../../assets/images/protocols/avalanche/validator/thumbnail.svg"
+import flareValidatorThumbnail from "../../assets/images/protocols/flare/validator/thumbnail.svg"
+import flareFspThumbnail from "../../assets/images/protocols/flare/fsp/thumbnail.svg"
+import songbirdFspThumbnail from "../../assets/images/protocols/songbird/fsp/thumbnail.svg"
 
 // 1920 x 1249
 export const protocolsData = [
