@@ -17,7 +17,6 @@ export const router = createHashRouter([
             { path: "/", element: <Home /> },
             lazyRoute("/contact", () => import("../pages/contact")),
             lazyRoute("/about", () => import("../pages/about")),
-            lazyRoute("/protocols", () => import("../pages/protocols")),
             lazyRoute("/avalanche/validator", () => import("../pages/protocols/avalanche-validator/page")),
             lazyRoute("/flare/validator", () => import("../pages/protocols/flare-validator/page")),
             lazyRoute("/flare/fsp", () => import("../pages/protocols/flare-fsp/page")),

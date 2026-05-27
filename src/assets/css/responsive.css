@@ -8,10 +8,10 @@
     --bs-gutter-x: 30px;
 }
 
-/* .innerpage-single-area: top padding scales up at desktop so inner pages
- * (about, contact, /protocols) clear the fixed header by a comfortable
- * margin. Used by 3 routes; the literal value covers header + breathing
- * room across breakpoints. */
+/* .innerpage-single-area: top padding scales up at desktop so inner
+ * pages (about, contact) clear the fixed header by a comfortable
+ * margin. The literal value covers header + breathing room across
+ * breakpoints. */
 .innerpage-single-area {
     padding-top: 60px !important;
 }

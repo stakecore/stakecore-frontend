@@ -4,7 +4,7 @@ import { RiArrowRightUpLine } from '@remixicon/react'
 import { protocolsData } from '../../utils/data/protocols'
 import './portfolio.scss'
 
-const Portfolio = ({ className = '' }) => {
+const Portfolio = () => {
     const [category, setCategory] = useState('All')
 
     const filteredCategory = ['All']
@@ -17,7 +17,7 @@ const Portfolio = ({ className = '' }) => {
         : protocolsData.filter(p => p.category === category)
 
     return (
-        <section className={`protocols ${className}`}>
+        <section className="protocols">
             <div className="container">
                 <header className="protocols-header">
                     <h2 className="protocols-title">Protocols</h2>
