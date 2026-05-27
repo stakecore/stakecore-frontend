@@ -27,15 +27,6 @@
   transition: opacity 1s;
 }
 
-.connect-wallet-button {
-  min-width: 200px;
-}
-
-.connect-wallet-button>img {
-  width: 16px;
-  margin-right: 8px;
-}
-
 .video-container {
   text-align: center;
   position: relative;

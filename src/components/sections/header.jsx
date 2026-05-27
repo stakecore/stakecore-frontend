@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { menuList } from '../../utils/data/menu'
 import { useGlobalStore } from '../../utils/store/global'
 import { Formatter } from '../../utils/misc/formatter'
+import './header.scss'
 
 
 const ChooseWalletButton = () => {

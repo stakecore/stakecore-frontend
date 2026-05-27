@@ -1,0 +1,283 @@
+// Header / top navigation styles, co-located with header.jsx.
+//
+// Media-query breakpoints are preserved verbatim from the original
+// template (the source previously lived split across style.css §03.MENU
+// and several blocks in responsive.css). They will be normalised to the
+// canonical sm/md/lg/xl/xxl set in a follow-up mobile pass.
+
+.main-header {
+    position: relative;
+    left: 0;
+    top: 0;
+    z-index: 999;
+    width: 100%;
+    transition: all 500ms ease;
+
+    .container-fluid {
+        padding-left: 25px;
+        padding-right: 25px;
+    }
+
+    .header-upper {
+        z-index: 5;
+        width: 100%;
+        position: fixed;
+        transition: all 500ms ease;
+        background: var(--body-background);
+    }
+
+    .logo-outer {
+        flex: none;
+    }
+
+    .logo {
+        z-index: 9;
+        padding: 2px 0;
+        position: relative;
+    }
+
+    .logo img {
+        width: 120px;
+    }
+
+    &.fixed-header .header-upper {
+        top: 0;
+        left: 0;
+        position: fixed;
+        animation: easeIn 1s;
+    }
+}
+
+.header-inner {
+    padding: 30px 0;
+    transition: all 500ms ease;
+}
+
+.fixed-header .header-inner {
+    padding: 10px 0;
+    transition: all 500ms ease;
+    border-bottom: 1px solid rgba(119, 119, 125, 0.2);
+}
+
+.fixed-header .main-menu .navbar-collapse li a:hover {
+    color: var(--primary-color);
+}
+
+.nav-outer {
+    margin-left: auto;
+}
+
+.main-menu {
+    .mobile-logo {
+        margin-right: auto;
+    }
+
+    .mobile-logo img {
+        width: 75px;
+    }
+
+    .navbar-collapse {
+        padding: 0;
+    }
+
+    .navbar-collapse > ul {
+        display: flex;
+    }
+
+    .navbar-collapse li {
+        padding: 12px 5px 12px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .navbar-collapse li a {
+        opacity: 1;
+        display: block;
+        font-size: 16px;
+        font-weight: 500;
+        position: relative;
+        text-transform: capitalize;
+        color: rgb(206, 206, 206);
+        transition: all 500ms ease;
+    }
+
+    .navbar-collapse li a:hover {
+        color: var(--primary-color);
+        text-decoration: none;
+    }
+
+    .navbar-collapse li ul li {
+        width: 100%;
+        padding: 7px 20px;
+    }
+
+    .navbar-collapse li ul li ul {
+        left: 100%;
+        top: 0;
+    }
+
+    .navbar-header {
+        display: none;
+    }
+
+    .navbar-header .navbar-toggle {
+        float: right;
+        padding: 4px 0;
+        cursor: pointer;
+        background: transparent;
+    }
+
+    .navbar-header .navbar-toggle .icon-bar {
+        background: var(--main-color);
+        height: 3px;
+        width: 26px;
+        display: block;
+        margin: 5px 0;
+    }
+}
+
+.connect-wallet-button {
+    min-width: 200px;
+
+    > img {
+        width: 16px;
+        margin-right: 8px;
+    }
+}
+
+// --- Responsive overrides (verbatim breakpoints from template) ---
+
+@media only screen and (min-width: 1200px) {
+    .main-header .container-fluid {
+        padding-left: 55px;
+        padding-right: 55px;
+    }
+}
+
+@media only screen and (max-width: 1399px) {
+    .main-menu .navbar-collapse li {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+}
+
+@media only screen and (min-width: 992px) {
+    .main-menu .navbar-collapse li a:after {
+        content: '';
+        opacity: 0;
+        position: absolute;
+        left: 0;
+        top: 115%;
+        transition: 0.5s;
+        width: 100%;
+        height: 2px;
+        background: var(--primary-color);
+    }
+}
+
+@media only screen and (max-width: 991px) {
+    .main-header .logo-outer { display: none; }
+
+    .nav-outer { width: 100%; }
+
+    .main-menu { width: 100%; }
+    .main-menu .collapse { overflow: auto; }
+
+    .main-menu .navbar-collapse {
+        left: 45%;
+        width: 50%;
+        position: absolute;
+    }
+
+    .main-menu .navbar-collapse > ul {
+        display: block;
+        padding: 25px 0;
+        overflow-x: hidden;
+        background: #333;
+        max-height: calc(100vh - 100px);
+    }
+
+    .main-menu .navbar-collapse > ul > li:last-child {
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .main-menu .navbar-collapse li {
+        display: block;
+        padding: 0 15px;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .main-menu .navbar-collapse li a {
+        padding: 10px 10px;
+        line-height: 22px;
+        color: #fff;
+        opacity: 0.7;
+    }
+
+    .main-menu .navbar-collapse li ul {
+        position: relative;
+        display: none;
+        width: 100%;
+        box-shadow: none;
+    }
+
+    .main-menu .navbar-collapse li ul:after {
+        display: block;
+        clear: both;
+        content: "";
+    }
+
+    .main-menu .navbar-collapse li ul li {
+        padding: 0 15px;
+    }
+
+    .main-menu .navbar-collapse li ul li ul {
+        left: auto;
+    }
+
+    .main-menu .navbar-header {
+        display: flex;
+        align-items: center;
+        justify-content: start;
+    }
+}
+
+@media only screen and (max-width: 991px) and (max-width: 375px) {
+    .main-menu .navbar-collapse li ul { min-width: auto; }
+}
+
+@media only screen and (min-width: 767px) and (max-width: 991px) {
+    .main-menu .navbar-collapse li a:hover {
+        color: #fff;
+        text-decoration: none;
+    }
+    .fixed-header .main-menu .navbar-collapse li a:hover {
+        color: var(--primary-color);
+    }
+    .main-menu .navbar-collapse li a:hover {
+        color: var(--primary-color);
+    }
+    .menu-btns { display: none; }
+    .header-inner { padding: 15px 0; }
+}
+
+@media only screen and (max-width: 767px) {
+    .menu-btns { display: none; }
+    .main-menu .navbar-collapse li a:hover {
+        color: #fff;
+        text-decoration: none;
+    }
+    .header-inner { padding: 10px 0; }
+    .fixed-header .main-menu .navbar-collapse li a { color: #fff; }
+    .fixed-header .main-menu .navbar-collapse li a:hover {
+        color: var(--primary-color);
+    }
+    .main-menu .navbar-collapse li a:hover {
+        color: var(--primary-color);
+    }
+}
+
+@media only screen and (max-width: 575px) {
+    .main-menu .mobile-logo { max-width: 150px; }
+}
