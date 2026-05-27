@@ -242,6 +242,10 @@
     .main-menu {
         width: auto;
 
+        // Override the mobile `.collapse { overflow: auto }` so the
+        // absolute-positioned submenu panel isn't clipped + scrolled.
+        .collapse { overflow: visible; }
+
         .navbar-collapse {
             position: static;
             left: auto;
@@ -271,7 +275,9 @@
         }
 
         // Restrained 1px underline for active route only.
-        .navbar-collapse li a.active::after {
+        // Class-based selector so both <a class="nav-link-click"> and
+        // the submenu <button class="nav-link-click"> qualify.
+        .navbar-collapse li .nav-link-click.active::after {
             content: '';
             position: absolute;
             left: 0;
@@ -303,5 +309,109 @@
 @include t.up(xxl) {
     .main-menu .navbar-collapse li {
         padding: 12px 5px 12px 20px;
+    }
+}
+
+// === Dropdown (mobile drawer + desktop popover) ===
+//
+// Replaces the standalone /protocols nav item with a dropdown that
+// exposes the four protocol sub-routes directly. Toggle is a <button>
+// styled to match the surrounding <a class="nav-link-click">.
+
+.navbar-collapse .has-submenu {
+    position: relative;
+
+    .submenu-toggle {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        padding: 12px 0;
+        line-height: 1.4;
+        font-family: var(--font-sans);
+        font-size: t.$text-sm;
+        font-weight: t.$weight-medium;
+        text-transform: capitalize;
+        color: var(--main-color);
+        background: transparent;
+        border: 0;
+        cursor: pointer;
+        transition: color 150ms ease-out;
+
+        .submenu-caret {
+            display: inline-block;
+            width: 5px;
+            height: 5px;
+            border-right: 1px solid currentColor;
+            border-bottom: 1px solid currentColor;
+            transform: rotate(45deg);
+            margin-top: -2px;
+            transition: transform 150ms ease-out;
+        }
+
+        &:hover { color: var(--heading-color); }
+    }
+
+    &.open > .submenu-toggle {
+        color: var(--heading-color);
+
+        .submenu-caret { transform: rotate(-135deg); margin-top: 2px; }
+    }
+
+    .submenu-list {
+        display: none;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    &.open > .submenu-list { display: block; }
+
+    .submenu-list li {
+        display: block;
+        padding: 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .submenu-list li a {
+        display: block;
+        padding: 10px 16px;
+        text-transform: none;
+        font-size: t.$text-sm;
+        color: var(--main-color);
+        transition: color 150ms ease-out;
+    }
+
+    .submenu-list li a:hover,
+    .submenu-list li a.active { color: var(--heading-color); }
+}
+
+@include t.up(lg) {
+    .main-menu .navbar-collapse .has-submenu {
+        .submenu-toggle { padding: 4px 0; width: auto; }
+
+        .submenu-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            min-width: 220px;
+            padding: 4px 0;
+            background: #1F1F1F;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            z-index: 10;
+        }
+
+        .submenu-list li {
+            border-top: 0;
+        }
+
+        .submenu-list li a {
+            padding: 10px 16px;
+            white-space: nowrap;
+        }
+
+        // Suppress the top-level active underline inside the dropdown panel.
+        .submenu-list li a.active::after { content: none; }
     }
 }

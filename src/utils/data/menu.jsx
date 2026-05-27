@@ -16,8 +16,13 @@ export const menuList = [
     }, */
     {
         id: 4,
-        path: "/protocols",
-        label: "protocols"
+        label: "protocols",
+        children: [
+            { id: 41, path: "/flare/validator", label: "Flare Validator" },
+            { id: 42, path: "/flare/fsp", label: "Flare FSP" },
+            { id: 43, path: "/songbird/fsp", label: "Songbird FSP" },
+            { id: 44, path: "/avalanche/validator", label: "Avalanche Validator" },
+        ],
     },
     {
         id: 5,

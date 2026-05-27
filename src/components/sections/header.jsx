@@ -25,11 +25,29 @@ const ChooseWalletButton = () => {
 const Header = () => {
     const pathName = useLocation().pathname
     const [isSticky, setisSticky] = useState(false)
+    const [openDropdown, setOpenDropdown] = useState(null)
 
     useEffect(() => {
         const navbar_collapse = document.querySelector(".navbar-collapse")
         navbar_collapse.classList.remove("show")
+        setOpenDropdown(null)
     }, [pathName])
+
+    useEffect(() => {
+        if (openDropdown == null) return
+        const onClickOutside = (e) => {
+            if (!e.target.closest('.has-submenu')) setOpenDropdown(null)
+        }
+        const onEscape = (e) => {
+            if (e.key === 'Escape') setOpenDropdown(null)
+        }
+        document.addEventListener('click', onClickOutside)
+        document.addEventListener('keydown', onEscape)
+        return () => {
+            document.removeEventListener('click', onClickOutside)
+            document.removeEventListener('keydown', onEscape)
+        }
+    }, [openDropdown])
 
     const stickyHeader = () => {
         const scrollTop = window.scrollY
@@ -74,12 +92,39 @@ const Header = () => {
                                 </div>
                                 <div className="navbar-collapse collapse">
                                     <ul className="navigation onepage clearfix">
-                                        {menuList.map(({ id, label, path }) => (
-                                            <li key={id}>
-                                                <NavLink to={path} end={path === '/'} className={({ isActive }) => `nav-link-click${isActive ? ' active' : ''}`}>
-                                                    {label}
-                                                </NavLink>
-                                            </li>
+                                        {menuList.map((item) => (
+                                            item.children ? (
+                                                <li key={item.id} className={`has-submenu${openDropdown === item.id ? ' open' : ''}`}>
+                                                    <button
+                                                        type="button"
+                                                        className={`nav-link-click submenu-toggle${item.children.some(c => c.path === pathName) ? ' active' : ''}`}
+                                                        aria-haspopup="true"
+                                                        aria-expanded={openDropdown === item.id}
+                                                        onClick={(e) => {
+                                                            e.stopPropagation()
+                                                            setOpenDropdown(openDropdown === item.id ? null : item.id)
+                                                        }}
+                                                    >
+                                                        {item.label}
+                                                        <span aria-hidden="true" className="submenu-caret" />
+                                                    </button>
+                                                    <ul className="submenu-list">
+                                                        {item.children.map((child) => (
+                                                            <li key={child.id}>
+                                                                <NavLink to={child.path} onClick={() => setOpenDropdown(null)} className={({ isActive }) => `nav-link-click${isActive ? ' active' : ''}`}>
+                                                                    {child.label}
+                                                                </NavLink>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </li>
+                                            ) : (
+                                                <li key={item.id}>
+                                                    <NavLink to={item.path} end={item.path === '/'} className={({ isActive }) => `nav-link-click${isActive ? ' active' : ''}`}>
+                                                        {item.label}
+                                                    </NavLink>
+                                                </li>
+                                            )
                                         ))}
                                     </ul>
                                     <ul className="drawer-social">
