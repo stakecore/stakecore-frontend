@@ -7,16 +7,20 @@ import type { IStakeFlowBarAction } from "~/components/types"
 
 
 export async function ensureProvider(): Promise<[Eip1193Provider | null, StatusCode]> {
-  let { walletProvider, setWalletChoiceVisible, chain } = useGlobalStore.getState()
+  const { walletProvider, setWalletChoiceVisible, chain } = useGlobalStore.getState()
   if (walletProvider == null) {
     setWalletChoiceVisible(true)
     return [null, StatusCode.WALLET_CHOICE_SHOWN]
   }
-  if (!await switchNetworkIfNecessary(chain, walletProvider.provider)) return
+  if (!await switchNetworkIfNecessary(chain, walletProvider.provider)) {
+    return [null, StatusCode.CHAIN_SWITCH_REJECTED]
+  }
   const { walletAddress, setWalletAddress } = useGlobalStore.getState()
   if (walletAddress == null) {
     const addresses = await requestAccounts(walletProvider.provider)
-    if (!addresses.length) return
+    if (!addresses.length) {
+      return [null, StatusCode.ACCOUNT_REQUEST_REJECTED]
+    }
     setWalletAddress(addresses[0])
   }
   return [walletProvider.provider, StatusCode.WALLET_PROVIDER_OBTAINED]
@@ -42,7 +46,11 @@ export function actionStatusMessage(status: Status, msg: string): string {
     case StatusCode.CONTRACT_CALL_EXECUTED:
       return msg
     case StatusCode.WALLET_CHOICE_SHOWN:
-      return `wallet not connected`
+      return 'wallet not connected'
+    case StatusCode.CHAIN_SWITCH_REJECTED:
+      return 'network switch was rejected'
+    case StatusCode.ACCOUNT_REQUEST_REJECTED:
+      return 'account access was rejected'
     default:
       return Formatter.error(status as string)
   }
