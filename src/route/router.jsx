@@ -1,6 +1,7 @@
 import { createHashRouter } from "react-router-dom";
 import RootLayout from "../layout/root";
 import Home from "../pages/home";
+import NotFound from "../pages/notFound";
 import { routeLazy, ChunkLoadError } from "./lazy";
 
 const lazyRoute = (path, factory) => ({
@@ -20,7 +21,8 @@ export const router = createHashRouter([
             lazyRoute("/avalanche/validator", () => import("../pages/protocols/avalanche-validator/page")),
             lazyRoute("/flare/validator", () => import("../pages/protocols/flare-validator/page")),
             lazyRoute("/flare/fsp", () => import("../pages/protocols/flare-fsp/page")),
-            lazyRoute("/songbird/fsp", () => import("../pages/protocols/songbird-fsp/page"))
+            lazyRoute("/songbird/fsp", () => import("../pages/protocols/songbird-fsp/page")),
+            { path: "*", element: <NotFound /> }
         ]
     }
 ])

@@ -29,9 +29,9 @@ const CallToAction = () => {
   let component = null
   if (walletAddress == null) {
     component = <div className="hero-btns">
-      <a onClick={onConnectWallet} className="theme-btn">
+      <button type="button" onClick={onConnectWallet} className="theme-btn">
         Connect Wallet
-      </a>
+      </button>
     </div>
   } else if (isLoading) {
     component = <div style={{ textAlign: 'center' }} className="mt-30 mb-30" >

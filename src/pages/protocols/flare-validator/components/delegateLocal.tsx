@@ -119,9 +119,9 @@ const FlareValidatorLocalDelegateComponent = () => {
   let component = null
   if (walletAddress == null) {
     component = <div style={{ textAlign: 'center' }}>
-      <a onClick={onConnectWallet} className="theme-btn">
+      <button type="button" onClick={onConnectWallet} className="theme-btn">
         Connect Wallet
-      </a>
+      </button>
     </div>
   } else if (isLoading && resp?.data == null && resp?.status != 404) {
     component = <div style={{ textAlign: 'center' }}>
@@ -142,9 +142,9 @@ const FlareValidatorLocalDelegateComponent = () => {
         </div>
       </div>
       <div style={{ textAlign: 'center' }}>
-        <a onClick={onRequestSignature} className="theme-btn">
+        <button type="button" onClick={onRequestSignature} className="theme-btn">
           Sign A Test Message
-        </a>
+        </button>
       </div>
     </div>
   } else if (resp?.data == null) {

@@ -46,9 +46,9 @@ const FlareFspLocalDelegateComponent = () => {
   let component = null
   if (walletAddress == null) {
     component = <div style={{ textAlign: 'center' }}>
-      <a onClick={connectWallet} className="theme-btn">
+      <button type="button" onClick={connectWallet} className="theme-btn">
         Connect Wallet
-      </a>
+      </button>
     </div>
   } else if (isLoading) {
     component = <div style={{ textAlign: 'center' }}>
