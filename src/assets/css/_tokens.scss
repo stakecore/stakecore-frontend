@@ -1,0 +1,57 @@
+// Design tokens for Stakecore.
+//
+// SCSS files that need breakpoint queries should `@use` this file, e.g.:
+//   @use '../../assets/css/tokens' as t;
+//   @include t.up(md) { ... }
+//
+// Breakpoints mirror Bootstrap 5 so utilities stay consistent.
+
+$breakpoints: (
+    sm: 576px,
+    md: 768px,
+    lg: 992px,
+    xl: 1200px,
+    xxl: 1400px,
+);
+
+@mixin up($name) {
+    $value: map-get($breakpoints, $name);
+    @if $value == null {
+        @error 'Unknown breakpoint #{$name}. Expected one of: #{map-keys($breakpoints)}.';
+    }
+    @media (min-width: $value) { @content; }
+}
+
+@mixin down($name) {
+    $value: map-get($breakpoints, $name);
+    @if $value == null {
+        @error 'Unknown breakpoint #{$name}.';
+    }
+    @media (max-width: $value - 0.02px) { @content; }
+}
+
+// Spacing scale (10px grid — matches existing JSX usages mt-10..mt-50).
+$space-0: 0;
+$space-1: 5px;
+$space-2: 10px;
+$space-3: 15px;
+$space-4: 20px;
+$space-5: 30px;
+$space-6: 40px;
+$space-7: 50px;
+$space-8: 80px;
+
+// Border radii.
+$radius-sm: 4px;
+$radius-md: 8px;
+$radius-lg: 12px;
+$radius-pill: 999px;
+
+// Z-index scale.
+$z-base: 1;
+$z-dropdown: 100;
+$z-sticky: 200;
+$z-overlay: 1000;
+$z-modal: 2000;
+$z-toast: 3000;
+$z-preloader: 99999999;

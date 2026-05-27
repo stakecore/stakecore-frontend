@@ -14,16 +14,13 @@ Version      : 1.0
 * 04.HEADER CSS STYLE
 * 05.ABOUT CSS STYLE
 * 06.SERVICE CSS STYLE
-* 07.SKILL CSS STYLE
 * 08.RESUME CSS STYLE
 * 09.PORTFOLIO CSS STYLE
 * 10.TESTIMONIALS CSS STYLE
 * 11.PRICING CSS STYLE
-* 12.CLIENTS CSS STYLE
 * 13.CONTACT CSS STYLE
 * 14.FOOTER CSS STYLE
 * 15.PRELOADER & BOUNCE CCS STYLE
-* 16.BLOG CSS STYLE
 * ----------------------------------------------------------------------------------------
 */
 
@@ -34,6 +31,7 @@ Version      : 1.0
 * ----------------------------------------------------------------------------------------
 */
 :root {
+    /* Colors */
     --main-color: #9f9f9f;
     --heading-color: #fff;
     --primary-color: #eb5d3a;
@@ -44,6 +42,37 @@ Version      : 1.0
     --button-border: rgba(119, 119, 125, .2);
     --body-background: #000;
     --grey-bg: #E6EAEE;
+    --surface-1: #0a0a0a;
+    --surface-2: #141414;
+
+    /* Spacing scale (10px grid; mirrors $space-* in _tokens.scss) */
+    --space-0: 0;
+    --space-1: 5px;
+    --space-2: 10px;
+    --space-3: 15px;
+    --space-4: 20px;
+    --space-5: 30px;
+    --space-6: 40px;
+    --space-7: 50px;
+    --space-8: 80px;
+
+    /* Radii */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-pill: 999px;
+
+    /* Z-index scale */
+    --z-base: 1;
+    --z-dropdown: 100;
+    --z-sticky: 200;
+    --z-overlay: 1000;
+    --z-modal: 2000;
+    --z-toast: 3000;
+    --z-preloader: 99999999;
+
+    /* Canonical breakpoints (informational — @media uses literals).
+       sm 576 / md 768 / lg 992 / xl 1200 / xxl 1400 — Bootstrap-aligned. */
 }
 
 * {
@@ -1508,69 +1537,6 @@ html {
 
 /*
 * ----------------------------------------------------------------------------------------
-* 07.SKILL CSS STYLE
-* ----------------------------------------------------------------------------------------
-*/
-.skill-area {
-    padding-top: 20px;
-}
-
-.skill-item {
-    -webkit-transition: 0.5s;
-    transition: 0.5s;
-    text-align: center;
-    margin-bottom: 30px;
-    border-radius: 14px;
-    padding: 25px;
-    border: 1px solid var(--border-color);
-}
-
-.skill-item h5 {
-    margin-top: 20px;
-    color: var(--subtitle-color);
-    font-size: 16px;
-    line-height: 19px;
-}
-
-.skill-item .percent {
-    padding: 10px;
-    display: block;
-    font-size: 20px;
-    font-weight: 600;
-    font-family: "Poppins", sans-serif;
-    color: var(--black-color);
-}
-
-.skill-item:hover {
-    border-color: var(--primary-color);
-}
-
-.skill-item:hover .percent {
-    color: var(--heading-color);
-    background: var(--black-color);
-}
-
-.extra-skills {}
-
-.extra-skills ul {
-    margin-top: 30px;
-}
-
-ul.extra-skills li {
-    border: 1px solid var(--border-color);
-    display: inline-block;
-    border-radius: 12px;
-    padding: 3px 10px;
-    margin-bottom: 10px;
-    margin-right: 20px;
-}
-
-ul.extra-skills li i {
-    padding-right: 10px;
-}
-
-/*
-* ----------------------------------------------------------------------------------------
 * 08.RESUME CSS STYLE
 * ----------------------------------------------------------------------------------------
 */
@@ -2166,39 +2132,6 @@ ul.extra-skills li i {
 
 /*
 * ----------------------------------------------------------------------------------------
-* 12.CLIENTS CSS STYLE
-* ----------------------------------------------------------------------------------------
-*/
-.client-logo-area {
-    padding-top: 20px;
-}
-
-.client-logo-wrap {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-    -webkit-box-pack: justify;
-    -ms-flex-pack: justify;
-    justify-content: space-between;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-    margin-left: -30px;
-    margin-right: -30px;
-}
-
-
-
-.client-logo-wrap .client-logo-item {
-    width: calc(20% - 60px);
-    margin: 0 30px 10px;
-}
-
-
-/*
-* ----------------------------------------------------------------------------------------
 * 13.CONTACT CSS STYLE
 * ----------------------------------------------------------------------------------------
 */
@@ -2561,502 +2494,3 @@ body.loaded {
     bottom: 20px;
 }
 
-
-/*
-* ----------------------------------------------------------------------------------------
-* 16.BLOG CSS STYLE
-* ----------------------------------------------------------------------------------------
-*/
-.blog-area {
-    padding-top: 50px;
-    padding-bottom: 50px;
-}
-
-.blog-category {
-    padding-bottom: 100px;
-}
-
-.blog-item {
-    margin-bottom: 10px;
-    border-radius: 16px;
-    -webkit-transition: .4s;
-    transition: .4s;
-}
-
-.blog-item .image {
-    margin-bottom: 10px;
-}
-
-
-
-.blog-item .image img {
-    width: 100%;
-}
-
-.blog-item .content {
-    padding: 30px;
-    background: var(--grey-bg);
-    border-radius: 0px 0px 10px 10px;
-}
-
-.blog-item .content h5 {
-    margin: 12px 0px;
-    color: rgb(29, 29, 38);
-    font-size: 20px;
-}
-
-.blog-item .content h5 a {
-    color: var(--heading-color);
-}
-
-.blog-item .content h5 a:hover {
-    color: var(--primary-color);
-}
-
-
-
-.single-blog-post {
-    margin-bottom: 50px;
-}
-
-.single-blog-post h2 {
-    font-size: 22px;
-}
-
-.single-blog-post a.read-more {
-    background: #000;
-    color: #fff;
-    padding: 6px 20px;
-    border: 1px solid #000;
-}
-
-.single-blog-post a.read-more:hover {
-    background: transparent;
-    color: #000;
-    border: 1px solid #000;
-}
-
-.post-date {
-    margin-bottom: 10px;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 10px;
-}
-
-.post-date span {
-    margin-right: 20px;
-    color: var(--heading-color);
-}
-
-.post-date span i {
-    margin-right: 5px;
-    color: #fff;
-}
-
-.single-blog-post p {
-    font-size: 16px;
-    margin-bottom: 20px;
-}
-
-.blog-carosel-control {
-    position: absolute;
-    top: 50%;
-    color: #000;
-    font-size: 30px;
-    margin-top: -50px;
-    background: #333;
-    height: 100px;
-    width: 25px;
-    text-align: center;
-    line-height: 99px;
-}
-
-.blog-carosel-control.right {
-    right: 0px;
-    left: auto;
-}
-
-.pagination {
-    margin: 0;
-}
-
-ul.blog_pagination li a {
-    border: 1px solid #e8e8e9;
-    border-radius: 0 !important;
-    color: #353535;
-    font-size: 16px;
-    height: 35px;
-    line-height: 20px;
-    margin: 5px;
-    width: 35px;
-}
-
-.black-icon {
-    background: #333 none repeat scroll 0 0 !important;
-    color: #fff !important;
-}
-
-.black-icon:hover {
-    background: #333 !important;
-}
-
-.black-icon i {
-    font-size: 14px;
-}
-
-ul.blog_pagination li a:hover {
-    color: #fff;
-    background: #333;
-    border: 1px solid #333;
-}
-
-.single-side-bar {
-    margin-bottom: 40px;
-    overflow: hidden;
-}
-
-.single-side-bar h2 {
-    margin-bottom: 15px;
-    font-size: 22px;
-    margin-top: 0;
-    text-transform: capitalize;
-}
-
-.single-side-bar input {
-    background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
-    border: 1px solid #333;
-    border-radius: 0;
-    box-shadow: none;
-    color: #e3e8f0;
-    height: 50px;
-    float: left;
-    padding-left: 10px;
-}
-
-.single-side-bar input:hover,
-.single-side-bar input:focus {
-    border: 1px solid #333;
-    box-shadow: none;
-    outline: 0 none;
-}
-
-.single-side-bar button {
-    background: #333 none repeat scroll 0 0;
-    border: 1px solid #333;
-    color: #fff;
-    height: 42px;
-    padding: 0 32px;
-    -webkit-transition: .3s;
-    transition: .3s;
-}
-
-.single-side-bar button:hover {
-    background: transparent;
-    color: #fff;
-    border: 1px solid #333;
-    -webkit-transition: .3s;
-    transition: .3s;
-}
-
-.single-side-bar ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-
-.single-side-bar ul li a {
-    color: #fff;
-    display: block;
-    font-size: 16px;
-    padding: 5px 0;
-    opacity: .7;
-}
-
-.single-side-bar ul li a span {
-    float: right;
-}
-
-.single-side-bar ul li a:hover {
-    color: #fff;
-    opacity: 1;
-}
-
-.single-blog-social-icon {
-    overflow: hidden;
-    float: left;
-    width: 177px;
-    margin-bottom: 10px;
-}
-
-.single-blog-social-icon i {
-    border: 1px solid #333;
-    border-radius: 50px;
-    float: left;
-    font-size: 22px;
-    height: 50px;
-    line-height: 50px;
-    margin-right: 15px;
-    text-align: center;
-    width: 50px;
-}
-
-.single-blog-social-icon .facebook {
-    border: 1px solid #5d82d1;
-    color: #5d82d1;
-}
-
-.single-blog-social-icon .twitter {
-    border: 1px solid #00BFF3;
-    color: #00BFF3;
-}
-
-.single-blog-social-icon .youtube {
-    border: 1px solid #CB1D1F;
-    color: #CB1D1F;
-}
-
-.single-blog-social-icon .youtube-play {
-    border: 1px solid #CB1D1F;
-    color: #CB1D1F;
-}
-
-.single-blog-social-icon .behance {
-    border: 1px solid #0068FF;
-    color: #0068FF;
-}
-
-.single-blog-social-icon .dribbble {
-    border: 1px solid #EA4C8A;
-    color: #EA4C8A;
-}
-
-.tag {
-    overflow: hidden;
-}
-
-.tag a {
-    color: #fff;
-    float: left;
-    font-size: 14px;
-    font-weight: 300;
-    margin: 5px 7px;
-    -webkit-transition: all 0.3s ease 0s;
-    transition: all 0.3s ease 0s;
-    padding: 5px 8px;
-    border: 1px solid #333;
-}
-
-.tag a:hover {
-    color: #ccc;
-    border: 1px solid #333;
-    background: transparent;
-}
-
-.single-blog-post-details blockquote {
-    font-size: 16px;
-    line-height: 28px;
-    padding-left: 40px;
-    border-left: 1px solid #fff;
-}
-
-.single-blog-post-details img {
-    width: 100%;
-}
-
-.single-blog-post-details h2 {
-    padding: 20px 0px;
-}
-
-.next-previews-button-design {
-    margin-top: 40px;
-    overflow: hidden;
-}
-
-.next-previews-button-design a {
-    color: #000;
-}
-
-.post-comments-area {
-    overflow: hidden;
-    margin-top: 50px;
-}
-
-.post-comments-area h2 {
-    margin-bottom: 20px;
-}
-
-.single-comment {
-    overflow: hidden;
-    margin-bottom: 60px;
-}
-
-.single-comment img {
-    float: left;
-    margin-right: 50px;
-    margin-bottom: 80px;
-    width: 100px;
-    border-radius: 50%;
-}
-
-.single-comment h5 {
-    font-weight: 700;
-}
-
-.single-comment p {}
-
-.single-comment a {
-    color: #fff;
-    -webkit-transition: all 0.3s ease 0s;
-    transition: all 0.3s ease 0s;
-}
-
-.single-comment a:hover {
-    color: #333;
-}
-
-.single-comment a i {
-    font-size: 10px;
-    background: #767676 none repeat scroll 0 0;
-    color: #fff;
-    padding: 5px;
-    margin-right: 5px;
-    border-radius: 30px;
-    -webkit-transition: all 0.3s ease 0s;
-    transition: all 0.3s ease 0s;
-}
-
-.single-comment a:hover i {
-    background: #333 none repeat scroll 0 0;
-    border-radius: 30px;
-    color: #fff;
-    font-size: 10px;
-    padding: 5px;
-}
-
-.comment-form-area {
-    margin-left: 150px;
-}
-
-.comment-form-area input {
-    background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
-    border: 1px solid #e3e8f0;
-    box-shadow: none;
-    color: #fff;
-    height: 50px;
-    border-radius: 0;
-    padding-left: 10px;
-}
-
-
-.comment-form-area input:hover,
-.comment-form-area input:focus {
-    border: 1px solid #333;
-    box-shadow: none;
-    outline: 0 none;
-}
-
-.comment-form-area textarea {
-    background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
-    border: 1px solid #e3e8f0;
-    box-shadow: none;
-    color: #333;
-    height: 150px;
-    border-radius: 0;
-    padding-left: 10px;
-}
-
-.comment-form-area textarea:hover,
-.comment-form-area textarea:focus {
-    border: 1px solid #333;
-    box-shadow: none;
-    outline: 0 none;
-}
-
-.comment-form-area button {
-    background: #000 none repeat scroll 0 0;
-    border: 1px solid #333;
-    color: #fff;
-    font-size: 16px;
-    padding: 7px 10px;
-    display: inline-block;
-}
-
-.owl-theme .owl-controls .owl-page span {
-    display: block;
-    width: 6px;
-    height: 6px;
-    margin: 5px 7px;
-    filter: Alpha(Opacity=50);
-    opacity: 0.5;
-    -webkit-border-radius: 20px;
-    -moz-border-radius: 20px;
-    border-radius: 20px;
-    background: #000;
-}
-
-.single-blog {
-    margin-right: 30px;
-}
-
-.single-blog h5 {
-    font-weight: 300;
-    font-size: 12px;
-}
-
-.single-blog h3 {
-    color: #aeaeae;
-    padding: 10px 15px;
-    font-size: 10px;
-    text-transform: uppercase;
-    display: inline-block;
-    letter-spacing: 3px;
-}
-
-.single-blog h2 {
-    margin-top: 0;
-}
-
-.single-blog h2 a {
-    font-size: 30px;
-    margin-top: 0;
-    margin-bottom: 20px;
-    text-transform: capitalize;
-    font-weight: 700;
-    color: #000;
-}
-
-.single-blog p {
-    padding-bottom: 30px;
-}
-
-.blog-description {
-    padding: 20px 30px;
-    border: 1px solid #f8f8f8;
-    text-align: center;
-}
-
-.blog-area .owl-theme .owl-controls .owl-page span {
-    display: block;
-    width: 5px;
-    height: 5px;
-    margin: 5px 7px;
-    border-radius: 20px;
-    background: #000;
-}
-
-.single-blog-post-details,
-.single-blog-sidebar-area,
-.post-comments-area {
-    background: #000;
-    padding: 50px 30px;
-}
-
-.single-side-bar {}
-
-.single-side-bar {
-    -webkit-transition: 0.5s;
-    transition: 0.5s;
-    margin-bottom: 30px;
-    border-radius: 14px;
-    padding: 25px;
-    border: 1px solid var(--border-color);
-}
