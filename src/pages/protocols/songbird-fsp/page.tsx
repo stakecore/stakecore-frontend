@@ -30,7 +30,7 @@ export const SongbirdFspPage = () => {
   } else {
     const link = <HashLink url={songbirdEvmAddressUrl(data.info.delegationAddress)} address={data.info.delegationAddress} />
     component = <>
-      <InfoComponent specs={FspDataLayer.extractSpecs(data.info)} summary={FspDataLayer.extractSummary(CHAIN, data.info)} />
+      <InfoComponent specs={FspDataLayer.extractSpecs(data.info)} summary={FspDataLayer.extractSummary(CHAIN, data.info, data.statistics)} />
       <SongbirdFspLocalDelegateComponent />
       <SongbirdFspOfficialDelegateComponent validatorLink={link} />
       <FspStatsComponent stats={data.statistics} chain={Chain.SONGBIRD} />
