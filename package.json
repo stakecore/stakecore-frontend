@@ -60,6 +60,7 @@
   "resolutions": {
     "flatted": "^3.4.2",
     "handlebars": "^4.7.9",
+    "immutable": "^5.1.5",
     "rollup": "^4.59.0"
   }
 }
