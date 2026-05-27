@@ -1,0 +1,59 @@
+@use '../../assets/css/tokens' as t;
+
+// CallToAction section, co-located with callToAction.tsx.
+//
+// Mobile-first: defaults target small phones; padding and h2 scale up
+// at md and lg. A literal min-width: 1281px query preserves the
+// original wide-desktop variant (80/200 padding) — canonical xl (1200)
+// or xxl (1400) would shift that band visibly.
+
+.call-to-action-area {
+    padding-top: 15px;
+}
+
+.call-to-action-part {
+    padding: 30px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 20px;
+    box-shadow:
+        rgba(255, 255, 255, 0.025) 0px 0.362176px 0.651917px -1px inset,
+        rgba(255, 255, 255, 0.036) 0px 3px 5.4px -2px inset;
+    background-color: #121214;
+
+    h2 {
+        font-size: 30px;
+        line-height: 40px;
+        margin-bottom: 20px;
+        font-weight: 400;
+    }
+}
+
+.hero-btns {
+    margin-top: 30px;
+}
+
+// === md (768+): tablet ===
+
+@include t.up(md) {
+    .call-to-action-part {
+        padding: 50px;
+
+        h2 {
+            font-size: 40px;
+            line-height: 50px;
+        }
+    }
+}
+
+// === lg (992+): desktop ===
+
+@include t.up(lg) {
+    .call-to-action-part { padding: 60px; }
+}
+
+// Wide desktop: original boundary was 1281px; preserve verbatim.
+@media (min-width: 1281px) {
+    .call-to-action-part {
+        padding: 80px 200px;
+    }
+}

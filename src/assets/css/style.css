@@ -17,7 +17,6 @@ Version      : 1.0
 * 10.TESTIMONIALS CSS STYLE
 * 11.PRICING CSS STYLE
 * 13.CONTACT CSS STYLE
-* 14.FOOTER CSS STYLE
 * 15.PRELOADER & BOUNCE CCS STYLE
 * ----------------------------------------------------------------------------------------
 */
@@ -937,15 +936,6 @@ html {
     -webkit-text-stroke: 1px #000;
 }
 
-.hero-btns {
-    margin-top: 30px;
-}
-
-.hero-content .hero-btns .read-more {
-    margin-top: 15px;
-    text-decoration: underline;
-}
-
 .author-image-part {
     z-index: 1;
     overflow: hidden;
@@ -1685,28 +1675,6 @@ html {
 
 
 
-/*
-* ----------------------------------------------------------------------------------------
-* 14.FOOTER CSS STYLE
-* ----------------------------------------------------------------------------------------
-*/
-.call-to-action-part {
-    padding: 80px 200px;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    border-radius: 20px;
-    box-shadow: rgba(255, 255, 255, 0.025) 0px 0.362176px 0.651917px -1px inset, rgba(255, 255, 255, 0.036) 0px 3px 5.4px -2px inset;
-    background-color: #121214;
-}
-.call-to-action-area {
-    padding-top: 15px;
-
-}
-.call-to-action-part  h2{
-    font-size: 40px;
-    line-height: 50px;
-    margin-bottom: 20px;
-    font-weight: 400;
-}
 /*
 * ----------------------------------------------------------------------------------------
 * 15.PRELOADER & BOUNCE CCS STYLE

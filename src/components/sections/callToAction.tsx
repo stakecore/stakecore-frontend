@@ -8,6 +8,7 @@ import { useGlobalStore } from "~/utils/store/global"
 import { useShallow } from "zustand/react/shallow"
 import { LandingPageService } from '../../backendApi'
 import { PAGE_COLOR_CODE } from '../../constants'
+import './callToAction.scss'
 
 
 const CallToAction = () => {
