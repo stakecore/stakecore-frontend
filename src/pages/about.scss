@@ -1,0 +1,58 @@
+@use '../assets/css/tokens' as t;
+
+// About page styles, co-located with about.jsx.
+//
+// .about-content-part (used here, by hero, summary, and CallToAction)
+// stays in style.css as a shared primitive. The about-* and service-*
+// rules below are about.jsx-only — dead orphan refs in summary.jsx /
+// serviceGrid.jsx don't make them shared.
+
+.about-single-area {
+    padding-bottom: 15px;
+}
+
+.services-area {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.service-item {
+    padding: 60px 40px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    transition: 0.5s;
+
+    h4 {
+        color: var(--subtitle-color);
+        font-size: 20px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    p {
+        margin-bottom: 0;
+        color: rgb(119, 119, 125);
+    }
+
+    &:hover {
+        border-color: var(--primary-color);
+        transition: 0.5s;
+    }
+}
+
+// === md (768+) ===
+//
+// .service-item gets a bottom margin when cards stack (sub-lg). At lg+
+// the row of 3 cards sits side-by-side and the row handles spacing.
+
+@media (max-width: 991.98px) {
+    .service-item { margin-bottom: 30px; }
+}
+
+// Very narrow phones (< 576): tighten horizontal padding on cards.
+@include t.down(sm) {
+    .service-item {
+        padding-left: 25px;
+        padding-right: 25px;
+    }
+}

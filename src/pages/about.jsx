@@ -9,6 +9,7 @@ import {
     RiNodeTree,
 } from '@remixicon/react'
 import SlideUp from '../utils/animations/slideUp'
+import './about.scss'
 
 
 const About = () => {

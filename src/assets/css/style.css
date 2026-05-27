@@ -12,7 +12,6 @@ Version      : 1.0
 * 02.COMMON CSS STYLE
 * 04.HEADER CSS STYLE
 * 05.ABOUT CSS STYLE
-* 06.SERVICE CSS STYLE
 * 08.RESUME CSS STYLE
 * 10.TESTIMONIALS CSS STYLE
 * 15.PRELOADER & BOUNCE CCS STYLE
@@ -1018,10 +1017,6 @@ html {
 * 05.ABOUT CSS STYLE
 * ----------------------------------------------------------------------------------------
 */
-.about-single-area {
-    padding-bottom: 15px;
-}
-
 .hero-content .job {
     display: inline-block;
     background-color: #f5f5f5;
@@ -1198,63 +1193,6 @@ html {
 
 
 
-
-
-/*
-* ----------------------------------------------------------------------------------------
-* 06.SERVICE CSS STYLE
-* ----------------------------------------------------------------------------------------
-*/
-.services-area {
-    padding-top: 15px;
-    padding-bottom: 15px;
-
-}
-
-.service-item {
-    -webkit-transition: 0.5s;
-    transition: 0.5s;
-    padding: 60px 40px;
-    border-radius: 10px;
-    border: 1px solid var(--border-color);
-}
-
-
-.service-item p {
-    margin-bottom: 0;
-    color: rgb(119, 119, 125);
-}
-
-.service-item h4 {
-    color: var(--subtitle-color);
-    font-size: 20px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-.service-item i {
-    font-size: 60px;
-    color: #999;
-    -webkit-transition: 0.5s;
-    transition: 0.5s;
-}
-
-.service-item:hover {
-    border-color: var(--primary-color);
-    -webkit-transition: 0.5s;
-    transition: 0.5s;
-}
-
-.service-item:hover.service-item i {
-    color: var(--primary-color);
-    -webkit-transition: 0.5s;
-    transition: 0.5s;
-}
-
-.service-item:hover .details-btn {
-    color: var(--black-color);
-    background: var(--primary-color);
-}
 
 
 /*

@@ -73,10 +73,6 @@ Version      : 1.0
         margin-bottom: 0;
     }
 
-    .service-item {
-        margin-bottom: 30px;
-    }
-
     .section-title h2 {
         font-size: 30px;
     }
@@ -109,10 +105,6 @@ Version      : 1.0
     .section-title p {
         margin-bottom: 0;
         padding: 0px;
-    }
-
-    .service-item {
-        margin-bottom: 30px;
     }
 
 
@@ -705,27 +697,6 @@ Version      : 1.0
 @media only screen and (max-width: 991px) {
     .about-btn.btn-one {
         left: 5%;
-    }
-}
-
-@media only screen and (max-width: 575px) {
-    .service-item {
-        padding-left: 25px;
-        padding-right: 25px;
-    }
-}
-
-@media only screen and (max-width: 479px) {
-    .service-item {
-        display: block;
-    }
-}
-
-
-@media only screen and (max-width: 479px) {
-    .service-item .content {
-        margin-top: 25px;
-        margin-bottom: 25px;
     }
 }
 
