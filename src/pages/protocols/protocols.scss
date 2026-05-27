@@ -1,13 +1,21 @@
+@use '../../assets/css/tokens' as t;
+
 // Shared styles for the four protocol detail pages
 // (flare-validator, flare-fsp, songbird-fsp, avalanche-validator).
 // Imported from each page.tsx.
+//
+// Mobile-first: defaults are the most compact (mobile) variant;
+// padding and h1 size scale up at md and lg.
 
 .single-project-page-design {
-    padding-top: 200px;
+    padding-top: 100px;
+
+    h1 { font-size: 30px; }
 }
 
 .single-project-page-right {
     padding: 40px;
+    margin-top: 30px;
     border: 1px solid rgba(0, 0, 0, 0.05);
     border-radius: 15px;
     box-shadow:
@@ -25,16 +33,27 @@
     p { margin-bottom: 0; }
 }
 
-// --- Responsive overrides (verbatim breakpoints from template) ---
+// === md (768+): tablet ===
 
-@media only screen and (min-width: 767px) and (max-width: 991px) {
-    .single-project-page-design { padding-top: 120px; }
-    .single-project-page-design h1 { font-size: 40px; }
-    .single-project-page-right { margin-top: 30px; }
+@include t.up(md) {
+    .single-project-page-design {
+        padding-top: 120px;
+
+        h1 { font-size: 40px; }
+    }
 }
 
-@media only screen and (max-width: 767px) {
-    .single-project-page-right { margin-top: 30px; }
-    .single-project-page-design { padding-top: 100px; }
-    .single-project-page-design h1 { font-size: 30px; }
+// === lg (992+): desktop ===
+
+@include t.up(lg) {
+    .single-project-page-design {
+        padding-top: 200px;
+
+        // Restore the global h1 size (58px in style.css §01.GLOBAL).
+        h1 { font-size: 58px; }
+    }
+
+    .single-project-page-right {
+        margin-top: 0;
+    }
 }
