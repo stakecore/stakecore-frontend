@@ -1,4 +1,4 @@
-import { Outlet, useLocation } from 'react-router-dom'
+import { Outlet, useLocation, useNavigation } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import { useGlobalStore } from '~/utils/store/global'
 import { useShallow } from 'zustand/react/shallow'
@@ -7,10 +7,10 @@ import { chainFromRoute, chainToChainId } from '../utils/misc/translations'
 import Header from '../components/sections/header'
 import Footer from '../components/sections/footer'
 import CallToAction from '../components/sections/callToAction'
-import Preloader from '../components/ui/preloader'
+import Preloader, { PreloaderContent } from '../components/ui/preloader'
 import DiscoverWalletProviders from '../components/sections/eip6963'
 import { Tooltip } from 'react-tooltip'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { CookiesProvider } from 'react-cookie'
 import { Chain } from '~/enums'
 import flareImg from '../assets/images/protocols/flare/symbol.svg?url'
@@ -27,6 +27,23 @@ function chainToBackgroundImage(chain: Chain): string {
     return avalancheImg
   }
   return ''
+}
+
+const NavigationPreloader = () => {
+  const navigation = useNavigation()
+  const [show, setShow] = useState(false)
+
+  useEffect(() => {
+    if (navigation.state !== 'loading') {
+      setShow(false)
+      return
+    }
+    const t = setTimeout(() => setShow(true), 150)
+    return () => clearTimeout(t)
+  }, [navigation.state])
+
+  if (!show) return null
+  return <div className="preloader"><PreloaderContent /></div>
 }
 
 const RootLayout = () => {
@@ -55,6 +72,7 @@ const RootLayout = () => {
   return (
     <>
       <Preloader />
+      <NavigationPreloader />
       <Header />
       <div className='background' style={{ backgroundImage: `url("${image}")` }}>
         <CookiesProvider>
