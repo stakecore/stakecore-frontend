@@ -11,7 +11,7 @@ const Footer = () => {
                     Crypto-assets are highly volatile and their value may fluctuate
                     significantly. The staking protocols offered by Stakecore are
                     non-slashing, but staked assets may still be affected by network
-                    failures, protocol changes, or other technical issues. Nothing on
+                    failures, protocol changes, or other network-wide issues. Nothing on
                     this site constitutes investment, legal, tax, or financial advice.
                     Crypto-assets are largely unregulated and are not covered by deposit
                     guarantee or investor compensation schemes.

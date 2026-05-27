@@ -12,10 +12,13 @@
     position: relative;
     isolation: isolate;
     overflow: hidden;
-    padding: 48px 0 32px;
+    // Top padding must clear the fixed header — on mobile the header
+    // is ~50px tall and the wordmark's Metamorphous ascenders extend
+    // higher than Inter's, so 48px isn't enough.
+    padding: 88px 0 32px;
 
-    @include t.up(md) { padding: 80px 0 48px; }
-    @include t.up(lg) { padding: 120px 0 64px; }
+    @include t.up(md) { padding: 100px 0 48px; }
+    @include t.up(lg) { padding: 140px 0 64px; }
 }
 
 // Fixed-grid ASCII display. Per-cell intensity = base sampled from the
@@ -59,17 +62,19 @@
 }
 
 .hero-wordmark {
-    font-family: t.$font-display;
-    font-size: 48px;
-    font-weight: t.$weight-extrabold;
+    font-family: t.$font-wordmark;
+    font-size: 32px;
+    font-weight: t.$weight-regular;
     text-transform: uppercase;
     letter-spacing: -0.02em;
     line-height: 1;
     margin: 0;
     color: var(--heading-color);
+    max-width: 100%;
+    overflow-wrap: break-word;
 
-    @include t.up(md) { font-size: 72px; }
-    @include t.up(lg) { font-size: 88px; }
+    @include t.up(md) { font-size: 48px; }
+    @include t.up(lg) { font-size: 60px; }
 }
 
 .hero-tagline {

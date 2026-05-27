@@ -64,6 +64,9 @@ $z-preloader: 99999999;
 $font-sans: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
 $font-mono: 'Roboto Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 $font-display: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+// Brand wordmark only — scoped tight so the Nordic flavour stays
+// concentrated on the brand mark and doesn't bleed into ordinary titles.
+$font-wordmark: 'Major Mono Display', 'Roboto Mono', ui-monospace, monospace;
 
 // Weight for impactful display titles (Inter Extrabold).
 $weight-extrabold: 800;

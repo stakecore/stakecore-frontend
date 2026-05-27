@@ -51,6 +51,7 @@
     --font-sans: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
     --font-mono: 'Roboto Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
     --font-display: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    --font-wordmark: 'Major Mono Display', 'Roboto Mono', ui-monospace, monospace;
 
     --text-xs: 12px;
     --text-sm: 14px;
