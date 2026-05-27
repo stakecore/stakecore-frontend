@@ -80,6 +80,11 @@ html {
     overflow-x: hidden;
     overscroll-behavior: none;
     scroll-behavior: unset !important;
+    /* Reserve the scrollbar gutter even when overflow is hidden, so the
+       wallet modal's body scroll-lock doesn't cause a viewport-width
+       jump when the scrollbar disappears. Chrome 94+, Firefox 97+,
+       Safari 16+. */
+    scrollbar-gutter: stable;
 }
 
 body {

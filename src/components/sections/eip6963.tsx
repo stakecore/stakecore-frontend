@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import ReactDOM from 'react-dom'
 import { RiCloseCircleFill } from '@remixicon/react'
 import { useGlobalStore } from '../../utils/store/global'
@@ -12,6 +13,24 @@ export const Eip6963 = () => {
   const { walletChoiceVisible, setWalletChoiceVisible, setWalletAddress, chain } = useGlobalStore(
     useShallow(state => ({ walletChoiceVisible: state.walletChoiceVisible, setWalletChoiceVisible: state.setWalletChoiceVisible, setWalletAddress: state.setWalletAddress, chain: state.chain }))
   )
+
+  // Lock background scroll while the wallet modal is open. Modern
+  // browsers scroll on <html>, not <body>, so lock both. Restore the
+  // previous inline overflow values on cleanup so anything else that
+  // sets them isn't clobbered.
+  useEffect(() => {
+    if (!walletChoiceVisible) return
+    const html = document.documentElement
+    const body = document.body
+    const prevHtml = html.style.overflow
+    const prevBody = body.style.overflow
+    html.style.overflow = 'hidden'
+    body.style.overflow = 'hidden'
+    return () => {
+      html.style.overflow = prevHtml
+      body.style.overflow = prevBody
+    }
+  }, [walletChoiceVisible])
 
   const executeConnect = async (detail: EIP6963ProviderDetail, address: string) => {
     const switched = await switchNetworkIfNecessary(chain, detail.provider)
