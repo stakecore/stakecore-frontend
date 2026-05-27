@@ -61,6 +61,7 @@
     "flatted": "^3.4.2",
     "handlebars": "^4.7.9",
     "immutable": "^5.1.5",
+    "minimatch": "^5.1.8",
     "rollup": "^4.59.0"
   }
 }
