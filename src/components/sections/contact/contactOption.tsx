@@ -20,7 +20,7 @@ const ContactOption = () => {
                     </div>
                     <h2>telegram channel</h2>
                     <p>
-                        <a href="https://t.me/+xZoChBQyyCo3OGY0" target="_blank" rel="noreferrer">
+                        <a href="https://t.me/+xZoChBQyyCo3OGY0" target="_blank" rel="noopener noreferrer">
                             t.me/stakecore
                         </a>
                     </p>

@@ -133,18 +133,18 @@ const Header = () => {
                                         ))}
                                     </ul>
                                     <ul className="drawer-social">
-                                        <li><Link target="_blank" to="https://x.com/stake_core" aria-label="X"><RiTwitterXLine size={18} /></Link></li>
-                                        <li><Link target="_blank" to="https://t.me/+xZoChBQyyCo3OGY0" aria-label="Telegram"><RiSendPlaneLine size={18} /></Link></li>
-                                        <li><Link target="_blank" to="https://github.com/stakecore" aria-label="GitHub"><RiGithubLine size={18} /></Link></li>
+                                        <li><Link target="_blank" rel="noopener noreferrer" to="https://x.com/stake_core" aria-label="X"><RiTwitterXLine size={18} /></Link></li>
+                                        <li><Link target="_blank" rel="noopener noreferrer" to="https://t.me/+xZoChBQyyCo3OGY0" aria-label="Telegram"><RiSendPlaneLine size={18} /></Link></li>
+                                        <li><Link target="_blank" rel="noopener noreferrer" to="https://github.com/stakecore" aria-label="GitHub"><RiGithubLine size={18} /></Link></li>
                                     </ul>
                                 </div>
                             </nav>
                         </div>
                         <div className="menu-btns">
                             <ul className="header-social">
-                                <li><Link target="_blank" to="https://x.com/stake_core" aria-label="X"><RiTwitterXLine size={16} /></Link></li>
-                                <li><Link target="_blank" to="https://t.me/+xZoChBQyyCo3OGY0" aria-label="Telegram"><RiSendPlaneLine size={16} /></Link></li>
-                                <li><Link target="_blank" to="https://github.com/stakecore" aria-label="GitHub"><RiGithubLine size={16} /></Link></li>
+                                <li><Link target="_blank" rel="noopener noreferrer" to="https://x.com/stake_core" aria-label="X"><RiTwitterXLine size={16} /></Link></li>
+                                <li><Link target="_blank" rel="noopener noreferrer" to="https://t.me/+xZoChBQyyCo3OGY0" aria-label="Telegram"><RiSendPlaneLine size={16} /></Link></li>
+                                <li><Link target="_blank" rel="noopener noreferrer" to="https://github.com/stakecore" aria-label="GitHub"><RiGithubLine size={16} /></Link></li>
                             </ul>
                             <ChooseWalletButton />
                         </div>

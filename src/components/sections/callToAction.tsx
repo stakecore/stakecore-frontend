@@ -25,7 +25,7 @@ const CallToAction = () => {
     setWalletChoiceVisible(true)
   }
 
-  let renderr = false
+  let hasError = false
   let component = null
   if (walletAddress == null) {
     component = <div className="hero-btns">
@@ -38,7 +38,7 @@ const CallToAction = () => {
       <SpinnerCircular color={PAGE_COLOR_CODE} size={100} />
     </div>
   } else if (data == null) {
-    renderr = true
+    hasError = true
     component = <ServerError status={500} message={error} />
   } else {
     const proposal = getProposalData(data)
@@ -54,7 +54,7 @@ const CallToAction = () => {
         <div className="row">
           <div className="col-lg-12">
             <div className="call-to-action-part">
-              { !renderr && <>
+              { !hasError && <>
                 <h2>Earn yield</h2>
                 <p>Put your dormant FLR, AVAX, or SGB to work and earn yield with a risk profile close to simply holding the asset.</p>
               </> }
