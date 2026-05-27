@@ -136,11 +136,6 @@ Version      : 1.0
     .about-content-part {
         margin-top: 30px;
     }
-
-    .copyright-text,
-    .extra-copyright p {
-        text-align: center;
-    }
 }
 
 
@@ -209,11 +204,6 @@ Version      : 1.0
 
     .single-project-page-right {
         margin-top: 30px;
-    }
-
-    .copyright-text,
-    .extra-copyright p {
-        text-align: center;
     }
 
     .single-project-page-design {

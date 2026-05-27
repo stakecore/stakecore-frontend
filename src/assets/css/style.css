@@ -2112,23 +2112,6 @@ html {
     margin-bottom: 20px;
     font-weight: 400;
 }
-.footer-bottom {}
-
-.footer-bottom .copyright-text {
-    color: var(--main-color);
-    font-size: 14px;
-    line-height: 20px;
-    font-weight: 500;
-}
-
-.footer-bottom .copyright-text a {
-    color: var(--primary-color);
-}
-
-.extra-copyright p {
-    text-align: right;
-}
-
 /*
 * ----------------------------------------------------------------------------------------
 * 15.PRELOADER & BOUNCE CCS STYLE
