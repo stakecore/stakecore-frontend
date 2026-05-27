@@ -5,7 +5,8 @@ import type { FspDelegatorInfoDto } from '~/backendApi'
 import { Formatter } from '~/utils/misc/formatter'
 import { actionStatusMessage } from '~/pages/protocols/utils'
 import { MAX_BIPS, PAGE_COLOR_CODE } from '~/constants'
-import { StatusCode, Status } from '~/enums'
+import { StatusCode } from '~/enums'
+import type { ContractCallResult } from '~/pages/protocols/utils'
 import './fspLocalDelegate.scss'
 
 
@@ -15,13 +16,13 @@ import './fspLocalDelegate.scss'
 // correct decimals.
 export type FspLocalDelegateActions = {
   // Wrap native into wrapped (amount in token decimal value).
-  deposit: (address: string, amount: number) => Promise<Status>
+  deposit: (address: string, amount: number) => Promise<ContractCallResult>
   // Unwrap wrapped back to native.
-  withdraw: (address: string, amount: number) => Promise<Status>
+  withdraw: (address: string, amount: number) => Promise<ContractCallResult>
   // Set the delegation percentage on the wrapped balance, in bips (0..10000).
-  delegate: (address: string, bips: number) => Promise<Status>
+  delegate: (address: string, bips: number) => Promise<ContractCallResult>
   // Claim rewards for a specific reward epoch.
-  claim: (address: string, epoch: number) => Promise<Status>
+  claim: (address: string, epoch: number) => Promise<ContractCallResult>
 }
 
 export type FspLocalDelegateProps = {
@@ -106,7 +107,7 @@ const FspLocalDelegate = ({
     if (!pctValid || !pctChanged || busy) return
     setPhase({ kind: 'delegating' })
     const toastId = toast.loading(`Setting delegation to ${pctValue.toFixed(2)}%…`)
-    const status = await actions.delegate(walletAddress, pctBips)
+    const { status } = await actions.delegate(walletAddress, pctBips)
     const ok = status === StatusCode.CONTRACT_CALL_EXECUTED
     toast.update(toastId, {
       type: ok ? 'success' : 'error',
@@ -122,7 +123,7 @@ const FspLocalDelegate = ({
     if (!wrapValid || busy) return
     setPhase({ kind: 'wrapping' })
     const toastId = toast.loading(`Wrapping ${wrapValue} ${symbol} → ${wrappedSymbol}…`)
-    const status = await actions.deposit(walletAddress, wrapValue)
+    const { status } = await actions.deposit(walletAddress, wrapValue)
     const ok = status === StatusCode.CONTRACT_CALL_EXECUTED
     toast.update(toastId, {
       type: ok ? 'success' : 'error',
@@ -138,7 +139,7 @@ const FspLocalDelegate = ({
     if (!unwrapValid || busy) return
     setPhase({ kind: 'unwrapping' })
     const toastId = toast.loading(`Unwrapping ${unwrapValue} ${wrappedSymbol} → ${symbol}…`)
-    const status = await actions.withdraw(walletAddress, unwrapValue)
+    const { status } = await actions.withdraw(walletAddress, unwrapValue)
     const ok = status === StatusCode.CONTRACT_CALL_EXECUTED
     toast.update(toastId, {
       type: ok ? 'success' : 'error',
@@ -155,7 +156,7 @@ const FspLocalDelegate = ({
     for (const epoch of claimableEpochs) {
       setPhase({ kind: 'claiming', epoch })
       const toastId = toast.loading(`Claiming rewards (epoch ${epoch})…`)
-      const status = await actions.claim(walletAddress, epoch)
+      const { status } = await actions.claim(walletAddress, epoch)
       const ok = status === StatusCode.CONTRACT_CALL_EXECUTED
       toast.update(toastId, {
         type: ok ? 'success' : 'error',

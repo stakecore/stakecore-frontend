@@ -1,4 +1,5 @@
 import type { Status } from "~/enums"
+import type { ContractCallResult } from "~/pages/protocols/utils"
 
 
 export type ISpecs = ISpec[][]
@@ -20,7 +21,7 @@ export interface IStakeFlow {
   data: IStakeFlowDataPart[]
 }
 
-type ActionMethod = (address: string, balance: number, value: number, args?: any) => Promise<Status>
+type ActionMethod = (address: string, balance: number, value: number, args?: any) => Promise<ContractCallResult>
 type ActionMessage = (status: Status, address: string, balance: number, value: number) => string
 
 export type IStakeFlowBarAction = {

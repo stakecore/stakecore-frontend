@@ -55,7 +55,7 @@ const StakeFlowAction = ({ down, active, action, data, value, freeze }: IStakeFl
     const id = toast.loading(msg)
     freeze(true)
     setLoading(true)
-    const status = await action.method(data.address, data.balance, value)
+    const { status } = await action.method(data.address, data.balance, value)
     setLoading(false)
     freeze(false)
     const ok = action.ok(status)

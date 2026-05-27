@@ -6,6 +6,15 @@ import type { Eip1193Provider } from "ethers"
 import type { IStakeFlowBarAction } from "~/components/types"
 
 
+// Result of a contract call attempt. `status` is always present (success
+// code or error message). `hash` is set when the transaction was actually
+// mined (StatusCode.CONTRACT_CALL_EXECUTED) so callers can build an
+// explorer link.
+export type ContractCallResult = {
+  status: Status
+  hash?: string
+}
+
 export async function ensureProvider(): Promise<[Eip1193Provider | null, StatusCode]> {
   const { walletProvider, setWalletChoiceVisible, chain } = useGlobalStore.getState()
   if (walletProvider == null) {
@@ -27,17 +36,21 @@ export async function ensureProvider(): Promise<[Eip1193Provider | null, StatusC
 }
 
 
+// Wraps a contract function (which submits + waits + returns a tx hash)
+// with the wallet plumbing + error handling. Returns a ContractCallResult
+// so callers can both check the status code AND access the on-chain hash
+// to render explorer links.
 export async function contractCallAdapter<T>(
-  fun: (provider: Eip1193Provider, address: string, args: T) => Promise<any>,
+  fun: (provider: Eip1193Provider, address: string, args: T) => Promise<string>,
   address: string, args: T
-): Promise<Status> {
+): Promise<ContractCallResult> {
   const [provider, code] = await ensureProvider()
-  if (provider == null) return code
+  if (provider == null) return { status: code }
   try {
-    await fun(provider, address, args)
-    return StatusCode.CONTRACT_CALL_EXECUTED
+    const hash = await fun(provider, address, args)
+    return { status: StatusCode.CONTRACT_CALL_EXECUTED, hash }
   } catch (e: any) {
-    return e?.message
+    return { status: e?.message ?? 'unknown error' }
   }
 }
 
