@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { RiArrowRightUpLine } from '@remixicon/react'
 import SlideUp from '../../utils/animations/slideUp'
 import { protocolsData } from '../../utils/data/protocols'
+import './portfolio.scss'
 
 const animations = ['slideIn', 'fadeIn', 'scaleUp']
 

@@ -1,0 +1,205 @@
+// Portfolio / projects grid styles, co-located with portfolio.tsx.
+
+.projects-area {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.project-image {
+    margin-bottom: 45px;
+}
+
+.project-content {
+    .sub-title {
+        margin-bottom: 0;
+        color: rgb(119, 119, 125);
+    }
+
+    h2 {
+        margin-bottom: 30px;
+        color: #fff;
+    }
+
+    .details-btn {
+        margin-top: 25px;
+    }
+}
+
+.project-item.style-two {
+    margin-bottom: 30px;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+
+    .project-image {
+        margin-bottom: 18px;
+        z-index: 1;
+        position: relative;
+    }
+
+    .project-image:before {
+        position: absolute;
+        content: "";
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        background-color: var(--black-color);
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        transition: 0.3s;
+    }
+
+    .project-image .details-btn {
+        z-index: 2;
+        opacity: 0;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 20px;
+        color: #fff;
+        width: 65px;
+        height: 65px;
+        background: var(--primary-color);
+        line-height: 65px;
+        border-radius: 50%;
+        text-align: center;
+    }
+
+    .project-content {
+        margin-bottom: 0;
+        padding-left: 20px;
+        padding-bottom: 20px;
+    }
+
+    .project-content h3 {
+        color: var(--subtitle-color);
+        font-size: 20px;
+        display: block;
+    }
+
+    &:hover .project-image:before {
+        opacity: 0.65;
+    }
+
+    &:hover .project-image .details-btn {
+        opacity: 1;
+    }
+}
+
+.filter-btns-one {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: -20px;
+    margin-right: -20px;
+
+    li {
+        line-height: 1;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        position: relative;
+        margin: 0 20px 20px;
+        padding-bottom: 15px;
+        color: rgb(119, 119, 125);
+        transition: 0.5s;
+    }
+
+    li:after {
+        opacity: 0;
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 100%;
+        width: 30px;
+        height: 3px;
+        background: var(--primary-color);
+        transition: 0.5s;
+    }
+
+    li.current {
+        color: var(--primary-color);
+    }
+
+    li.current:after {
+        opacity: 1;
+    }
+}
+
+// Card-entry animations driven by getRandomAnimation in portfolio.tsx.
+
+@keyframes slideIn {
+    from { transform: translatey(150px); }
+    to { transform: translatey(0); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes scaleUp {
+    from { transform: scale(0); }
+    to { transform: scale(1); }
+}
+
+.slideIn { animation: slideIn 1s forwards; }
+.fadeIn { animation: fadeIn 1s forwards; }
+.scaleUp { animation: scaleUp 1s forwards; }
+
+// --- Responsive overrides (verbatim breakpoints from template) ---
+
+@media only screen and (min-width: 992px) and (max-width: 1199px) {
+    .project-content {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
+
+@media only screen and (max-width: 1199px) {
+    .project-item.style-two .project-content {
+        padding-left: 25px;
+        padding-right: 25px;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .project-content {
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+
+    .project-content h2 {
+        font-size: 35px;
+    }
+}
+
+@media only screen and (max-width: 479px) {
+    .project-content {
+        padding-left: 25px;
+        padding-right: 25px;
+    }
+
+    .project-content h2 {
+        font-size: 30px;
+        line-height: 1.3;
+    }
+
+    .project-item.style-two .project-content h3 {
+        font-size: 25px;
+    }
+}
+
+@media only screen and (max-width: 375px) {
+    .project-content {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .project-item.style-two .project-content {
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
