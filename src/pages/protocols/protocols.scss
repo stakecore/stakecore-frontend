@@ -52,9 +52,9 @@
 
 @include t.down(md) {
     // Strip outer chrome — but replace it with a top hairline + 24px of
-    // breathing room so consecutive sections (description, info, local
-    // delegate, official delegate, statistics) still read as discrete
-    // chunks rather than one continuous wall of text.
+    // breathing room so consecutive sections (description, local delegate,
+    // official delegate, statistics) still read as discrete chunks rather
+    // than one continuous wall of text.
     .single-project-page-left,
     .single-project-page-right {
         margin: 0;
@@ -64,14 +64,18 @@
         background: transparent;
     }
 
-    // The InfoComponent right-column margin is redundant once the section
-    // divider above provides its own separation.
-    .col-lg-9 .single-project-page-right { margin-top: 0; }
-
-    // Centre the Asset/APY/Delegation/Lockup summary rows in the cardless
-    // mobile view — they're short values that read better stacked centred
-    // than left-aligned across an empty viewport.
-    .single-info { text-align: center; }
+    // BUT preserve full card chrome on the two InfoComponent cards
+    // (col-lg-3 left = asset/APY/delegation summary, col-lg-9 right =
+    // validator specs / addresses). These are dense reference info, not
+    // flowing copy — the boxed frame reads better than a hairline strip,
+    // and the right card hosts hash links + tooltips that need a contained
+    // surface to stay legible on a 360px viewport.
+    .col-lg-3 .single-project-page-left,
+    .col-lg-9 .single-project-page-right {
+        padding: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: var(--body-background);
+    }
 }
 
 // InfoComponent puts a single-project-page-right card inside a col-lg-9

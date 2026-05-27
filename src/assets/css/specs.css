@@ -61,3 +61,57 @@
   color-scheme: dark;
   color: inherit;
 }
+
+/* Mobile — stack title above value, drop horizontal scrolling.
+   Mirrors the t.down(md) breakpoint (768px) used in protocols.scss.
+   Below this width the side-by-side table layout starts to overflow the
+   info card: addresses (truncated to ~24 chars + monospace + copy icon)
+   are wider than half a 320–360px viewport, so the nowrap rule forces a
+   horizontal scroll inside the card. Stacking the label above the value
+   removes the scroll, lets long values wrap if they need to, and gives
+   each row its own hairline divider instead of relying on a single hr
+   between groups. */
+@media (max-width: 767.98px) {
+  .specs-table-container {
+    overflow-x: visible;
+    white-space: normal;
+  }
+
+  .specs-table,
+  .specs-table tbody,
+  .specs-table-row,
+  .specs-table-data {
+    display: block;
+    width: 100%;
+  }
+
+  .specs-table-row {
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .specs-table-row:last-child {
+    border-bottom: 0;
+  }
+
+  .specs-table-data {
+    padding: 4px 0;
+  }
+
+  .specs-table-data-left {
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--main-color);
+  }
+
+  .specs-table-data-right {
+    text-align: left;
+    overflow-wrap: anywhere;
+  }
+
+  .specs-table-border { display: none; }
+
+  .specs-container { gap: 16px; }
+}
