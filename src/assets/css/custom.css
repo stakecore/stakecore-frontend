@@ -173,6 +173,14 @@
   font-size: 13px;
 }
 
+.activity-row a {
+  color: var(--heading-color);
+}
+
+.activity-row a:hover {
+  color: var(--main-color);
+}
+
 .activity-label {
   color: rgba(255, 255, 255, 0.35);
   font-size: 12px;
