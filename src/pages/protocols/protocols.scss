@@ -24,10 +24,16 @@
     background-color: #121214;
 }
 
-// On stacked (sub-lg) layouts the right card sits below the left;
-// give it a top margin for vertical spacing. Reset at lg+ so the two
-// cards align flush at the top of the row.
-.single-project-page-right { margin-top: 30px; }
+// InfoComponent puts a single-project-page-right card inside a col-lg-9
+// next to a col-lg-3 with single-project-page-left. On stacked layouts
+// (sub-lg) the right card sits below the left and needs vertical
+// spacing; at lg+ they sit side-by-side and align flush at the top of
+// the row. Scoped via .col-lg-9 so the rule does NOT touch the unrelated
+// .single-project-page-right cards rendered by LocalDelegate /
+// OfficialDelegate / Statistics / FspStats further down each page,
+// all of which carry their own .mt-30 utility class and would otherwise
+// have it overridden by this selector.
+.col-lg-9 .single-project-page-right { margin-top: 30px; }
 
 .single-info {
     padding-bottom: 30px;
@@ -58,5 +64,5 @@
         h1 { font-size: 58px; }
     }
 
-    .single-project-page-right { margin-top: 0; }
+    .col-lg-9 .single-project-page-right { margin-top: 0; }
 }

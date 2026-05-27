@@ -1,3 +1,5 @@
+@use 'sass:map';
+
 // Design tokens for Stakecore.
 //
 // SCSS files that need breakpoint queries should `@use` this file, e.g.:
@@ -15,15 +17,15 @@ $breakpoints: (
 );
 
 @mixin up($name) {
-    $value: map-get($breakpoints, $name);
+    $value: map.get($breakpoints, $name);
     @if $value == null {
-        @error 'Unknown breakpoint #{$name}. Expected one of: #{map-keys($breakpoints)}.';
+        @error 'Unknown breakpoint #{$name}. Expected one of: #{map.keys($breakpoints)}.';
     }
     @media (min-width: $value) { @content; }
 }
 
 @mixin down($name) {
-    $value: map-get($breakpoints, $name);
+    $value: map.get($breakpoints, $name);
     @if $value == null {
         @error 'Unknown breakpoint #{$name}.';
     }
