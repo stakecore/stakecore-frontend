@@ -138,20 +138,8 @@ const HeroRuneCanvas = () => {
       img.src = profile
     })
 
-    setup()
-    rasterize().then(arr => { base = arr })
-
-    let last = 0
-    let phase = 0
-    let raf = 0
-    const tick = (t: number) => {
-      raf = requestAnimationFrame(tick)
+    const drawFrame = (phase: number) => {
       if (!base) return
-      if (t - last < 80) return
-      const dt = last === 0 ? 16 : t - last
-      last = t
-      phase += dt * 0.003
-
       ctx.fillStyle = '#000'
       ctx.fillRect(0, 0, w, h)
       ctx.font = `${cellSize}px 'Roboto Mono', ui-monospace, monospace`
@@ -180,11 +168,37 @@ const HeroRuneCanvas = () => {
         }
       }
     }
-    raf = requestAnimationFrame(tick)
+
+    // If the user prefers reduced motion, draw one static frame and
+    // skip the rAF loop entirely.
+    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
+
+    setup()
+    rasterize().then(arr => {
+      base = arr
+      if (reduceMotion) drawFrame(0)
+    })
+
+    let last = 0
+    let phase = 0
+    let raf = 0
+    const tick = (t: number) => {
+      raf = requestAnimationFrame(tick)
+      if (!base) return
+      if (t - last < 80) return
+      const dt = last === 0 ? 16 : t - last
+      last = t
+      phase += dt * 0.003
+      drawFrame(phase)
+    }
+    if (!reduceMotion) raf = requestAnimationFrame(tick)
 
     const onResize = () => {
       setup()
-      rasterize().then(arr => { base = arr })
+      rasterize().then(arr => {
+        base = arr
+        if (reduceMotion) drawFrame(0)
+      })
     }
     window.addEventListener('resize', onResize)
 

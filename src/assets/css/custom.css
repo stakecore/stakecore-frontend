@@ -94,6 +94,13 @@
   animation-play-state: paused;
 }
 
+/* Respect user motion preference: freeze the marquee in place. */
+@media (prefers-reduced-motion: reduce) {
+  .activity-marquee-track {
+    animation: none;
+  }
+}
+
 @keyframes activity-marquee {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }

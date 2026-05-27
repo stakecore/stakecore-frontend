@@ -23,10 +23,10 @@ const Header = () => {
     const pathName = useLocation().pathname
     const [isSticky, setisSticky] = useState(false)
     const [openDropdown, setOpenDropdown] = useState(null)
+    const [drawerOpen, setDrawerOpen] = useState(false)
 
     useEffect(() => {
-        const navbar_collapse = document.querySelector(".navbar-collapse")
-        navbar_collapse.classList.remove("show")
+        setDrawerOpen(false)
         setOpenDropdown(null)
     }, [pathName])
 
@@ -81,13 +81,20 @@ const Header = () => {
                                             <img src={profile} alt="" className="logo-mark" />
                                         </Link>
                                     </div>
-                                    <button type="button" className="navbar-toggle" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
+                                    <button
+                                        type="button"
+                                        className="navbar-toggle"
+                                        aria-label={drawerOpen ? 'Close menu' : 'Open menu'}
+                                        aria-expanded={drawerOpen}
+                                        aria-controls="primary-nav"
+                                        onClick={() => setDrawerOpen(open => !open)}
+                                    >
                                         <span className="icon-bar"></span>
                                         <span className="icon-bar"></span>
                                         <span className="icon-bar"></span>
                                     </button>
                                 </div>
-                                <div className="navbar-collapse collapse">
+                                <div id="primary-nav" className={`navbar-collapse collapse${drawerOpen ? ' show' : ''}`}>
                                     <ul className="navigation onepage clearfix">
                                         {menuList.map((item) => (
                                             item.children ? (
@@ -97,6 +104,7 @@ const Header = () => {
                                                         className={`nav-link-click submenu-toggle${item.children.some(c => c.path === pathName) ? ' active' : ''}`}
                                                         aria-haspopup="true"
                                                         aria-expanded={openDropdown === item.id}
+                                                        aria-controls={`submenu-${item.id}`}
                                                         onClick={(e) => {
                                                             e.stopPropagation()
                                                             setOpenDropdown(openDropdown === item.id ? null : item.id)
@@ -105,7 +113,7 @@ const Header = () => {
                                                         {item.label}
                                                         <span aria-hidden="true" className="submenu-caret" />
                                                     </button>
-                                                    <ul className="submenu-list">
+                                                    <ul id={`submenu-${item.id}`} className="submenu-list">
                                                         {item.children.map((child) => (
                                                             <li key={child.id}>
                                                                 <NavLink to={child.path} onClick={() => setOpenDropdown(null)} className={({ isActive }) => `nav-link-click${isActive ? ' active' : ''}`}>

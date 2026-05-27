@@ -28,7 +28,7 @@ const Card = ({ title, price, sortInfo, features }) => {
             <div className="pricing-item">
                 <div className="pricing-header">
                     <h4 className="title">{title}</h4>
-                    <p className="save-percent" dangerouslySetInnerHTML={{ __html: sortInfo }} />
+                    <p className="save-percent">{sortInfo}</p>
                     <span className="price">{price}</span>
                 </div>
                 <div className="pricing-details">

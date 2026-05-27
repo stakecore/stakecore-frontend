@@ -67,6 +67,9 @@ const RootLayout = () => {
       const address = await onInternalChainSwitch(chainId, wallet)
       setWallet(address, wallet)
     })()
+    // setChain / setWallet are stable Zustand setters; intentionally
+    // omitted from deps.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wallet, chainId])
 
   return (
