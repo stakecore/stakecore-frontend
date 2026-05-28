@@ -3,9 +3,9 @@ const ProjectDescription = () => {
     <h2>Basic Information</h2>
     Avalanche runs on the proof of stake protocol called Snowball.
     Snowball requires validators to stake AVAX, which allows them to
-    validate and broadcast network transactions. In return, validators are rewarded with network's inflation.
+    validate and broadcast network transactions. In return, validators are rewarded with the network's inflation.
 
-    Delegators can choose to contribute to validator's staked AVAX, earning the share of the
+    Delegators can choose to contribute to a validator's staked AVAX, earning a share of the
     inflation reward rate, offset by a small fee percentage that each validator defines.
 
     <div className="notification-block warning mt-10 mb-20">
