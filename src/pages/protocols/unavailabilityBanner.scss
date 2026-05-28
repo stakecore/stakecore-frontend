@@ -1,0 +1,43 @@
+@use '../../assets/css/tokens' as t;
+
+// Bottom-of-page alert shown on validator pages when delegation isn't
+// possible. Edge-to-edge solid red band; inner content aligned to .container.
+
+.unavailability-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    background: #1E090C;
+    border-top: 1px solid #6C222B;
+    color: var(--heading-color);
+}
+
+.unavailability-banner-inner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    font-size: t.$text-sm;
+    line-height: 1.5;
+}
+
+.unavailability-banner-icon {
+    flex-shrink: 0;
+    color: #d94357;
+}
+
+.unavailability-banner-text strong {
+    color: var(--heading-color);
+    font-weight: t.$weight-semibold;
+}
+
+// Pad the page so the banner never overlaps the footer. Generous on
+// mobile where the text wraps to multiple lines.
+body:has(.unavailability-banner) {
+    padding-bottom: 90px;
+
+    @include t.up(md) { padding-bottom: 70px; }
+    @include t.up(lg) { padding-bottom: 56px; }
+}

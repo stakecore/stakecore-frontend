@@ -4,6 +4,7 @@ import ServerError from '~/components/ui/serverError'
 import ProjectTitle from "../title"
 import ProjectDescription from './components/description'
 import InfoComponent from "../info"
+import UnavailabilityBanner from "../unavailabilityBanner"
 import AvalancheValidatorStatisticsComponent from "./components/statistics"
 import AvalancheValidatorOfficialDelegateComponent from "./components/delegateOfficial"
 import AvalancheValidatorDataAccess from "./data"
@@ -39,6 +40,7 @@ export const AvalancheValidatorPage = () => {
         {component}
       </div>
     </div>
+    {data && <UnavailabilityBanner summary={data.summary} />}
   </>
 }
 

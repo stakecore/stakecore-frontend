@@ -4,6 +4,7 @@ import ServerError from '~/components/ui/serverError'
 import ProjectTitle from "../title"
 import ProjectDescription from './components/description'
 import InfoComponent from "../info"
+import UnavailabilityBanner from "../unavailabilityBanner"
 import FlareValidatorStatisticsComponent from "./components/statistics"
 import FlareValidatorOfficialDelegateComponent from "./components/delegateOfficial"
 import FlareValidatorLocalDelegateComponent from "./components/delegateLocal"
@@ -42,6 +43,7 @@ export const FlareValidatorPage = () => {
         {component}
       </div>
     </div>
+    {data && <UnavailabilityBanner summary={data.summary} />}
   </>
 }
 
