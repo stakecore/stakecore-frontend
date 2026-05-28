@@ -51,12 +51,12 @@
 }
 
 @include t.down(md) {
-    // Strip outer chrome entirely on small viewports. Vertical padding
-    // gives consecutive sections breathing room without the dividing
-    // hairlines.
+    // Strip outer chrome entirely on small viewports. Margin utilities
+    // like .mb-30 on the Description card stay intact so consecutive
+    // sections keep their breathing room — the chrome (border / bg /
+    // horizontal padding) is what's removed, not the spacing utilities.
     .single-project-page-left,
     .single-project-page-right {
-        margin: 0;
         padding: 24px 0 0;
         border: none;
         background: transparent;
