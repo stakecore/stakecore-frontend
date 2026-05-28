@@ -22,7 +22,7 @@ const ChooseWalletButton = () => {
 const Header = () => {
     const pathName = useLocation().pathname
     const [isSticky, setisSticky] = useState(false)
-    const [openDropdown, setOpenDropdown] = useState(null)
+    const [openDropdown, setOpenDropdown] = useState<number | null>(null)
     const [drawerOpen, setDrawerOpen] = useState(false)
 
     // On route change, dismiss the mobile drawer and any open submenu.
