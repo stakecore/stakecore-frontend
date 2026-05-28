@@ -174,24 +174,26 @@ const FspLocalDelegate = ({
 
   async function onClaim() {
     if (busy || claimableEpochs.length === 0) return
-    for (const epoch of claimableEpochs) {
-      setPhase({ kind: 'claiming', epoch })
-      const toastId = toast.loading(`Claiming rewards (epoch ${epoch})…`)
-      const { status, hash } = await actions.claim(walletAddress, epoch)
-      const ok = status === StatusCode.CONTRACT_CALL_EXECUTED
-      toast.update(toastId, {
-        type: ok ? 'success' : 'error',
-        render: renderToast(
-          actionStatusMessage(status, `Claimed rewards for epoch ${epoch}`),
-          hash,
-        ),
-        isLoading: false,
-        autoClose: 5000,
-      })
-      if (!ok) break
-    }
+    // Flare's RewardManager.claim() settles every unclaimed epoch up
+    // to and including the supplied rewardEpochId in one call, so a
+    // single signature with the latest claimable epoch is enough —
+    // no per-epoch loop / per-epoch signature needed.
+    const latestEpoch = claimableEpochs[claimableEpochs.length - 1]
+    setPhase({ kind: 'claiming', epoch: latestEpoch })
+    const toastId = toast.loading(`Claiming rewards through epoch ${latestEpoch}…`)
+    const { status, hash } = await actions.claim(walletAddress, latestEpoch)
+    const ok = status === StatusCode.CONTRACT_CALL_EXECUTED
+    toast.update(toastId, {
+      type: ok ? 'success' : 'error',
+      render: renderToast(
+        actionStatusMessage(status, `Claimed rewards through epoch ${latestEpoch}`),
+        hash,
+      ),
+      isLoading: false,
+      autoClose: 5000,
+    })
     setPhase({ kind: 'idle' })
-    onRefresh()
+    if (ok) onRefresh()
   }
 
   // --- Display helpers ---
@@ -375,7 +377,7 @@ const FspLocalDelegate = ({
         <ActionPanel
           title="Claim pending rewards"
           body={pendingRewards > 0
-            ? <>Rewards across {claimableEpochs.length} reward {claimableEpochs.length === 1 ? 'epoch' : 'epochs'} totaling {rewardsFmt} {wrappedSymbol}. Each epoch requires a separate signature.</>
+            ? <>Rewards across {claimableEpochs.length} reward {claimableEpochs.length === 1 ? 'epoch' : 'epochs'} totaling {rewardsFmt} {wrappedSymbol}. A single signature claims them all at once.</>
             : <>No rewards available to claim right now. Rewards become claimable at the end of each reward epoch your {wrappedSymbol} was delegated during.</>}
         >
           <button
@@ -384,7 +386,7 @@ const FspLocalDelegate = ({
             disabled={busy || pendingRewards === 0}
           >
             {phase.kind === 'claiming'
-              ? <><SpinnerCircular size={14} color={PAGE_COLOR_CODE} /> Claiming epoch {phase.epoch}…</>
+              ? <><SpinnerCircular size={14} color={PAGE_COLOR_CODE} /> Claiming through epoch {phase.epoch}…</>
               : pendingRewards > 0
                 ? `Claim ${rewardsFmt} ${wrappedSymbol}`
                 : 'Nothing to claim'}
