@@ -21,29 +21,28 @@
     @include t.up(lg) { padding: 140px 0 64px; }
 }
 
-// Fixed-grid ASCII display. Per-cell intensity = base sampled from the
-// rune SVG + a radial sine wave breathing outward. The rune is drawn as
-// dense glyphs; the wave makes everything pulse. No CSS mask needed —
-// the rune shape comes from the grid itself.
+// Fixed-grid ASCII display. The wave fills the full viewport (capped at
+// the initial screen height so it doesn't keep growing on long pages);
+// cells inside the rune silhouette render brighter, painting the
+// Stakecore mark as a lighter ASCII shape embedded in the dimmer field.
 .hero-rune-canvas {
     display: none;
 
     @include t.up(md) {
         display: block;
         position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 360px;
-        height: 360px;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
         opacity: 0.3;
         pointer-events: none;
         z-index: -1;
-    }
-
-    @include t.up(lg) {
-        width: 480px;
-        height: 480px;
+        // Fade the lower half toward the page background so the wave
+        // dissolves into the dark body instead of cutting off at the
+        // hero's overflow edge.
+        mask-image: linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%);
     }
 }
 

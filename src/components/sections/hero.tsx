@@ -115,23 +115,40 @@ const HeroRuneCanvas = () => {
       cy = rows / 2
     }
 
-    // Rasterize the rune SVG into an offscreen canvas at grid resolution,
-    // then read alpha-weighted luminance as the per-cell base intensity.
+    // Rasterize the rune SVG into a centered region of the grid so the
+    // wave can fill the full viewport without stretching the mark.
+    // Target ~40% of the shorter grid dimension; preserve SVG aspect
+    // (340 × 380); clamp + centre so the mark sits at the visual middle.
+    const SVG_ASPECT = 340 / 380
     const rasterize = () => new Promise<Float32Array>((resolve) => {
+      const arr = new Float32Array(cols * rows)
       const img = new Image()
       img.onload = () => {
+        // Sprite size in cells. Tied to the shorter grid axis so portrait
+        // and landscape viewports both show a centred, well-proportioned
+        // rune (not a stretched-to-edges blob).
+        const minor = Math.min(cols, rows)
+        let runeH = Math.max(20, Math.round(minor * 0.55))
+        let runeW = Math.round(runeH * SVG_ASPECT)
+        if (runeW > cols) {
+          runeW = cols
+          runeH = Math.round(runeW / SVG_ASPECT)
+        }
         const off = document.createElement('canvas')
-        off.width = cols
-        off.height = rows
+        off.width = runeW
+        off.height = runeH
         const octx = off.getContext('2d')
-        if (!octx) { resolve(new Float32Array(cols * rows)); return }
-        octx.drawImage(img, 0, 0, cols, rows)
-        const data = octx.getImageData(0, 0, cols, rows).data
-        const arr = new Float32Array(cols * rows)
-        for (let i = 0; i < cols * rows; i++) {
-          const r = data[i * 4]
-          const a = data[i * 4 + 3]
-          arr[i] = (r / 255) * (a / 255)
+        if (!octx) { resolve(arr); return }
+        octx.drawImage(img, 0, 0, runeW, runeH)
+        const data = octx.getImageData(0, 0, runeW, runeH).data
+        const xOffset = Math.floor((cols - runeW) / 2)
+        const yOffset = Math.floor((rows - runeH) / 2)
+        for (let y = 0; y < runeH; y++) {
+          for (let x = 0; x < runeW; x++) {
+            const r = data[(y * runeW + x) * 4]
+            const a = data[(y * runeW + x) * 4 + 3]
+            arr[(y + yOffset) * cols + (x + xOffset)] = (r / 255) * (a / 255)
+          }
         }
         resolve(arr)
       }
@@ -143,28 +160,32 @@ const HeroRuneCanvas = () => {
       ctx.fillStyle = '#000'
       ctx.fillRect(0, 0, w, h)
       ctx.font = `${cellSize}px 'Roboto Mono', ui-monospace, monospace`
-      ctx.fillStyle = '#6B6B6B'
       ctx.textBaseline = 'top'
 
-      for (let y = 0; y < rows; y++) {
-        for (let x = 0; x < cols; x++) {
-          // Cells outside the rune silhouette never render — the wave
-          // only modulates the brightness of cells where the SVG alpha
-          // mask said "inside".
-          const b = base[y * cols + x]
-          if (b < 0.05) continue
-          const dx = x - cx
-          const dy = y - cy
-          const dist = Math.sqrt(dx * dx + dy * dy)
-          // Two-octave radial wave for organic pulsing.
-          const wave =
-            0.5 + 0.5 * Math.sin(dist * 0.42 - phase) * 0.7
-            + 0.5 * Math.sin(dist * 0.18 - phase * 0.6) * 0.3
-          const intensity = b * 0.65 + wave * 0.35
-          const idx = Math.min(RAMP.length - 1, Math.floor(intensity * RAMP.length))
-          const c = RAMP[idx]
-          if (c === ' ') continue
-          ctx.fillText(c, x * cellSize, y * cellSize)
+      // Inverted layout: every cell renders the radial wave glyph; cells
+      // inside the rune silhouette use a brighter colour, so the mark
+      // appears as a lighter ASCII silhouette embedded in the dimmer
+      // field. Two passes keep fillStyle constant per pass.
+      for (let pass = 0; pass < 2; pass++) {
+        ctx.fillStyle = pass === 0 ? '#6B6B6B' : '#FFFFFF'
+        const wantInside = pass === 1
+        for (let y = 0; y < rows; y++) {
+          for (let x = 0; x < cols; x++) {
+            const b = base[y * cols + x]
+            const inside = b > 0.05
+            if (inside !== wantInside) continue
+            const dx = x - cx
+            const dy = y - cy
+            const dist = Math.sqrt(dx * dx + dy * dy)
+            // Two-octave radial wave for organic pulsing.
+            const wave =
+              0.5 + 0.5 * Math.sin(dist * 0.42 - phase) * 0.7
+              + 0.5 * Math.sin(dist * 0.18 - phase * 0.6) * 0.3
+            const idx = Math.min(RAMP.length - 1, Math.floor(wave * RAMP.length))
+            const c = RAMP[idx]
+            if (c === ' ') continue
+            ctx.fillText(c, x * cellSize, y * cellSize)
+          }
         }
       }
     }
@@ -188,7 +209,7 @@ const HeroRuneCanvas = () => {
       if (t - last < 80) return
       const dt = last === 0 ? 16 : t - last
       last = t
-      phase += dt * 0.003
+      phase += dt * 0.002
       drawFrame(phase)
     }
     if (!reduceMotion) raf = requestAnimationFrame(tick)
