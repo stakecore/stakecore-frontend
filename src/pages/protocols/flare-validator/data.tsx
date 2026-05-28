@@ -5,7 +5,7 @@ import { flarePChainTransactionUrl, flareValidatorUrl } from "~/constants"
 import { checkRangeAvailable } from "../utils"
 import { ApiResponseDto_AvalancheDelegatorInfoDto, AvalancheValidatorInfoDto, FlareValidatorService } from "~/backendApi"
 import type { AvalancheData, IDelegation, IGraphics } from "./types"
-import type { ISpecs, ISummary } from "~/components/types"
+import type { ISpecs, ISummary } from "../types"
 
 export namespace FlareValidatorDataAccess {
 

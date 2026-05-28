@@ -1,5 +1,5 @@
 import type { FspInfoDto } from "~/backendApi"
-import type { ISummary, ISpecs } from "~/components/types"
+import type { ISummary, ISpecs } from "../types"
 
 
 export type FspData = {

@@ -1,7 +1,7 @@
 import React from "react"
 import SpecsTooltip from "./tooltip"
 import { symbolToChain } from "~/utils/misc/translations"
-import type { ISpecs } from "~/components/types"
+import type { ISpecs } from "./types"
 
 
 const InfoComponent = ({ summary, specs }) => {

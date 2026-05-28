@@ -3,7 +3,7 @@ import type { FspStatisticsDto } from "~/backendApi"
 import { flareEvmAddressUrl, flareFspAddressUrl } from "~/constants"
 import { Formatter } from "~/utils/misc/formatter"
 import { HashLink } from "~/components/ui/links"
-import type { ISpecs, ISummary } from "~/components/types"
+import type { ISpecs, ISummary } from "../types"
 
 
 namespace FspDataLayer {
