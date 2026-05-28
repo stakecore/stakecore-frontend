@@ -22,7 +22,7 @@ export const router = createHashRouter([
             lazyRoute("/flare/validator", () => import("../pages/protocols/flare-validator/page")),
             lazyRoute("/flare/fsp", () => import("../pages/protocols/flare-fsp/page")),
             lazyRoute("/songbird/fsp", () => import("../pages/protocols/songbird-fsp/page")),
-            { path: "*", element: <NotFound /> }
+            { path: "*", element: <NotFound />, handle: { hideCallToAction: true } }
         ]
     }
 ])

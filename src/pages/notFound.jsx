@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 const NotFound = () => (
     <section className="innerpage-single-area">
         <div className="container">
-            <div className="error-container">
+            <div className="error-container error-container--centered">
                 <div className="error-status">404</div>
                 <div className="error-label">Page not found</div>
                 <p className="error-desc">

@@ -1,4 +1,4 @@
-import { Outlet, useLocation, useNavigation } from 'react-router-dom'
+import { Outlet, useLocation, useMatches, useNavigation } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import { useGlobalStore } from '~/utils/store/global'
 import { useShallow } from 'zustand/react/shallow'
@@ -48,6 +48,8 @@ const NavigationPreloader = () => {
 
 const RootLayout = () => {
   const { pathname } = useLocation()
+  const matches = useMatches()
+  const hideCallToAction = matches.some(m => (m.handle as { hideCallToAction?: boolean } | undefined)?.hideCallToAction)
   const chain = chainFromRoute(pathname)
   const chainId = chainToChainId(chain)
   const image = chainToBackgroundImage(chain)
@@ -80,7 +82,7 @@ const RootLayout = () => {
         {image && <div className='background-image' style={{ backgroundImage: `url("${image}")` }} />}
         <CookiesProvider>
           <Outlet />
-          <CallToAction />
+          {!hideCallToAction && <CallToAction />}
           <Footer />
         </CookiesProvider>
       </div>
