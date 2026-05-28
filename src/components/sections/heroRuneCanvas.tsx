@@ -2,21 +2,83 @@ import { useEffect, useRef } from 'react'
 import profile from '../../assets/images/about/profile.svg'
 
 
-// Fixed grid of ASCII cells acting like a low-res B&W display. Per-cell
-// intensity comes from two sources:
-//   1) A static base, sampled from a rasterized profile.svg — cells under
-//      the rune's strokes have high intensity, cells outside near zero.
-//   2) A radial sine wave centered on the grid that breathes outward over
-//      time, modulating every cell.
-// Each frame, the combined intensity picks a glyph from the RAMP (empty →
-// full). The rune is rendered as ASCII pixels and pulses with the wave.
+// GPU implementation of the ASCII-wave hero background. A single
+// full-screen fragment shader picks an ASCII glyph per pixel from a
+// pre-rasterized glyph atlas based on (distance, phase) and tints it
+// white inside the Stakecore rune silhouette / gray outside.
 //
-// The render loop is optimized for main-thread frugality (see comments
-// inside): per-cell `sqrt` is folded into a setup-time distance bin, the
-// wave is evaluated once per bin (not once per cell), every RAMP glyph
-// is pre-rasterized into an ImageBitmap so `drawImage` is a fast blit,
-// and the frame loop walks bins (256) rather than cells (~21K).
+// Per-frame main-thread work reduces to: update one `u_phase` uniform
+// + drawArrays(6). All shading happens on the GPU in parallel.
 const RAMP = ' .,:;+*x#@'
+const SVG_ASPECT = 340 / 380
+
+const VERTEX_SHADER = `#version 300 es
+in vec2 a_position;
+void main() {
+  gl_Position = vec4(a_position, 0.0, 1.0);
+}`
+
+// Fragment shader. The wave is purely f(dist, phase); the rune mask
+// is a tiny texture that decides per-cell whether to tint white or
+// gray; the glyph atlas is a 10-wide horizontal strip of pre-rendered
+// RAMP characters in white, multiplied by the per-cell color.
+const FRAGMENT_SHADER = `#version 300 es
+precision highp float;
+
+uniform float u_phase;
+uniform vec2  u_resolution;     // canvas size in backing-store pixels
+uniform float u_cellSizePx;     // backing-store pixels per cell
+uniform vec2  u_runeSizeCells;  // (runeW, runeH) in cells
+uniform sampler2D u_glyphAtlas; // horizontal strip, RAMP_LEN glyphs
+uniform sampler2D u_runeMask;   // rune silhouette texture
+
+out vec4 fragColor;
+
+const float RAMP_LEN = 10.0;
+const float INSIDE_COLOR = 1.0;       // white
+const float OUTSIDE_COLOR = 0.42;     // ~#6B6B6B
+const float INSIDE_THRESHOLD = 0.05;
+
+void main() {
+  // gl_FragCoord is bottom-left origin in WebGL — flip Y so the rest
+  // of the math reads in canvas-2D / top-left coordinates.
+  vec2 px = vec2(gl_FragCoord.x, u_resolution.y - gl_FragCoord.y);
+
+  vec2 cell = floor(px / u_cellSizePx);
+  vec2 cellCount = ceil(u_resolution / u_cellSizePx);
+  vec2 cellCenter = cellCount * 0.5;
+
+  // Wave value at this cell's radial distance.
+  float dist = length(cell - cellCenter);
+  float wave = 0.5
+             + 0.35 * sin(dist * 0.42 - u_phase)
+             + 0.15 * sin(dist * 0.18 - u_phase * 0.6);
+
+  // Pick the RAMP glyph index from wave intensity. clamp to [0, 1)
+  // so floor never hits RAMP_LEN.
+  float charIdx = floor(clamp(wave, 0.0, 0.9999) * RAMP_LEN);
+
+  // Is this cell inside the rune silhouette? Sample the centered mask
+  // texture; cells outside the rune-sized rectangle short-circuit to 0.
+  vec2 cellInRune = (cell - cellCenter + u_runeSizeCells * 0.5) / u_runeSizeCells;
+  float inside = 0.0;
+  if (all(greaterThanEqual(cellInRune, vec2(0.0))) && all(lessThanEqual(cellInRune, vec2(1.0)))) {
+    vec4 maskTex = texture(u_runeMask, cellInRune);
+    inside = maskTex.r * maskTex.a;
+  }
+  bool isInside = inside > INSIDE_THRESHOLD;
+
+  // Local position within the cell (0..1), then map into atlas UV.
+  vec2 cellLocal = (px - cell * u_cellSizePx) / u_cellSizePx;
+  vec2 atlasUV = vec2((charIdx + cellLocal.x) / RAMP_LEN, cellLocal.y);
+
+  float glyphAlpha = texture(u_glyphAtlas, atlasUV).a;
+  float color = isInside ? INSIDE_COLOR : OUTSIDE_COLOR;
+
+  // Canvas is opaque (alpha:false context); CSS opacity + gradient
+  // mask handle compositing into the page.
+  fragColor = vec4(vec3(color * glyphAlpha), 1.0);
+}`
 
 const HeroRuneCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -24,250 +86,192 @@ const HeroRuneCanvas = () => {
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
+    const gl = canvas.getContext('webgl2', { antialias: false, alpha: false, premultipliedAlpha: false })
+    if (!gl) {
+      console.warn('hero-rune: WebGL2 unavailable; background will not render')
+      return
+    }
 
     const dpr = window.devicePixelRatio || 1
-    const cellSize = 10
-    // Number of bins the radial wave is discretized into. The wave is
-    // purely a function of (dist, phase), so cells at the same distance
-    // share a value — bin distance and evaluate the wave once per bin
-    // per frame rather than once per cell per frame.
-    const BIN_COUNT = 256
+    const cellSize = 10              // CSS pixels per cell
+    const cellSizePx = cellSize * dpr // backing-store pixels per cell
 
-    let w = 0
-    let h = 0
-    let cols = 0
-    let rows = 0
-    let cx = 0
-    let cy = 0
-    let maxDist = 1
-    let base: Float32Array | null = null
-    // Per-cell precomputations — these only depend on the grid layout,
-    // never on phase, so they're built once at setup() and reused every
-    // frame.
-    let distBinArr: Uint16Array | null = null   // which radial bin each cell lives in
-    let xPixelArr: Float32Array | null = null   // x * cellSize, cached
-    let yPixelArr: Float32Array | null = null   // y * cellSize, cached
-    // Per-frame radial LUT: charArrIdx[bin] = which RAMP glyph this bin
-    // should render this frame. Reused across cells.
-    const charArrIdx = new Uint8Array(BIN_COUNT)
-    // Pre-rasterized glyph sprites — one canvas per (RAMP char × color).
-    // drawImage of a pre-rasterized sprite is dramatically cheaper than
-    // fillText, which has to lay out + rasterize the glyph each call.
-    // ImageBitmaps so drawImage can take a fast GPU-upload path; falls
-    // back to the source canvases if createImageBitmap is unavailable.
-    let glyphsOutside: (ImageBitmap | HTMLCanvasElement)[] = []
-    let glyphsInside: (ImageBitmap | HTMLCanvasElement)[] = []
-    // Cell indices grouped by (bin, inside). Indexed `bin * 2 + inside`.
-    // Lets the frame loop skip entire bins when their wave value lands
-    // on the space glyph, rather than scanning every cell.
-    let cellsByBinInside: Uint16Array[] = []
+    // --- shader compile + link ---
+    const compile = (type: number, src: string): WebGLShader | null => {
+      const shader = gl.createShader(type)
+      if (!shader) return null
+      gl.shaderSource(shader, src)
+      gl.compileShader(shader)
+      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        console.error('hero-rune shader compile error:', gl.getShaderInfoLog(shader))
+        gl.deleteShader(shader)
+        return null
+      }
+      return shader
+    }
+    const vs = compile(gl.VERTEX_SHADER, VERTEX_SHADER)
+    const fs = compile(gl.FRAGMENT_SHADER, FRAGMENT_SHADER)
+    if (!vs || !fs) return
+
+    const program = gl.createProgram()
+    if (!program) return
+    gl.attachShader(program, vs)
+    gl.attachShader(program, fs)
+    gl.linkProgram(program)
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      console.error('hero-rune program link error:', gl.getProgramInfoLog(program))
+      return
+    }
+    gl.deleteShader(vs)
+    gl.deleteShader(fs)
+
+    // --- full-screen quad geometry (VAO + VBO) ---
+    const vao = gl.createVertexArray()
+    gl.bindVertexArray(vao)
+    const vbo = gl.createBuffer()
+    gl.bindBuffer(gl.ARRAY_BUFFER, vbo)
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+      -1, -1,  1, -1, -1,  1,
+      -1,  1,  1, -1,  1,  1,
+    ]), gl.STATIC_DRAW)
+    const posLoc = gl.getAttribLocation(program, 'a_position')
+    gl.enableVertexAttribArray(posLoc)
+    gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0)
+    gl.bindVertexArray(null)
+
+    // --- uniform locations ---
+    gl.useProgram(program)
+    const uPhase = gl.getUniformLocation(program, 'u_phase')
+    const uResolution = gl.getUniformLocation(program, 'u_resolution')
+    const uCellSize = gl.getUniformLocation(program, 'u_cellSizePx')
+    const uRuneSize = gl.getUniformLocation(program, 'u_runeSizeCells')
+    gl.uniform1i(gl.getUniformLocation(program, 'u_glyphAtlas'), 0)
+    gl.uniform1i(gl.getUniformLocation(program, 'u_runeMask'), 1)
+    if (uCellSize) gl.uniform1f(uCellSize, cellSizePx)
+
+    // --- glyph atlas: a 1-row horizontal strip of all RAMP chars
+    // rendered in white. The fragment shader multiplies by per-cell
+    // color, so we only need one color baked into the atlas.
+    const buildGlyphAtlas = (): HTMLCanvasElement => {
+      const charW = Math.ceil(cellSizePx)
+      const charH = Math.ceil(cellSizePx)
+      const off = document.createElement('canvas')
+      off.width = charW * RAMP.length
+      off.height = charH
+      const octx = off.getContext('2d')
+      if (octx) {
+        octx.font = `${cellSizePx}px 'Roboto Mono', ui-monospace, monospace`
+        octx.fillStyle = '#FFFFFF'
+        octx.textBaseline = 'top'
+        for (let i = 0; i < RAMP.length; i++) {
+          octx.fillText(RAMP[i], i * charW, 0)
+        }
+      }
+      return off
+    }
+    const glyphTex = gl.createTexture()
+    gl.activeTexture(gl.TEXTURE0)
+    gl.bindTexture(gl.TEXTURE_2D, glyphTex)
+    // Note: don't enable UNPACK_FLIP_Y_WEBGL — the fragment shader is
+    // already working in top-origin coordinates (it flips gl_FragCoord.y),
+    // so enabling the upload-time flip on top would invert the texture.
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, buildGlyphAtlas())
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+
+    // --- rune mask texture (filled by rasterize() once per resize) ---
+    const runeTex = gl.createTexture()
+    gl.activeTexture(gl.TEXTURE1)
+    gl.bindTexture(gl.TEXTURE_2D, runeTex)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+
+    // --- geometry state ---
+    let w = 0, h = 0, cols = 0, rows = 0
+    let runeW = 0, runeH = 0
 
     const setup = () => {
       const rect = canvas.getBoundingClientRect()
       w = rect.width
       h = rect.height
-      canvas.width = w * dpr
-      canvas.height = h * dpr
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+      canvas.width = Math.ceil(w * dpr)
+      canvas.height = Math.ceil(h * dpr)
+      gl.viewport(0, 0, canvas.width, canvas.height)
       cols = Math.ceil(w / cellSize)
       rows = Math.ceil(h / cellSize)
-      cx = cols / 2
-      cy = rows / 2
-      maxDist = Math.sqrt(cx * cx + cy * cy) || 1
-
-      // Precompute, per cell: the radial-bin index, and the pixel
-      // coordinates. Drops 20K sqrt + 40K multiplications from every
-      // frame down to once-per-setup.
-      const n = cols * rows
-      distBinArr = new Uint16Array(n)
-      xPixelArr = new Float32Array(n)
-      yPixelArr = new Float32Array(n)
-      const binScale = BIN_COUNT / maxDist
-      for (let y = 0; y < rows; y++) {
-        for (let x = 0; x < cols; x++) {
-          const dx = x - cx
-          const dy = y - cy
-          const dist = Math.sqrt(dx * dx + dy * dy)
-          const bin = Math.min(BIN_COUNT - 1, (dist * binScale) | 0)
-          const i = y * cols + x
-          distBinArr[i] = bin
-          xPixelArr[i] = x * cellSize
-          yPixelArr[i] = y * cellSize
-        }
+      // Rune sprite size: 55% of the shorter grid axis, preserve aspect.
+      const minor = Math.min(cols, rows)
+      runeH = Math.max(20, Math.round(minor * 0.55))
+      runeW = Math.round(runeH * SVG_ASPECT)
+      if (runeW > cols) {
+        runeW = cols
+        runeH = Math.round(runeW / SVG_ASPECT)
       }
+      gl.useProgram(program)
+      if (uResolution) gl.uniform2f(uResolution, canvas.width, canvas.height)
+      if (uRuneSize) gl.uniform2f(uRuneSize, runeW, runeH)
     }
 
-    // Render each RAMP glyph once into a small offscreen canvas, then
-    // (when available) upgrade to an ImageBitmap. drawImage of an
-    // ImageBitmap can be uploaded to the GPU and is consistently
-    // faster than drawing from a Canvas backing store.
-    const buildGlyphs = async (color: string): Promise<(ImageBitmap | HTMLCanvasElement)[]> => {
-      const px = Math.ceil(cellSize * dpr)
-      const sources = Array.from(RAMP).map((c) => {
-        const off = document.createElement('canvas')
-        off.width = px
-        off.height = px
-        const octx = off.getContext('2d')
-        if (octx) {
-          octx.font = `${cellSize * dpr}px 'Roboto Mono', ui-monospace, monospace`
-          octx.fillStyle = color
-          octx.textBaseline = 'top'
-          octx.fillText(c, 0, 0)
-        }
-        return off
-      })
-      if (typeof createImageBitmap !== 'function') return sources
-      try {
-        return await Promise.all(sources.map((src) => createImageBitmap(src)))
-      } catch {
-        return sources
-      }
-    }
-
-    // Index every cell into a (bin × inside) bucket so the per-frame
-    // loop iterates 512 buckets instead of N cells — and skips entire
-    // buckets in one branch when the bin's wave value picks the space
-    // glyph. Two passes: one to count, one to fill, both O(N).
-    const buildCellGroups = () => {
-      if (!base || !distBinArr) return
-      const n = cols * rows
-      const slots = BIN_COUNT * 2
-      const counts = new Uint32Array(slots)
-      for (let i = 0; i < n; i++) {
-        const slot = distBinArr[i] * 2 + (base[i] > 0.05 ? 1 : 0)
-        counts[slot]++
-      }
-      const groups = new Array<Uint16Array>(slots)
-      for (let s = 0; s < slots; s++) groups[s] = new Uint16Array(counts[s])
-      const writeIdx = new Uint32Array(slots)
-      for (let i = 0; i < n; i++) {
-        const slot = distBinArr[i] * 2 + (base[i] > 0.05 ? 1 : 0)
-        groups[slot][writeIdx[slot]++] = i
-      }
-      cellsByBinInside = groups
-    }
-
-    // Rasterize the rune SVG into a centered region of the grid so the
-    // wave can fill the full viewport without stretching the mark.
-    // Target ~40% of the shorter grid dimension; preserve SVG aspect
-    // (340 × 380); clamp + centre so the mark sits at the visual middle.
-    const SVG_ASPECT = 340 / 380
-    const rasterize = () => new Promise<Float32Array>((resolve) => {
-      const arr = new Float32Array(cols * rows)
+    // Rasterize profile.svg into a runeW × runeH texture. Sampled by
+    // the fragment shader to decide inside/outside per cell. Async
+    // because <img> loading is async, but only runs at setup + resize.
+    const rasterize = () => new Promise<void>((resolve) => {
       const img = new Image()
       img.onload = () => {
-        const minor = Math.min(cols, rows)
-        let runeH = Math.max(20, Math.round(minor * 0.55))
-        let runeW = Math.round(runeH * SVG_ASPECT)
-        if (runeW > cols) {
-          runeW = cols
-          runeH = Math.round(runeW / SVG_ASPECT)
-        }
         const off = document.createElement('canvas')
         off.width = runeW
         off.height = runeH
         const octx = off.getContext('2d')
-        if (!octx) { resolve(arr); return }
-        octx.drawImage(img, 0, 0, runeW, runeH)
-        const data = octx.getImageData(0, 0, runeW, runeH).data
-        const xOffset = Math.floor((cols - runeW) / 2)
-        const yOffset = Math.floor((rows - runeH) / 2)
-        for (let y = 0; y < runeH; y++) {
-          for (let x = 0; x < runeW; x++) {
-            const r = data[(y * runeW + x) * 4]
-            const a = data[(y * runeW + x) * 4 + 3]
-            arr[(y + yOffset) * cols + (x + xOffset)] = (r / 255) * (a / 255)
-          }
-        }
-        resolve(arr)
+        if (octx) octx.drawImage(img, 0, 0, runeW, runeH)
+        gl.activeTexture(gl.TEXTURE1)
+        gl.bindTexture(gl.TEXTURE_2D, runeTex)
+        // Note: don't enable UNPACK_FLIP_Y_WEBGL — the fragment shader is
+    // already working in top-origin coordinates (it flips gl_FragCoord.y),
+    // so enabling the upload-time flip on top would invert the texture.
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, off)
+        resolve()
       }
       img.src = profile
     })
 
-    const drawFrame = (phase: number) => {
-      if (!base || !xPixelArr || !yPixelArr || cellsByBinInside.length === 0) return
-
-      // 1) Update the radial LUT: one (charIdx) per bin. BIN_COUNT sin
-      //    pairs per frame instead of one per cell — ~80× fewer
-      //    transcendental calls on a 1080p viewport.
-      const rampLast = RAMP.length - 1
-      const rampLen = RAMP.length
-      for (let bin = 0; bin < BIN_COUNT; bin++) {
-        const r = (bin / BIN_COUNT) * maxDist
-        const wave =
-          0.5 + 0.35 * Math.sin(r * 0.42 - phase)
-              + 0.15 * Math.sin(r * 0.18 - phase * 0.6)
-        const idx = wave <= 0 ? 0 : wave >= 1 ? rampLast : (wave * rampLen) | 0
-        charArrIdx[bin] = idx
-      }
-
-      // 2) Clear, then iterate bins (256) rather than cells (~21K). For
-      //    each bin whose wave value picks a non-space glyph, walk its
-      //    pre-built inside / outside cell list and stamp the sprite.
-      //    Bins on the space glyph short-circuit out completely.
-      ctx.fillStyle = '#000'
-      ctx.fillRect(0, 0, w, h)
-      for (let bin = 0; bin < BIN_COUNT; bin++) {
-        const charIdx = charArrIdx[bin]
-        if (charIdx === 0) continue
-        const outCells = cellsByBinInside[bin * 2]
-        const inCells = cellsByBinInside[bin * 2 + 1]
-        const outGlyph = glyphsOutside[charIdx]
-        const inGlyph = glyphsInside[charIdx]
-        const outLen = outCells.length
-        for (let k = 0; k < outLen; k++) {
-          const i = outCells[k]
-          ctx.drawImage(outGlyph, xPixelArr[i], yPixelArr[i], cellSize, cellSize)
-        }
-        const inLen = inCells.length
-        for (let k = 0; k < inLen; k++) {
-          const i = inCells[k]
-          ctx.drawImage(inGlyph, xPixelArr[i], yPixelArr[i], cellSize, cellSize)
-        }
-      }
-    }
-
-    // If the user prefers reduced motion, draw one static frame and
-    // skip the rAF loop entirely.
+    let phase = 0
+    let last = 0
+    let raf = 0
+    let ready = false
     const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
 
-    setup()
-    // Glyphs are independent of grid layout, so they only need to be
-    // built once. Rasterize + cell grouping happen on first mount and
-    // again on resize.
-    Promise.all([buildGlyphs('#6B6B6B'), buildGlyphs('#FFFFFF')]).then(([out, ins]) => {
-      glyphsOutside = out
-      glyphsInside = ins
-    })
+    const drawFrame = () => {
+      gl.useProgram(program)
+      if (uPhase) gl.uniform1f(uPhase, phase)
+      gl.bindVertexArray(vao)
+      gl.drawArrays(gl.TRIANGLES, 0, 6)
+    }
 
-    rasterize().then((arr) => {
-      base = arr
-      buildCellGroups()
-      if (reduceMotion) drawFrame(0)
-    })
-
-    let last = 0
-    let phase = 0
-    let raf = 0
     const tick = (t: number) => {
       raf = requestAnimationFrame(tick)
-      if (!base) return
+      if (!ready) return
       if (t - last < 80) return
       const dt = last === 0 ? 16 : t - last
       last = t
       phase += dt * 0.002
-      drawFrame(phase)
+      drawFrame()
     }
+
+    setup()
+    rasterize().then(() => {
+      ready = true
+      if (reduceMotion) drawFrame()
+    })
     if (!reduceMotion) raf = requestAnimationFrame(tick)
 
     const onResize = () => {
       setup()
-      rasterize().then((arr) => {
-        base = arr
-        buildCellGroups()
-        if (reduceMotion) drawFrame(0)
+      rasterize().then(() => {
+        if (reduceMotion) drawFrame()
       })
     }
     window.addEventListener('resize', onResize)
@@ -275,6 +279,11 @@ const HeroRuneCanvas = () => {
     return () => {
       cancelAnimationFrame(raf)
       window.removeEventListener('resize', onResize)
+      gl.deleteTexture(glyphTex)
+      gl.deleteTexture(runeTex)
+      gl.deleteBuffer(vbo)
+      gl.deleteVertexArray(vao)
+      gl.deleteProgram(program)
     }
   }, [])
 
