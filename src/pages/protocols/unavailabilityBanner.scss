@@ -12,6 +12,10 @@
     background: #1E090C;
     border-top: 1px solid #6C222B;
     color: var(--heading-color);
+    // Promote to its own GPU layer so iOS Safari / mobile Chrome don't
+    // leave a visible gap below the banner while the URL bar animates
+    // in or out during scroll.
+    transform: translateZ(0);
 }
 
 .unavailability-banner-inner {
