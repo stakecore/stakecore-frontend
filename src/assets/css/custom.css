@@ -33,10 +33,9 @@
 /* CHAIN BACKGROUND ICON (root layout)
  *
  * The chain logo (FLR/SGB/AVAX) renders in a child .background-image
- * element rather than on .background itself, so we can apply a filter
- * that desaturates and darkens just the image without affecting content.
- * isolation: isolate keeps the negative z-index contained within the
- * .background stacking context — without it, z-index: -1 would push the
+ * element rather than on .background itself, so .background can own the
+ * stacking context. isolation: isolate keeps the negative z-index
+ * contained within .background — without it, z-index: -1 would push the
  * image behind <body> and disappear.
  */
 
@@ -47,14 +46,32 @@
 
 .background-image {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  /* Pin to the largest viewport height (URL-bar-hidden state) so the
+     centered SVG doesn't shift as mobile browsers show/hide their
+     chrome during scroll. lvh > 100% on iOS/Android while the bar is
+     visible — the element overflows slightly off-screen at the bottom,
+     which is fine since z-index: -1 + pointer-events: none. */
+  height: 100lvh;
   background-size: auto 400px;
   background-position: center;
   background-repeat: no-repeat;
-  filter: grayscale(1) brightness(0.35);
-  opacity: 0.5;
+  opacity: 0.30;
   z-index: -1;
   pointer-events: none;
+}
+
+/* Per-chain size overrides — each symbol has different padding inside
+   its viewBox, so we tune render size per protocol so the three read at
+   a similar visual weight. */
+.background-image.bg-songbird {
+  background-size: auto 600px;
+}
+
+.background-image.bg-avalanche {
+  background-size: auto 520px;
 }
 
 /* NOTIFICATION BLOCK */

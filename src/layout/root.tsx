@@ -29,6 +29,16 @@ function chainToBackgroundImage(chain: Chain): string {
   return ''
 }
 
+// Per-chain modifier class so each background can tune its own size /
+// position — the Songbird symbol has a transparent ring around the bird
+// so needs a bigger render size to match Flare/Avalanche visually.
+function chainToBackgroundClass(chain: Chain): string {
+  if (chain == Chain.FLARE) return 'bg-flare'
+  if (chain == Chain.SONGBIRD) return 'bg-songbird'
+  if (chain == Chain.AVALANCHE) return 'bg-avalanche'
+  return ''
+}
+
 const NavigationPreloader = () => {
   const navigation = useNavigation()
   const [show, setShow] = useState(false)
@@ -53,6 +63,7 @@ const RootLayout = () => {
   const chain = chainFromRoute(pathname)
   const chainId = chainToChainId(chain)
   const image = chainToBackgroundImage(chain)
+  const bgClass = chainToBackgroundClass(chain)
 
   const { setChain, setWallet, wallet } = useGlobalStore(
     useShallow(state => ({ setChain: state.setChain, setWallet: state.setWalletAddress, wallet: state.walletProvider }))
@@ -79,7 +90,7 @@ const RootLayout = () => {
       <NavigationPreloader />
       <Header />
       <div className='background'>
-        {image && <div className='background-image' style={{ backgroundImage: `url("${image}")` }} />}
+        {image && <div className={`background-image ${bgClass}`} style={{ backgroundImage: `url("${image}")` }} />}
         <CookiesProvider>
           <Outlet />
           {!hideCallToAction && <CallToAction />}
