@@ -11,6 +11,8 @@
     "clean": "vite clean",
     "lint": "eslint .",
     "preview": "NODE_OPTIONS=--no-warnings vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "----------- openapi -----------------------": "",
     "openapi-fix": "sed -i \"s|BASE: *'',|BASE: 'https://backend.stakecore.org',|\" ./src/backendApi/core/OpenAPI.ts",
     "openapi-gen": "yarn openapi -i ./openapi.json -o ./src/backendApi && yarn openapi-fix",
@@ -55,7 +57,8 @@
     "openapi-typescript": "^7.6.1",
     "openapi-typescript-codegen": "^0.29.0",
     "sass-embedded": "^1.93.2",
-    "vite": "^7.3.2"
+    "vite": "^7.3.2",
+    "vitest": "^3"
   },
   "resolutions": {
     "flatted": "^3.4.2",
