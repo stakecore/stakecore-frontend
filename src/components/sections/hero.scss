@@ -12,9 +12,8 @@
     position: relative;
     isolation: isolate;
     overflow: hidden;
-    // Top padding must clear the fixed header — on mobile the header
-    // is ~50px tall and the wordmark's Metamorphous ascenders extend
-    // higher than Inter's, so 48px isn't enough.
+    // Top padding clears the fixed header (~50px mobile, ~100px desktop)
+    // with breathing room above the wordmark.
     padding: 88px 0 32px;
 
     @include t.up(md) { padding: 100px 0 48px; }
@@ -61,12 +60,13 @@
 }
 
 .hero-wordmark {
-    font-family: t.$font-wordmark;
+    // Inter Extrabold matches the protocol page titles + hero stat
+    // values — same display treatment used across the rest of the site.
+    font-family: t.$font-display;
     font-size: 32px;
-    font-weight: t.$weight-regular;
-    text-transform: uppercase;
+    font-weight: t.$weight-extrabold;
     letter-spacing: -0.02em;
-    line-height: 1;
+    line-height: 1.05;
     margin: 0;
     color: var(--heading-color);
     max-width: 100%;
