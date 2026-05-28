@@ -9,7 +9,7 @@ export async function delegate(ethereum: EIP1193Provider, address: string, args:
   const provider = new BrowserProvider(ethereum)
   const signer = await provider.getSigner(address)
   const contract = new Contract(C.wrappedSgbAdr, C.wrappedSgbAbi, signer)
-  const tx = await contract.delegate(C.flareDelegationAdr, args[0])
+  const tx = await contract.delegate(C.songbirdDelegationAdr, args[0])
   await tx.wait(1)
   return tx.hash
 }
