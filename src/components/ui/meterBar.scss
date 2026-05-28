@@ -1,0 +1,35 @@
+@use '../../assets/css/tokens' as t;
+
+// LED-row meter used on the protocol stats pages (FSP success rates,
+// validator uptime, etc.). The LEDs and the status colours are bespoke
+// data-viz, not theme tokens — they live alongside the component so the
+// status palette stays scoped here.
+
+.meter-bar-container {
+    margin-top: t.$space-3;
+}
+
+.meter-bar-title {
+    font-size: t.$text-base;
+    color: var(--heading-color);
+}
+
+.meter-bar {
+    display: flex;
+    padding: 1.5px;
+}
+
+.meter-bar-desc {
+    text-align: center;
+    width: 100px;
+    font-size: t.$text-lg;
+    margin: auto;
+    margin-left: t.$space-2;
+}
+
+.meter-bar-led {
+    min-height: 100%;
+    margin: 1px;
+    flex-grow: 1;
+    border-radius: 2px;
+}
