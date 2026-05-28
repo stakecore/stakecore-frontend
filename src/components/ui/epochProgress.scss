@@ -1,0 +1,62 @@
+@use '../../assets/css/tokens' as t;
+
+// Linear epoch progress bar shown on the protocol stats pages. Each
+// instance has a coloured fill (passed via the `color` prop) and a row
+// of metadata pills above the bar.
+
+.epoch-progress {
+    width: 100%;
+}
+
+.epoch-progress-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.epoch-progress-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: t.$radius-md;
+    padding: 4px 10px;
+    font-size: t.$text-xs;
+}
+
+.epoch-progress-pill-label {
+    color: rgba(255, 255, 255, 0.45);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: t.$weight-medium;
+}
+
+.epoch-progress-pill-value {
+    color: rgba(255, 255, 255, 0.9);
+    font-variant-numeric: tabular-nums;
+    font-weight: t.$weight-semibold;
+}
+
+.epoch-progress-bar {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+}
+
+.epoch-progress-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 1s linear;
+}
+
+.epoch-progress-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    font-size: t.$text-xs;
+    color: rgba(255, 255, 255, 0.5);
+    font-variant-numeric: tabular-nums;
+}

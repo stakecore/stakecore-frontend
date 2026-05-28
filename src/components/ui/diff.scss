@@ -1,0 +1,17 @@
+@use '../../assets/css/tokens' as t;
+
+// Inline percent-change indicator shown on the hero stats. Two variants:
+// the bare arrow + value (default), and a pill (boxed, tinted background).
+
+.diff-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: t.$radius-md;
+    font-size: inherit;
+}
+
+.diff-text { margin-left: 5px; }
+
+.diff-pill .diff-text { margin-left: 0; }

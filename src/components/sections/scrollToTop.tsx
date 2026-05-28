@@ -5,9 +5,12 @@ const ScrollToTop = () => {
   const { pathname } = useLocation()
 
   useEffect(() => {
+    // Respect prefers-reduced-motion — jump instantly for users who
+    // opt out of animation; smooth-scroll for everyone else.
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     window.scrollTo({
       top: 0,
-      behavior: "smooth"
+      behavior: reduced ? "auto" : "smooth"
     })
   }, [pathname])
 
