@@ -88,7 +88,6 @@
 
 .hero-error {
     padding: 32px 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .hero-stats {
@@ -96,8 +95,6 @@
     justify-content: space-evenly;
     gap: 32px;
     padding: 32px 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 
     @include t.up(md) {
         gap: 64px;
