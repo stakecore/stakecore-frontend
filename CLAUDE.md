@@ -52,7 +52,7 @@ All wallet + chain-session state lives under `src/features/wallet/`:
 
 ### Styling
 
-Global CSS files loaded in `main.jsx`: `style.css`, `spacing.css`, `responsive.css`, `custom.css`, `wallet.css`. Component-specific SCSS: `pageStatsPanel.scss`, `investFlow.scss`, `error.scss`. Bootstrap grid used for layout.
+Global stylesheets are aggregated through `src/assets/css/index.scss`, which `main.tsx` imports alongside the two third-party CSS bundles (Bootstrap + react-tooltip). The aggregator pulls in `spacing.css`, `style.css`, `responsive.css`, `custom.css`, `wallet.css`, `meterBar.css`, `progressBar.css`, `specs.css`, and `error.scss` in cascade order. Component-specific SCSS is co-located with each component (e.g. `header.scss`, `hero.scss`, `proposal.scss`). Design tokens (breakpoints, weights, font-size scale) live in `src/assets/css/_tokens.scss` and are consumed via `@use '...tokens' as t;`. Bootstrap grid + utility classes are used for layout.
 
 ## Conventions
 
