@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { RiGithubLine, RiSendPlaneLine, RiTwitterXLine } from '@remixicon/react'
-import profile from '../../assets/images/about/profile.svg'
 import { menuList } from '../../utils/data/menu'
 import { useGlobalStore } from '~/features/wallet/store'
 import { Formatter } from '../../utils/misc/formatter'
@@ -73,7 +72,7 @@ const Header = () => {
                         <div className="logo-outer">
                             <div className="logo">
                                 <Link to="/" aria-label="Stakecore home">
-                                    <img src={profile} alt="" className="logo-mark" />
+                                    <span className="logo-wordmark">stakecore</span>
                                 </Link>
                             </div>
                         </div>
@@ -82,7 +81,7 @@ const Header = () => {
                                 <div className="navbar-header">
                                     <div className="mobile-logo">
                                         <Link to="/" aria-label="Stakecore home">
-                                            <img src={profile} alt="" className="logo-mark" />
+                                            <span className="logo-wordmark">stakecore</span>
                                         </Link>
                                     </div>
                                     <ul className="mobile-social">

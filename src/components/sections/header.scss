@@ -210,10 +210,15 @@
     align-items: center;
 }
 
-.logo-mark {
-    width: 28px;
-    height: 28px;
-    flex-shrink: 0;
+.logo-wordmark {
+    font-family: t.$font-wordmark;
+    font-size: t.$text-base;
+    font-weight: t.$weight-regular;
+    text-transform: lowercase;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: var(--heading-color);
+    white-space: nowrap;
 }
 
 .connect-wallet-button {
