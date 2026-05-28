@@ -16,8 +16,10 @@ export function chainFromRoute(route: string): Chain {
 export function chainIdToConfig(chainId: string | null): any {
   if (chainId == C.flareChainId) {
     return C.flareWalletConfig
-  } else if (chainId = C.songbirdChainId) {
+  } else if (chainId == C.songbirdChainId) {
     return C.songbirdWalletConfig
+  } else if (chainId == C.avalancheChainId) {
+    return C.avalancheWalletConfig
   } else {
     return null
   }
