@@ -55,7 +55,7 @@ const FlareFspLocalDelegateComponent = () => {
       <SpinnerCircular color={C.FLARE_COLOR_CODE} size={45} />
     </div>
   } else if (data == null) {
-    component = <ServerError status={500} message={error} />
+    component = <ServerError error={error} />
   } else {
     component = <>
       <p>

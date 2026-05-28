@@ -26,7 +26,7 @@ export const SongbirdFspPage = () => {
       </div>
     </>
   } else if (data == null) {
-    component = <ServerError status={500} message={error} />
+    component = <ServerError error={error} />
   } else {
     const link = <HashLink url={songbirdEvmAddressUrl(data.info.delegationAddress)} address={data.info.delegationAddress} />
     component = <>

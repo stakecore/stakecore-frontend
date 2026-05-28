@@ -39,7 +39,7 @@ const CallToAction = () => {
     </div>
   } else if (data == null) {
     hasError = true
-    component = <ServerError status={500} message={error} />
+    component = <ServerError error={error} />
   } else {
     const proposal = getProposalData(data)
     if (proposal.length > 0) {

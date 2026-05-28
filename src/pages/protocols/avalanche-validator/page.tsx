@@ -22,7 +22,7 @@ export const AvalancheValidatorPage = () => {
       </div>
     </>
   } else if (error != null) {
-    component = <ServerError status={500} message={error} />
+    component = <ServerError error={error} />
   } else {
     component = <>
       <InfoComponent specs={data.specs} summary={data.summary} />

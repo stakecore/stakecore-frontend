@@ -27,7 +27,7 @@ export const FlareFspPage = () => {
       </div>
     </>
   } else if (data == null) {
-    component = <ServerError status={500} message={error} />
+    component = <ServerError error={error} />
   } else {
     const delegator = <HashLink url={flareEvmAddressUrl(data.info.delegationAddress)} address={data.info.delegationAddress} />
     component = <>

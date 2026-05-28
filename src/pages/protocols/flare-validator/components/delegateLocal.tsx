@@ -121,7 +121,7 @@ const FlareValidatorLocalDelegateComponent = () => {
       </div>
     </div>
   } else if (resp?.data == null) {
-    component = <ServerError status={500} message={error} />
+    component = <ServerError error={error} />
   } else {
     const delegated = resp.data.delegations.reduce((x, y) => x + y.delegated, 0)
     component = <div>
