@@ -2,8 +2,12 @@
 // file (plus the two third-party CSS bundles); each file below is
 // loaded in cascade order, so later files can override earlier ones.
 
+@use './tokens' as t;
+
 // Plain CSS files — emit as CSS @import; Vite's postcss-import inlines
-// them into one bundle at build time.
+// them into one bundle at build time. CSS @imports must precede any
+// other CSS rule, which is why the inlined .error-* rules below come
+// after all the @imports.
 @import 'spacing.css';
 @import 'style.css';
 @import 'responsive.css';
@@ -13,6 +17,58 @@
 @import 'progressBar.css';
 @import 'specs.css';
 
-// SCSS — inlined here. Uses tokens, so it has to stay SCSS until the
-// design-token system migrates to CSS variables.
-@import './error';
+// --- Error display (used by ServerError + 404 page) ---
+//
+// Originally lived in error.scss but was inlined here once Sass started
+// deprecating @import for SCSS files. Token references (font weights,
+// type-scale sizes) resolve via the `@use './tokens' as t` above.
+
+.error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 32px 0;
+    text-align: left;
+}
+
+.error-container--centered {
+    align-items: center;
+    text-align: center;
+    min-height: 60vh;
+    justify-content: center;
+    padding: 64px 0;
+}
+
+.error-container--centered .error-desc { margin-left: auto; margin-right: auto; }
+
+.error-status {
+    font-family: var(--font-sans);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
+    font-size: 56px;
+    font-weight: t.$weight-semibold;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: var(--heading-color);
+}
+
+.error-label {
+    font-family: var(--font-sans);
+    font-size: t.$text-xs;
+    font-weight: t.$weight-medium;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--main-color);
+}
+
+.error-desc {
+    font-family: var(--font-sans);
+    font-size: t.$text-sm;
+    line-height: 1.5;
+    color: var(--main-color);
+    margin: 12px 0 0;
+    max-width: 540px;
+}
+
+.error-desc a { color: var(--heading-color); }
