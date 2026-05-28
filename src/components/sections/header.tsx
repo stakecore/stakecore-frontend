@@ -85,6 +85,11 @@ const Header = () => {
                                             <img src={profile} alt="" className="logo-mark" />
                                         </Link>
                                     </div>
+                                    <ul className="mobile-social">
+                                        <li><Link target="_blank" rel="noopener noreferrer" to="https://x.com/stake_core" aria-label="X"><RiTwitterXLine size={18} /></Link></li>
+                                        <li><Link target="_blank" rel="noopener noreferrer" to="https://t.me/+xZoChBQyyCo3OGY0" aria-label="Telegram"><RiSendPlaneLine size={18} /></Link></li>
+                                        <li><Link target="_blank" rel="noopener noreferrer" to="https://github.com/stakecore" aria-label="GitHub"><RiGithubLine size={18} /></Link></li>
+                                    </ul>
                                     <button
                                         type="button"
                                         className="navbar-toggle"
@@ -135,11 +140,6 @@ const Header = () => {
                                                 </li>
                                             )
                                         ))}
-                                    </ul>
-                                    <ul className="drawer-social">
-                                        <li><Link target="_blank" rel="noopener noreferrer" to="https://x.com/stake_core" aria-label="X"><RiTwitterXLine size={18} /></Link></li>
-                                        <li><Link target="_blank" rel="noopener noreferrer" to="https://t.me/+xZoChBQyyCo3OGY0" aria-label="Telegram"><RiSendPlaneLine size={18} /></Link></li>
-                                        <li><Link target="_blank" rel="noopener noreferrer" to="https://github.com/stakecore" aria-label="GitHub"><RiGithubLine size={18} /></Link></li>
                                     </ul>
                                 </div>
                             </nav>

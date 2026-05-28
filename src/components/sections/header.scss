@@ -148,30 +148,27 @@
         color: var(--heading-color);
     }
 
-    // Social row inside the mobile drawer.
-    // Selector specificity needs to beat `.navbar-collapse > ul` /
-    // `.navbar-collapse li` above, which otherwise stack the icons.
-    .navbar-collapse > .drawer-social {
+    // Social row in the mobile header bar (between the logo and the
+    // hamburger). lg+ uses the .header-social cluster in .menu-btns
+    // instead; .navbar-header is `display: none` on lg+ so this
+    // doesn't need an explicit hide rule there.
+    .navbar-header .mobile-social {
         display: flex;
         list-style: none;
-        margin: 8px 0 0;
-        padding: 16px;
+        margin: 0 8px 0 0;
+        padding: 0;
         gap: 4px;
-        border-top: 1px solid rgba(255, 255, 255, 0.06);
 
         li {
             display: inline-flex;
-            padding: 0;
-            border-top: none;
         }
 
         li a {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 36px;
-            height: 36px;
-            padding: 0;
+            width: 32px;
+            height: 32px;
             color: var(--main-color);
             border-radius: t.$radius-sm;
             transition: color 150ms ease-out, background-color 150ms ease-out;
@@ -295,10 +292,6 @@
             height: 1px;
             background: var(--heading-color);
         }
-
-        // Drawer-only on mobile; suppressed when navbar-collapse becomes inline.
-        // Specificity must match `.navbar-collapse > ul { display: flex }` above.
-        .navbar-collapse > .drawer-social { display: none; }
 
         .navbar-header { display: none; }
     }
