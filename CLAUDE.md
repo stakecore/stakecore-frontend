@@ -36,9 +36,13 @@ React 19, TypeScript, Vite 7, React Router 7 (hash router), SWR for data fetchin
 
 ### State Management
 
-- `src/utils/store/global.ts` — Zustand store for wallet/chain selection
-- `src/utils/eip6963/` — EIP-6963 wallet provider discovery and EIP-1193 interaction
-- `src/utils/store/external.ts` — External wallet provider state via `useSyncExternalStore`
+All wallet + chain-session state lives under `src/features/wallet/`:
+
+- `store.ts` — Zustand store for wallet provider + connected address + chain selection + picker visibility
+- `picker.tsx` — The EIP-6963 wallet-picker modal (portaled into `#eip6963`)
+- `discover.ts` + `discoverStore.ts` — EIP-6963 provider discovery exposed via `useSyncExternalStore`
+- `eip1193.ts` — EIP-1193 RPC helpers (account/chain queries, network switching, personal sign)
+- `hook.ts` — `onInternalChainSwitch` (call when the route's target chain changes)
 
 ### Constants & Config
 

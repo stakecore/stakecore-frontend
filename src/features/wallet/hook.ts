@@ -1,4 +1,4 @@
-import { useGlobalStore } from '../store/global'
+import { useGlobalStore } from './store'
 import { getAccounts, getChainId, switchNetworkIfNecessary, tryAutoConnect } from './eip1193'
 import type { MetaMaskInpageProvider } from '@metamask/providers'
 

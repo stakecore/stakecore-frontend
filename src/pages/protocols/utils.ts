@@ -1,7 +1,7 @@
 import { Formatter } from "~/utils/misc/formatter"
 import { Status, StatusCode } from "~/enums"
-import { useGlobalStore } from "~/utils/store/global"
-import { requestAccounts, switchNetworkIfNecessary } from "~/utils/eip6963/eip1193"
+import { useGlobalStore } from "~/features/wallet/store"
+import { requestAccounts, switchNetworkIfNecessary } from "~/features/wallet/eip1193"
 import type { Eip1193Provider } from "ethers"
 
 

@@ -3,7 +3,7 @@ import { SpinnerCircular } from 'spinners-react'
 import ServerError from '../ui/serverError'
 import Proposal from './proposal'
 import { getProposalData } from "../../utils/data/proposals"
-import { useGlobalStore } from "~/utils/store/global"
+import { useGlobalStore } from "~/features/wallet/store"
 import { useShallow } from "zustand/react/shallow"
 import { LandingPageService } from '../../backendApi'
 import { PAGE_COLOR_CODE } from '../../constants'

@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from "react"
 import { addEip6963Hook } from "./hook"
-import { externalState } from "../store/external"
+import { externalState } from "./discoverStore"
 
 
 declare global {

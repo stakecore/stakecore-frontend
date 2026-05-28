@@ -3,7 +3,7 @@ import { Link, NavLink, useLocation } from 'react-router-dom'
 import { RiGithubLine, RiSendPlaneLine, RiTwitterXLine } from '@remixicon/react'
 import profile from '../../assets/images/about/profile.svg'
 import { menuList } from '../../utils/data/menu'
-import { useGlobalStore } from '../../utils/store/global'
+import { useGlobalStore } from '~/features/wallet/store'
 import { Formatter } from '../../utils/misc/formatter'
 import './header.scss'
 

@@ -1,4 +1,4 @@
-import { chainIdToConfig } from "../misc/translations"
+import { chainIdToConfig } from "../../utils/misc/translations"
 
 export async function getChainId(
   ethereum: EIP1193Provider

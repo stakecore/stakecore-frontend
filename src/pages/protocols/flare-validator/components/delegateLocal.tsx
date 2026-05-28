@@ -2,13 +2,13 @@ import useSWR from "swr"
 import { SpinnerCircular } from 'spinners-react'
 import { useCookies } from 'react-cookie'
 import { Eip1193Provider, recoverAddress, SigningKey, hashMessage } from 'ethers'
-import { useGlobalStore } from "~/utils/store/global"
+import { useGlobalStore } from "~/features/wallet/store"
 import { flarePChainAddressUrl, FLR_SYMBOL, REFRESH_QUERY_FAST_MS } from "~/constants"
 import ServerError from "~/components/ui/serverError"
 import { HashLink } from "~/components/ui/links"
 import { toast } from "react-toastify"
 import { Formatter } from "~/utils/misc/formatter"
-import { personalSign } from "~/utils/eip6963/eip1193"
+import { personalSign } from "~/features/wallet/eip1193"
 import { publicKeyToPAddress } from "~/utils/misc/addresses"
 import FlareValidatorDataAccess from "../data"
 
