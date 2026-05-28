@@ -2,7 +2,7 @@ import useSWR, { useSWRConfig } from "swr"
 import { SpinnerCircular } from 'spinners-react'
 import { useGlobalStore } from "~/utils/store/global"
 import ServerError from "~/components/ui/serverError"
-import FspLocalDelegate from "~/components/blocks/fspLocalDelegate"
+import FspLocalDelegate from "~/pages/protocols/fspLocalDelegate"
 import { contractCallAdapter } from "../../utils"
 import FspDataLayer from "../data"
 import { claim, delegate, deposit, withdraw } from "../contracts"

@@ -3,12 +3,12 @@ import { SpinnerCircular } from 'spinners-react'
 import { Chain } from '~/enums'
 import { HashLink } from '~/components/ui/links'
 import ServerError from '~/components/ui/serverError'
-import ProjectTitle from "~/components/blocks/title"
-import InfoComponent from "~/components/blocks/info"
+import ProjectTitle from "../title"
+import InfoComponent from "../info"
 import FspDataLayer from "../flare-fsp/data"
 import ProjectDescription from './components/description'
 import SongbirdFspLocalDelegateComponent from './components/delegateLocal'
-import FspStatsComponent from '~/components/blocks/fsp-stats'
+import FspStatsComponent from '../fsp-stats'
 import { SONGBIRD_COLOR_CODE, songbirdEvmAddressUrl } from "~/constants"
 import SongbirdFspOfficialDelegateComponent from './components/delegateOfficial'
 import '../protocols.scss'

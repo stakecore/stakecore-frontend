@@ -7,7 +7,7 @@ import {
     RiLineChartLine,
     RiPulseLine,
 } from '@remixicon/react'
-import InfraConstellation from '../components/blocks/infraConstellation'
+import InfraConstellation from './infraConstellation'
 import './about.scss'
 
 

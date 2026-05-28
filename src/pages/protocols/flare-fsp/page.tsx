@@ -2,9 +2,9 @@ import useSWR from 'swr'
 import { SpinnerCircular } from 'spinners-react'
 import { HashLink } from '~/components/ui/links'
 import ServerError from '~/components/ui/serverError'
-import ProjectTitle from "~/components/blocks/title"
-import InfoComponent from "~/components/blocks/info"
-import FspStatsComponent from "../../../components/blocks/fsp-stats"
+import ProjectTitle from "../title"
+import InfoComponent from "../info"
+import FspStatsComponent from "../fsp-stats"
 import FspDataLayer from "./data"
 import ProjectDescription from './components/description'
 import FlareFspOfficialDelegateComponent from './components/delegateOfficial'
