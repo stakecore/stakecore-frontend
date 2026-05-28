@@ -1,4 +1,4 @@
-import { sleep } from "../../utils/misc/time"
+import { sleep } from "./misc/time"
 
 export function changeOpacity(add: boolean) {
     const overlay = document.getElementById("overlay")

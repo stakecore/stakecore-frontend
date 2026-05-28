@@ -1,7 +1,7 @@
 import { SpinnerCircular } from "spinners-react"
 import { ApiResponseDto_PageStatsDto, PageActivityDto } from "~/backendApi"
 import { Formatter } from "~/utils/misc/formatter"
-import { HashLink } from "../utils/links"
+import { HashLink } from "./links"
 import { Chain, Protocol } from "~/enums"
 import * as C from "~/constants"
 import avalanche from "../../assets/images/tokens/AVAX.svg"

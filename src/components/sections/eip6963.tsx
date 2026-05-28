@@ -4,7 +4,7 @@ import { RiCloseCircleFill } from '@remixicon/react'
 import { useGlobalStore } from '../../utils/store/global'
 import { useShallow } from 'zustand/react/shallow'
 import { requestAccounts, switchNetworkIfNecessary } from '../../utils/eip6963/eip1193'
-import { changeOpacity } from '../utils/style'
+import { changeOpacity } from '~/utils/dom'
 import { useExternalStore } from '../../utils/eip6963/discover'
 
 

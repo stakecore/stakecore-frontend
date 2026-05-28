@@ -2,7 +2,7 @@ import { FspDelegatorInfoDto, FspInfoDto, FspPageDataDto, FspService } from "~/b
 import type { FspStatisticsDto } from "~/backendApi"
 import { flareEvmAddressUrl, flareFspAddressUrl } from "~/constants"
 import { Formatter } from "~/utils/misc/formatter"
-import { HashLink } from "~/components/utils/links"
+import { HashLink } from "~/components/ui/links"
 import type { ISpecs, ISummary } from "~/components/types"
 
 

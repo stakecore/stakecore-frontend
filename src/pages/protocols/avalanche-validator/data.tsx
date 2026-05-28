@@ -1,5 +1,5 @@
 import { Formatter } from "~/utils/misc/formatter"
-import { HashLink } from "~/components/utils/links"
+import { HashLink } from "~/components/ui/links"
 import { unixnow } from "~/utils/misc/time"
 import { avalanchePChainTransactionUrl, avalancheValidatorUrl } from "~/constants"
 import { checkRangeAvailable } from "../utils"

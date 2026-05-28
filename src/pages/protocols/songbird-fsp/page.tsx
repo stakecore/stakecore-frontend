@@ -1,7 +1,7 @@
 import useSWR from 'swr'
 import { SpinnerCircular } from 'spinners-react'
 import { Chain } from '~/enums'
-import { HashLink } from '~/components/utils/links'
+import { HashLink } from '~/components/ui/links'
 import ServerError from '~/components/ui/serverError'
 import ProjectTitle from "~/components/blocks/title"
 import InfoComponent from "~/components/blocks/info"

@@ -5,7 +5,7 @@ import { Eip1193Provider, recoverAddress, SigningKey, hashMessage } from 'ethers
 import { useGlobalStore } from "~/utils/store/global"
 import { flarePChainAddressUrl, FLR_SYMBOL, REFRESH_QUERY_FAST_MS } from "~/constants"
 import ServerError from "~/components/ui/serverError"
-import { HashLink } from "~/components/utils/links"
+import { HashLink } from "~/components/ui/links"
 import { toast } from "react-toastify"
 import { Formatter } from "~/utils/misc/formatter"
 import { personalSign } from "~/utils/eip6963/eip1193"
