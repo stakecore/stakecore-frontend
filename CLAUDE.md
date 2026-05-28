@@ -25,7 +25,7 @@ React 19, TypeScript, Vite 7, React Router 7 (hash router), SWR for data fetchin
 - `src/pages/` — Route-level page components
 - `src/components/sections/` — Page sections (hero, portfolio, header, footer)
 - `src/components/ui/` — Reusable UI (modals, charts, forms)
-- `src/components/pages/` — Page-specific components
+- `src/components/blocks/` — Page-piece components composed into route pages (info card, FSP stats panel, delegate flow, etc.)
 - `src/components/types.ts` — Shared component interfaces (ISpecs, ISummary, IStakeFlow)
 
 ### API Layer

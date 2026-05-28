@@ -1,9 +1,9 @@
 import useSWR from 'swr'
 import { SpinnerCircular } from 'spinners-react'
 import ServerError from '~/components/ui/serverError'
-import ProjectTitle from "~/components/pages/title"
+import ProjectTitle from "~/components/blocks/title"
 import ProjectDescription from './components/description'
-import InfoComponent from "~/components/pages/info"
+import InfoComponent from "~/components/blocks/info"
 import AvalancheValidatorStatisticsComponent from "./components/statistics"
 import AvalancheValidatorOfficialDelegateComponent from "./components/delegateOfficial"
 import AvalancheValidatorDataAccess from "./data"
