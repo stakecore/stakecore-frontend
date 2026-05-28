@@ -34,7 +34,7 @@ export const AvalancheValidatorPage = () => {
 
   return <>
     <div className="single-project-page-design">
-      <ProjectTitle title='Avalanche Validator Delegation' suptitle='Secure Avalanche Network Consensus' />
+      <ProjectTitle title='Avalanche Validator Delegation' suptitle='Secure Avalanche Network Consensus Layer' />
       <div className="container pt-30">
         <ProjectDescription />
         {component}

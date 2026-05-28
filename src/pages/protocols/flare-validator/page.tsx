@@ -37,7 +37,7 @@ export const FlareValidatorPage = () => {
 
   return <>
     <div className="single-project-page-design">
-      <ProjectTitle title='Flare Validator Delegation' suptitle='Secure Flare Network Consensus' />
+      <ProjectTitle title='Flare Validator Delegation' suptitle='Secure Flare Network Consensus Layer' />
       <div className="container pt-30">
         <ProjectDescription />
         {component}
