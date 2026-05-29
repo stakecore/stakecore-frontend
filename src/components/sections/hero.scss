@@ -24,25 +24,24 @@
 // the initial screen height so it doesn't keep growing on long pages);
 // cells inside the rune silhouette render brighter, painting the
 // Stakecore mark as a lighter ASCII shape embedded in the dimmer field.
+// Renders at every breakpoint — the RAF loop is gated by
+// IntersectionObserver + page visibility so off-screen / backgrounded
+// instances don't burn cycles on phones.
 .hero-rune-canvas {
-    display: none;
-
-    @include t.up(md) {
-        display: block;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100vh;
-        opacity: 0.3;
-        pointer-events: none;
-        z-index: -1;
-        // Fade the lower half toward the page background so the wave
-        // dissolves into the dark body instead of cutting off at the
-        // hero's overflow edge.
-        mask-image: linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%);
-        -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%);
-    }
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    opacity: 0.3;
+    pointer-events: none;
+    z-index: -1;
+    // Fade the lower half toward the page background so the wave
+    // dissolves into the dark body instead of cutting off at the
+    // hero's overflow edge.
+    mask-image: linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%);
 }
 
 .hero .container {

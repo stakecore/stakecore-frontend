@@ -242,6 +242,11 @@ const HeroRuneCanvas = () => {
     let last = 0
     let raf = 0
     let ready = false
+    // RAF only runs when the canvas is in-viewport AND the tab is in
+    // the foreground. Start optimistic so we don't delay the first
+    // paint while waiting for the IntersectionObserver to fire.
+    let intersecting = true
+    let pageVisible = !document.hidden
     const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
 
     const drawFrame = () => {
@@ -261,12 +266,41 @@ const HeroRuneCanvas = () => {
       drawFrame()
     }
 
+    const startLoop = () => {
+      if (raf !== 0) return
+      if (reduceMotion || !intersecting || !pageVisible) return
+      // Reset the time-since-last so the first frame after a resume
+      // doesn't see a huge dt and jump the wave forward.
+      last = 0
+      raf = requestAnimationFrame(tick)
+    }
+
+    const stopLoop = () => {
+      if (raf === 0) return
+      cancelAnimationFrame(raf)
+      raf = 0
+    }
+
     setup()
     rasterize().then(() => {
       ready = true
       if (reduceMotion) drawFrame()
+      else startLoop()
     })
-    if (!reduceMotion) raf = requestAnimationFrame(tick)
+
+    const io = new IntersectionObserver(([entry]) => {
+      intersecting = entry.isIntersecting
+      if (intersecting) startLoop()
+      else stopLoop()
+    })
+    io.observe(canvas)
+
+    const onVisibility = () => {
+      pageVisible = !document.hidden
+      if (pageVisible) startLoop()
+      else stopLoop()
+    }
+    document.addEventListener('visibilitychange', onVisibility)
 
     const onResize = () => {
       setup()
@@ -277,7 +311,9 @@ const HeroRuneCanvas = () => {
     window.addEventListener('resize', onResize)
 
     return () => {
-      cancelAnimationFrame(raf)
+      io.disconnect()
+      document.removeEventListener('visibilitychange', onVisibility)
+      stopLoop()
       window.removeEventListener('resize', onResize)
       gl.deleteTexture(glyphTex)
       gl.deleteTexture(runeTex)
