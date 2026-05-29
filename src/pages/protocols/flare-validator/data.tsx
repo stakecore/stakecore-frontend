@@ -40,7 +40,8 @@ export namespace FlareValidatorDataAccess {
         data.validatorAvailableCapacity,
         `${minDelegated} to ${maxDelegated}`
       ),
-      lockup: checkRangeAvailable(14 * 86400, leftover, `14 to ${maxLockup}`)
+      lockup: checkRangeAvailable(14 * 86400, leftover, `14 to ${maxLockup}`),
+      expired: leftover <= 0,
     }
   }
 

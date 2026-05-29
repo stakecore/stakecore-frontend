@@ -65,4 +65,18 @@ describe('FlareValidatorDataAccess.getSummary', () => {
     }))
     expect(out.lockup).toBe('Unavailable')
   })
+
+  it('flags expired=true when the validator end time has passed', () => {
+    const out = FlareValidatorDataAccess.getSummary(infoOf({
+      validatorEndTime: NOW - 1, // ended one second ago
+    }))
+    expect(out.expired).toBe(true)
+  })
+
+  it('flags expired=false while the validator is still active', () => {
+    const out = FlareValidatorDataAccess.getSummary(infoOf({
+      validatorEndTime: NOW + 90 * 86_400,
+    }))
+    expect(out.expired).toBe(false)
+  })
 })

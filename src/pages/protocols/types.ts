@@ -10,4 +10,7 @@ export type ISummary = {
   apy: string
   delegation: string
   lockup: string
+  // True when the validator's term has ended — set by validator
+  // summaries only; FSP summaries leave this undefined.
+  expired?: boolean
 }
