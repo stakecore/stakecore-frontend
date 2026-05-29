@@ -1,33 +1,68 @@
+name: Deploy site
+
 on:
   push:
     branches:
       - main
+
+# `pages: write` allows publishing to Pages. `id-token: write` lets the
+# deploy action mint an OIDC token that proves the artifact came from
+# this workflow run. `contents: read` is just for `actions/checkout`.
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
+
+# Queue up overlapping pushes so the latest commit always wins. We don't
+# cancel a running deploy mid-flight (cancel-in-progress: false) to avoid
+# leaving Pages in a half-published state.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 jobs:
-  build-test-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: git checkout
+      - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup target Node.js to enable Corepack
+
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: yarn
+
       - name: Enable Corepack
         run: corepack enable
-      - name: setup Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: 20
-          cache: yarn
-      - name: Install Dependencies
+
+      - name: Install dependencies
         run: yarn
-      - name: Compile Project
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Test
+        run: yarn test
+
+      - name: Build
         run: yarn build-all
-      - name: deploy page
-        uses: crazy-max/ghaction-github-pages@v2
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          build_dir: dist
-        env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
