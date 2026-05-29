@@ -16,6 +16,19 @@ export namespace Formatter {
     return number(100 * value, 3 + length) + '%'
   }
 
+  // Currency formatter — keeps both the sign and the below-precision
+  // marker in front of the currency symbol, so we get "-$1.2k" and
+  // "<$0.01" instead of the malformed "$-1.2k" / "$<0.01" you'd get from
+  // concatenating "$" + number(...) directly.
+  export function usd(value: intish, length = NUMBER_DISPLAY_LENGTH, decimals = 0): string {
+    const str = value.toString()
+    const negative = str.startsWith('-')
+    const formatted = number(negative ? str.slice(1) : str, length, decimals)
+    // Below visible precision: the sign is moot at sub-cent magnitudes.
+    if (formatted.startsWith('<')) return '<$' + formatted.slice(1)
+    return (negative ? '-$' : '$') + formatted
+  }
+
   export function number(value: intish, length = NUMBER_DISPLAY_LENGTH, decimals = 0): string {
     let str = value.toString()
 

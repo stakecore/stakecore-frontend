@@ -34,6 +34,24 @@ describe('Formatter.number', () => {
   })
 })
 
+describe('Formatter.usd', () => {
+  it('prefixes positive values with $', () => {
+    expect(Formatter.usd(0)).toBe('$0')
+    expect(Formatter.usd(42)).toBe('$42')
+    expect(Formatter.usd(1234)).toBe('$1.23k')
+  })
+
+  it('places the sign in front of $ for negative values (not "$-…")', () => {
+    expect(Formatter.usd(-136)).toBe('-$136')
+    expect(Formatter.usd(-1234)).toBe('-$1.23k')
+    expect(Formatter.usd('-7')).toBe('-$7')
+  })
+
+  it('places "<" in front of $ for sub-precision values (not "$<…")', () => {
+    expect(Formatter.usd(1e-9)).toBe('<$0.01')
+  })
+})
+
 describe('Formatter.percent', () => {
   it('multiplies by 100 and appends %', () => {
     expect(Formatter.percent(0)).toBe('0%')
