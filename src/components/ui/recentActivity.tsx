@@ -46,6 +46,17 @@ function itemKey(item: PageActivityDto): string {
   return `${item.type}-${item.transaction}`
 }
 
+// Derive a per-chain/protocol token price from the aggregate stats
+// (delegatedUsd / delegated). Returned map is keyed by `${chain}-${protocol}`
+// so it lines up with the (chain, protocol) tuple on each activity entry.
+function buildPriceMap(data: ApiResponseDto_PageStatsDto | undefined): Record<string, number> {
+  const map: Record<string, number> = {}
+  for (const d of data?.data?.delegated ?? []) {
+    if (d.delegated > 0) map[`${d.chain}-${d.protocol}`] = d.delegatedUsd / d.delegated
+  }
+  return map
+}
+
 const RecentActivity = ({ data, isLoading }: {
   data: ApiResponseDto_PageStatsDto, isLoading: boolean, error: string
 }) => {
@@ -62,13 +73,15 @@ const RecentActivity = ({ data, isLoading }: {
 
   if (!items || items.length === 0) return null
 
+  const priceByKey = buildPriceMap(data)
+
   return <div className="activity-marquee" aria-label="Recent activity">
     <div className="activity-marquee-track">
       {items.map((item, i) =>
-        <ActivityCard key={`a-${itemKey(item)}-${i}`} activity={item} />
+        <ActivityCard key={`a-${itemKey(item)}-${i}`} activity={item} priceByKey={priceByKey} />
       )}
       {items.map((item, i) =>
-        <ActivityCard key={`b-${itemKey(item)}-${i}`} activity={item} aria-hidden />
+        <ActivityCard key={`b-${itemKey(item)}-${i}`} activity={item} priceByKey={priceByKey} aria-hidden />
       )}
     </div>
   </div>
@@ -79,12 +92,16 @@ const ACTIVITY_CONFIG = {
   [PageActivityDto.type.DELEGATION]: { label: 'Delegated', cssType: 'delegated', cssAmount: 'delegation', addrLabel: 'By' },
 }
 
-const ActivityCard = ({ activity, ...rest }: { activity: PageActivityDto, 'aria-hidden'?: boolean }) => {
+const ActivityCard = ({ activity, priceByKey, ...rest }: {
+  activity: PageActivityDto, priceByKey: Record<string, number>, 'aria-hidden'?: boolean
+}) => {
   const config = ACTIVITY_CONFIG[activity.type]
   const logo = CHAIN_LOGO[activity.chain]
   const symbol = C.CHAIN_SYMBOL[activity.chain]
   const txUrl = chainToTransactionUrl(activity.chain, activity.protocol, activity.transaction)
   const addrUrl = chainToAddressUrl(activity.chain, activity.protocol, activity.delegator)
+  const price = priceByKey[`${activity.chain}-${activity.protocol}`]
+  const usd = price != null ? Number(activity.amount) * price : null
 
   return <div className="activity-card" {...rest}>
     <div className="activity-card-top">
@@ -94,6 +111,9 @@ const ActivityCard = ({ activity, ...rest }: { activity: PageActivityDto, 'aria-
     </div>
     <div className={`activity-amount ${config.cssAmount}`}>
       <span className="activity-amount-value">{Formatter.number(activity.amount)}</span> <span className="activity-symbol">{symbol}</span>
+      {usd != null && Number.isFinite(usd) && (
+        <div className="activity-amount-usd">≈ {Formatter.usd(usd)}</div>
+      )}
     </div>
     <div className="activity-details">
       <div className="activity-row">

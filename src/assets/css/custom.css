@@ -184,6 +184,15 @@
   color: rgba(255, 255, 255, 0.5);
 }
 
+.activity-amount-usd {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.5);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+  margin-top: 2px;
+}
+
 .activity-details {
   display: flex;
   flex-direction: column;
