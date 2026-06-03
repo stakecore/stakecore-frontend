@@ -3,17 +3,17 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { ApiResponseDto_AvalancheDelegatorInfoDto } from '../models/ApiResponseDto_AvalancheDelegatorInfoDto';
-import type { ApiResponseDto_AvalancheValidatorInfoDto } from '../models/ApiResponseDto_AvalancheValidatorInfoDto';
+import type { ApiResponseDto_PChainValidatorInfoDto_Array } from '../models/ApiResponseDto_PChainValidatorInfoDto_Array';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class AvalancheValidatorService {
     /**
      * Frontend page info for the Avalanche validator
-     * @returns ApiResponseDto_AvalancheValidatorInfoDto
+     * @returns ApiResponseDto_PChainValidatorInfoDto_Array
      * @throws ApiError
      */
-    public static avalancheValidatorControllerGetAvalancheValidatorPageInfo(): CancelablePromise<ApiResponseDto_AvalancheValidatorInfoDto> {
+    public static avalancheValidatorControllerGetAvalancheValidatorPageInfo(): CancelablePromise<ApiResponseDto_PChainValidatorInfoDto_Array> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/avalanche/validator/info',

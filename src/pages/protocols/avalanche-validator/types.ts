@@ -1,8 +1,8 @@
 import type { ISummary, ISpecs } from "../types"
-import type { AvalancheValidatorInfoDto } from "~/backendApi"
+import type { PChainValidatorInfoDto } from "~/backendApi"
 
 export type AvalancheData = {
-  base: AvalancheValidatorInfoDto
+  base: PChainValidatorInfoDto
   summary: ISummary
   specs: ISpecs
   graphics: IGraphics

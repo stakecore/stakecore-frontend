@@ -10,15 +10,15 @@ vi.mock('~/utils/misc/time', async (importOriginal) => {
 })
 
 import { FlareValidatorDataAccess } from './data'
-import type { AvalancheValidatorInfoDto } from '~/backendApi'
+import type { PChainValidatorInfoDto } from '~/backendApi'
 
-const infoOf = (overrides: Partial<AvalancheValidatorInfoDto> = {}): AvalancheValidatorInfoDto => ({
+const infoOf = (overrides: Partial<PChainValidatorInfoDto> = {}): PChainValidatorInfoDto => ({
   apy: 0.07,
   minimumDelegated: 25,
   validatorAvailableCapacity: 1_000_000,
   validatorEndTime: NOW + 90 * 86_400, // 90 days of lockup available
   ...overrides,
-} as AvalancheValidatorInfoDto)
+} as PChainValidatorInfoDto)
 
 beforeEach(() => {
   vi.clearAllMocks()

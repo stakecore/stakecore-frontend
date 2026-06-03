@@ -1,10 +1,12 @@
 import useSWR from 'swr'
+import { useSearchParams } from 'react-router-dom'
 import { SpinnerCircular } from 'spinners-react'
 import ServerError from '~/components/ui/serverError'
 import ProjectTitle from "../title"
 import ProjectDescription from './components/description'
 import InfoComponent from "../info"
 import UnavailabilityBanner from "../unavailabilityBanner"
+import ValidatorPicker from "../validatorPicker"
 import FlareValidatorStatisticsComponent from "./components/statistics"
 import FlareValidatorOfficialDelegateComponent from "./components/delegateOfficial"
 import FlareValidatorLocalDelegateComponent from "./components/delegateLocal"
@@ -13,9 +15,26 @@ import { FLARE_COLOR_CODE } from '~/constants'
 import '../protocols.scss'
 
 
+// Pick the validator selected via `?node=…`, else the featured one,
+// else the first entry. Returns null when the list is empty so callers
+// can short-circuit rendering.
+function pickSelected<T extends { base: { validatorNodeId: string, featured: boolean } }>(
+  list: T[],
+  nodeId: string | null,
+): T | null {
+  if (list.length === 0) return null
+  if (nodeId) {
+    const match = list.find(d => d.base.validatorNodeId === nodeId)
+    if (match) return match
+  }
+  return list.find(d => d.base.featured) ?? list[0]
+}
+
 export const FlareValidatorPage = () => {
   const { data, error, isLoading } = useSWR('flare-validator-page',
     (_) => FlareValidatorDataAccess.getFlarePageData())
+  const [params, setParams] = useSearchParams()
+  const selected = data ? pickSelected(data, params.get('node')) : null
 
   let component = null
   if (isLoading) {
@@ -24,14 +43,20 @@ export const FlareValidatorPage = () => {
         <SpinnerCircular color={FLARE_COLOR_CODE} size={100} />
       </div>
     </>
-  } else if (error != null) {
+  } else if (error != null || !selected) {
     component = <ServerError error={error} />
   } else {
     component = <>
-      <InfoComponent specs={data.specs} summary={data.summary} />
-      <FlareValidatorLocalDelegateComponent />
-      <FlareValidatorOfficialDelegateComponent validatorLink={data.delegation.validatorLink} />
-      <FlareValidatorStatisticsComponent config={data.graphics} />
+      <ValidatorPicker
+        validators={data.map(d => d.base)}
+        selectedNodeId={selected.base.validatorNodeId}
+        onSelect={id => setParams({ node: id })}
+        accentColor={FLARE_COLOR_CODE}
+      />
+      <InfoComponent specs={selected.specs} summary={selected.summary} />
+      <FlareValidatorLocalDelegateComponent selectedNodeId={selected.base.validatorNodeId} />
+      <FlareValidatorOfficialDelegateComponent validatorLink={selected.delegation.validatorLink} />
+      <FlareValidatorStatisticsComponent config={selected.graphics} />
     </>
   }
 
@@ -43,7 +68,7 @@ export const FlareValidatorPage = () => {
         {component}
       </div>
     </div>
-    {data && <UnavailabilityBanner summary={data.summary} />}
+    {selected && <UnavailabilityBanner summary={selected.summary} />}
   </>
 }
 

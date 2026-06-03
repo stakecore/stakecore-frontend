@@ -3,7 +3,7 @@ import { HashLink } from "~/components/ui/links"
 import { unixnow } from "~/utils/misc/time"
 import { flarePChainTransactionUrl, flareValidatorUrl } from "~/constants"
 import { checkRangeAvailable } from "../utils"
-import { ApiResponseDto_AvalancheDelegatorInfoDto, AvalancheValidatorInfoDto, FlareValidatorService } from "~/backendApi"
+import { ApiResponseDto_AvalancheDelegatorInfoDto, PChainValidatorInfoDto, FlareValidatorService } from "~/backendApi"
 import type { AvalancheData, IDelegation, IGraphics } from "./types"
 import type { ISpecs, ISummary } from "../types"
 
@@ -13,21 +13,23 @@ export namespace FlareValidatorDataAccess {
     return await FlareValidatorService.flareValidatorControllerGetFlareDelegatorInfo(address, pchain)
   }
 
-  async function getPageData(): Promise<AvalancheValidatorInfoDto> {
+  async function getPageData(): Promise<PChainValidatorInfoDto[]> {
     const resp = await FlareValidatorService.flareValidatorControllerGetFlareValidatorPageInfo()
     return resp.data
   }
 
-  export async function getFlarePageData(): Promise<AvalancheData> {
-    const base = await getPageData()
-    const summary = getSummary(base)
-    const specs = getSpecs(base)
-    const graphics = getGraphics(base)
-    const delegation = getDelegation(base)
-    return { base, summary, specs, graphics, delegation }
+  export async function getFlarePageData(): Promise<AvalancheData[]> {
+    const bases = await getPageData()
+    return bases.map(base => ({
+      base,
+      summary: getSummary(base),
+      specs: getSpecs(base),
+      graphics: getGraphics(base),
+      delegation: getDelegation(base),
+    }))
   }
 
-  export function getSummary(data: AvalancheValidatorInfoDto): ISummary {
+  export function getSummary(data: PChainValidatorInfoDto): ISummary {
     const minDelegated = Formatter.number(data.minimumDelegated)
     const maxDelegated = Formatter.number(data.validatorAvailableCapacity)
     const leftover = data.validatorEndTime - unixnow()
@@ -45,7 +47,7 @@ export namespace FlareValidatorDataAccess {
     }
   }
 
-  function getSpecs(data: AvalancheValidatorInfoDto): ISpecs {
+  function getSpecs(data: PChainValidatorInfoDto): ISpecs {
     // avalanche validator transaction link
     const validatorTransactionUrl = flarePChainTransactionUrl(data.validatorTransactionHash)
     const validatorTransactionLink = <HashLink url={validatorTransactionUrl} address={data.validatorTransactionHash} />
@@ -96,7 +98,7 @@ export namespace FlareValidatorDataAccess {
     return specs
   }
 
-  function getGraphics(data: AvalancheValidatorInfoDto): IGraphics {
+  function getGraphics(data: PChainValidatorInfoDto): IGraphics {
     return {
       meterBar: {
         validatorUptime: {
@@ -119,7 +121,7 @@ export namespace FlareValidatorDataAccess {
     }
   }
 
-  function getDelegation(data: AvalancheValidatorInfoDto): IDelegation {
+  function getDelegation(data: PChainValidatorInfoDto): IDelegation {
     const validatorUrl = flareValidatorUrl(data.validatorNodeId)
     const validatorLink = <HashLink url={validatorUrl} address={data.validatorNodeId} />
     return { validatorLink }

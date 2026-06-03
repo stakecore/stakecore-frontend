@@ -3,6 +3,10 @@
 /* tslint:disable */
 /* eslint-disable */
 export type AvalancheDelegationDto = {
+    /**
+     * Node ID of the validator this position is delegated to.
+     */
+    validatorNodeId: string;
     delegated: number;
     reward: number;
     startTime: number;

@@ -2,10 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { AvalancheValidatorInfoDto } from './AvalancheValidatorInfoDto';
-export type ApiResponseDto_AvalancheValidatorInfoDto = {
+import type { PChainValidatorInfoDto } from './PChainValidatorInfoDto';
+export type ApiResponseDto_PChainValidatorInfoDto_Array = {
     status: number;
-    data?: AvalancheValidatorInfoDto;
+    data?: Array<PChainValidatorInfoDto>;
     error?: string;
 };
 

@@ -1,0 +1,63 @@
+@use '../../assets/css/tokens' as t;
+
+// Horizontal row of validator chips. Wraps on narrow viewports rather
+// than scrolling — the row is typically short and we'd rather see all
+// chips than hide some behind a scrollbar.
+.validator-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 24px 0 8px;
+}
+
+.validator-picker-chip {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 10px 14px;
+    min-width: 180px;
+    background: var(--body-background);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 150ms ease-out, background-color 150ms ease-out;
+
+    &:hover {
+        border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    &.active {
+        background: rgba(255, 255, 255, 0.025);
+    }
+}
+
+.validator-picker-chip-top {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.validator-picker-chip-label {
+    font-family: var(--font-sans);
+    font-size: t.$text-sm;
+    font-weight: t.$weight-semibold;
+    color: var(--heading-color);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
+}
+
+// Inline star marker for the featured validator. Same colour as the
+// muted sub-text — purely a marker, not a colour cue.
+.validator-picker-chip-featured {
+    font-size: 12px;
+    line-height: 1;
+    color: var(--main-color);
+}
+
+.validator-picker-chip-sub {
+    font-family: var(--font-sans);
+    font-size: t.$text-xs;
+    color: var(--main-color);
+    line-height: 1.2;
+}

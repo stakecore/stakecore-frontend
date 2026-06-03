@@ -58,7 +58,7 @@ async function requestSignature(address: string, provider: Eip1193Provider) {
   return pubk
 }
 
-const FlareValidatorLocalDelegateComponent = () => {
+const FlareValidatorLocalDelegateComponent = ({ selectedNodeId }: { selectedNodeId: string }) => {
   const setWalletChoiceVisible = useGlobalStore(state => state.setWalletChoiceVisible)
   const walletChoiceVisible = useGlobalStore(state => state.walletChoiceVisible)
   const walletAddress = useGlobalStore(state => state.walletAddress)
@@ -123,7 +123,12 @@ const FlareValidatorLocalDelegateComponent = () => {
   } else if (resp?.data == null) {
     component = <ServerError error={error} />
   } else {
-    const delegated = resp.data.delegations.reduce((x, y) => x + y.delegated, 0)
+    // Only count delegations to the currently-selected validator. The
+    // response lists positions across all of Stakecore's validators, each
+    // tagged with its validatorNodeId.
+    const delegated = resp.data.delegations
+      .filter(d => d.validatorNodeId === selectedNodeId)
+      .reduce((x, y) => x + y.delegated, 0)
     component = <div>
       <div style={{ textAlign: 'center' }} className="mb-20">
         <HashLink address={pchain} url={flarePChainAddressUrl(resp.data.pChain.address)} />
