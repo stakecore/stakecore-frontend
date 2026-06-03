@@ -1,4 +1,4 @@
-import { memo, useMemo } from "react"
+import { memo, useEffect, useMemo, useRef } from "react"
 import { SpinnerCircular } from "spinners-react"
 import { ApiResponseDto_PageStatsDto, PageActivityDto } from "~/backendApi"
 import { Formatter } from "~/utils/misc/formatter"
@@ -63,6 +63,7 @@ const RecentActivity = ({ data, isLoading }: {
 }) => {
   const activity = data?.data?.activity
   const delegated = data?.data?.delegated
+  const marqueeRef = useRef<HTMLDivElement | null>(null)
 
   const items = useMemo<PageActivityDto[] | null>(() => {
     if (activity == null) return null
@@ -70,6 +71,59 @@ const RecentActivity = ({ data, isLoading }: {
   }, [activity])
 
   const priceByKey = useMemo(() => buildPriceMap(data), [delegated])
+
+  const itemCount = items?.length ?? 0
+
+  useEffect(() => {
+    if (itemCount === 0) return
+    const el = marqueeRef.current
+    if (!el) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    const SPEED_PX_PER_SEC = 30
+    const PAUSE_MS = 1200
+    let pauseUntil = 0
+    let hovering = false
+    let lastTs = performance.now()
+    let raf = 0
+
+    const markInteraction = () => { pauseUntil = performance.now() + PAUSE_MS }
+    const onPointerEnter = () => { hovering = true }
+    const onPointerLeave = () => { hovering = false }
+
+    el.addEventListener('pointerenter', onPointerEnter)
+    el.addEventListener('pointerleave', onPointerLeave)
+    el.addEventListener('wheel', markInteraction, { passive: true })
+    el.addEventListener('touchstart', markInteraction, { passive: true })
+    el.addEventListener('touchmove', markInteraction, { passive: true })
+
+    const tick = (ts: number) => {
+      const dt = ts - lastTs
+      lastTs = ts
+      const paused = hovering || ts < pauseUntil
+      if (!paused) {
+        el.scrollLeft += SPEED_PX_PER_SEC * (dt / 1000)
+      }
+      // Content is duplicated, so scrollLeft and scrollLeft - half look identical.
+      // Wrap only while auto-scrolling so we never yank scrollLeft mid-swipe.
+      const half = el.scrollWidth / 2
+      if (!paused && half > 0) {
+        if (el.scrollLeft >= half) el.scrollLeft -= half
+        else if (el.scrollLeft < 0) el.scrollLeft += half
+      }
+      raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+
+    return () => {
+      cancelAnimationFrame(raf)
+      el.removeEventListener('pointerenter', onPointerEnter)
+      el.removeEventListener('pointerleave', onPointerLeave)
+      el.removeEventListener('wheel', markInteraction)
+      el.removeEventListener('touchstart', markInteraction)
+      el.removeEventListener('touchmove', markInteraction)
+    }
+  }, [itemCount])
 
   if (!items && isLoading) {
     return <div style={{ textAlign: 'center' }}>
@@ -79,7 +133,7 @@ const RecentActivity = ({ data, isLoading }: {
 
   if (!items || items.length === 0) return null
 
-  return <div className="activity-marquee" aria-label="Recent activity">
+  return <div ref={marqueeRef} className="activity-marquee" aria-label="Recent activity">
     <div className="activity-marquee-track">
       {items.map(item =>
         <ActivityCard key={`a-${itemKey(item)}`} activity={item} priceByKey={priceByKey} />

@@ -96,41 +96,30 @@
 
 /* RECENT ACTIVITY MARQUEE
  *
- * The marquee renders activity items twice in a single track and
- * animates translateX(0 → -50%) so the seam between the duplicated
- * halves lands exactly back at the start — seamless loop.
- * Hover pauses so users can read.
+ * Native horizontal-scroll container. Activity items are rendered twice;
+ * a rAF loop in JS drives scrollLeft for the idle auto-advance and wraps
+ * back at the halfway mark (seamless because content is duplicated).
+ * Touch swipes and trackpad horizontal scroll work via the browser's
+ * built-in scroll; the JS loop pauses while the user is interacting.
  */
 
 .activity-marquee {
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  overscroll-behavior-x: contain;
   /* Soft edge mask so cards fade in/out instead of clipping hard. */
   mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
   -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
 }
 
+.activity-marquee::-webkit-scrollbar { display: none; }
+
 .activity-marquee-track {
   display: flex;
   width: max-content;
-  animation: activity-marquee 150s linear infinite;
-  will-change: transform;
-  backface-visibility: hidden;
-}
-
-.activity-marquee:hover .activity-marquee-track {
-  animation-play-state: paused;
-}
-
-/* Respect user motion preference: freeze the marquee in place. */
-@media (prefers-reduced-motion: reduce) {
-  .activity-marquee-track {
-    animation: none;
-  }
-}
-
-@keyframes activity-marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
 }
 
 .activity-card {
