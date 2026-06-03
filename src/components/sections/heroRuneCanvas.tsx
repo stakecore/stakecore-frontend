@@ -225,6 +225,9 @@ const HeroRuneCanvas = () => {
     const rasterize = () => new Promise<void>((resolve) => {
       const img = new Image()
       img.onload = () => {
+        // If the effect was torn down while the image was loading, runeTex
+        // has been deleted — binding it would throw INVALID_OPERATION.
+        if (destroyed) { resolve(); return }
         const off = document.createElement('canvas')
         off.width = runeW
         off.height = runeH
@@ -245,6 +248,13 @@ const HeroRuneCanvas = () => {
     let last = 0
     let raf = 0
     let ready = false
+    // Cleanup deletes the GL objects below. Any async work in flight at
+    // that moment (rasterize image-load, queued ResizeObserver fire,
+    // or a re-entrant RAF tick) must short-circuit before touching GL —
+    // otherwise it bindVertexArray's a deleted object, errors, and
+    // since tick reschedules itself, errors every frame after that.
+    // This matters most under React strict-mode double-mount.
+    let destroyed = false
     // RAF only runs when the canvas is in-viewport AND the tab is in
     // the foreground. Start optimistic so we don't delay the first
     // paint while waiting for the IntersectionObserver to fire.
@@ -260,6 +270,7 @@ const HeroRuneCanvas = () => {
     }
 
     const tick = (t: number) => {
+      if (destroyed) return
       raf = requestAnimationFrame(tick)
       if (!ready) return
       if (t - last < 80) return
@@ -270,6 +281,7 @@ const HeroRuneCanvas = () => {
     }
 
     const startLoop = () => {
+      if (destroyed) return
       if (raf !== 0) return
       if (reduceMotion || !intersecting || !pageVisible) return
       // Reset the time-since-last so the first frame after a resume
@@ -286,12 +298,14 @@ const HeroRuneCanvas = () => {
 
     setup()
     rasterize().then(() => {
+      if (destroyed) return
       ready = true
       if (reduceMotion) drawFrame()
       else startLoop()
     })
 
     const io = new IntersectionObserver(([entry]) => {
+      if (destroyed) return
       intersecting = entry.isIntersecting
       if (intersecting) startLoop()
       else stopLoop()
@@ -299,6 +313,7 @@ const HeroRuneCanvas = () => {
     io.observe(canvas)
 
     const onVisibility = () => {
+      if (destroyed) return
       pageVisible = !document.hidden
       if (pageVisible) startLoop()
       else stopLoop()
@@ -310,8 +325,10 @@ const HeroRuneCanvas = () => {
     // size shift of the 100vh container — keeps the backing store in
     // step with the CSS box so the GPU output isn't stretched.
     const onResize = () => {
+      if (destroyed) return
       setup()
       rasterize().then(() => {
+        if (destroyed) return
         if (reduceMotion) drawFrame()
       })
     }
@@ -319,6 +336,7 @@ const HeroRuneCanvas = () => {
     ro.observe(canvas)
 
     return () => {
+      destroyed = true
       io.disconnect()
       document.removeEventListener('visibilitychange', onVisibility)
       stopLoop()
