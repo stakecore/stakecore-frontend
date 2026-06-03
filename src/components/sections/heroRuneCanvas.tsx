@@ -93,7 +93,10 @@ const HeroRuneCanvas = () => {
     }
 
     const dpr = window.devicePixelRatio || 1
-    const cellSize = 10              // CSS pixels per cell
+    // Smaller cells on phones: more rune-silhouette samples (logo detail
+    // becomes visible) and denser wave bands so the field doesn't read
+    // as a few wide stretched stripes against a tall narrow viewport.
+    const cellSize = window.innerWidth < 768 ? 6 : 10  // CSS pixels per cell
     const cellSizePx = cellSize * dpr // backing-store pixels per cell
 
     // --- shader compile + link ---
@@ -302,19 +305,24 @@ const HeroRuneCanvas = () => {
     }
     document.addEventListener('visibilitychange', onVisibility)
 
+    // ResizeObserver on the canvas (not window 'resize') so we react to
+    // iOS Safari URL-bar collapse, orientation changes, and any other
+    // size shift of the 100vh container — keeps the backing store in
+    // step with the CSS box so the GPU output isn't stretched.
     const onResize = () => {
       setup()
       rasterize().then(() => {
         if (reduceMotion) drawFrame()
       })
     }
-    window.addEventListener('resize', onResize)
+    const ro = new ResizeObserver(onResize)
+    ro.observe(canvas)
 
     return () => {
       io.disconnect()
       document.removeEventListener('visibilitychange', onVisibility)
       stopLoop()
-      window.removeEventListener('resize', onResize)
+      ro.disconnect()
       gl.deleteTexture(glyphTex)
       gl.deleteTexture(runeTex)
       gl.deleteBuffer(vbo)
