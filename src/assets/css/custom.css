@@ -113,6 +113,8 @@
   display: flex;
   width: max-content;
   animation: activity-marquee 150s linear infinite;
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 .activity-marquee:hover .activity-marquee-track {

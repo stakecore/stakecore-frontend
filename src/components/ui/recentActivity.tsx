@@ -1,3 +1,4 @@
+import { memo, useMemo } from "react"
 import { SpinnerCircular } from "spinners-react"
 import { ApiResponseDto_PageStatsDto, PageActivityDto } from "~/backendApi"
 import { Formatter } from "~/utils/misc/formatter"
@@ -60,10 +61,15 @@ function buildPriceMap(data: ApiResponseDto_PageStatsDto | undefined): Record<st
 const RecentActivity = ({ data, isLoading }: {
   data: ApiResponseDto_PageStatsDto, isLoading: boolean, error: string
 }) => {
-  let items: PageActivityDto[] | null = null
-  if (data?.data != null) {
-    items = [...(data.data.activity ?? [])].sort((a, b) => b.timestamp - a.timestamp)
-  }
+  const activity = data?.data?.activity
+  const delegated = data?.data?.delegated
+
+  const items = useMemo<PageActivityDto[] | null>(() => {
+    if (activity == null) return null
+    return [...activity].sort((a, b) => b.timestamp - a.timestamp)
+  }, [activity])
+
+  const priceByKey = useMemo(() => buildPriceMap(data), [delegated])
 
   if (!items && isLoading) {
     return <div style={{ textAlign: 'center' }}>
@@ -73,15 +79,13 @@ const RecentActivity = ({ data, isLoading }: {
 
   if (!items || items.length === 0) return null
 
-  const priceByKey = buildPriceMap(data)
-
   return <div className="activity-marquee" aria-label="Recent activity">
     <div className="activity-marquee-track">
-      {items.map((item, i) =>
-        <ActivityCard key={`a-${itemKey(item)}-${i}`} activity={item} priceByKey={priceByKey} />
+      {items.map(item =>
+        <ActivityCard key={`a-${itemKey(item)}`} activity={item} priceByKey={priceByKey} />
       )}
-      {items.map((item, i) =>
-        <ActivityCard key={`b-${itemKey(item)}-${i}`} activity={item} priceByKey={priceByKey} aria-hidden />
+      {items.map(item =>
+        <ActivityCard key={`b-${itemKey(item)}`} activity={item} priceByKey={priceByKey} aria-hidden />
       )}
     </div>
   </div>
@@ -92,7 +96,7 @@ const ACTIVITY_CONFIG = {
   [PageActivityDto.type.DELEGATION]: { label: 'Delegated', cssType: 'delegated', cssAmount: 'delegation', addrLabel: 'By' },
 }
 
-const ActivityCard = ({ activity, priceByKey, ...rest }: {
+const ActivityCard = memo(({ activity, priceByKey, ...rest }: {
   activity: PageActivityDto, priceByKey: Record<string, number>, 'aria-hidden'?: boolean
 }) => {
   const config = ACTIVITY_CONFIG[activity.type]
@@ -127,6 +131,6 @@ const ActivityCard = ({ activity, priceByKey, ...rest }: {
     </div>
     <div className="activity-time">{Formatter.relativeDate(activity.timestamp)}</div>
   </div>
-}
+})
 
 export default RecentActivity
