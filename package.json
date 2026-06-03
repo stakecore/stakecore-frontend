@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "packageManager": "yarn@1.22.22",
+  "packageManager": "pnpm@10.34.1",
   "homepage": "stakecore.org",
   "scripts": {
     "dev": "NODE_OPTIONS=--no-warnings vite",
@@ -15,15 +15,16 @@
     "test:watch": "vitest",
     "----------- openapi -----------------------": "",
     "openapi-fix": "sed -i \"s|BASE: *'',|BASE: 'https://backend.stakecore.org',|\" ./src/backendApi/core/OpenAPI.ts",
-    "openapi-gen": "yarn openapi -i ./openapi.json -o ./src/backendApi && yarn openapi-fix",
+    "openapi-gen": "pnpm exec openapi -i ./openapi.json -o ./src/backendApi && pnpm openapi-fix",
     "----------- github pages deploy -----------": "",
-    "build-all": "yarn && yarn build && echo stakecore.org > dist/CNAME",
-    "deploy": "yarn build-all && gh-pages -d dist --no-history --nojekyll"
+    "build-all": "pnpm install && pnpm build && echo stakecore.org > dist/CNAME",
+    "deploy": "pnpm build-all && gh-pages -d dist --no-history --nojekyll"
   },
   "dependencies": {
     "@remixicon/react": "^4.2.0",
     "bech32": "^2.0.0",
     "bootstrap": "^5.3.3",
+    "buffer": "^6.0.3",
     "classnames": "^2.5.1",
     "ethers": "^6.13.5",
     "framer-motion": "^11.3.24",
@@ -64,17 +65,22 @@
     "vite": "^7.3.2",
     "vitest": "^3"
   },
-  "resolutions": {
-    "flatted": "^3.4.2",
-    "handlebars": "^4.7.9",
-    "immutable": "^5.1.5",
-    "minimatch": "^5.1.8",
-    "postcss": "^8.5.10",
-    "rollup": "^4.59.0",
-    "micromatch/picomatch": "^2.3.2",
-    "tinyglobby/picomatch": "^4.0.4",
-    "vite/picomatch": "^4.0.4",
-    "uuid": "^11.1.1",
-    "ws": "^8.20.1"
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ],
+    "overrides": {
+      "flatted": "^3.4.2",
+      "handlebars": "^4.7.9",
+      "immutable": "^5.1.5",
+      "minimatch": "^5.1.8",
+      "postcss": "^8.5.10",
+      "rollup": "^4.59.0",
+      "micromatch>picomatch": "^2.3.2",
+      "tinyglobby>picomatch": "^4.0.4",
+      "vite>picomatch": "^4.0.4",
+      "uuid": "^11.1.1",
+      "ws": "^8.20.1"
+    }
   }
 }

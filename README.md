@@ -24,17 +24,17 @@ The site itself is read-only by default; connecting a wallet enables in-page act
 ## Local development
 
 ```bash
-yarn          # install dependencies
-yarn dev      # start the dev server (Vite)
-yarn build    # production build → ./dist
-yarn lint     # eslint
-yarn test     # run the full test suite once
+pnpm install  # install dependencies
+pnpm dev      # start the dev server (Vite)
+pnpm build    # production build → ./dist
+pnpm lint     # eslint
+pnpm test     # run the full test suite once
 ```
 
 The backend lives at `https://backend.stakecore.org`. The TypeScript client under `src/backendApi/` is **auto-generated from OpenAPI** — never edit by hand. Regenerate with:
 
 ```bash
-yarn openapi-gen && yarn openapi-fix
+pnpm openapi-gen && pnpm openapi-fix
 ```
 
 ## Project layout
@@ -53,13 +53,13 @@ yarn openapi-gen && yarn openapi-fix
 
 ## Deployment
 
-The site auto-deploys to GitHub Pages on every push to `main` via [`.github/workflows/deploy-site.yml`](.github/workflows/deploy-site.yml). The workflow lints, runs the test suite, builds with `yarn build-all`, and publishes the `./dist` output through the official `actions/deploy-pages` action.
+The site auto-deploys to GitHub Pages on every push to `main` via [`.github/workflows/deploy-site.yml`](.github/workflows/deploy-site.yml). The workflow lints, runs the test suite, builds with `pnpm build-all`, and publishes the `./dist` output through the official `actions/deploy-pages` action.
 
 The repo's Pages source must be set to **GitHub Actions** (Settings → Pages → Build and deployment → Source). The first deploy creates a `github-pages` environment in the repo with the published URL.
 
-For a manual deploy from your local machine (emergency fallback), the `yarn deploy` script still pushes to a `gh-pages` branch via the `gh-pages` CLI — but that path only works while the Pages source is temporarily switched back to "Deploy from a branch":
+For a manual deploy from your local machine (emergency fallback), the `deploy` script still pushes to a `gh-pages` branch via the `gh-pages` CLI — but that path only works while the Pages source is temporarily switched back to "Deploy from a branch":
 
 ```bash
-yarn build-all   # production build with the stakecore.org CNAME
-yarn deploy      # gh-pages → publish ./dist
+pnpm build-all   # production build with the stakecore.org CNAME
+pnpm run deploy  # gh-pages → publish ./dist (run, not bare — `deploy` is a reserved pnpm command)
 ```

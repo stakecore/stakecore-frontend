@@ -3,7 +3,19 @@
 {
 	"name": "Stakecore Frontend Devcontainer",
     "image": "mcr.microsoft.com/devcontainers/typescript-node:20",
-    "postCreateCommand": "npm install -g @anthropic-ai/claude-code",
+    // The base image ships pnpm via npm-global, which shadows Corepack and pins
+    // a version unrelated to this repo. Remove it and hand pnpm to Corepack so
+    // `pnpm` always resolves to package.json's "packageManager" version (the
+    // committed source of truth) — keeping the container in lockstep with CI and
+    // any host that has Corepack enabled. The shim goes in the npm-global bin
+    // because the `node` user can't write to /usr/local/bin (where Corepack
+    // defaults), and that bin is already first on PATH.
+    "postCreateCommand": "npm rm -g pnpm 2>/dev/null; corepack enable --install-directory \"$(npm config get prefix)/bin\" pnpm; npm install -g @anthropic-ai/claude-code",
+    // Let Corepack download the pinned pnpm without the interactive y/n prompt,
+    // so the first `pnpm` call (even non-interactive) doesn't hang.
+    "containerEnv": {
+        "COREPACK_ENABLE_DOWNLOAD_PROMPT": "0"
+    },
     "mounts": [
         "source=${localEnv:HOME}/.claude,target=/home/node/.claude,type=bind",
         "source=${localEnv:HOME}/.claude.json,target=/home/node/.claude.json,type=bind"

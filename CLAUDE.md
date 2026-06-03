@@ -8,12 +8,12 @@ Stakecore is a React SPA for a crypto staking infrastructure provider operating 
 
 ## Commands
 
-- **Dev server**: `yarn dev`
-- **Build**: `yarn build`
-- **Lint**: `yarn lint`
-- **Test**: `yarn test` (one-shot) / `yarn test:watch` (watch mode)
-- **Regenerate API client**: `yarn openapi-gen && yarn openapi-fix`
-- **Deploy**: `yarn build-all && yarn deploy` (GitHub Pages)
+- **Dev server**: `pnpm dev`
+- **Build**: `pnpm build`
+- **Lint**: `pnpm lint`
+- **Test**: `pnpm test` (one-shot) / `pnpm test:watch` (watch mode)
+- **Regenerate API client**: `pnpm openapi-gen && pnpm openapi-fix`
+- **Deploy**: `pnpm build-all && pnpm run deploy` (GitHub Pages; `deploy` is a reserved pnpm command, so use `pnpm run`)
 
 ## Tech Stack
 
@@ -31,7 +31,7 @@ React 19, TypeScript, Vite 7, React Router 7 (hash router), SWR for data fetchin
 ### API Layer
 
 - Backend at `https://backend.stakecore.org`
-- `src/backendApi/` is **auto-generated** from OpenAPI — do not edit manually. Use `yarn openapi-gen` to regenerate.
+- `src/backendApi/` is **auto-generated** from OpenAPI — do not edit manually. Use `pnpm openapi-gen` to regenerate.
 - Services: `FspService`, `FlareValidatorService`, `AvalancheValidatorService`, `LandingPageService`
 - Data fetching uses SWR with refresh intervals defined in `src/constants.ts` (`REFRESH_QUERY_FAST_MS` = 10s, `REFRESH_QUERY_SLOW_MS` = 30s)
 
@@ -68,4 +68,4 @@ Common patterns: `vi.mock('~/features/wallet/store', ...)` to provide a fake Zus
 - Explorer URLs follow pattern: `chain{Evm|PChain}{AddressUrl|TransactionUrl}(hash)` in constants
 - Three chains supported: Flare (chain._0), Songbird (chain._1), Avalanche (chain._2)
 - Two protocols: FSP (protocol._0), Validator (protocol._1)
-- Package manager: Yarn (1.22.22)
+- Package manager: pnpm (10.34.1, pinned via `packageManager` + Corepack); run scripts with `pnpm <script>` except the reserved `deploy` name, which needs `pnpm run deploy`

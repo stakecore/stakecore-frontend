@@ -8,6 +8,11 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+
+# pnpm: project-local content-addressable store (created when the global
+# store sits on a different filesystem). The lockfile and patches/ stay tracked.
+.pnpm-store/
+
 dist
 dist-ssr
 *.local
