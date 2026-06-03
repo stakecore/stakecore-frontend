@@ -439,15 +439,17 @@ const InputRow = ({ input, suffix, onMax, maxLabel, disabled, cta }: {
   cta: React.ReactNode
 }) => (
   <div className="fsp-delegate-input-row">
-    {input}
-    <span className="fsp-delegate-input-suffix">{suffix}</span>
-    <button
-      className="fsp-delegate-max"
-      onClick={onMax}
-      disabled={disabled}
-    >
-      {maxLabel}
-    </button>
+    <div className="fsp-delegate-input-field">
+      <button
+        className="fsp-delegate-max"
+        onClick={onMax}
+        disabled={disabled}
+      >
+        {maxLabel}
+      </button>
+      {input}
+      <span className="fsp-delegate-input-unit">{suffix}</span>
+    </div>
     {cta}
   </div>
 )
