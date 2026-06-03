@@ -45,6 +45,19 @@
     }
 }
 
+// Tiny muted step number that sits above the label — pure-text per-card
+// hint (no colour, no icon) showing the natural order of the flow.
+.fsp-action-card-step {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: t.$weight-medium;
+    color: var(--main-color);
+    letter-spacing: 0.12em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
+}
+
 .fsp-action-card-label {
     font-family: var(--font-sans);
     font-size: t.$text-base;

@@ -209,24 +209,28 @@ const FspLocalDelegate = ({
     {/* Action card grid — visually matches the protocols-tile pattern. */}
     <div className="fsp-action-cards">
       <ActionCard
+        step="01"
         label="Wrap"
         sub={flrBalance > 0 ? `${flrFmt} ${symbol} available` : `No ${symbol} to wrap`}
         active={active === 'wrap'}
         onClick={() => setActive('wrap')}
       />
       <ActionCard
+        step="02"
         label="Delegate"
         sub={`Currently ${currentPct.toFixed(2)}%`}
         active={active === 'delegate'}
         onClick={() => setActive('delegate')}
       />
       <ActionCard
+        step="03"
         label="Unwrap"
         sub={wflrBalance > 0 ? `${wflrFmt} ${wrappedSymbol} wrapped` : `No ${wrappedSymbol} to unwrap`}
         active={active === 'unwrap'}
         onClick={() => setActive('unwrap')}
       />
       <ActionCard
+        step="04"
         label="Claim"
         sub={pendingRewards > 0 ? `${rewardsFmt} ${wrappedSymbol} pending` : 'No rewards yet'}
         active={active === 'claim'}
@@ -396,7 +400,8 @@ const FspLocalDelegate = ({
 
 // --- Sub-components ---
 
-const ActionCard = ({ label, sub, active, onClick }: {
+const ActionCard = ({ step, label, sub, active, onClick }: {
+  step: string
   label: string
   sub: string
   active: boolean
@@ -407,6 +412,7 @@ const ActionCard = ({ label, sub, active, onClick }: {
     className={`fsp-action-card${active ? ' active' : ''}`}
     onClick={onClick}
   >
+    <span className="fsp-action-card-step">{step}</span>
     <span className="fsp-action-card-label">{label}</span>
     <span className="fsp-action-card-sub">{sub}</span>
   </button>
