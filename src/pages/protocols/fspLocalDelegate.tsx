@@ -209,28 +209,24 @@ const FspLocalDelegate = ({
     {/* Action card grid — visually matches the protocols-tile pattern. */}
     <div className="fsp-action-cards">
       <ActionCard
-        emoji="📦"
         label="Wrap"
         sub={flrBalance > 0 ? `${flrFmt} ${symbol} available` : `No ${symbol} to wrap`}
         active={active === 'wrap'}
         onClick={() => setActive('wrap')}
       />
       <ActionCard
-        emoji="🎯"
         label="Delegate"
         sub={`Currently ${currentPct.toFixed(2)}%`}
         active={active === 'delegate'}
         onClick={() => setActive('delegate')}
       />
       <ActionCard
-        emoji="📤"
         label="Unwrap"
         sub={wflrBalance > 0 ? `${wflrFmt} ${wrappedSymbol} wrapped` : `No ${wrappedSymbol} to unwrap`}
         active={active === 'unwrap'}
         onClick={() => setActive('unwrap')}
       />
       <ActionCard
-        emoji="🎁"
         label="Claim"
         sub={pendingRewards > 0 ? `${rewardsFmt} ${wrappedSymbol} pending` : 'No rewards yet'}
         active={active === 'claim'}
@@ -400,8 +396,7 @@ const FspLocalDelegate = ({
 
 // --- Sub-components ---
 
-const ActionCard = ({ emoji, label, sub, active, onClick }: {
-  emoji: string
+const ActionCard = ({ label, sub, active, onClick }: {
   label: string
   sub: string
   active: boolean
@@ -412,7 +407,6 @@ const ActionCard = ({ emoji, label, sub, active, onClick }: {
     className={`fsp-action-card${active ? ' active' : ''}`}
     onClick={onClick}
   >
-    <span className="fsp-action-card-emoji" aria-hidden>{emoji}</span>
     <span className="fsp-action-card-label">{label}</span>
     <span className="fsp-action-card-sub">{sub}</span>
   </button>
