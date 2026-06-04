@@ -1,0 +1,70 @@
+@use '../../assets/css/tokens' as t;
+
+// Top-of-statistics-card context block. Vertical stack: one row of
+// headline MetaPills (Delegators, Network Share, Capacity), the
+// capacity stacked bar, then the capacity-breakdown legend pills.
+// Hairline divider at the bottom separates the block from the
+// meter-bar grid that follows.
+.validator-stats-strip {
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+// Each MetaPill row flows horizontally on wide viewports and wraps
+// to multiple lines on narrow ones.
+.validator-stats-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+// Geometry matches .epoch-progress-bar above (height, border-radius,
+// track colour) so the two progress visualisations on the statistics
+// card read as one family. Monochrome segment opacities still apply
+// so a 95%-full bar conveys "nearly full", not "danger".
+.validator-capacity-bar {
+    display: flex;
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+}
+
+.validator-capacity-segment {
+    height: 100%;
+    transition: width 200ms ease-out;
+}
+
+// Both Self and Delegated paint in the chain's accent — same colour
+// family as the EpochProgress fill above. Delegated drops opacity so
+// the two segments are still visually distinct without needing a
+// second colour. Available stays as the muted track underneath.
+.validator-capacity-segment.self      { background: var(--validator-bar-accent, rgba(255, 255, 255, 0.75)); }
+.validator-capacity-segment.delegated {
+    background: var(--validator-bar-accent, rgba(255, 255, 255, 0.35));
+    opacity: 0.45;
+}
+
+// Legend marker mirrors the bar palette so the legend reads as a key
+// without re-coding the colours per element.
+.validator-capacity-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    flex-shrink: 0;
+}
+
+.validator-capacity-dot.self      { background: var(--validator-bar-accent, rgba(255, 255, 255, 0.75)); }
+.validator-capacity-dot.delegated {
+    background: var(--validator-bar-accent, rgba(255, 255, 255, 0.35));
+    opacity: 0.45;
+}
+.validator-capacity-dot.available {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+}

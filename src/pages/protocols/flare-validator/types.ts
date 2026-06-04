@@ -10,6 +10,20 @@ export type AvalancheData = {
 }
 
 export type IGraphics = {
+  // Context block at the top of the statistics card — small stats row
+  // (delegators, networkShare) plus a stacked-bar capacity breakdown.
+  // networkShare is a 0..1 ratio; capacity amounts are absolute, in
+  // the chain's native token.
+  stats: {
+    delegators: number
+    networkShare: number
+    capacity: {
+      asset: string
+      ownedStake: number
+      delegated: number
+      available: number
+    }
+  }
   meterBar: {
     validatorUptime: IMeterBar
     validatorConnectedPChain: IMeterBar

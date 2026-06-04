@@ -1,0 +1,35 @@
+@use '../../assets/css/tokens' as t;
+
+// Compact label-value pill. Lifted out of EpochProgress so the rest of
+// the on-page metadata (validator stats strip + capacity legend) can
+// adopt the same look without duplicating the rules.
+.meta-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: t.$radius-md;
+    padding: 4px 10px;
+    font-size: t.$text-xs;
+}
+
+// Optional leading element (e.g. a coloured square in a capacity-bar
+// legend). line-height: 0 keeps it baseline-aligned with the text.
+.meta-pill-leading {
+    display: inline-flex;
+    align-items: center;
+    line-height: 0;
+}
+
+.meta-pill-label {
+    color: rgba(255, 255, 255, 0.45);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: t.$weight-medium;
+}
+
+.meta-pill-value {
+    color: rgba(255, 255, 255, 0.9);
+    font-variant-numeric: tabular-nums;
+    font-weight: t.$weight-semibold;
+}

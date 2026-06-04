@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { Formatter } from "~/utils/misc/formatter"
+import MetaPill from "./metaPill"
 import './epochProgress.scss'
 
 type MetadataItem = { label: string; value: string | number }
@@ -36,10 +37,7 @@ const EpochProgress = ({ period, color = "white" }: Props) => {
       {metadata.length > 0 && (
         <div className="epoch-progress-meta">
           {metadata.map((m) => (
-            <span key={m.label} className="epoch-progress-pill">
-              <span className="epoch-progress-pill-label">{m.label}</span>
-              <span className="epoch-progress-pill-value">{m.value}</span>
-            </span>
+            <MetaPill key={m.label} label={m.label} value={m.value} />
           ))}
         </div>
       )}

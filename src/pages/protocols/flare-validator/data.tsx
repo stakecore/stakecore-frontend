@@ -100,6 +100,16 @@ export namespace FlareValidatorDataAccess {
 
   function getGraphics(data: PChainValidatorInfoDto): IGraphics {
     return {
+      stats: {
+        delegators: data.totalDelegators,
+        networkShare: data.validatorNetworkShare,
+        capacity: {
+          asset: 'FLR',
+          ownedStake: data.validatorOwnedStake,
+          delegated: data.totalDelegated,
+          available: data.validatorAvailableCapacity,
+        },
+      },
       meterBar: {
         validatorUptime: {
           percent: data.validatorUptime
