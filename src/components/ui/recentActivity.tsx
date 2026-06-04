@@ -82,6 +82,10 @@ const RecentActivity = ({ data, isLoading }: {
 
     const SPEED_PX_PER_SEC = 30
     const PAUSE_MS = 1200
+    // Clamp per-frame dt so the marquee can't catapult forward when the
+    // browser resumes rAF after a long pause (backgrounded tab, window
+    // minimised, etc.). 100ms ≈ 3px at 30px/s — well below visible.
+    const MAX_DT_MS = 100
     let pauseUntil = 0
     let hovering = false
     let lastTs = performance.now()
@@ -98,7 +102,7 @@ const RecentActivity = ({ data, isLoading }: {
     el.addEventListener('touchmove', markInteraction, { passive: true })
 
     const tick = (ts: number) => {
-      const dt = ts - lastTs
+      const dt = Math.min(ts - lastTs, MAX_DT_MS)
       lastTs = ts
       const paused = hovering || ts < pauseUntil
       if (!paused) {
