@@ -9,18 +9,6 @@
     position: relative;
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-}
-
-// Small uppercase label sitting just left of the trigger button.
-// Reads as a field label, not body copy.
-.validator-picker-prefix {
-    font-family: var(--font-sans);
-    font-size: t.$text-xs;
-    font-weight: t.$weight-medium;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--main-color);
 }
 
 // Trigger pill. Hairline border at rest, slightly brighter on hover,

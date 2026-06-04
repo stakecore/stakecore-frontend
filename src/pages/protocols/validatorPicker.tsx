@@ -48,16 +48,16 @@ const ValidatorPicker = ({ validators, selectedNodeId, onSelect, accentColor }: 
       className={`validator-picker${open ? ' open' : ''}`}
       style={{ '--validator-picker-accent': accentColor } as React.CSSProperties}
     >
-      <span className="validator-picker-prefix">Validator</span>
       <button
         type="button"
         className="validator-picker-trigger"
         aria-haspopup="listbox"
+        aria-label="Select validator"
         aria-expanded={open}
         onClick={() => setOpen(o => !o)}
       >
         <span className="validator-picker-value">
-          {Formatter.address(selected.validatorNodeId, 5)}
+          {Formatter.address(selected.validatorNodeId, 10)}
           {selected.featured && (
             <span className="validator-picker-star" aria-label="Featured">★</span>
           )}
@@ -96,7 +96,7 @@ const ValidatorPicker = ({ validators, selectedNodeId, onSelect, accentColor }: 
                   }}
                 >
                   <span className="validator-picker-option-label">
-                    {Formatter.address(v.validatorNodeId, 5)}
+                    {Formatter.address(v.validatorNodeId, 10)}
                   </span>
                   {v.featured && (
                     <span className="validator-picker-star" aria-label="Featured">★</span>
