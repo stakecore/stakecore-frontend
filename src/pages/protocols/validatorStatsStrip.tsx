@@ -39,9 +39,9 @@ const ValidatorStatsStrip = ({ stats, accentColor = 'white' }: {
   return (
     <div className="validator-stats-strip" style={styleVars}>
       <div className="validator-stats-row">
+        <MetaPill label="Capacity" value={`${Formatter.number(cap)} ${asset}`} />
         <MetaPill label="Delegators" value={Formatter.number(stats.delegators)} />
         <MetaPill label="Network Share" value={Formatter.percent(stats.networkShare)} />
-        <MetaPill label="Capacity" value={`${Formatter.number(cap)} ${asset} cap`} />
       </div>
       <div className="validator-capacity-bar" aria-hidden>
         <div className="validator-capacity-segment self" style={{ width: `${ownedPct * 100}%` }} />
@@ -50,17 +50,17 @@ const ValidatorStatsStrip = ({ stats, accentColor = 'white' }: {
       <div className="validator-stats-row">
         <MetaPill
           label="Self"
-          value={`${Formatter.number(ownedStake)} ${asset} · ${Formatter.percent(ownedPct)}`}
+          value={`${Formatter.number(ownedStake)} ${asset}`}
           leading={<span className="validator-capacity-dot self" />}
         />
         <MetaPill
           label="Delegated"
-          value={`${Formatter.number(delegated)} ${asset} · ${Formatter.percent(delegatedPct)}`}
+          value={`${Formatter.number(delegated)} ${asset}`}
           leading={<span className="validator-capacity-dot delegated" />}
         />
         <MetaPill
-          label="Available"
-          value={`${Formatter.number(available)} ${asset} · ${Formatter.percent(pct(available))}`}
+          label="Free"
+          value={`${Formatter.number(available)} ${asset}`}
           leading={<span className="validator-capacity-dot available" />}
         />
       </div>
