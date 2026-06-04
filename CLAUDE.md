@@ -15,6 +15,21 @@ Stakecore is a React SPA for a crypto staking infrastructure provider operating 
 - **Regenerate API client**: `pnpm openapi-gen && pnpm openapi-fix`
 - **Deploy**: `pnpm build-all && pnpm run deploy` (GitHub Pages; `deploy` is a reserved pnpm command, so use `pnpm run`)
 
+## Package Manager (pnpm via Corepack)
+
+The version is pinned in `package.json#packageManager` (`pnpm@10.34.1`). There is **no global pnpm install** anywhere in this project — Corepack (built into Node ≥ 16.10) reads `packageManager` and delegates `pnpm <cmd>` to that exact version. Switch projects, the version switches with you. The lockfile is `pnpm-lock.yaml` and CI runs `pnpm install --frozen-lockfile`.
+
+Setup is in two places:
+
+- **Devcontainer** ([.devcontainer/devcontainer.json](.devcontainer/devcontainer.json)): the base `typescript-node:20` image ships a global pnpm via npm-global that shadows Corepack's shim. `postCreateCommand` runs `npm rm -g pnpm` then `corepack enable --install-directory "$(npm config get prefix)/bin" pnpm` so the shim lands in a writable, on-PATH bin (the `node` user can't write to `/usr/local/bin`). `COREPACK_ENABLE_DOWNLOAD_PROMPT=0` is set in `containerEnv` so the first run doesn't hang on an interactive download prompt.
+- **CI** ([.github/workflows/deploy-site.yml](.github/workflows/deploy-site.yml)): `corepack enable` runs **before** `actions/setup-node@v4` — otherwise `cache: pnpm` in setup-node fails because `pnpm` doesn't resolve yet.
+
+Symptoms that point at a Corepack misconfig:
+
+- `pnpm --version` reports a version that isn't `10.34.1` → a global pnpm is shadowing the shim. Remove it (`npm rm -g pnpm`) and re-enable Corepack.
+- `pnpm install` hangs with no output on first run → the download prompt is waiting on stdin. Set `COREPACK_ENABLE_DOWNLOAD_PROMPT=0`.
+- CI fails on `cache: pnpm` before any install step → `corepack enable` is missing or runs after `setup-node`.
+
 ## Tech Stack
 
 React 19, TypeScript, Vite 7, React Router 7 (hash router), SWR for data fetching, Zustand for state, Bootstrap 5 + custom CSS/SCSS, ethers.js 6, EIP-6963 wallet discovery.
@@ -68,4 +83,4 @@ Common patterns: `vi.mock('~/features/wallet/store', ...)` to provide a fake Zus
 - Explorer URLs follow pattern: `chain{Evm|PChain}{AddressUrl|TransactionUrl}(hash)` in constants
 - Three chains supported: Flare (chain._0), Songbird (chain._1), Avalanche (chain._2)
 - Two protocols: FSP (protocol._0), Validator (protocol._1)
-- Package manager: pnpm (10.34.1, pinned via `packageManager` + Corepack); run scripts with `pnpm <script>` except the reserved `deploy` name, which needs `pnpm run deploy`
+- Package manager: pnpm (see the dedicated section above); run scripts with `pnpm <script>` except the reserved `deploy` name, which needs `pnpm run deploy`
