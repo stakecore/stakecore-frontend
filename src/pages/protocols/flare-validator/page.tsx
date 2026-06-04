@@ -47,12 +47,6 @@ export const FlareValidatorPage = () => {
     component = <ServerError error={error} />
   } else {
     component = <>
-      <ValidatorPicker
-        validators={data.map(d => d.base)}
-        selectedNodeId={selected.base.validatorNodeId}
-        onSelect={id => setParams({ node: id })}
-        accentColor={FLARE_COLOR_CODE}
-      />
       <InfoComponent specs={selected.specs} summary={selected.summary} />
       <FlareValidatorLocalDelegateComponent selectedNodeId={selected.base.validatorNodeId} />
       <FlareValidatorOfficialDelegateComponent validatorLink={selected.delegation.validatorLink} />
@@ -60,9 +54,26 @@ export const FlareValidatorPage = () => {
     </>
   }
 
+  // Picker lives top-right of the page title — only rendered once data
+  // has loaded and a selection exists. ValidatorPicker hides itself
+  // when validators.length <= 1 so a single-entry response still looks
+  // like the original (pre-multi-validator) page.
+  const picker = data && selected ? (
+    <ValidatorPicker
+      validators={data.map(d => d.base)}
+      selectedNodeId={selected.base.validatorNodeId}
+      onSelect={id => setParams({ node: id })}
+      accentColor={FLARE_COLOR_CODE}
+    />
+  ) : null
+
   return <>
     <div className="single-project-page-design">
-      <ProjectTitle title='Flare Validator Delegation' suptitle='Secure Flare Network Consensus Layer' />
+      <ProjectTitle
+        title='Flare Validator Delegation'
+        suptitle='Secure Flare Network Consensus Layer'
+        rightSlot={picker}
+      />
       <div className="container pt-30">
         <ProjectDescription />
         {component}

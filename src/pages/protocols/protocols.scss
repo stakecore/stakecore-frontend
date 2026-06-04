@@ -14,8 +14,27 @@
 }
 
 .project-title {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px 24px;
+    flex-wrap: wrap;
     padding-bottom: 32px;
     max-width: 880px;
+}
+
+// Holds the suptitle + h1 stack. Flex item that fills the remaining
+// width so the aside (e.g. the validator dropdown) hugs the right edge.
+.project-title-text {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+// Right-side slot for page-level controls (currently: the validator
+// dropdown on the two validator pages). Flexes to its natural width
+// and wraps below the title on narrow viewports.
+.project-title-aside {
+    flex: 0 0 auto;
 }
 
 .project-title-sup {

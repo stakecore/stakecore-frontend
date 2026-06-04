@@ -42,21 +42,28 @@ export const AvalancheValidatorPage = () => {
     component = <ServerError error={error} />
   } else {
     component = <>
-      <ValidatorPicker
-        validators={data.map(d => d.base)}
-        selectedNodeId={selected.base.validatorNodeId}
-        onSelect={id => setParams({ node: id })}
-        accentColor={AVALANCHE_COLOR_CODE}
-      />
       <InfoComponent specs={selected.specs} summary={selected.summary} />
       <AvalancheValidatorOfficialDelegateComponent validatorLink={selected.delegation.validatorLink} />
       <AvalancheValidatorStatisticsComponent config={selected.graphics} />
     </>
   }
 
+  const picker = data && selected ? (
+    <ValidatorPicker
+      validators={data.map(d => d.base)}
+      selectedNodeId={selected.base.validatorNodeId}
+      onSelect={id => setParams({ node: id })}
+      accentColor={AVALANCHE_COLOR_CODE}
+    />
+  ) : null
+
   return <>
     <div className="single-project-page-design">
-      <ProjectTitle title='Avalanche Validator Delegation' suptitle='Secure Avalanche Network Consensus Layer' />
+      <ProjectTitle
+        title='Avalanche Validator Delegation'
+        suptitle='Secure Avalanche Network Consensus Layer'
+        rightSlot={picker}
+      />
       <div className="container pt-30">
         <ProjectDescription />
         {component}

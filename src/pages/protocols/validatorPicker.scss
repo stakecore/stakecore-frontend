@@ -1,63 +1,149 @@
 @use '../../assets/css/tokens' as t;
 
-// Horizontal row of validator chips. Wraps on narrow viewports rather
-// than scrolling — the row is typically short and we'd rather see all
-// chips than hide some behind a scrollbar.
+// Custom dropdown (button + absolutely-positioned popup) so the open
+// menu can be styled to match the rest of the dark UI instead of
+// inheriting OS / browser <select> chrome. Lives in ProjectTitle's
+// right slot. Per-chain accent (--validator-picker-accent) lights the
+// trigger border while focused/open and the chevron while open.
 .validator-picker {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin: 24px 0 8px;
-}
-
-.validator-picker-chip {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-    padding: 10px 14px;
-    min-width: 180px;
-    background: var(--body-background);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    cursor: pointer;
-    text-align: left;
-    transition: border-color 150ms ease-out, background-color 150ms ease-out;
-
-    &:hover {
-        border-color: rgba(255, 255, 255, 0.25);
-    }
-
-    &.active {
-        background: rgba(255, 255, 255, 0.025);
-    }
-}
-
-.validator-picker-chip-top {
-    display: flex;
+    position: relative;
+    display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 10px;
 }
 
-.validator-picker-chip-label {
+// Small uppercase label sitting just left of the trigger button.
+// Reads as a field label, not body copy.
+.validator-picker-prefix {
+    font-family: var(--font-sans);
+    font-size: t.$text-xs;
+    font-weight: t.$weight-medium;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--main-color);
+}
+
+// Trigger pill. Hairline border at rest, slightly brighter on hover,
+// border picks up the per-chain accent while the menu is open. Padding
+// is tuned so the value (monospaced node-id) and the chevron sit on a
+// single 32-ish-px line at the title's baseline.
+.validator-picker-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 180px;
+    padding: 8px 12px;
     font-family: var(--font-sans);
     font-size: t.$text-sm;
-    font-weight: t.$weight-semibold;
+    font-weight: t.$weight-medium;
     color: var(--heading-color);
+    background: var(--body-background);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    cursor: pointer;
     font-variant-numeric: tabular-nums;
     font-feature-settings: 'tnum';
+    transition: border-color 150ms ease-out, background-color 150ms ease-out;
+
+    &:hover { border-color: rgba(255, 255, 255, 0.3); }
+    &:focus-visible {
+        outline: none;
+        border-color: var(--validator-picker-accent, rgba(255, 255, 255, 0.45));
+    }
 }
 
-// Inline star marker for the featured validator. Same colour as the
-// muted sub-text — purely a marker, not a colour cue.
-.validator-picker-chip-featured {
+// While open the trigger reads as the currently-anchored state of the
+// popup: accented border + slight surface lift.
+.validator-picker.open .validator-picker-trigger {
+    border-color: var(--validator-picker-accent, rgba(255, 255, 255, 0.45));
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.validator-picker-value {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-align: left;
+}
+
+// Chevron rotates 180° while the menu is open — a quiet visual signal
+// that the trigger is now "expanded", without needing extra labels.
+.validator-picker-chevron {
+    flex-shrink: 0;
+    color: var(--main-color);
+    transition: transform 150ms ease-out, color 150ms ease-out;
+}
+
+.validator-picker.open .validator-picker-chevron {
+    transform: rotate(180deg);
+    color: var(--heading-color);
+}
+
+// Featured marker (★). Muted so it reads as a marker, not an accent;
+// inherits the surrounding text colour in the trigger so it tones down
+// at rest and brightens when this row is the active option.
+.validator-picker-star {
     font-size: 12px;
     line-height: 1;
     color: var(--main-color);
 }
 
-.validator-picker-chip-sub {
+// Popup menu. Anchored to the right edge of the trigger so it doesn't
+// clip off the page; full-width-of-trigger via min-width so node ids
+// align between trigger and options. z-index is just high enough to
+// clear the page chrome but below any future modal overlays.
+.validator-picker-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    min-width: 100%;
+    margin: 0;
+    padding: 4px;
+    list-style: none;
+    background: var(--body-background);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+    z-index: 20;
+    // Subtle pop-in so the menu doesn't appear out of nowhere.
+    animation: validator-picker-menu-in 100ms ease-out;
+}
+
+@keyframes validator-picker-menu-in {
+    from { opacity: 0; transform: translateY(-2px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.validator-picker-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 8px 10px;
     font-family: var(--font-sans);
-    font-size: t.$text-xs;
-    color: var(--main-color);
-    line-height: 1.2;
+    font-size: t.$text-sm;
+    font-weight: t.$weight-medium;
+    color: var(--heading-color);
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    text-align: left;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
+    transition: background-color 120ms ease-out;
+
+    &:hover { background: rgba(255, 255, 255, 0.05); }
+
+    // Selected option gets a left accent bar in the per-chain color
+    // and a slightly brighter surface — quietly tells the user which
+    // row is currently active without colouring the whole row.
+    &.active {
+        background: rgba(255, 255, 255, 0.04);
+        box-shadow: inset 2px 0 0 var(--validator-picker-accent, rgba(255, 255, 255, 0.6));
+
+        .validator-picker-star { color: var(--heading-color); }
+    }
+}
+
+.validator-picker-option-label {
+    flex: 1;
 }
