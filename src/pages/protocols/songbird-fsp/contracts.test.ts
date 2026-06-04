@@ -15,10 +15,16 @@ type ContractRef = {
 const contractRefs: ContractRef[] = []
 
 vi.mock('ethers', () => {
-  const BrowserProvider = vi.fn().mockImplementation(() => ({
-    getSigner: vi.fn().mockResolvedValue({ _signer: true }),
-  }))
-  const Contract = vi.fn().mockImplementation((address: string, abi: unknown) => {
+  // Plain function declarations (not `vi.fn().mockImplementation(...)`)
+  // because vitest 4 won't `new` a vi.fn whose impl is an arrow
+  // function. The tests assert through `contractRefs` anyway, so the
+  // call-tracking that vi.fn would add isn't needed.
+  function BrowserProvider() {
+    return {
+      getSigner: () => Promise.resolve({ _signer: true }),
+    }
+  }
+  function Contract(address: string, abi: unknown) {
     const ref: ContractRef = { address, abi, calls: {} }
     contractRefs.push(ref)
     return new Proxy({}, {
@@ -29,12 +35,12 @@ vi.mock('ethers', () => {
           ref.calls[prop].push(args)
           return Promise.resolve({
             hash: MOCK_HASH,
-            wait: vi.fn().mockResolvedValue(undefined),
+            wait: () => Promise.resolve(undefined),
           })
         }
       },
     })
-  })
+  }
   return { BrowserProvider, Contract }
 })
 
