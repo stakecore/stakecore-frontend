@@ -23,11 +23,11 @@ const AvalancheValidatorStatisticsComponent = ({ config }: { config: IGraphics }
       <div className="row">
         <div className="col-lg-6">
           <MeterBar name='Uptime' ranges={[80, 95]} value={config.meterBar.validatorUptime.percent} />
-          <MeterBar name='P-chain connected nodes' ranges={[75, 95]} value={config.meterBar.validatorConnectedPChain.percent} />
+          <MeterBar name='P-chain connected nodes' ranges={[80, 90]} value={config.meterBar.validatorConnectedPChain.percent} />
         </div>
         <div className="col-lg-6">
-          <MeterBar name='C-chain connected nodes' ranges={[75, 95]} value={config.meterBar.validatorConnectedCChain.percent} />
-          <MeterBar name='X-chain connected nodes' ranges={[75, 95]} value={config.meterBar.validatorConnectedXChain.percent} />
+          <MeterBar name='C-chain connected nodes' ranges={[80, 90]} value={config.meterBar.validatorConnectedCChain.percent} />
+          <MeterBar name='X-chain connected nodes' ranges={[80, 90]} value={config.meterBar.validatorConnectedXChain.percent} />
         </div>
       </div>
     </div>
