@@ -57,9 +57,12 @@ export namespace AvalancheValidatorDataAccess {
     const validatorUrl = avalancheValidatorUrl(data.validatorNodeId)
     const validatorNodeIdLink = <HashLink url={validatorUrl} address={data.validatorNodeId} />
 
-    // validator duration
-    const validatorStartTime = Formatter.dateHuman(data.validatorStartTime)
-    const validatorEndTime = Formatter.dateHuman(data.validatorEndTime)
+    // validator duration — the backend returns 0 (epoch) for start/end
+    // time once a validator has expired, so guard against rendering a
+    // bogus 1970 date. The unavailability banner already surfaces the
+    // expired state.
+    const validatorStartTime = data.validatorStartTime > 0 ? Formatter.dateHuman(data.validatorStartTime) : 'Unavailable'
+    const validatorEndTime = data.validatorEndTime > 0 ? Formatter.dateHuman(data.validatorEndTime) : 'Unavailable'
 
     const specs = [
       [

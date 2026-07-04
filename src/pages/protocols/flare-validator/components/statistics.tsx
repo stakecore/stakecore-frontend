@@ -11,7 +11,9 @@ const FlareValidatorStatisticsComponent = ({ config }: { config: IGraphics }) =>
   const validatorPeriod = useCallback((_now: number) => ({
     startMs: startTimeMs,
     endMs: endTimeMs,
-    metadata: [{ label: "Validator Expiration", value: new Date(endTimeMs).toISOString().split('T')[0] }],
+    // An expired validator comes back with a 0 (epoch) end time; drop the
+    // pill in that case rather than showing a 1970-01-01 expiration.
+    metadata: endTimeMs > 0 ? [{ label: "Validator Expiration", value: new Date(endTimeMs).toISOString().split('T')[0] }] : [],
   }), [startTimeMs, endTimeMs])
 
   return (

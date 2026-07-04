@@ -56,9 +56,11 @@ export namespace FlareValidatorDataAccess {
     const validatorUrl = flareValidatorUrl(data.validatorNodeId)
     const validatorNodeIdLink = <HashLink url={validatorUrl} address={data.validatorNodeId} />
 
-    // validator duration
-    const validatorStartTime = Formatter.dateHuman(data.validatorStartTime)
-    const validatorEndTime = Formatter.dateHuman(data.validatorEndTime)
+    // validator duration — guard against a 0 (epoch) timestamp from an
+    // expired validator so we don't render a bogus 1970 date; the
+    // unavailability banner already surfaces the expired state.
+    const validatorStartTime = data.validatorStartTime > 0 ? Formatter.dateHuman(data.validatorStartTime) : 'Unavailable'
+    const validatorEndTime = data.validatorEndTime > 0 ? Formatter.dateHuman(data.validatorEndTime) : 'Unavailable'
 
     const specs = [
       [

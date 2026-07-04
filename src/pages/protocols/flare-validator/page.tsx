@@ -2,6 +2,7 @@ import useSWR from 'swr'
 import { useSearchParams } from 'react-router-dom'
 import { SpinnerCircular } from 'spinners-react'
 import ServerError from '~/components/ui/serverError'
+import EmptyState from '~/components/ui/emptyState'
 import ProjectTitle from "../title"
 import ProjectDescription from './components/description'
 import InfoComponent from "../info"
@@ -43,8 +44,15 @@ export const FlareValidatorPage = () => {
         <SpinnerCircular color={FLARE_COLOR_CODE} size={100} />
       </div>
     </>
-  } else if (error != null || !selected) {
+  } else if (error != null) {
     component = <ServerError error={error} />
+  } else if (!selected) {
+    // Request succeeded but returned no validators (e.g. every validator
+    // expired or was removed) — an empty state, not a connection failure.
+    component = <EmptyState
+      title='No validators available'
+      description='There are no validators to display right now. Please check back soon.'
+    />
   } else {
     component = <>
       <InfoComponent specs={selected.specs} summary={selected.summary} />
