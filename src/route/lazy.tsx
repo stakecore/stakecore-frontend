@@ -1,5 +1,7 @@
 import { type ComponentType } from "react";
 import { useRouteError } from "react-router-dom";
+import { SpinnerCircular } from "spinners-react";
+import { PAGE_COLOR_CODE } from "~/constants";
 
 const RELOAD_FLAG = 'stakecore:chunk-reload-attempted'
 
@@ -21,6 +23,17 @@ export function routeLazy<T extends ComponentType<any>>(
     }
   }
 }
+
+// Rendered by the data router during its initial hydration pass while the
+// first-matched lazy route chunk is still loading (i.e. a deep link or
+// refresh onto any non-Home route). Without it React Router logs
+// "No `HydrateFallback` element provided…" and renders null, so the user
+// gets a blank flash instead of a spinner.
+export const RouteHydrateFallback = () => (
+  <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <SpinnerCircular color={PAGE_COLOR_CODE} size={100} />
+  </div>
+)
 
 export const ChunkLoadError = () => {
   const error = useRouteError()

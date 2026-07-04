@@ -2,7 +2,7 @@ import { createHashRouter } from "react-router-dom";
 import RootLayout from "../layout/root";
 import Home from "../pages/home";
 import NotFound from "../pages/notFound";
-import { routeLazy, ChunkLoadError } from "./lazy";
+import { routeLazy, ChunkLoadError, RouteHydrateFallback } from "./lazy";
 
 const lazyRoute = (path, factory) => ({
     path,
@@ -14,6 +14,7 @@ export const router = createHashRouter([
     {
         path: "/",
         element: <RootLayout />,
+        HydrateFallback: RouteHydrateFallback,
         children: [
             { path: "/", element: <Home /> },
             lazyRoute("/contact", () => import("../pages/contact")),
