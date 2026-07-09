@@ -1,0 +1,21 @@
+// Lazy-route chunk-load error fallback, co-located with lazy.tsx (moved out
+// of the global assets/css/custom.css).
+
+.lazy-load-error {
+  max-width: 480px;
+  margin: 120px auto;
+  padding: 32px;
+  text-align: center;
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-raised);
+}
+
+.lazy-load-error h3 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.lazy-load-error p {
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 22px;
+}

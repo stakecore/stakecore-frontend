@@ -6,6 +6,7 @@ import { HashLink } from "./links"
 import { Protocol } from "~/enums"
 import * as C from "~/constants"
 import { CHAIN_CONFIG, chainConfig } from "~/config/chains"
+import "./recentActivity.scss"
 
 // FSP activity links to the EVM explorer; validator activity to the P-chain
 // explorer. Each chain's config only defines the builders for the protocols

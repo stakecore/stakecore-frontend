@@ -2,6 +2,7 @@ import { type ComponentType } from "react";
 import { useRouteError } from "react-router-dom";
 import { SpinnerCircular } from "spinners-react";
 import { PAGE_COLOR_CODE } from "~/constants";
+import "./lazy.scss";
 
 const RELOAD_FLAG = 'stakecore:chunk-reload-attempted'
 
