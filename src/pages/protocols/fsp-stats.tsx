@@ -2,6 +2,7 @@ import { useCallback } from "react"
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip } from "recharts"
 import { Formatter } from "~/utils/misc/formatter"
 import MeterBar from "~/components/ui/meterBar"
+import EmptyState from "~/components/ui/emptyState"
 import EpochProgress from "~/components/ui/epochProgress"
 import { Chain } from "~/enums"
 import { chainToSymbol } from "~/utils/misc/translations"
@@ -45,7 +46,6 @@ const StatsChart = ({ data, keys, formatY, height = 200 }: {
 
 const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: Chain }) => {
   const symbol = chainToSymbol(chain)
-  const lastDelegationEpoch = Math.max(...stats.delegations.result.map(x => x.rewardEpoch))
 
   const cfg = FTSO_CHAIN_CONFIG[chain as keyof typeof FTSO_CHAIN_CONFIG]
 
@@ -87,6 +87,25 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
   }))
 
   const last = stats.submissions.result[stats.submissions.result.length - 1]
+
+  // A fresh reward epoch (or a pruned DB) can return empty statistics arrays.
+  // Everything below dereferences `last` and expects at least one submission,
+  // so bail to an informational empty state rather than crashing the page.
+  if (last == null) {
+    return (
+      <div className="single-project-page-right mt-30">
+        <EmptyState
+          title="No performance data yet"
+          description="Live provider statistics will appear here once the current reward epoch produces its first submissions."
+        />
+      </div>
+    )
+  }
+
+  const delegationEpochs = stats.delegations.result.map(x => x.rewardEpoch)
+  const lastDelegationEpoch = delegationEpochs.length > 0
+    ? Math.max(...delegationEpochs)
+    : last.rewardEpoch + 1
 
   const component = <>
     <div className='single-project-page-right mt-30'>

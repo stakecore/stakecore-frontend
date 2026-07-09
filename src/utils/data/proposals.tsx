@@ -32,17 +32,20 @@ export const getProposalData = (info: PageUserInfoDto) => {
   const apydata = structureApyData(info.apys)
   const baldata = structureBalanceData(info.balances)
 
-  const totalFlr = baldata.get(C.FLR_SYMBOL)
-  const totalWFlr = baldata.get(C.WFLR_SYMBOL)
-  const totalSgb = baldata.get(C.SGB_SYMBOL)
-  const totalWSgb = baldata.get(C.WSGB_SYMBOL)
-  const totalAvax = baldata.get(C.AVAX_SYMBOL)
+  // Missing balances/APYs must default to 0, not undefined — otherwise
+  // `undefined + n` or `undefined * n` yields NaN, and Formatter.number(NaN)
+  // throws (BigInt("NaN")), crashing the CallToAction on every page.
+  const totalFlr = baldata.get(C.FLR_SYMBOL) ?? 0
+  const totalWFlr = baldata.get(C.WFLR_SYMBOL) ?? 0
+  const totalSgb = baldata.get(C.SGB_SYMBOL) ?? 0
+  const totalWSgb = baldata.get(C.WSGB_SYMBOL) ?? 0
+  const totalAvax = baldata.get(C.AVAX_SYMBOL) ?? 0
 
   const ret = []
 
   if (totalFlr > 0 || totalWFlr > 0) {
-    const apyFsp = apydata.get('Flare').get('FSP')
-    const apyVal = apydata.get('Flare').get('Validator')
+    const apyFsp = apydata.get('Flare')?.get('FSP') ?? 0
+    const apyVal = apydata.get('Flare')?.get('Validator') ?? 0
     const earned = apyVal * (totalFlr + totalWFlr) * info.prices.flr
 
     const capital = joinTokenValues(
@@ -72,7 +75,7 @@ export const getProposalData = (info: PageUserInfoDto) => {
   }
 
   if (totalAvax > 0) {
-    const apyVal = apydata.get('Avalanche').get('Validator')
+    const apyVal = apydata.get('Avalanche')?.get('Validator') ?? 0
     const earned = totalAvax * apyVal * info.prices.avax
 
     const fTotalAvax = Formatter.number(totalAvax)
@@ -93,7 +96,7 @@ export const getProposalData = (info: PageUserInfoDto) => {
   }
 
   if (totalSgb > 0 || totalWSgb > 0) {
-    const apyFsp = apydata.get('Songbird').get('FSP')
+    const apyFsp = apydata.get('Songbird')?.get('FSP') ?? 0
     const earned = (totalSgb + totalWSgb) * apyFsp * info.prices.sgb
 
     const capital = joinTokenValues(

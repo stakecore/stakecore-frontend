@@ -97,7 +97,7 @@ export const songbirdFspExplorer = 'https://songbird-systems-explorer.flare.netw
 export const songbirdEvmAddressUrl = (address: string) => `${songbirdEvmExplorer}/address/${address}`
 export const songbirdEvmTransactionUrl = (hash: string) => `${songbirdEvmExplorer}/tx/${hash}`
 
-export const songbirdFspAddressUrl = (address: string) => `${songbirdEvmExplorer}/providers/fsp/${address}`
+export const songbirdFspAddressUrl = (address: string) => `${songbirdFspExplorer}/providers/fsp/${address}`
 
 export const songbirdDelegationAdr = '0x1e68DC808A240C096F0261144dc41fd4c883Cfb0'
 

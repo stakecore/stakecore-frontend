@@ -27,6 +27,13 @@ describe('Formatter.number', () => {
     expect(Formatter.number(-7)).toBe('-7')
   })
 
+  it('keeps the sign on short negative decimals', () => {
+    // Regression: the int != '0' short-decimal branch used to drop the
+    // prefix, so a negative delta rendered as a positive one.
+    expect(Formatter.number(-5.2)).toBe('-5.2')
+    expect(Formatter.number(-1.5)).toBe('-1.5')
+  })
+
   it('expands scientific-notation strings before parsing', () => {
     // 1e-9 -> '0.000000001' -> still 0 at length-3 default (truncated below
     // the visible precision), so the "<0.01" rail kicks in.

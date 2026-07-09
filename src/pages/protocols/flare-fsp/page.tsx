@@ -31,7 +31,7 @@ export const FlareFspPage = () => {
   } else {
     const delegator = <HashLink url={flareEvmAddressUrl(data.info.delegationAddress)} address={data.info.delegationAddress} />
     component = <>
-      <InfoComponent specs={FspDataLayer.extractSpecs(data.info)} summary={FspDataLayer.extractSummary(CHAIN, data.info, data.statistics)} />
+      <InfoComponent specs={FspDataLayer.extractSpecs(CHAIN, data.info)} summary={FspDataLayer.extractSummary(CHAIN, data.info, data.statistics)} />
       <FlareFspLocalDelegateComponent />
       <FlareFspOfficialDelegateComponent validatorLink={delegator} />
       <FspStatsComponent stats={data.statistics} chain={Chain.FLARE} />

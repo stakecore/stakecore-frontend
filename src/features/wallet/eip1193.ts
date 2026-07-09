@@ -85,12 +85,14 @@ export async function switchNetworkIfNecessary(
       // Chain not added to MetaMask
       if (err.code === 4902 && addChain) {
         try {
+          // EIP-3085 expects the chain config fields (chainId, chainName,
+          // rpcUrls, nativeCurrency) at the top level of params[0]. The
+          // wallet config objects in constants.ts already have exactly that
+          // shape, so spread them directly — nesting them under a made-up
+          // `chainConfig` key made the wallet reject the request as invalid.
           await ethereum.request({
             method: 'wallet_addEthereumChain',
-            params: [{
-              chainConfig: chainIdToConfig(chainId),
-              blockExplorerUrls: null
-            }],
+            params: [chainIdToConfig(chainId)],
           })
         } catch (err: any) {
           console.error(err)

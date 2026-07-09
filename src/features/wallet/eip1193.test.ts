@@ -193,9 +193,16 @@ describe('switchNetworkIfNecessary', () => {
       wallet_addEthereumChain: async () => null,
     })
     await expect(switchNetworkIfNecessary('0xe', asProvider(p))).resolves.toBe(true)
-    // Verify the add call happened with the chain config payload.
-    expect(p.request).toHaveBeenCalledWith(expect.objectContaining({
-      method: 'wallet_addEthereumChain',
+    // Verify the add call passes the chain config with EIP-3085 fields at the
+    // top level of params[0] (not nested under a `chainConfig` key).
+    const addCall = p.request.mock.calls
+      .map(([arg]: [any]) => arg)
+      .find((arg: any) => arg.method === 'wallet_addEthereumChain')
+    expect(addCall).toBeDefined()
+    expect(addCall.params[0]).toEqual(expect.objectContaining({
+      chainId: '0xe',
+      rpcUrls: expect.any(Array),
+      nativeCurrency: expect.any(Object),
     }))
   })
 

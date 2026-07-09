@@ -51,7 +51,7 @@ export namespace Formatter {
       } else if (int == '0') {
         return `${prefix}0.${dec}`
       } else {
-        return `${int}.${dec}`
+        return `${prefix}${int}.${dec}`
       }
     }
 

@@ -67,7 +67,12 @@ const RecentActivity = ({ data, isLoading }: {
 
   const items = useMemo<PageActivityDto[] | null>(() => {
     if (activity == null) return null
-    return [...activity].sort((a, b) => b.timestamp - a.timestamp)
+    // Drop entries whose type or chain we don't have a renderer for — a new
+    // backend activity type or chain id would otherwise dereference an
+    // undefined config in ActivityCard and crash the whole hero marquee.
+    return [...activity]
+      .filter(a => a.type in ACTIVITY_CONFIG && a.chain in CHAIN_LOGO)
+      .sort((a, b) => b.timestamp - a.timestamp)
   }, [activity])
 
   const priceByKey = useMemo(() => buildPriceMap(data), [delegated])

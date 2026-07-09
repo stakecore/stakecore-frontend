@@ -1,6 +1,9 @@
 import { FspDelegatorInfoDto, FspInfoDto, FspPageDataDto, FspService } from "~/backendApi"
 import type { FspStatisticsDto } from "~/backendApi"
-import { flareEvmAddressUrl, flareFspAddressUrl } from "~/constants"
+import {
+  flareEvmAddressUrl, flareFspAddressUrl,
+  songbirdEvmAddressUrl, songbirdFspAddressUrl,
+} from "~/constants"
 import { Formatter } from "~/utils/misc/formatter"
 import { HashLink } from "~/components/ui/links"
 import type { ISpecs, ISummary } from "../types"
@@ -34,10 +37,15 @@ namespace FspDataLayer {
     }
   }
 
-  export function extractSpecs(info: FspInfoDto): ISpecs {
-    const delegationAddressUrl = flareEvmAddressUrl(info.delegationAddress)
+  export function extractSpecs(chain: string, info: FspInfoDto): ISpecs {
+    // This data layer is shared by both FSP routes, so the explorer URLs must
+    // follow the chain — otherwise the Songbird page links into the Flare
+    // explorers.
+    const evmAddressUrl = chain == 'flare' ? flareEvmAddressUrl : songbirdEvmAddressUrl
+    const fspAddressUrl = chain == 'flare' ? flareFspAddressUrl : songbirdFspAddressUrl
+    const delegationAddressUrl = evmAddressUrl(info.delegationAddress)
     const delegationAddressLink = <HashLink url={delegationAddressUrl} address={info.delegationAddress} />
-    const identityAddressUrl = flareFspAddressUrl(info.identityAddress)
+    const identityAddressUrl = fspAddressUrl(info.identityAddress)
     const identityAddressLink = <HashLink url={identityAddressUrl} address={info.identityAddress} />
     return [
       [

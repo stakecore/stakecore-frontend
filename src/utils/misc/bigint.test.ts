@@ -16,6 +16,18 @@ describe('expbigint', () => {
     expect(expbigint(-3, 4)).toBe(-30_000n)
   })
 
+  it('handles fractional amounts without throwing', () => {
+    expect(expbigint(1.5, 18)).toBe(1_500_000_000_000_000_000n)
+    expect(expbigint(0.01, 18)).toBe(10_000_000_000_000_000n)
+    expect(expbigint(1234.56, 2)).toBe(123_456n)
+    expect(expbigint(-2.5, 4)).toBe(-25_000n)
+  })
+
+  it('throws on non-finite input rather than producing garbage', () => {
+    expect(() => expbigint(NaN, 18)).toThrow()
+    expect(() => expbigint(Infinity, 18)).toThrow()
+  })
+
   it('survives values beyond Number.MAX_SAFE_INTEGER once scaled', () => {
     // 1e30 cannot be represented as a Number safely, but expbigint must
     // produce the exact bigint without precision loss.

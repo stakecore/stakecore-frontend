@@ -43,7 +43,9 @@ async function requestSignature(address: string, provider: Eip1193Provider) {
   if (recv == null) {
     msg2 = 'failed to verify signature'
     ok2 = false
-  } else if (recv.toLowerCase() != address) {
+  } else if (recv.toLowerCase() != address.toLowerCase()) {
+    // Some wallets (e.g. Coinbase Wallet) return a checksummed address, so
+    // both sides must be lowercased before comparing.
     msg2 = 'signed with mismatched account'
     ok2 = false
   }
@@ -55,7 +57,10 @@ async function requestSignature(address: string, provider: Eip1193Provider) {
     autoClose: 3000
   })
 
-  return pubk
+  // Never hand back the recovered key when verification failed — otherwise a
+  // signature from the wrong account gets persisted as the connected
+  // account's public key and every derived P-chain address is wrong.
+  return ok2 ? pubk : undefined
 }
 
 const FlareValidatorLocalDelegateComponent = ({ selectedNodeId }: { selectedNodeId: string }) => {
@@ -131,7 +136,7 @@ const FlareValidatorLocalDelegateComponent = ({ selectedNodeId }: { selectedNode
       .reduce((x, y) => x + y.delegated, 0)
     component = <div>
       <div style={{ textAlign: 'center' }} className="mb-20">
-        <HashLink address={pchain} url={flarePChainAddressUrl(resp.data.pChain.address)} />
+        <HashLink address={resp.data.pChain.address} url={flarePChainAddressUrl(resp.data.pChain.address)} />
       </div>
       <div className="balance-summary">
         <div className="balance-row">
