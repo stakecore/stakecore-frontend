@@ -1,60 +1,26 @@
 import { Chain } from "~/enums"
-import  * as C from "../../constants"
+import { CHAIN_CONFIG, CHAIN_BY_HEX, CHAIN_LIST, type AddEthereumChainParams } from "~/config/chains"
 
 export function chainFromRoute(route: string): Chain {
-  let chain = null
-  if (route.includes('flare')) {
-    chain = Chain.FLARE
-  } else if (route.includes('songbird')) {
-    chain = Chain.SONGBIRD
-  } else if (route.includes('avalanche')) {
-    chain = Chain.AVALANCHE
-  }
-  return chain
+  // First-match wins in enum order (flare, songbird, avalanche).
+  return CHAIN_LIST.find(c => route.includes(c.slug))?.id ?? null
 }
 
-export function chainIdToConfig(chainId: string | null): any {
-  if (chainId == C.flareChainId) {
-    return C.flareWalletConfig
-  } else if (chainId == C.songbirdChainId) {
-    return C.songbirdWalletConfig
-  } else if (chainId == C.avalancheChainId) {
-    return C.avalancheWalletConfig
-  } else {
-    return null
-  }
+export function chainIdToConfig(chainId: string | null): AddEthereumChainParams | null {
+  if (chainId == null) return null
+  return CHAIN_BY_HEX[chainId]?.walletConfig ?? null
 }
 
 export function symbolToChain(token: string): Chain {
-  if (token.includes(C.FLR_SYMBOL)) {
-    return Chain.FLARE
-  } else if (token.includes(C.SGB_SYMBOL)) {
-    return Chain.SONGBIRD
-  } else if (token.includes(C.AVAX_SYMBOL)) {
-    return Chain.AVALANCHE
-  }
+  // Substring match, so wrapped variants resolve to the base chain
+  // (WFLR → FLARE). Returns undefined (not null) when nothing matches.
+  return CHAIN_LIST.find(c => token.includes(c.symbol))?.id
 }
 
 export function chainToChainId(chain: Chain): string | null {
-  if (chain == Chain.FLARE) {
-    return C.flareChainId
-  } else if (chain == Chain.SONGBIRD) {
-    return C.songbirdChainId
-  } else if (chain == Chain.AVALANCHE) {
-    return C.avalancheChainId
-  } else {
-    return null
-  }
+  return CHAIN_CONFIG[chain]?.chainIdHex ?? null
 }
 
 export function chainToSymbol(chain: Chain): string | null {
-  if (chain == Chain.FLARE) {
-    return C.FLR_SYMBOL
-  } else if (chain == Chain.SONGBIRD) {
-    return C.SGB_SYMBOL
-  } else if (chain == Chain.AVALANCHE) {
-    return C.AVAX_SYMBOL
-  } else {
-    return null
-  }
+  return CHAIN_CONFIG[chain]?.symbol ?? null
 }

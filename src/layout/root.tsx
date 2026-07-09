@@ -12,32 +12,8 @@ import DiscoverWalletProviders from '../features/wallet/picker'
 import { Tooltip } from 'react-tooltip'
 import { useEffect, useState } from 'react'
 import { CookiesProvider } from 'react-cookie'
-import { Chain } from '~/enums'
-import flareImg from '../assets/images/protocols/flare/symbol.svg?url'
-import songbirdImg from '../assets/images/protocols/songbird/symbol.svg?url'
-import avalancheImg from '../assets/images/protocols/avalanche/symbol.svg?url'
+import { CHAIN_CONFIG } from '~/config/chains'
 
-
-function chainToBackgroundImage(chain: Chain): string {
-  if (chain == Chain.FLARE) {
-    return flareImg
-  } else if (chain == Chain.SONGBIRD) {
-    return songbirdImg
-  } else if (chain == Chain.AVALANCHE) {
-    return avalancheImg
-  }
-  return ''
-}
-
-// Per-chain modifier class so each background can tune its own size /
-// position — the Songbird symbol has a transparent ring around the bird
-// so needs a bigger render size to match Flare/Avalanche visually.
-function chainToBackgroundClass(chain: Chain): string {
-  if (chain == Chain.FLARE) return 'bg-flare'
-  if (chain == Chain.SONGBIRD) return 'bg-songbird'
-  if (chain == Chain.AVALANCHE) return 'bg-avalanche'
-  return ''
-}
 
 const NavigationPreloader = () => {
   const navigation = useNavigation()
@@ -62,8 +38,11 @@ const RootLayout = () => {
   const hideCallToAction = matches.some(m => (m.handle as { hideCallToAction?: boolean } | undefined)?.hideCallToAction)
   const chain = chainFromRoute(pathname)
   const chainId = chainToChainId(chain)
-  const image = chainToBackgroundImage(chain)
-  const bgClass = chainToBackgroundClass(chain)
+  // Per-chain background art + modifier class (e.g. the Songbird symbol
+  // needs a bigger render size to match Flare/Avalanche visually).
+  const cfg = chain != null ? CHAIN_CONFIG[chain] : null
+  const image = cfg?.background.image ?? ''
+  const bgClass = cfg?.background.className ?? ''
 
   const { setChain, setWallet, wallet } = useGlobalStore(
     useShallow(state => ({ setChain: state.setChain, setWallet: state.setWalletAddress, wallet: state.walletProvider }))

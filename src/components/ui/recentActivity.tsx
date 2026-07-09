@@ -3,44 +3,23 @@ import { SpinnerCircular } from "spinners-react"
 import { ApiResponseDto_PageStatsDto, PageActivityDto } from "~/backendApi"
 import { Formatter } from "~/utils/misc/formatter"
 import { HashLink } from "./links"
-import { Chain, Protocol } from "~/enums"
+import { Protocol } from "~/enums"
 import * as C from "~/constants"
-import avalanche from "../../assets/images/tokens/AVAX.svg"
-import flare from "../../assets/images/tokens/FLR.svg"
-import songbird from "../../assets/images/tokens/SGB.svg"
+import { CHAIN_CONFIG, chainConfig } from "~/config/chains"
 
-const CHAIN_LOGO: Record<number, string> = {
-  [Chain.FLARE]: flare,
-  [Chain.SONGBIRD]: songbird,
-  [Chain.AVALANCHE]: avalanche,
-}
-
+// FSP activity links to the EVM explorer; validator activity to the P-chain
+// explorer. Each chain's config only defines the builders for the protocols
+// it actually emits, so a missing builder falls back to an empty string.
 function chainToTransactionUrl(chain: number, protocol: number, hash: string): string {
-  if (chain == Chain.FLARE) {
-    if (protocol == Protocol.FSP) {
-      return C.flareEvmTransactionUrl(hash)
-    } else {
-      return C.flarePChainTransactionUrl(hash)
-    }
-  } else if (chain == Chain.SONGBIRD) {
-    return C.songbirdEvmTransactionUrl(hash)
-  } else if (chain == Chain.AVALANCHE) {
-    return C.avalanchePChainTransactionUrl(hash)
-  }
+  const ex = chainConfig(chain)?.explorers
+  const build = protocol == Protocol.FSP ? ex?.evmTx : ex?.pChainTx
+  return build ? build(hash) : ''
 }
 
 function chainToAddressUrl(chain: number, protocol: number, address: string): string {
-  if (chain == Chain.FLARE) {
-    if (protocol == Protocol.FSP) {
-      return C.flareEvmAddressUrl(address)
-    } else {
-      return C.flarePChainAddressUrl(address)
-    }
-  } else if (chain == Chain.SONGBIRD) {
-    return C.songbirdEvmAddressUrl(address)
-  } else if (chain == Chain.AVALANCHE) {
-    return C.avalanchePChainAddressUrl(address)
-  }
+  const ex = chainConfig(chain)?.explorers
+  const build = protocol == Protocol.FSP ? ex?.evmAddress : ex?.pChainAddress
+  return build ? build(address) : ''
 }
 
 function itemKey(item: PageActivityDto): string {
@@ -71,7 +50,7 @@ const RecentActivity = ({ data, isLoading }: {
     // backend activity type or chain id would otherwise dereference an
     // undefined config in ActivityCard and crash the whole hero marquee.
     return [...activity]
-      .filter(a => a.type in ACTIVITY_CONFIG && a.chain in CHAIN_LOGO)
+      .filter(a => a.type in ACTIVITY_CONFIG && a.chain in CHAIN_CONFIG)
       .sort((a, b) => b.timestamp - a.timestamp)
   }, [activity])
 
@@ -185,8 +164,9 @@ const ActivityCard = memo(({ activity, priceByKey, ...rest }: {
   activity: PageActivityDto, priceByKey: Record<string, number>, 'aria-hidden'?: boolean
 }) => {
   const config = ACTIVITY_CONFIG[activity.type]
-  const logo = CHAIN_LOGO[activity.chain]
-  const symbol = C.CHAIN_SYMBOL[activity.chain]
+  const chainCfg = chainConfig(activity.chain)
+  const logo = chainCfg?.logo
+  const symbol = chainCfg?.symbol
   const txUrl = chainToTransactionUrl(activity.chain, activity.protocol, activity.transaction)
   const addrUrl = chainToAddressUrl(activity.chain, activity.protocol, activity.delegator)
   const price = priceByKey[`${activity.chain}-${activity.protocol}`]
