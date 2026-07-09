@@ -9,6 +9,13 @@
 
 // === Mobile defaults (< lg) ===
 
+// Legacy float-clearing utility, previously supplied by Bootstrap's helpers.
+.clearfix::after {
+    display: block;
+    clear: both;
+    content: "";
+}
+
 .main-header {
     position: relative;
     left: 0;
@@ -105,6 +112,12 @@
         margin-right: auto;
         max-width: 150px; // safeguard on tiny phones (< sm)
     }
+
+    // Drawer visibility. header.tsx toggles `.show` on the
+    // `.navbar-collapse.collapse` element. We no longer ship Bootstrap's
+    // component CSS, so own the hidden-until-open behaviour here; the lg+
+    // block below forces it visible once the inline navbar takes over.
+    .navbar-collapse.collapse:not(.show) { display: none; }
 
     .collapse { overflow: auto; }
 
@@ -256,6 +269,9 @@
         // Override the mobile `.collapse { overflow: auto }` so the
         // absolute-positioned submenu panel isn't clipped + scrolled.
         .collapse { overflow: visible; }
+
+        // The inline desktop navbar is always visible regardless of `.show`.
+        .navbar-collapse.collapse:not(.show) { display: block; }
 
         .navbar-collapse {
             position: static;
