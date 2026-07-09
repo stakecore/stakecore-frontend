@@ -5,7 +5,6 @@ import ServerError from "~/components/ui/serverError"
 import FspLocalDelegate from "~/pages/protocols/fspLocalDelegate"
 import { contractCallAdapter } from "../../utils"
 import FspDataLayer from "../../flare-fsp/data"
-import { claim, delegate, deposit, withdraw } from "../contracts"
 import { expbigint } from "~/utils/misc/bigint"
 import * as C from "~/constants"
 
@@ -27,16 +26,26 @@ const SongbirdFspLocalDelegateComponent = () => {
     setWalletChoiceVisible(true)
   }
 
-  // Contract-call adapters for SSP — same pattern as the Flare-FSP wiring.
+  // Contract-call adapters for SSP — same pattern as the Flare-FSP wiring,
+  // including the dynamic import of contracts.ts so ethers stays out of the
+  // FSP page chunk and loads only on a wallet transaction.
   const actions = {
-    deposit: (address: string, amount: number) =>
-      contractCallAdapter(deposit, address, [expbigint(amount, C.SGB_DECIMALS)]),
-    withdraw: (address: string, amount: number) =>
-      contractCallAdapter(withdraw, address, [expbigint(amount, C.SGB_DECIMALS)]),
-    delegate: (address: string, bips: number) =>
-      contractCallAdapter(delegate, address, [bips]),
-    claim: (address: string, epoch: number) =>
-      contractCallAdapter(claim, address, [epoch]),
+    deposit: async (address: string, amount: number) => {
+      const { deposit } = await import("../contracts")
+      return contractCallAdapter(deposit, address, [expbigint(amount, C.SGB_DECIMALS)])
+    },
+    withdraw: async (address: string, amount: number) => {
+      const { withdraw } = await import("../contracts")
+      return contractCallAdapter(withdraw, address, [expbigint(amount, C.SGB_DECIMALS)])
+    },
+    delegate: async (address: string, bips: number) => {
+      const { delegate } = await import("../contracts")
+      return contractCallAdapter(delegate, address, [bips])
+    },
+    claim: async (address: string, epoch: number) => {
+      const { claim } = await import("../contracts")
+      return contractCallAdapter(claim, address, [epoch])
+    },
   }
 
   let component = null

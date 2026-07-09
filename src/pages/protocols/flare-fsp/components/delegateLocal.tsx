@@ -5,7 +5,6 @@ import ServerError from "~/components/ui/serverError"
 import FspLocalDelegate from "~/pages/protocols/fspLocalDelegate"
 import { contractCallAdapter } from "../../utils"
 import FspDataLayer from "../data"
-import { claim, delegate, deposit, withdraw } from "../contracts"
 import { expbigint } from "~/utils/misc/bigint"
 import * as C from "~/constants"
 
@@ -29,18 +28,28 @@ const FlareFspLocalDelegateComponent = () => {
 
   // Contract-call adapters. Each wraps the raw contracts.ts function with
   // contractCallAdapter (provider acquisition + error handling) and the
-  // appropriate bigint conversion. The new FspLocalDelegate component
-  // calls these by name; the security-sensitive contracts.ts code path
-  // is unchanged.
+  // appropriate bigint conversion. contracts.ts pulls in ethers' heavy
+  // BrowserProvider/Contract stack, so it's dynamically imported here —
+  // that keeps ethers out of the FSP page chunk and loads it only when the
+  // user actually triggers a wallet transaction. The security-sensitive
+  // contracts.ts code path is unchanged.
   const actions = {
-    deposit: (address: string, amount: number) =>
-      contractCallAdapter(deposit, address, [expbigint(amount, C.FLR_DECIMALS)]),
-    withdraw: (address: string, amount: number) =>
-      contractCallAdapter(withdraw, address, [expbigint(amount, C.FLR_DECIMALS)]),
-    delegate: (address: string, bips: number) =>
-      contractCallAdapter(delegate, address, [bips]),
-    claim: (address: string, epoch: number) =>
-      contractCallAdapter(claim, address, [epoch]),
+    deposit: async (address: string, amount: number) => {
+      const { deposit } = await import("../contracts")
+      return contractCallAdapter(deposit, address, [expbigint(amount, C.FLR_DECIMALS)])
+    },
+    withdraw: async (address: string, amount: number) => {
+      const { withdraw } = await import("../contracts")
+      return contractCallAdapter(withdraw, address, [expbigint(amount, C.FLR_DECIMALS)])
+    },
+    delegate: async (address: string, bips: number) => {
+      const { delegate } = await import("../contracts")
+      return contractCallAdapter(delegate, address, [bips])
+    },
+    claim: async (address: string, epoch: number) => {
+      const { claim } = await import("../contracts")
+      return contractCallAdapter(claim, address, [epoch])
+    },
   }
 
   let component = null
