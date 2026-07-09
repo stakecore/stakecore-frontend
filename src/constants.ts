@@ -1,15 +1,8 @@
 import { Chain, Protocol } from './enums'
+import { CHAIN_CONFIG } from './config/chains'
 
 export const MAX_BIPS = 10_000
 export const NUMBER_DISPLAY_LENGTH = 3
-
-// chain & protocol name maps (keyed by API numeric IDs)
-
-export const CHAIN_NAME: Record<number, string> = {
-  [Chain.FLARE]: 'Flare',
-  [Chain.SONGBIRD]: 'Songbird',
-  [Chain.AVALANCHE]: 'Avalanche',
-}
 
 export const PROTOCOL_NAME: Record<number, string> = {
   [Protocol.FSP]: 'FSP',
@@ -20,27 +13,7 @@ export const PROTOCOL_NAME: Record<number, string> = {
 export const REFRESH_QUERY_FAST_MS = 10_000
 export const REFRESH_QUERY_SLOW_MS = 30_000
 
-// tokens
-
-export const FLR_DECIMALS = 18
-export const FLR_SYMBOL = 'FLR'
-export const WFLR_SYMBOL = 'WFLR'
-
-export const SGB_DECIMALS = 18
-export const SGB_SYMBOL = 'SGB'
-export const WSGB_SYMBOL = 'WSGB'
-
-export const AVAX_DECIMALS = 18
-export const AVAX_SYMBOL = 'AVAX'
-
-export const CHAIN_SYMBOL: Record<number, string> = {
-  [Chain.FLARE]: FLR_SYMBOL,
-  [Chain.SONGBIRD]: SGB_SYMBOL,
-  [Chain.AVALANCHE]: AVAX_SYMBOL,
-}
-
-// flare fsp
-
+// flare fsp contracts
 export const wrappedFlrAdr = '0x1D80c49BbBCd1C0911346656B529DF9E5c2F783d'
 export const wrappedFlrAbi = [
   'function delegate(address,uint256)',
@@ -53,126 +26,100 @@ export const flareFspRewardManagerAbi = [
   'function claim(address,address,uint24,bool,(bytes32[],(uint24,bytes20,uint120,uint8))[])'
 ]
 
-export const flareEvmExplorer = 'https://flare-explorer.flare.network'
-export const flareFspExplorer = 'https://flare-systems-explorer.flare.network'
-
-export const flareEvmAddressUrl = (address: string) => `${flareEvmExplorer}/address/${address}`
-export const flareEvmTransactionUrl = (hash: string) => `${flareEvmExplorer}/tx/${hash}`
-
-export const flareFspAddressUrl = (address: string) => `${flareFspExplorer}/providers/fsp/${address}`
-
 export const flareDelegationAdr = '0x1e68DC808A240C096F0261144dc41fd4c883Cfb0'
 
-export const flareChainUrl = 'https://flare-api.flare.network/ext/C/rpc'
-export const flareChainId = '0xe'
-
-export const flareWalletConfig = {
-  chainName: 'Flare Network',
-  chainId: flareChainId,
-  nativeCurrency: {
-    name: FLR_SYMBOL,
-    decimals: FLR_DECIMALS,
-    symbol: FLR_SYMBOL
-  },
-  rpcUrls: [flareChainUrl]
-}
-
-export const flareEpochConfig = {
-  roundDurationMs: 90_000,
-  firstRoundTimestampMs: 1658430000_000,
-  rewardEpochDurationRounds: 3360
-}
-
-// songbird fsp
-
+// songbird fsp contracts
 export const wrappedSgbAdr = '0x02f0826ef6aD107Cfc861152B32B52fD11BaB9ED'
 export const wrappedSgbAbi = wrappedFlrAbi
 
 export const songbirdFspRewardManagerAdr = '0xE26AD68b17224951b5740F33926Cc438764eB9a7'
 export const songbirdFspRewardManagerAbi = flareFspRewardManagerAbi
 
-export const songbirdEvmExplorer = 'https://songbird-explorer.flare.network'
-export const songbirdFspExplorer = 'https://songbird-systems-explorer.flare.network'
-
-export const songbirdEvmAddressUrl = (address: string) => `${songbirdEvmExplorer}/address/${address}`
-export const songbirdEvmTransactionUrl = (hash: string) => `${songbirdEvmExplorer}/tx/${hash}`
-
-export const songbirdFspAddressUrl = (address: string) => `${songbirdFspExplorer}/providers/fsp/${address}`
-
 export const songbirdDelegationAdr = '0x1e68DC808A240C096F0261144dc41fd4c883Cfb0'
 
-export const songbirdChainUrl = 'https://songbird-api.flare.network/ext/C/rpc'
-export const songbirdChainId = '0x13'
-
-export const songbirdWalletConfig = {
-  chainName: 'Songbird Canary Network',
-  chainId: songbirdChainId,
-  nativeCurrency: {
-    name: SGB_SYMBOL,
-    decimals: SGB_DECIMALS,
-    symbol: SGB_SYMBOL
-  },
-  rpcUrls: [songbirdChainUrl]
-}
-
-export const songbirdEpochConfig = {
-  roundDurationMs: 90_000,
-  firstRoundTimestampMs: 1658429955_000,
-  rewardEpochDurationRounds: 3360
-}
-
-// flare validator
-
+// flare validator contract
 export const flareValidatorAdr = '0x868822C4A79ee2a18bedfdd5f1EF3b23B190cf1e'
 
-export const flarePChainExplorer = 'https://flare.space/dapp/p-chain-explorer'
-
-export const flareValidatorUrl = (nodeId: string) => `${flarePChainExplorer}/validator/${nodeId}`
-export const flarePChainAddressUrl = (address: string) => `${flarePChainExplorer}/address/${address}`
-export const flarePChainTransactionUrl = (transaction: string) => `${flarePChainExplorer}/tx/${transaction}`
-
-// avalanche validator
-
-export const avalancheExplorer = 'https://subnets.avax.network'
-export const avalancheValidatorUrl = (nodeId: string) => `${avalancheExplorer}/validators/${nodeId}`
-export const avalanchePChainTransactionUrl = (transaction: string) => `${avalancheExplorer}/p-chain/tx/${transaction}`
-export const avalanchePChainAddressUrl = (address: string) => `${avalancheExplorer}/p-chain/address/${address}`
-
+// avalanche validator lockup bounds (seconds)
 export const avalancheDelegatorMinLockup = 1209600
 export const avalancheDelegatorMaxLockup = 31536000
 
-export const avalancheChainId = '0xa86a'
-export const avalancheChainUrl = 'https://avalanche-c-chain-rpc.publicnode.com'
+// style
+export const PAGE_COLOR_CODE = 'white'
 
-export const avalancheWalletConfig = {
-  chainName: 'Avalanche (C chain)',
-  chainId: avalancheChainId,
-  nativeCurrency: {
-    name: AVAX_SYMBOL,
-    decimals: AVAX_DECIMALS,
-    symbol: AVAX_SYMBOL
-  },
-  rpcUrls: [avalancheChainUrl]
+
+// ---- Per-chain identity re-exports ----
+//
+// The canonical definitions live in src/config/chains.ts (CHAIN_CONFIG).
+// These named aliases are kept so existing call sites can keep importing
+// e.g. `FLR_SYMBOL` / `flareWalletConfig` from "~/constants" unchanged.
+
+const flare = CHAIN_CONFIG[Chain.FLARE]
+const songbird = CHAIN_CONFIG[Chain.SONGBIRD]
+const avalanche = CHAIN_CONFIG[Chain.AVALANCHE]
+
+export const CHAIN_NAME: Record<number, string> = {
+  [Chain.FLARE]: flare.name,
+  [Chain.SONGBIRD]: songbird.name,
+  [Chain.AVALANCHE]: avalanche.name,
 }
 
-// style
+export const CHAIN_SYMBOL: Record<number, string> = {
+  [Chain.FLARE]: flare.symbol,
+  [Chain.SONGBIRD]: songbird.symbol,
+  [Chain.AVALANCHE]: avalanche.symbol,
+}
 
-export const PAGE_COLOR_CODE = 'white'
-export const FLARE_COLOR_CODE = '#E62058'
-export const AVALANCHE_COLOR_CODE = '#FF394A'
-export const SONGBIRD_COLOR_CODE = '#253c4d'
+// tokens
+export const FLR_DECIMALS = flare.decimals
+export const FLR_SYMBOL = flare.symbol
+export const WFLR_SYMBOL = flare.wrappedSymbol!
+export const SGB_DECIMALS = songbird.decimals
+export const SGB_SYMBOL = songbird.symbol
+export const WSGB_SYMBOL = songbird.wrappedSymbol!
+export const AVAX_DECIMALS = avalanche.decimals
+export const AVAX_SYMBOL = avalanche.symbol
+
+// chain ids + wallet-add configs
+export const flareChainId = flare.chainIdHex
+export const flareWalletConfig = flare.walletConfig
+export const songbirdChainId = songbird.chainIdHex
+export const songbirdWalletConfig = songbird.walletConfig
+export const avalancheChainId = avalanche.chainIdHex
+export const avalancheWalletConfig = avalanche.walletConfig
+
+// epoch configs
+export const flareEpochConfig = flare.epoch!
+export const songbirdEpochConfig = songbird.epoch!
+
+// explorer URL builders
+export const flareEvmAddressUrl = flare.explorers.evmAddress!
+export const flareEvmTransactionUrl = flare.explorers.evmTx!
+export const flareFspAddressUrl = flare.explorers.fspAddress!
+export const flareValidatorUrl = flare.explorers.validator!
+export const flarePChainAddressUrl = flare.explorers.pChainAddress!
+export const flarePChainTransactionUrl = flare.explorers.pChainTx!
+export const songbirdEvmAddressUrl = songbird.explorers.evmAddress!
+export const songbirdEvmTransactionUrl = songbird.explorers.evmTx!
+export const songbirdFspAddressUrl = songbird.explorers.fspAddress!
+export const avalancheValidatorUrl = avalanche.explorers.validator!
+export const avalanchePChainTransactionUrl = avalanche.explorers.pChainTx!
+export const avalanchePChainAddressUrl = avalanche.explorers.pChainAddress!
+
+// brand colours
+export const FLARE_COLOR_CODE = flare.color
+export const SONGBIRD_COLOR_CODE = songbird.color
+export const AVALANCHE_COLOR_CODE = avalanche.color
 
 // videos
+export const FLARE_FSP_VIDEO_ID = flare.video!.fsp!
+export const SONGBIRD_FSP_VIDEO_ID = songbird.video!.fsp!
+export const FLARE_VALIDATOR_VIDEO_ID = flare.video!.validator!
+export const AVALANCHE_VALIDATOR_VIDEO_ID = avalanche.video!.validator!
 
-export const FLARE_FSP_VIDEO_ID = '3_APLXFycOU'
-export const SONGBIRD_FSP_VIDEO_ID = '3_APLXFycOU'
-export const FLARE_VALIDATOR_VIDEO_ID = 'JkYJ5wUi4Vc'
-export const AVALANCHE_VALIDATOR_VIDEO_ID = 'wRPxDEMgDdM'
-
-// hrps
-
+// bech32 human-readable parts
 export const HRP = {
-  avalanche: "avax",
-  songbird: "songbird",
-  flare: "flare",
+  avalanche: avalanche.hrp,
+  songbird: songbird.hrp,
+  flare: flare.hrp,
 }

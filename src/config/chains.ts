@@ -1,5 +1,4 @@
 import { Chain } from "~/enums"
-import * as C from "~/constants"
 
 import flareBg from "~/assets/images/protocols/flare/symbol.svg?url"
 import songbirdBg from "~/assets/images/protocols/songbird/symbol.svg?url"
@@ -11,15 +10,13 @@ import avalancheLogo from "~/assets/images/tokens/AVAX.svg"
 
 // Single source of truth for per-chain identity. Every per-chain lookup —
 // name/symbol, hex chain id, wallet-add config, explorer URLs, background
-// art, FTSO epoch config — is derived from this record instead of the
-// hand-written if/else hubs that used to live across constants.ts,
-// translations.ts, layout/root.tsx and recentActivity.tsx.
+// art, FTSO epoch config — is derived from this record. constants.ts
+// re-exports the individual values (FLR_SYMBOL, flareWalletConfig, …) from
+// here for backward compatibility, so this module is the one place a new
+// chain's identity is defined.
 //
-// The primitive values (URL builders, wallet configs, colours, epoch
-// configs) still live in constants.ts; this module composes them, so there
-// is no literal duplication and nothing to drift. Optional fields encode
-// protocol availability in the type system: Avalanche is validator-only, so
-// it has no FSP explorer / wrappedSymbol / epoch.
+// Optional fields encode protocol availability in the type system: Avalanche
+// is validator-only, so it has no FSP explorer / wrappedSymbol / epoch.
 
 export interface AddEthereumChainParams {
   chainName: string
@@ -61,70 +58,94 @@ export interface ChainConfig {
   video?: { fsp?: string; validator?: string }
 }
 
+// Explorer bases — internal to this module (only used to build the URL
+// helpers below; nothing imports them directly).
+const flareEvmExplorer = 'https://flare-explorer.flare.network'
+const flareFspExplorer = 'https://flare-systems-explorer.flare.network'
+const flarePChainExplorer = 'https://flare.space/dapp/p-chain-explorer'
+const songbirdEvmExplorer = 'https://songbird-explorer.flare.network'
+const songbirdFspExplorer = 'https://songbird-systems-explorer.flare.network'
+const avalancheExplorer = 'https://subnets.avax.network'
+
 export const CHAIN_CONFIG: Record<Chain, ChainConfig> = {
   [Chain.FLARE]: {
     id: Chain.FLARE,
     slug: "flare",
-    name: C.CHAIN_NAME[Chain.FLARE],
-    symbol: C.FLR_SYMBOL,
-    wrappedSymbol: C.WFLR_SYMBOL,
-    decimals: C.FLR_DECIMALS,
-    color: C.FLARE_COLOR_CODE,
-    hrp: C.HRP.flare,
-    chainIdHex: C.flareChainId,
-    walletConfig: C.flareWalletConfig,
+    name: "Flare",
+    symbol: "FLR",
+    wrappedSymbol: "WFLR",
+    decimals: 18,
+    color: "#E62058",
+    hrp: "flare",
+    chainIdHex: "0xe",
+    walletConfig: {
+      chainName: "Flare Network",
+      chainId: "0xe",
+      nativeCurrency: { name: "FLR", decimals: 18, symbol: "FLR" },
+      rpcUrls: ["https://flare-api.flare.network/ext/C/rpc"],
+    },
     background: { image: flareBg, className: "bg-flare" },
     logo: flareLogo,
     explorers: {
-      evmAddress: C.flareEvmAddressUrl,
-      evmTx: C.flareEvmTransactionUrl,
-      fspAddress: C.flareFspAddressUrl,
-      pChainAddress: C.flarePChainAddressUrl,
-      pChainTx: C.flarePChainTransactionUrl,
-      validator: C.flareValidatorUrl,
+      evmAddress: a => `${flareEvmExplorer}/address/${a}`,
+      evmTx: h => `${flareEvmExplorer}/tx/${h}`,
+      fspAddress: a => `${flareFspExplorer}/providers/fsp/${a}`,
+      pChainAddress: a => `${flarePChainExplorer}/address/${a}`,
+      pChainTx: h => `${flarePChainExplorer}/tx/${h}`,
+      validator: nodeId => `${flarePChainExplorer}/validator/${nodeId}`,
     },
-    epoch: C.flareEpochConfig,
-    video: { fsp: C.FLARE_FSP_VIDEO_ID, validator: C.FLARE_VALIDATOR_VIDEO_ID },
+    epoch: { roundDurationMs: 90_000, firstRoundTimestampMs: 1658430000_000, rewardEpochDurationRounds: 3360 },
+    video: { fsp: "3_APLXFycOU", validator: "JkYJ5wUi4Vc" },
   },
   [Chain.SONGBIRD]: {
     id: Chain.SONGBIRD,
     slug: "songbird",
-    name: C.CHAIN_NAME[Chain.SONGBIRD],
-    symbol: C.SGB_SYMBOL,
-    wrappedSymbol: C.WSGB_SYMBOL,
-    decimals: C.SGB_DECIMALS,
-    color: C.SONGBIRD_COLOR_CODE,
-    hrp: C.HRP.songbird,
-    chainIdHex: C.songbirdChainId,
-    walletConfig: C.songbirdWalletConfig,
+    name: "Songbird",
+    symbol: "SGB",
+    wrappedSymbol: "WSGB",
+    decimals: 18,
+    color: "#253c4d",
+    hrp: "songbird",
+    chainIdHex: "0x13",
+    walletConfig: {
+      chainName: "Songbird Canary Network",
+      chainId: "0x13",
+      nativeCurrency: { name: "SGB", decimals: 18, symbol: "SGB" },
+      rpcUrls: ["https://songbird-api.flare.network/ext/C/rpc"],
+    },
     background: { image: songbirdBg, className: "bg-songbird" },
     logo: songbirdLogo,
     explorers: {
-      evmAddress: C.songbirdEvmAddressUrl,
-      evmTx: C.songbirdEvmTransactionUrl,
-      fspAddress: C.songbirdFspAddressUrl,
+      evmAddress: a => `${songbirdEvmExplorer}/address/${a}`,
+      evmTx: h => `${songbirdEvmExplorer}/tx/${h}`,
+      fspAddress: a => `${songbirdFspExplorer}/providers/fsp/${a}`,
     },
-    epoch: C.songbirdEpochConfig,
-    video: { fsp: C.SONGBIRD_FSP_VIDEO_ID },
+    epoch: { roundDurationMs: 90_000, firstRoundTimestampMs: 1658429955_000, rewardEpochDurationRounds: 3360 },
+    video: { fsp: "3_APLXFycOU" },
   },
   [Chain.AVALANCHE]: {
     id: Chain.AVALANCHE,
     slug: "avalanche",
-    name: C.CHAIN_NAME[Chain.AVALANCHE],
-    symbol: C.AVAX_SYMBOL,
-    decimals: C.AVAX_DECIMALS,
-    color: C.AVALANCHE_COLOR_CODE,
-    hrp: C.HRP.avalanche,
-    chainIdHex: C.avalancheChainId,
-    walletConfig: C.avalancheWalletConfig,
+    name: "Avalanche",
+    symbol: "AVAX",
+    decimals: 18,
+    color: "#FF394A",
+    hrp: "avax",
+    chainIdHex: "0xa86a",
+    walletConfig: {
+      chainName: "Avalanche (C chain)",
+      chainId: "0xa86a",
+      nativeCurrency: { name: "AVAX", decimals: 18, symbol: "AVAX" },
+      rpcUrls: ["https://avalanche-c-chain-rpc.publicnode.com"],
+    },
     background: { image: avalancheBg, className: "bg-avalanche" },
     logo: avalancheLogo,
     explorers: {
-      pChainAddress: C.avalanchePChainAddressUrl,
-      pChainTx: C.avalanchePChainTransactionUrl,
-      validator: C.avalancheValidatorUrl,
+      pChainAddress: a => `${avalancheExplorer}/p-chain/address/${a}`,
+      pChainTx: h => `${avalancheExplorer}/p-chain/tx/${h}`,
+      validator: nodeId => `${avalancheExplorer}/validators/${nodeId}`,
     },
-    video: { validator: C.AVALANCHE_VALIDATOR_VIDEO_ID },
+    video: { validator: "wRPxDEMgDdM" },
   },
 }
 
