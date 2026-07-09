@@ -25,6 +25,11 @@
     --border-faint: rgba(255, 255, 255, 0.06);     /* fainter divider */
     --surface-hover: rgba(255, 255, 255, 0.04);    /* hover fill */
     --surface-raised: rgba(255, 255, 255, 0.02);   /* faint raised fill */
+    --surface-menu: #1F1F1F;                       /* header dropdown / drawer panel */
+
+    /* Status colours (values unchanged from the duplicated literals). */
+    --danger: #ff3e55;
+    --success: #7fb88f;
 
     /* Spacing scale (10px grid; mirrors $space-* in _tokens.scss) */
     --space-0: 0;

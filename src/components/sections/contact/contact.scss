@@ -130,7 +130,7 @@
 .has-error .help-block.with-errors {
     margin-top: 6px;
     font-size: t.$text-xs;
-    color: #ff3e55;
+    color: var(--danger);
 }
 
 #msgSubmit.h4 {

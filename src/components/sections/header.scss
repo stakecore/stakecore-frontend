@@ -132,7 +132,7 @@
         display: block;
         padding: 16px 0;
         overflow-x: hidden;
-        background: #1F1F1F;
+        background: var(--surface-menu);
         max-height: calc(100vh - 100px);
     }
 
@@ -420,7 +420,7 @@
             left: 0;
             min-width: 220px;
             padding: 4px 0;
-            background: #1F1F1F;
+            background: var(--surface-menu);
             border: 1px solid var(--border-subtle);
             z-index: 10;
         }

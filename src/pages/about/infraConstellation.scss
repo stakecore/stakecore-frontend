@@ -85,10 +85,10 @@
 // distinct from the chain-coloured workloads orbiting around it.
 
 .infra-server {
-    fill: #7fb88f;
+    fill: var(--success);
 }
 
 .infra-server-halo {
-    fill: #7fb88f;
+    fill: var(--success);
     opacity: 0.18;
 }
