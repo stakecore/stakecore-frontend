@@ -1,3 +1,7 @@
+// Wallet picker modal styles, co-located with picker.tsx (moved out of the
+// global assets/css/wallet.css). All values resolve from the global :root
+// custom properties, so no @use is needed.
+
 .wallet-container {
   position: fixed;
   z-index: 1001;

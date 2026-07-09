@@ -7,6 +7,7 @@ import { useShallow } from 'zustand/react/shallow'
 import { requestAccounts, switchNetworkIfNecessary } from './eip1193'
 import { changeOpacity } from '../../utils/dom'
 import { useExternalStore } from './discover'
+import './picker.scss'
 
 
 const FOCUSABLE_SELECTOR =
