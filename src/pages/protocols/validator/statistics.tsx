@@ -1,11 +1,11 @@
 import { useCallback } from "react"
 import EpochProgress from "~/components/ui/epochProgress"
-import MeterBar from "../../../../components/ui/meterBar"
-import ValidatorStatsStrip from "../../validatorStatsStrip"
-import type { IGraphics } from "../types"
+import MeterBar from "~/components/ui/meterBar"
+import ValidatorStatsStrip from "../validatorStatsStrip"
+import type { IGraphics } from "./types"
 
 
-const FlareValidatorStatisticsComponent = ({ config }: { config: IGraphics }) => {
+const ValidatorStatistics = ({ config }: { config: IGraphics }) => {
   const { startTimeMs, endTimeMs } = config.countdown
 
   const validatorPeriod = useCallback((_now: number) => ({
@@ -36,4 +36,4 @@ const FlareValidatorStatisticsComponent = ({ config }: { config: IGraphics }) =>
   )
 }
 
-export default FlareValidatorStatisticsComponent
+export default ValidatorStatistics

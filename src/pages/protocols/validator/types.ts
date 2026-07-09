@@ -1,7 +1,9 @@
 import type { ISummary, ISpecs } from "../types"
 import type { PChainValidatorInfoDto } from "~/backendApi"
 
-export type AvalancheData = {
+// Shared shape for a single validator's page data, used by both the Flare
+// and Avalanche validator routes.
+export type ValidatorData = {
   base: PChainValidatorInfoDto
   summary: ISummary
   specs: ISpecs
