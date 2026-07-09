@@ -1,17 +1,12 @@
 import { Chain } from "~/enums"
+import { CHAIN_CONFIG } from "~/config/chains"
 
+// Epoch parameters for the FTSO chains (Flare + Songbird), sourced from the
+// shared chain config so the timestamps live in exactly one place.
 export const FTSO_CHAIN_CONFIG = {
-  [Chain.SONGBIRD]: {
-    roundDurationMs: 90_000,
-    firstRoundTimestampMs: 1658429955_000,
-    rewardEpochDurationRounds: 3360
-  },
-  [Chain.FLARE]: {
-    roundDurationMs: 90_000,
-    firstRoundTimestampMs: 1658430000_000,
-    rewardEpochDurationRounds: 3360
-  }
-} as const
+  [Chain.SONGBIRD]: CHAIN_CONFIG[Chain.SONGBIRD].epoch!,
+  [Chain.FLARE]: CHAIN_CONFIG[Chain.FLARE].epoch!,
+}
 
 export namespace FspEpoch {
 
