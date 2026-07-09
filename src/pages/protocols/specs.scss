@@ -1,3 +1,6 @@
+// Specs table styles, co-located with info.tsx (moved out of the global
+// assets/css/specs.css). Consumed by InfoComponent + SpecsTooltip, both
+// protocol-page only, so these no longer load on non-protocol routes.
 
 .specs-container {
   display: flex;
