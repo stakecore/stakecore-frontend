@@ -2,7 +2,7 @@ import { lazy, Suspense } from 'react'
 import useSWR from 'swr'
 import { SpinnerCircular } from 'spinners-react'
 import { HashLink } from '~/components/ui/links'
-import ServerError from '~/components/ui/serverError'
+import QueryState from '~/components/ui/queryState'
 import ProjectTitle from "../title"
 import InfoComponent from "../info"
 import FspDataLayer from "./data"
@@ -23,37 +23,30 @@ const CHAIN = 'flare'
 export const FlareFspPage = () => {
   const { data, error, isLoading } = useSWR('flr-fsp-page', (_) => FspDataLayer.getPageData(CHAIN))
 
-  let component = null
-  if (isLoading) {
-    component = <>
-      <div style={{ textAlign: 'center' }} className="mt-30 mb-30" >
-        <SpinnerCircular color={FLARE_COLOR_CODE} size={100} />
-      </div>
-    </>
-  } else if (data == null) {
-    component = <ServerError error={error} />
-  } else {
-    const delegator = <HashLink url={flareEvmAddressUrl(data.info.delegationAddress)} address={data.info.delegationAddress} />
-    component = <>
-      <InfoComponent specs={FspDataLayer.extractSpecs(CHAIN, data.info)} summary={FspDataLayer.extractSummary(CHAIN, data.info, data.statistics)} />
-      <FlareFspLocalDelegateComponent />
-      <FlareFspOfficialDelegateComponent validatorLink={delegator} />
-      <Suspense fallback={
-        <div style={{ textAlign: 'center' }} className="mt-50 mb-30">
-          <SpinnerCircular color={FLARE_COLOR_CODE} size={45} />
-        </div>
-      }>
-        <FspStatsComponent stats={data.statistics} chain={Chain.FLARE} />
-      </Suspense>
-    </>
-  }
-
   return (
     <div className="single-project-page-design">
       <ProjectTitle title='Flare Systems Protocol' suptitle='Secure Flare Network Oracle Data' />
       <div className="container pt-30">
         <ProjectDescription />
-        {component}
+        <QueryState
+          isLoading={isLoading} error={error} data={data}
+          spinnerColor={FLARE_COLOR_CODE}
+          emptyTitle='Provider data unavailable'
+          emptyDescription="We couldn't load the FSP provider details right now. Please check back soon."
+        >
+          {data => <>
+            <InfoComponent specs={FspDataLayer.extractSpecs(CHAIN, data.info)} summary={FspDataLayer.extractSummary(CHAIN, data.info, data.statistics)} />
+            <FlareFspLocalDelegateComponent />
+            <FlareFspOfficialDelegateComponent validatorLink={<HashLink url={flareEvmAddressUrl(data.info.delegationAddress)} address={data.info.delegationAddress} />} />
+            <Suspense fallback={
+              <div style={{ textAlign: 'center' }} className="mt-50 mb-30">
+                <SpinnerCircular color={FLARE_COLOR_CODE} size={45} />
+              </div>
+            }>
+              <FspStatsComponent stats={data.statistics} chain={Chain.FLARE} />
+            </Suspense>
+          </>}
+        </QueryState>
       </div>
     </div>
   )
