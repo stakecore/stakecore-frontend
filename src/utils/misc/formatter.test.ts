@@ -39,6 +39,27 @@ describe('Formatter.number', () => {
     // the visible precision), so the "<0.01" rail kicks in.
     expect(Formatter.number(1e-9)).toBe('<0.01')
   })
+
+  it('does not throw on values >= 1e21 (exponential toFixed edge)', () => {
+    // Regression: Number(1e21).toFixed(9) stays "1e+21", which BigInt() can't
+    // parse. These are absurd but reachable via aggregate stats.
+    expect(() => Formatter.number(1e21)).not.toThrow()
+    expect(() => Formatter.number(1.5e21)).not.toThrow()
+    expect(Formatter.number(1e21)).toMatch(/^\d/)
+  })
+})
+
+describe('Formatter.address', () => {
+  it('checksums a valid lowercase address', () => {
+    const out = Formatter.address('0x' + 'a'.repeat(40))
+    expect(out).toContain('...')
+  })
+
+  it('does not throw on an address with an invalid EIP-55 checksum', () => {
+    // Mixed-case that fails the checksum would make getAddress throw.
+    const bad = '0xAbCdEf0123456789AbCdEf0123456789AbCdEf01'
+    expect(() => Formatter.address(bad)).not.toThrow()
+  })
 })
 
 describe('Formatter.usd', () => {

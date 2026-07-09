@@ -33,7 +33,11 @@ export namespace Formatter {
     let str = value.toString()
 
     if (str.includes('e')) {
-      str = Number(str).toFixed(9)
+      // toFixed expands small magnitudes (1e-9 → "0.000000001"), but bails
+      // back to exponential for |n| >= 1e21 — and BigInt() below can't parse
+      // "1e+21". Those are always integral at that scale, so expand via BigInt.
+      const n = Number(str)
+      str = Math.abs(n) >= 1e21 ? BigInt(n).toString() : n.toFixed(9)
     }
 
     let prefix = ''
@@ -97,7 +101,11 @@ export namespace Formatter {
 
   export function address(adr: string, num = 5): string {
     if (adr.startsWith('0x') && adr.length == 42) {
-      adr = getAddress(adr)
+      // getAddress throws on an invalid EIP-55 checksum; fall back to the raw
+      // address (still truncated below) rather than crashing the render.
+      try {
+        adr = getAddress(adr)
+      } catch { /* keep the raw address */ }
     }
     const start = adr.substring(0, 2 + num)
     const end = adr.substring(adr.length - num)

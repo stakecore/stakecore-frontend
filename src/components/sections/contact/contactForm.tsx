@@ -11,14 +11,17 @@ const ContactForm = () => {
         return fd.email != null && reemail.test(fd.email)
     }
 
-    async function submitForm(e: any) {
+    async function submitForm(e: React.FormEvent<HTMLFormElement>) {
+        // onSubmit (not the button's onClick) so the browser runs the inputs'
+        // native required/minLength/type=email constraints first; this handler
+        // only fires once they pass. preventDefault then stops the page reload.
         e.preventDefault()
         const id = toast.loading('sending message to the server')
 
         let success = false
         let error = 'Failed'
         try {
-            const form = document.getElementById('contactForm') as HTMLFormElement
+            const form = e.currentTarget
             const data = Object.fromEntries(new FormData(form).entries()) as FormDto
             if (!formIsValid(data)) {
                 error = 'Email validation failed'
@@ -51,7 +54,7 @@ const ContactForm = () => {
     return (
         <div className="col-lg-8">
             <div className="contact-form contact-form-area">
-                <form id="contactForm" className="contactForm" name="contactForm">
+                <form id="contactForm" className="contactForm" name="contactForm" onSubmit={submitForm}>
                     <div className="row">
                         <div className="col-md-6">
                             <div className="form-group">
@@ -78,7 +81,7 @@ const ContactForm = () => {
                         </div>
                         <div className="col-md-12">
                             <div className="form-group mb-0">
-                                <button type="submit" className="theme-btn" onClick={submitForm}>
+                                <button type="submit" className="theme-btn">
                                     Send Message <i><RiMailLine size={15} /></i>
                                 </button>
                                 <div id="msgSubmit"></div>

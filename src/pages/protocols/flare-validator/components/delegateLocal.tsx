@@ -75,12 +75,15 @@ const FlareValidatorLocalDelegateComponent = ({ selectedNodeId }: { selectedNode
   const pchain = pubk != null ? publicKeyToPAddress('flare', pubk) : undefined
 
   const { data: resp, isLoading, error } = useSWR(
-    ['flare-p-chain-address', walletAddress, pchain], ([_, cchain, pchain]) => {
-      if (cchain == null || resp?.status == 404 && pchain == null) {
-        throw new Error('not ready')
-      }
-      return FlareValidatorDataAccess.getDelegatorInfo(cchain, pchain)
-    }, { refreshInterval: REFRESH_QUERY_FAST_MS })
+    // Conditional key: don't fetch at all until a wallet is connected.
+    walletAddress ? ['flare-p-chain-address', walletAddress, pchain] : null,
+    ([_, cchain, pchain]) => FlareValidatorDataAccess.getDelegatorInfo(cchain, pchain),
+    // Until we have a P-chain address the response is a stable 404 that drives
+    // the "sign a test message" prompt, so fetch it once without polling. Once
+    // the cookie yields a pchain the key changes and we poll live. (Previously
+    // this threw 'not ready' and read its own stale `resp` to gate fetching,
+    // which spun SWR's error-retry backoff.)
+    { refreshInterval: pchain ? REFRESH_QUERY_FAST_MS : 0 })
 
   async function onRequestSignature() {
     if (walletChoiceVisible || walletAddress == null) return

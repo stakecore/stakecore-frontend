@@ -31,14 +31,9 @@ afterEach(() => {
 // --- CopyPasteButton --------------------------------------------------
 
 describe('CopyPasteButton', () => {
-  // react-router-dom's Link intercepts the synthetic click; userEvent's
-  // simulated chain doesn't reach the onClick prop reliably here. Use
-  // fireEvent.click — it dispatches a synthetic React event that goes
-  // straight through the Link's preventDefault path.
-
   it('writes the supplied text to the clipboard on click', () => {
     renderWithRouter(<CopyPasteButton text="0xdeadbeef" />)
-    const btn = screen.getByRole('link')
+    const btn = screen.getByRole('button')
     fireEvent.click(btn)
     expect(clipboardWriteText).toHaveBeenCalledWith('0xdeadbeef')
   })
@@ -51,7 +46,7 @@ describe('CopyPasteButton', () => {
     vi.useFakeTimers()
     renderWithRouter(<CopyPasteButton text="0xabc" />)
     expect(vi.getTimerCount()).toBe(0)
-    fireEvent.click(screen.getByRole('link'))
+    fireEvent.click(screen.getByRole('button'))
     expect(vi.getTimerCount()).toBe(1)
   })
 })
@@ -83,14 +78,16 @@ describe('HashLink', () => {
     const { rerender } = renderWithRouter(
       <HashLink address={hash} url="https://x.com/" />,
     )
-    // 2 links: the anchor + the CopyPasteButton (which is a <Link>).
-    expect(screen.getAllByRole('link')).toHaveLength(2)
+    // The anchor is the only link; the copy control is a <button>.
+    expect(screen.getAllByRole('link')).toHaveLength(1)
+    expect(screen.getByRole('button')).toBeTruthy()
     rerender(
       <MemoryRouter>
         <HashLink address={hash} url="https://x.com/" copy={false} />
       </MemoryRouter>,
     )
-    // Only the anchor now.
+    // Only the anchor now — no copy button.
     expect(screen.getAllByRole('link')).toHaveLength(1)
+    expect(screen.queryByRole('button')).toBeNull()
   })
 })
