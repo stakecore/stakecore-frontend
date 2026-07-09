@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from "react"
 import { addEip6963Hook } from "./hook"
-import { externalState } from "./discoverStore"
+import { externalState, addWalletProvider } from "./discoverStore"
 
 
 declare global {
@@ -12,8 +12,10 @@ declare global {
 export const useExternalStore = () => useSyncExternalStore(
   (callback: () => void) => {
     async function onAnnouncement(event: EIP6963AnnounceProviderEvent) {
-      if (externalState.walletProviders.map(x => x.info.uuid).includes(event.detail.info.uuid)) return
-      externalState.walletProviders.push(event.detail)
+      // addWalletProvider dedups by uuid and swaps in a fresh snapshot; it
+      // returns false when the wallet was already known, so we skip the
+      // re-render in that case.
+      if (!addWalletProvider(event.detail)) return
       await addEip6963Hook(event.detail)
       callback()
     }

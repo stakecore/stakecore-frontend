@@ -46,7 +46,7 @@ export async function personalSign(
   message: string,
   address: string,
   ethereum: EIP1193Provider
-): Promise<string> {
+): Promise<string | null> {
   try {
     const sig = await ethereum.request({
       method: 'personal_sign',

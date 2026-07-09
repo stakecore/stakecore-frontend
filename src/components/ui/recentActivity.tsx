@@ -95,6 +95,7 @@ const RecentActivity = ({ data, isLoading }: {
     let hovering = false
     let lastTs = performance.now()
     let raf = 0
+    let running = false
 
     const markInteraction = () => { pauseUntil = performance.now() + PAUSE_MS }
     const onPointerEnter = () => { hovering = true }
@@ -122,10 +123,31 @@ const RecentActivity = ({ data, isLoading }: {
       }
       raf = requestAnimationFrame(tick)
     }
-    raf = requestAnimationFrame(tick)
+    const start = () => {
+      if (running) return
+      running = true
+      // Reset the clock so the first frame after (re)entering the viewport
+      // doesn't see a huge dt; the MAX_DT_MS clamp backs this up too.
+      lastTs = performance.now()
+      raf = requestAnimationFrame(tick)
+    }
+    const stop = () => {
+      running = false
+      cancelAnimationFrame(raf)
+    }
+
+    // Only run the loop while the marquee is on-screen — no point doing
+    // per-frame scrollLeft writes + scrollWidth reads when the user has
+    // scrolled it out of view.
+    const io = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) start(); else stop() },
+      { threshold: 0 }
+    )
+    io.observe(el)
 
     return () => {
-      cancelAnimationFrame(raf)
+      stop()
+      io.disconnect()
       el.removeEventListener('pointerenter', onPointerEnter)
       el.removeEventListener('pointerleave', onPointerLeave)
       el.removeEventListener('wheel', markInteraction)

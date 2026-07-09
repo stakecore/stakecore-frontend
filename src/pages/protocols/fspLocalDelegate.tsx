@@ -38,6 +38,14 @@ export type FspLocalDelegateProps = {
   onRefresh: () => void
 }
 
+// Truncate (never round up) to `decimals` places. The Max button must land
+// at or below the balance — rounding e.g. 1.005999 up to "1.01" made the
+// value exceed the balance and fail the very validation Max is meant to pass.
+const truncateTo = (value: number, decimals: number): string => {
+  const factor = 10 ** decimals
+  return (Math.floor(value * factor) / factor).toFixed(decimals)
+}
+
 type ActionKey = 'wrap' | 'delegate' | 'unwrap' | 'claim'
 
 type Phase =
@@ -260,7 +268,7 @@ const FspLocalDelegate = ({
               />
             }
             suffix={symbol}
-            onMax={() => setWrapInput(flrBalance.toFixed(2))}
+            onMax={() => setWrapInput(truncateTo(flrBalance, 2))}
             maxLabel="Max"
             disabled={busy || flrBalance <= 0}
             cta={
@@ -355,7 +363,7 @@ const FspLocalDelegate = ({
               />
             }
             suffix={wrappedSymbol}
-            onMax={() => setUnwrapInput(wflrBalance.toFixed(2))}
+            onMax={() => setUnwrapInput(truncateTo(wflrBalance, 2))}
             maxLabel="Max"
             disabled={busy || wflrBalance <= 0}
             cta={

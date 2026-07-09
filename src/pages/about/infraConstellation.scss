@@ -32,9 +32,15 @@
     // Dashes moving from server end (x1, y1) toward workload (x2, y2)
     // — read as control plane / heartbeat traffic.
     stroke-dasharray: 3 9;
-    animation: infra-flow 2.2s linear infinite;
     opacity: 0;
     transition: opacity 400ms ease-out;
+
+    // Only run the continuous flow animation when the user hasn't asked for
+    // reduced motion — an infinite loop is exactly what vestibular-sensitive
+    // users need paused.
+    @media (prefers-reduced-motion: no-preference) {
+        animation: infra-flow 2.2s linear infinite;
+    }
 }
 
 .infra-line.active {

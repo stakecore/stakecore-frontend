@@ -76,10 +76,19 @@ const RootLayout = () => {
   useEffect(() => {
     setChain(chainId)
     if (wallet == null) return
-    (async () => {
+    // Guard against overlapping switches (rapid route changes each fire one):
+    // if a newer switch supersedes this one, drop the stale result instead of
+    // letting the last-to-resolve win.
+    let active = true
+    ;(async () => {
       const address = await onInternalChainSwitch(chainId, wallet)
-      setWallet(address, wallet)
+      if (!active) return
+      // When the switch is rejected or no account is available, clear the
+      // provider alongside the address — otherwise the header shows the
+      // wallet icon next to "Connect Wallet", a half-connected state.
+      setWallet(address, address == null ? null : wallet)
     })()
+    return () => { active = false }
     // setChain / setWallet are stable Zustand setters; intentionally
     // omitted from deps.
     // eslint-disable-next-line react-hooks/exhaustive-deps
