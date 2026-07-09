@@ -1,4 +1,5 @@
 import React from "react"
+import "./movieClip.scss"
 
 type MovieClipProps = {
   videoId: string;

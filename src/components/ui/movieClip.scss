@@ -1,0 +1,14 @@
+// YouTube embed styles, co-located with movieClip.tsx (moved out of the
+// global assets/css/custom.css).
+
+.video-container {
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  margin-top: 15px;
+}
+
+.video-container > iframe {
+  max-width: 100%;
+  aspect-ratio: 16 / 9;
+}

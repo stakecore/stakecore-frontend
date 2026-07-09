@@ -197,3 +197,15 @@
     font-weight: t.$weight-medium;
     color: var(--heading-color);
 }
+
+// Notification callout (note / warning / danger), used by the validator
+// delegate + description sections. Moved out of the global custom.css.
+.notification-block {
+    border-left: 4px solid #999;
+    padding: 0.5rem 1rem;
+    background: rgba(0, 0, 0, .5);
+}
+
+.notification-block.note { border-color: lime; }
+.notification-block.warning { border-color: orange; }
+.notification-block.danger { border-color: red; }

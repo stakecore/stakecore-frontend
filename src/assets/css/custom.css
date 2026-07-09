@@ -16,20 +16,6 @@
   transition: opacity 200ms ease-out;
 }
 
-/* VIDEO EMBED */
-
-.video-container {
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-  margin-top: 15px;
-}
-
-.video-container > iframe {
-  max-width: 100%;
-  aspect-ratio: 16 / 9;
-}
-
 /* CHAIN BACKGROUND ICON (root layout)
  *
  * The chain logo (FLR/SGB/AVAX) renders in a child .background-image
@@ -81,15 +67,3 @@
 @media only screen and (max-width: 991.98px) {
   .background-image { display: none; }
 }
-
-/* NOTIFICATION BLOCK */
-
-.notification-block {
-  border-left: 4px solid #999;
-  padding: 0.5rem 1rem;
-  background: rgba(0, 0, 0, .5);
-}
-
-.notification-block.note { border-color: lime; }
-.notification-block.warning { border-color: orange; }
-.notification-block.danger { border-color: red; }
