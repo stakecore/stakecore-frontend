@@ -13,7 +13,10 @@
 .call-to-action-part {
     padding: 32px;
     border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(255, 255, 255, 0.02);
+    // Solid card fill (matches the sibling proposal cards and the protocol
+    // tiles) so the section reads as a card instead of letting the page
+    // background / watermark bleed through the old 2%-white fill.
+    background: var(--body-background);
 
     h2 {
         font-family: t.$font-display;
