@@ -18,6 +18,14 @@
     --heading-color: #fff;
     --body-background: #000;
 
+    /* Surface + border system — the white-on-black overlays that make up the
+       card look. Centralised so the dominant shades live in one place (values
+       unchanged from the literals they replaced). */
+    --border-subtle: rgba(255, 255, 255, 0.08);   /* card / hairline border */
+    --border-faint: rgba(255, 255, 255, 0.06);     /* fainter divider */
+    --surface-hover: rgba(255, 255, 255, 0.04);    /* hover fill */
+    --surface-raised: rgba(255, 255, 255, 0.02);   /* faint raised fill */
+
     /* Spacing scale (10px grid; mirrors $space-* in _tokens.scss) */
     --space-0: 0;
     --space-1: 5px;
@@ -255,7 +263,7 @@ label {
 
 .theme-btn:hover {
     color: var(--heading-color);
-    background: rgba(255, 255, 255, 0.04);
+    background: var(--surface-hover);
     border-color: rgba(255, 255, 255, 0.4);
     text-decoration: none;
 }
@@ -265,7 +273,7 @@ label {
 }
 
 .theme-btn:active {
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--surface-raised);
 }
 
 .theme-btn i {

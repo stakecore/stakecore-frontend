@@ -75,7 +75,7 @@
 .protocols-tile {
     display: flex;
     flex-direction: column;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-subtle);
     overflow: hidden;
     transition: border-color 150ms ease-out;
 
@@ -92,7 +92,7 @@
 .protocols-tile-image {
     aspect-ratio: 16 / 10;
     overflow: hidden;
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--surface-raised);
 
     img {
         width: 100%;

@@ -30,7 +30,7 @@
     gap: 8px;
     padding: 16px;
     background: var(--body-background);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-subtle);
     cursor: pointer;
     text-align: left;
     transition: border-color 150ms ease-out, background-color 150ms ease-out;
@@ -78,7 +78,7 @@
 // --- Selected action panel ---
 
 .fsp-action-panel {
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-subtle);
     background: var(--body-background);
 }
 
@@ -204,7 +204,7 @@
 
     &:hover:not(:disabled) {
         color: var(--heading-color);
-        background: rgba(255, 255, 255, 0.04);
+        background: var(--surface-hover);
     }
     &:disabled {
         opacity: 0.5;

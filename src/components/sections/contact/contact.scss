@@ -37,8 +37,8 @@
 
 .contact-content-part {
     padding: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-subtle);
+    background: var(--surface-raised);
 }
 
 .contact-icon {
@@ -84,8 +84,8 @@
 .contact-form-area {
     padding: 24px;
     margin-top: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-subtle);
+    background: var(--surface-raised);
 
     .form-group {
         margin-bottom: 20px;
@@ -103,14 +103,14 @@
             line-height: 1.4;
             padding: 12px 14px;
             background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-subtle);
             transition: border-color 150ms ease-out, background-color 150ms ease-out;
 
             &::placeholder { color: var(--heading-color); }
 
             &:focus {
                 box-shadow: none;
-                background: rgba(255, 255, 255, 0.04);
+                background: var(--surface-hover);
                 border-color: rgba(255, 255, 255, 0.25);
             }
         }

@@ -65,7 +65,7 @@
 
 .fixed-header .header-inner {
     padding: 10px 0;
-    border-bottom-color: rgba(255, 255, 255, 0.08);
+    border-bottom-color: var(--border-subtle);
 }
 
 .nav-outer {
@@ -100,7 +100,7 @@
 
         &:hover {
             color: var(--heading-color);
-            background-color: rgba(255, 255, 255, 0.04);
+            background-color: var(--surface-hover);
         }
     }
 }
@@ -139,7 +139,7 @@
     .navbar-collapse li {
         display: block;
         padding: 0 16px;
-        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        border-top: 1px solid var(--border-faint);
     }
 
     .navbar-collapse li:first-child { border-top: none; }
@@ -188,7 +188,7 @@
 
             &:hover {
                 color: var(--heading-color);
-                background-color: rgba(255, 255, 255, 0.04);
+                background-color: var(--surface-hover);
             }
         }
     }
@@ -394,7 +394,7 @@
     .submenu-list li {
         display: block;
         padding: 0;
-        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        border-top: 1px solid var(--border-faint);
     }
 
     .submenu-list li a {
@@ -421,7 +421,7 @@
             min-width: 220px;
             padding: 4px 0;
             background: #1F1F1F;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-subtle);
             z-index: 10;
         }
 

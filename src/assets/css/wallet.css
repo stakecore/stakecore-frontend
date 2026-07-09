@@ -45,8 +45,8 @@
   font-size: var(--text-sm);
   font-weight: var(--weight-medium);
   color: var(--heading-color);
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--surface-raised);
+  border: 1px solid var(--border-subtle);
   cursor: pointer;
   transition: border-color 150ms ease-out, background-color 150ms ease-out;
 }
@@ -58,7 +58,7 @@
 }
 
 .wallet .provider button:hover {
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--surface-hover);
   border-color: rgba(255, 255, 255, 0.25);
 }
 
