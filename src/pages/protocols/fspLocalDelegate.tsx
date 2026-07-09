@@ -3,10 +3,10 @@ import { toast } from 'react-toastify'
 import { SpinnerCircular } from 'spinners-react'
 import type { FspDelegatorInfoDto } from '~/backendApi'
 import { Formatter } from '~/utils/misc/formatter'
-import { actionStatusMessage } from '~/pages/protocols/utils'
+import { actionStatusMessage } from '~/features/wallet/contract'
 import { MAX_BIPS, PAGE_COLOR_CODE } from '~/constants'
 import { StatusCode } from '~/enums'
-import type { ContractCallResult } from '~/pages/protocols/utils'
+import type { ContractCallResult } from '~/features/wallet/contract'
 import './fspLocalDelegate.scss'
 
 

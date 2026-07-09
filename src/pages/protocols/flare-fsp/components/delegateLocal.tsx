@@ -3,7 +3,7 @@ import { SpinnerCircular } from 'spinners-react'
 import { useGlobalStore } from "~/features/wallet/store"
 import ServerError from "~/components/ui/serverError"
 import FspLocalDelegate from "~/pages/protocols/fspLocalDelegate"
-import { contractCallAdapter } from "../../utils"
+import { contractCallAdapter } from "~/features/wallet/contract"
 import FspDataLayer from "../data"
 import { expbigint } from "~/utils/misc/bigint"
 import * as C from "~/constants"
