@@ -12,6 +12,10 @@
 
 .call-to-action-part {
     padding: 32px;
+    // Centered to match the Proposal ("Earn Yield") that replaces this card
+    // once a wallet with a balance is connected — otherwise the heading jumps
+    // from left-aligned to centered as the state changes.
+    text-align: center;
     border: 1px solid var(--border-subtle);
     // Solid card fill (matches the sibling proposal cards and the protocol
     // tiles) so the section reads as a card instead of letting the page
@@ -33,7 +37,9 @@
         font-size: t.$text-base;
         line-height: 1.5;
         color: var(--main-color);
-        margin: 0;
+        // Constrained + auto-margined so the centered text sits in a tidy
+        // column rather than spanning the full card width.
+        margin: 0 auto;
         max-width: 640px;
     }
 }
