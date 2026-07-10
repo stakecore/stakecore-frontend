@@ -1,5 +1,4 @@
 import { Formatter } from "~/utils/misc/formatter"
-import { HashLink } from "~/components/ui/links"
 import { unixnow } from "~/utils/misc/time"
 import { Chain } from "~/enums"
 import { CHAIN_CONFIG } from "~/config/chains"
@@ -47,12 +46,6 @@ export function createValidatorDataAccess(chain: Chain, service: ValidatorServic
   }
 
   function getSpecs(data: PChainValidatorInfoDto): ISpecs {
-    const validatorTransactionUrl = pChainTransactionUrl(data.validatorTransactionHash)
-    const validatorTransactionLink = <HashLink url={validatorTransactionUrl} address={data.validatorTransactionHash} />
-
-    const validatorNodeUrl = validatorUrl(data.validatorNodeId)
-    const validatorNodeIdLink = <HashLink url={validatorNodeUrl} address={data.validatorNodeId} />
-
     // validator duration — the backend returns 0 (epoch) for start/end time
     // once a validator has expired, so guard against rendering a bogus 1970
     // date. The unavailability banner already surfaces the expired state.
@@ -63,11 +56,11 @@ export function createValidatorDataAccess(chain: Chain, service: ValidatorServic
       [
         {
           title: 'Validator Node Id',
-          value: validatorNodeIdLink
+          value: { url: validatorUrl(data.validatorNodeId), hash: data.validatorNodeId }
         },
         {
           title: 'Validator Transaction',
-          value: validatorTransactionLink
+          value: { url: pChainTransactionUrl(data.validatorTransactionHash), hash: data.validatorTransactionHash }
         }
       ],
       [
@@ -121,9 +114,7 @@ export function createValidatorDataAccess(chain: Chain, service: ValidatorServic
   }
 
   function getDelegation(data: PChainValidatorInfoDto): IDelegation {
-    const validatorNodeUrl = validatorUrl(data.validatorNodeId)
-    const validatorLink = <HashLink url={validatorNodeUrl} address={data.validatorNodeId} />
-    return { validatorLink }
+    return { validatorLink: { url: validatorUrl(data.validatorNodeId), hash: data.validatorNodeId } }
   }
 
   return {

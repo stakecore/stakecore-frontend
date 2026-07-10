@@ -5,7 +5,6 @@ import {
   songbirdEvmAddressUrl, songbirdFspAddressUrl,
 } from "~/constants"
 import { Formatter } from "~/utils/misc/formatter"
-import { HashLink } from "~/components/ui/links"
 import type { ISpecs, ISummary } from "../types"
 
 
@@ -44,20 +43,16 @@ namespace FspDataLayer {
     // explorers.
     const evmAddressUrl = chain == 'flare' ? flareEvmAddressUrl : songbirdEvmAddressUrl
     const fspAddressUrl = chain == 'flare' ? flareFspAddressUrl : songbirdFspAddressUrl
-    const delegationAddressUrl = evmAddressUrl(info.delegationAddress)
-    const delegationAddressLink = <HashLink url={delegationAddressUrl} address={info.delegationAddress} />
-    const identityAddressUrl = fspAddressUrl(info.identityAddress)
-    const identityAddressLink = <HashLink url={identityAddressUrl} address={info.identityAddress} />
     return [
       [
         {
           title: 'Delegation Address',
-          value: delegationAddressLink,
+          value: { url: evmAddressUrl(info.delegationAddress), hash: info.delegationAddress },
           tooltip: 'Address to delegate to'
         },
         {
           title: 'Identity Address',
-          value: identityAddressLink,
+          value: { url: fspAddressUrl(info.identityAddress), hash: info.identityAddress },
           tooltip: 'Main FSP address'
         }
       ],

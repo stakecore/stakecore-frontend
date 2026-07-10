@@ -1,4 +1,4 @@
-import type { ISummary, ISpecs } from "../types"
+import type { ISummary, ISpecs, ILink } from "../types"
 import type { PChainValidatorInfoDto } from "~/backendApi"
 
 // Shared shape for a single validator's page data, used by both the Flare
@@ -39,7 +39,7 @@ export type IGraphics = {
 }
 
 export type IDelegation = {
-  validatorLink: any
+  validatorLink: ILink
 }
 
 type IMeterBar = {

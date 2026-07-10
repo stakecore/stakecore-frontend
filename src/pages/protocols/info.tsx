@@ -1,7 +1,8 @@
 import React from "react"
 import SpecsTooltip from "./tooltip"
+import { HashLink } from "~/components/ui/links"
 import { symbolToChain } from "~/utils/misc/translations"
-import type { ISpecs } from "./types"
+import type { ISpecs, ISpecValue } from "./types"
 import './specs.scss'
 
 
@@ -65,12 +66,17 @@ const SpecsTable = ({ config }) => {
   )
 }
 
-const SpecsRow = ({ title, value, tooltip }) => {
-  if (tooltip) title = <span><SpecsTooltip text={tooltip} />{title}</span>
+const SpecsValue = ({ value }: { value: ISpecValue }) =>
+  typeof value === 'string'
+    ? <>{value}</>
+    : <HashLink url={value.url} address={value.hash} />
+
+const SpecsRow = ({ title, value, tooltip }: { title: React.ReactNode, value: ISpecValue, tooltip?: string }) => {
+  const label = tooltip ? <span><SpecsTooltip text={tooltip} />{title}</span> : title
   return (
     <tr className="specs-table-row">
-      <td className="specs-table-data specs-table-data-left">{title}</td>
-      <td className="specs-table-data specs-table-data-right link">{value}</td>
+      <td className="specs-table-data specs-table-data-left">{label}</td>
+      <td className="specs-table-data specs-table-data-right link"><SpecsValue value={value} /></td>
     </tr>
   )
 }

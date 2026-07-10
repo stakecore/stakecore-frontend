@@ -1,7 +1,6 @@
-import { lazy, Suspense, type ComponentType, type ReactNode } from 'react'
+import { lazy, Suspense, type ComponentType } from 'react'
 import useSWR from 'swr'
 import { SpinnerCircular } from 'spinners-react'
-import { HashLink } from '~/components/ui/links'
 import QueryState from '~/components/ui/queryState'
 import { CHAIN_CONFIG } from '~/config/chains'
 import { Chain } from '~/enums'
@@ -10,6 +9,7 @@ import InfoComponent from "../info"
 import FspDataLayer from "./data"
 import FspLocalDelegateComponent from "./delegateLocal"
 import type { FspContractApi } from "./contracts"
+import type { ILink } from "../types"
 import '../protocols.scss'
 
 
@@ -23,7 +23,7 @@ export interface FspPageConfig {
   suptitle: string
   loadContracts: () => Promise<FspContractApi>
   Description: ComponentType
-  OfficialDelegate: ComponentType<{ validatorLink: ReactNode }>
+  OfficialDelegate: ComponentType<{ validatorLink: ILink }>
 }
 
 // Shared FSP page shell. The Flare and Songbird routes differ only in their
@@ -54,9 +54,10 @@ const FspPage = ({ config }: { config: FspPageConfig }) => {
               summary={FspDataLayer.extractSummary(chainCfg.slug, data.info, data.statistics)}
             />
             <FspLocalDelegateComponent config={{ chain: config.chain, loadContracts: config.loadContracts }} />
-            <OfficialDelegate validatorLink={
-              <HashLink url={chainCfg.explorers.evmAddress!(data.info.delegationAddress)} address={data.info.delegationAddress} />
-            } />
+            <OfficialDelegate validatorLink={{
+              url: chainCfg.explorers.evmAddress!(data.info.delegationAddress),
+              hash: data.info.delegationAddress,
+            }} />
             <Suspense fallback={
               <div style={{ textAlign: 'center' }} className="mt-50 mb-30">
                 <SpinnerCircular color={chainCfg.color} size={45} />
