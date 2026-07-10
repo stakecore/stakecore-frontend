@@ -44,7 +44,7 @@ const Hero = () => {
       <HeroRuneCanvas />
       <div className="container">
         <header className="hero-brand">
-          <h1 className="hero-wordmark">Stakecore</h1>
+          <h1 className="hero-wordmark">StakeCore</h1>
           <p className="hero-tagline">
             Validator infrastructure for Flare, Songbird, and Avalanche
           </p>

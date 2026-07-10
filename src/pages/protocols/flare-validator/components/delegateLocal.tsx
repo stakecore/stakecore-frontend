@@ -136,7 +136,7 @@ const FlareValidatorLocalDelegateComponent = ({ selectedNodeId }: { selectedNode
     component = <ServerError error={error} />
   } else {
     // Only count delegations to the currently-selected validator. The
-    // response lists positions across all of Stakecore's validators, each
+    // response lists positions across all of StakeCore's validators, each
     // tagged with its validatorNodeId.
     const delegated = resp.data.delegations
       .filter(d => d.validatorNodeId === selectedNodeId)

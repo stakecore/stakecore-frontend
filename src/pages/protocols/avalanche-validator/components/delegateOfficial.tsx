@@ -7,10 +7,10 @@ const AvalancheValidatorOfficialDelegateComponent = ({ validatorLink }) => {
     <div className="single-project-page-right mt-30">
       <h2>Delegate On The Official Avalanche Site</h2>
       <p>
-        Users can choose to delegate to the Stakecore validator <HashLink url={validatorLink.url} address={validatorLink.hash} />.
+        Users can choose to delegate to the StakeCore validator <HashLink url={validatorLink.url} address={validatorLink.hash} />.
         Note that validators failing to deliver 80% uptime will cause reward losses to its delegators.
         For security reasons we require users to interact with the official Avalanche website when signing transactions,
-        while providing only the necessary information here. Follow the video below to delegate to Stakecore's validator node.
+        while providing only the necessary information here. Follow the video below to delegate to StakeCore's validator node.
       </p>
       <div className="video-container mb-30">
         <MovieClip videoId={AVALANCHE_VALIDATOR_VIDEO_ID} />

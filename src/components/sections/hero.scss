@@ -23,7 +23,7 @@
 // Fixed-grid ASCII display. The wave fills the full viewport (capped at
 // the initial screen height so it doesn't keep growing on long pages);
 // cells inside the rune silhouette render brighter, painting the
-// Stakecore mark as a lighter ASCII shape embedded in the dimmer field.
+// StakeCore mark as a lighter ASCII shape embedded in the dimmer field.
 // Renders at every breakpoint — the RAF loop is gated by
 // IntersectionObserver + page visibility so off-screen / backgrounded
 // instances don't burn cycles on phones.

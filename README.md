@@ -1,10 +1,10 @@
-# Stakecore Frontend
+# StakeCore Frontend
 
-Source for the Stakecore site at https://stakecore.org — the public-facing dashboard for our validator and protocol-signing infrastructure on Flare, Songbird, and Avalanche.
+Source for the StakeCore site at https://stakecore.org — the public-facing dashboard for our validator and protocol-signing infrastructure on Flare, Songbird, and Avalanche.
 
-## What is Stakecore?
+## What is StakeCore?
 
-Stakecore operates validator and FSP/SSP signing infrastructure for the Flare, Avalanche, and Songbird networks. Delegation is non-custodial — to earn APY on your FLR, head to https://portal.flare.network/ and either:
+StakeCore operates validator and FSP/SSP signing infrastructure for the Flare, Avalanche, and Songbird networks. Delegation is non-custodial — to earn APY on your FLR, head to https://portal.flare.network/ and either:
 
 - delegate FSP rewards to `0x1e68DC808A240C096F0261144dc41fd4c883Cfb0`, or
 - stake to our Flare validator node (Node ID surfaced on the [Flare Validator](https://stakecore.org/#/flare/validator) page).

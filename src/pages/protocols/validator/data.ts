@@ -72,7 +72,7 @@ export function createValidatorDataAccess(chain: Chain, service: ValidatorServic
         {
           title: 'Validator Owned Stake',
           value: Formatter.number(data.validatorOwnedStake) + ' ' + asset,
-          tooltip: 'Amount staked by Stakecore'
+          tooltip: 'Amount staked by StakeCore'
         },
         {
           title: 'Validator Start Time',

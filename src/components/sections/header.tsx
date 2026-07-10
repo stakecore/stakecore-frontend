@@ -71,7 +71,7 @@ const Header = () => {
                     <div className="header-inner d-flex align-items-center">
                         <div className="logo-outer">
                             <div className="logo">
-                                <Link to="/" aria-label="Stakecore home">
+                                <Link to="/" aria-label="StakeCore home">
                                     <span className="logo-wordmark">stakecore</span>
                                 </Link>
                             </div>
@@ -80,7 +80,7 @@ const Header = () => {
                             <nav className="main-menu navbar-expand-lg">
                                 <div className="navbar-header">
                                     <div className="mobile-logo">
-                                        <Link to="/" aria-label="Stakecore home">
+                                        <Link to="/" aria-label="StakeCore home">
                                             <span className="logo-wordmark">stakecore</span>
                                         </Link>
                                     </div>

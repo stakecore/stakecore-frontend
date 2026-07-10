@@ -5,7 +5,7 @@ import profile from '../../assets/images/about/profile.svg'
 // GPU implementation of the ASCII-wave hero background. A single
 // full-screen fragment shader picks an ASCII glyph per pixel from a
 // pre-rasterized glyph atlas based on (distance, phase) and tints it
-// white inside the Stakecore rune silhouette / gray outside.
+// white inside the StakeCore rune silhouette / gray outside.
 //
 // Per-frame main-thread work reduces to: update one `u_phase` uniform
 // + drawArrays(6). All shading happens on the GPU in parallel.

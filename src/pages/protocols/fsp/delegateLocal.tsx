@@ -91,7 +91,7 @@ const FspLocalDelegateComponent = ({ config }: { config: FspDelegateConfig }) =>
           walletAddress={walletAddress}
           symbol={chainCfg.symbol}
           wrappedSymbol={chainCfg.wrappedSymbol!}
-          delegationLabel="Stakecore"
+          delegationLabel="StakeCore"
           actions={actions}
           explorerTxUrl={chainCfg.explorers.evmTx!}
           onRefresh={() => mutate(swrKey)}

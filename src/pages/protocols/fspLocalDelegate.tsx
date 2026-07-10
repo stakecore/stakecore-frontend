@@ -30,7 +30,7 @@ export type FspLocalDelegateProps = {
   walletAddress: string
   symbol: string         // FLR / SGB
   wrappedSymbol: string  // WFLR / WSGB
-  delegationLabel: string  // displayed in success toasts, e.g. "Stakecore"
+  delegationLabel: string  // displayed in success toasts, e.g. "StakeCore"
   actions: FspLocalDelegateActions
   // Builds an explorer URL for a given tx hash on the relevant chain.
   // Used in success toasts so users can verify the tx landed on-chain.

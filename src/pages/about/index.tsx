@@ -34,7 +34,7 @@ const Mission = () => (
                     Turn the native tokens on your balance sheet into productive, low-risk yield.
                 </h1>
                 <p className="about-header-body">
-                    Stakecore operates validator and protocol-signing infrastructure for the
+                    StakeCore operates validator and protocol-signing infrastructure for the
                     Flare, Avalanche, and Songbird networks. Protocols, custodians, and
                     treasuries delegate their FLR, AVAX, and SGB to us — earning rewards
                     with a risk profile close to that of simply holding the asset.
@@ -134,7 +134,7 @@ const ValueProps = () => (
     <section className="about-section">
         <div className="container">
             <header className="about-section-header">
-                <p className="about-section-header-sup">Why Stakecore</p>
+                <p className="about-section-header-sup">Why StakeCore</p>
                 <h2 className="about-section-header-main">Yield, without the asterisks</h2>
             </header>
             <div className="about-grid about-grid--two">

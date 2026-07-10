@@ -1,7 +1,7 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/docker-existing-dockerfile
 {
-	"name": "Stakecore Frontend Devcontainer",
+	"name": "StakeCore Frontend Devcontainer",
     "image": "mcr.microsoft.com/devcontainers/typescript-node:20",
     // The base image ships pnpm via npm-global, which shadows Corepack and pins
     // a version unrelated to this repo. Remove it and hand pnpm to Corepack so
