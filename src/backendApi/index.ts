@@ -39,8 +39,10 @@ export type { PageUserInfoDto } from './models/PageUserInfoDto';
 export type { PChainValidatorInfoDto } from './models/PChainValidatorInfoDto';
 export type { PriceDto } from './models/PriceDto';
 export { ProjectDelegationDto } from './models/ProjectDelegationDto';
+export type { ValidatorEpochApyDto } from './models/ValidatorEpochApyDto';
 
 export { AvalancheValidatorService } from './services/AvalancheValidatorService';
+export { DebugService } from './services/DebugService';
 export { FlareValidatorService } from './services/FlareValidatorService';
 export { FspService } from './services/FspService';
 export { HealthService } from './services/HealthService';

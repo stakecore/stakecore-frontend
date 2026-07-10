@@ -2,6 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { ValidatorEpochApyDto } from './ValidatorEpochApyDto';
 export type PChainValidatorInfoDto = {
     validatorNodeId: string;
     validatorTransactionHash: string;
@@ -9,7 +10,14 @@ export type PChainValidatorInfoDto = {
      * True for the chain's default/highlighted validator. Exactly one entry per chain is featured.
      */
     featured: boolean;
+    /**
+     * Current (latest reward epoch) APY.
+     */
     apy: number;
+    /**
+     * APY per reward epoch, up to the latest 25 epochs (empty where not tracked).
+     */
+    epochApys: Array<ValidatorEpochApyDto>;
     minimumDelegated: number;
     validatorFee: number;
     /**
