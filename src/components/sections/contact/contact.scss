@@ -107,7 +107,7 @@
             font-weight: t.$weight-regular;
             line-height: 1.4;
             padding: 12px 14px;
-            background: rgba(255, 255, 255, 0.03);
+            background: var(--surface-raised);
             border: 1px solid var(--border-subtle);
             transition: border-color 150ms ease-out, background-color 150ms ease-out;
 
@@ -117,7 +117,7 @@
             &:focus {
                 box-shadow: none;
                 background: var(--surface-hover);
-                border-color: rgba(255, 255, 255, 0.25);
+                border-color: var(--border-strong);
             }
         }
 

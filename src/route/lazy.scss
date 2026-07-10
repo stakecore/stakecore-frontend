@@ -16,6 +16,6 @@
 }
 
 .lazy-load-error p {
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-dim);
   margin-bottom: 22px;
 }

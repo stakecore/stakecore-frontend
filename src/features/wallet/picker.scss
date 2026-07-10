@@ -19,7 +19,7 @@
   flex-direction: column;
   padding: 24px;
   background: #0F0F0F;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border);
 }
 
 .wallet h2 {
@@ -63,13 +63,13 @@
 
 .wallet .provider button:hover {
   background: var(--surface-hover);
-  border-color: rgba(255, 255, 255, 0.25);
+  border-color: var(--border-strong);
 }
 
 .wallet .provider button:focus,
 .wallet .provider button:focus-visible {
   outline: none;
-  border-color: rgba(255, 255, 255, 0.4);
+  border-color: var(--border-emphasis);
 }
 
 .wallet .close {
