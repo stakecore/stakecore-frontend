@@ -95,7 +95,7 @@ const InfraConstellation = () => {
   const rerender = () => setTick(t => t + 1)
 
   useEffect(() => {
-    const tick = setInterval(() => {
+    const tick = () => {
       const { active } = stateRef.current
 
       // Pick a random ACTIVE workload to fail.
@@ -125,8 +125,21 @@ const InfraConstellation = () => {
       newActive[replacementIdx] = true
       stateRef.current = { active: newActive }
       rerender()
-    }, 3000)
-    return () => clearInterval(tick)
+    }
+
+    // Pause the timer while the tab is backgrounded — no point churning
+    // ~39 SVG nodes every 3s for an animation nobody can see.
+    let timer: ReturnType<typeof setInterval> | null = null
+    const start = () => { if (timer == null) timer = setInterval(tick, 3000) }
+    const stop = () => { if (timer != null) { clearInterval(timer); timer = null } }
+    const onVisibility = () => { document.hidden ? stop() : start() }
+
+    if (!document.hidden) start()
+    document.addEventListener('visibilitychange', onVisibility)
+    return () => {
+      stop()
+      document.removeEventListener('visibilitychange', onVisibility)
+    }
   }, [])
 
   const { active } = stateRef.current

@@ -29,19 +29,7 @@ type EIP6963AnnounceProviderEvent = {
   }
 }
 
-// Global interface for storing the internal component state
-interface GlobalState {
-  walletProvider: EIP6963ProviderDetail | null
-  setWalletProvider: (provider: EIP6963ProviderDetail) => void
-  walletAddress: string | null
-  setWalletAddress: (address: string, provider?: EIP6963ProviderDetail) => void
-  walletChoiceVisible: boolean
-  setWalletChoiceVisible: (visible: boolean) => void
-  chain: string | null
-  setChain: (chain: string | null) => void
-}
-
-// Global interface for storing the external browser wallet state.
-interface ExternalState {
-  walletProviders: EIP6963ProviderDetail[]
-}
+// Note: the app's own store shapes (GlobalState / ExternalState) are NOT
+// declared here — they live with their stores (features/wallet/store.ts and
+// discoverStore.ts) so store-shape changes have an import trail. Only the true
+// EIP-6963 / EIP-1193 ambients belong in this global .d.ts.

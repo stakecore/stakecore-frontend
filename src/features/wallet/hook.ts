@@ -21,9 +21,18 @@ export async function onInternalChainSwitch(
 }
 
 export async function addEip6963Hook(wallet: EIP6963ProviderDetail): Promise<void> {
-  attachAccountChangeHandler(wallet)
-  attachChainChangeHandler(wallet)
-  attachDisconnectHandler(wallet)
+  // Not every injected provider implements EIP-1193 `.on` events. Feature-
+  // detect once and warn (rather than silently attaching nothing), so a
+  // wallet that can't push account/chain updates is diagnosable instead of
+  // just leaving a stale "connected" UI after the user switches in-wallet.
+  const provider = wallet.provider as MetaMaskInpageProvider
+  if (typeof provider?.on === 'function') {
+    attachAccountChangeHandler(wallet)
+    attachChainChangeHandler(wallet)
+    attachDisconnectHandler(wallet)
+  } else {
+    console.warn(`wallet "${wallet.info.name}" does not emit provider events (.on); live account/chain updates unavailable`)
+  }
   const { chain } = useGlobalStore.getState()
   const address = await tryAutoConnect(chain, wallet)
   if (address !== null) {

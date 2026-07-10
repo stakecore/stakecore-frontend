@@ -1,11 +1,23 @@
 import { Chain } from "~/enums"
-import { CHAIN_CONFIG } from "~/config/chains"
+import { CHAIN_CONFIG, type EpochConfig } from "~/config/chains"
 
 // Epoch parameters for the FTSO chains (Flare + Songbird), sourced from the
 // shared chain config so the timestamps live in exactly one place.
 export const FTSO_CHAIN_CONFIG = {
   [Chain.SONGBIRD]: CHAIN_CONFIG[Chain.SONGBIRD].epoch!,
   [Chain.FLARE]: CHAIN_CONFIG[Chain.FLARE].epoch!,
+}
+
+// Single guarded lookup instead of a `chain as keyof …` cast scattered at
+// every call site. FTSO only exists on Flare + Songbird, so a non-FTSO chain
+// (Avalanche) throws an explicit error rather than silently destructuring
+// `undefined`.
+function ftsoConfig(chain: Chain): EpochConfig {
+  const cfg = FTSO_CHAIN_CONFIG[chain as keyof typeof FTSO_CHAIN_CONFIG]
+  if (cfg == null) {
+    throw new Error(`FspEpoch: no FTSO config for chain ${chain} — FTSO is Flare/Songbird only`)
+  }
+  return cfg
 }
 
 export namespace FspEpoch {
@@ -15,13 +27,11 @@ export namespace FspEpoch {
   }
 
   export function roundToTimestamp(chain: Chain, roundId: number): number {
-    const fchain = chain as keyof typeof FTSO_CHAIN_CONFIG
-    const { firstRoundTimestampMs, roundDurationMs } = FTSO_CHAIN_CONFIG[fchain]
+    const { firstRoundTimestampMs, roundDurationMs } = ftsoConfig(chain)
     return firstRoundTimestampMs + roundId * roundDurationMs
   }
   export function timestampToRound(chain: Chain, timestamp: number): number {
-    const fchain = chain as keyof typeof FTSO_CHAIN_CONFIG
-    const { firstRoundTimestampMs, roundDurationMs } = FTSO_CHAIN_CONFIG[fchain]
+    const { firstRoundTimestampMs, roundDurationMs } = ftsoConfig(chain)
     return Math.floor((timestamp - firstRoundTimestampMs) / roundDurationMs)
   }
 
@@ -32,14 +42,12 @@ export namespace FspEpoch {
     return Math.max(Date.now() - roundToTimestamp(chain, roundId), 0)
   }
   export function msUntilRewardEpoch(chain: Chain, epoch: number): number {
-    const fchain = chain as keyof typeof FTSO_CHAIN_CONFIG
-    const { rewardEpochDurationRounds } = FTSO_CHAIN_CONFIG[fchain]
+    const { rewardEpochDurationRounds } = ftsoConfig(chain)
     return msUntilRound(chain, epoch * rewardEpochDurationRounds)
   }
 
   export function roundToRewardEpoch(chain: Chain, roundId: number): number {
-    const fchain = chain as keyof typeof FTSO_CHAIN_CONFIG
-    const { rewardEpochDurationRounds } = FTSO_CHAIN_CONFIG[fchain]
+    const { rewardEpochDurationRounds } = ftsoConfig(chain)
     return Math.floor(roundId / rewardEpochDurationRounds)
   }
 

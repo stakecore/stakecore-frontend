@@ -1,3 +1,9 @@
+// EIP-6963 discovered-provider list. (Was a global ambient in vite-env.d.ts;
+// co-located here so changes have an import trail.)
+export interface ExternalState {
+  walletProviders: EIP6963ProviderDetail[]
+}
+
 export let externalState: ExternalState = {
   walletProviders: []
 }
