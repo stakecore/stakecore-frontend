@@ -9,6 +9,7 @@ import { HashLink } from "~/components/ui/links"
 import { toast } from "react-toastify"
 import { Formatter } from "~/utils/misc/formatter"
 import { personalSign } from "~/features/wallet/eip1193"
+import { extractFriendlyError } from "~/features/wallet/contract"
 import { publicKeyToPAddress } from "~/utils/misc/addresses"
 import FlareValidatorDataAccess from "../data"
 
@@ -20,15 +21,18 @@ async function requestSignature(address: string, provider: Eip1193Provider) {
   const msg = `waiting for user ${fadr} to sign test message "${TEST_SIGN_MSG}" with their wallet`
   const id = toast.loading(msg)
 
-  const sig = await personalSign(TEST_SIGN_MSG, address, provider)
-  const ok1 = sig != null
-  toast.update(id, {
-    type: ok1 ? 'success' : 'error',
-    render: ok1 ? 'verifying user provided signature' : 'failed to sign message',
-    isLoading: ok1,
-    autoClose: 3000
-  })
-  if (!ok1) return
+  const res = await personalSign(TEST_SIGN_MSG, address, provider)
+  if (res.ok) {
+    toast.update(id, {
+      type: 'success', render: 'verifying user provided signature', isLoading: true, autoClose: 3000
+    })
+  } else {
+    toast.update(id, {
+      type: 'error', render: extractFriendlyError(res.error), isLoading: false, autoClose: 3000
+    })
+    return
+  }
+  const sig = res.value
 
   let pubk: string
   let recv: string

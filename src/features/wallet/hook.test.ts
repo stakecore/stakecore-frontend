@@ -75,7 +75,7 @@ describe('onInternalChainSwitch', () => {
 
   it('switches network when chain differs, then returns the first account', async () => {
     mockedGetChainId.mockResolvedValue('0x1')
-    mockedSwitchNetwork.mockResolvedValue(true)
+    mockedSwitchNetwork.mockResolvedValue({ ok: true, value: undefined })
     mockedGetAccounts.mockResolvedValue(['0xabc'])
     const { wallet } = fakeWallet()
     await expect(onInternalChainSwitch('0xe', wallet as never)).resolves.toBe('0xabc')
@@ -86,7 +86,7 @@ describe('onInternalChainSwitch', () => {
 
   it('returns null when the network switch is rejected', async () => {
     mockedGetChainId.mockResolvedValue('0x1')
-    mockedSwitchNetwork.mockResolvedValue(false)
+    mockedSwitchNetwork.mockResolvedValue({ ok: false, error: { code: 4001 } })
     const { wallet } = fakeWallet()
     await expect(onInternalChainSwitch('0xe', wallet as never)).resolves.toBeNull()
     expect(mockedGetAccounts).not.toHaveBeenCalled()

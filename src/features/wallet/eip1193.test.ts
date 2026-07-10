@@ -57,17 +57,17 @@ describe('getAccounts', () => {
 })
 
 describe('requestAccounts', () => {
-  it('returns the array of accounts when the user approves', async () => {
+  it('returns an ok result with the accounts when the user approves', async () => {
     const p = provider()
     p.request.mockResolvedValue(['0xabc'])
-    await expect(requestAccounts(asProvider(p))).resolves.toEqual(['0xabc'])
+    await expect(requestAccounts(asProvider(p))).resolves.toEqual({ ok: true, value: ['0xabc'] })
     expect(p.request).toHaveBeenCalledWith({ method: 'eth_requestAccounts', params: [] })
   })
 
-  it('returns an empty array on user rejection / failure', async () => {
+  it('surfaces the error on user rejection / failure', async () => {
     const p = provider()
     p.request.mockRejectedValue({ code: 4001 })
-    await expect(requestAccounts(asProvider(p))).resolves.toEqual([])
+    await expect(requestAccounts(asProvider(p))).resolves.toEqual({ ok: false, error: { code: 4001 } })
   })
 })
 
@@ -77,17 +77,17 @@ describe('personalSign', () => {
   it('forwards the message + address as params and returns the signature', async () => {
     const p = provider()
     p.request.mockResolvedValue('0xdeadbeef')
-    await expect(personalSign('hello', '0xabc', asProvider(p))).resolves.toBe('0xdeadbeef')
+    await expect(personalSign('hello', '0xabc', asProvider(p))).resolves.toEqual({ ok: true, value: '0xdeadbeef' })
     expect(p.request).toHaveBeenCalledWith({
       method: 'personal_sign',
       params: ['hello', '0xabc'],
     })
   })
 
-  it('returns null when the wallet rejects the signature request', async () => {
+  it('surfaces the error when the wallet rejects the signature request', async () => {
     const p = provider()
     p.request.mockRejectedValue({ code: 4001 })
-    await expect(personalSign('hello', '0xabc', asProvider(p))).resolves.toBeNull()
+    await expect(personalSign('hello', '0xabc', asProvider(p))).resolves.toEqual({ ok: false, error: { code: 4001 } })
   })
 })
 
@@ -147,8 +147,9 @@ describe('tryAutoConnect', () => {
 //
 // Most-complicated composite. Short-circuits when already on the target
 // chain; on mismatch tries `wallet_switchEthereumChain`; on 4902 falls
-// back to `wallet_addEthereumChain` (unless addChain=false). Returns
-// boolean — true on success or no-op, false on irrecoverable failure.
+// back to `wallet_addEthereumChain` (unless addChain=false). Returns a
+// WalletResult — { ok: true } on success or no-op, { ok: false, error } on
+// irrecoverable failure.
 
 describe('switchNetworkIfNecessary', () => {
   const make = (handlers: Record<string, ((req: Req) => Promise<unknown>) | 'throw4902'>) => {
@@ -164,13 +165,13 @@ describe('switchNetworkIfNecessary', () => {
 
   it('returns true immediately when already on the target chain (no switch attempt)', async () => {
     const p = make({ eth_chainId: async () => '0xe' })
-    await expect(switchNetworkIfNecessary('0xe', asProvider(p))).resolves.toBe(true)
+    await expect(switchNetworkIfNecessary('0xe', asProvider(p))).resolves.toEqual({ ok: true, value: undefined })
     expect(p.request).toHaveBeenCalledTimes(1) // only the chainId probe
   })
 
   it('returns true when chainId is null (no target — skip the switch entirely)', async () => {
     const p = make({ eth_chainId: async () => '0x1' })
-    await expect(switchNetworkIfNecessary(null, asProvider(p))).resolves.toBe(true)
+    await expect(switchNetworkIfNecessary(null, asProvider(p))).resolves.toEqual({ ok: true, value: undefined })
     expect(p.request).toHaveBeenCalledTimes(1)
   })
 
@@ -179,7 +180,7 @@ describe('switchNetworkIfNecessary', () => {
       eth_chainId: async () => '0x1',
       wallet_switchEthereumChain: async () => null,
     })
-    await expect(switchNetworkIfNecessary('0xe', asProvider(p))).resolves.toBe(true)
+    await expect(switchNetworkIfNecessary('0xe', asProvider(p))).resolves.toEqual({ ok: true, value: undefined })
     expect(p.request).toHaveBeenCalledWith({
       method: 'wallet_switchEthereumChain',
       params: [{ chainId: '0xe' }],
@@ -192,7 +193,7 @@ describe('switchNetworkIfNecessary', () => {
       wallet_switchEthereumChain: 'throw4902',
       wallet_addEthereumChain: async () => null,
     })
-    await expect(switchNetworkIfNecessary('0xe', asProvider(p))).resolves.toBe(true)
+    await expect(switchNetworkIfNecessary('0xe', asProvider(p))).resolves.toEqual({ ok: true, value: undefined })
     // Verify the add call passes the chain config with EIP-3085 fields at the
     // top level of params[0] (not nested under a `chainConfig` key).
     const addCall = p.request.mock.calls
@@ -214,7 +215,7 @@ describe('switchNetworkIfNecessary', () => {
     })
     // Silence the console.error the SUT emits.
     const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-    await expect(switchNetworkIfNecessary('0xe', asProvider(p))).resolves.toBe(false)
+    await expect(switchNetworkIfNecessary('0xe', asProvider(p))).resolves.toMatchObject({ ok: false })
     errSpy.mockRestore()
   })
 
@@ -224,7 +225,7 @@ describe('switchNetworkIfNecessary', () => {
       wallet_switchEthereumChain: 'throw4902',
     })
     const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-    await expect(switchNetworkIfNecessary('0xe', asProvider(p), false)).resolves.toBe(false)
+    await expect(switchNetworkIfNecessary('0xe', asProvider(p), false)).resolves.toMatchObject({ ok: false })
     expect(p.request).not.toHaveBeenCalledWith(expect.objectContaining({
       method: 'wallet_addEthereumChain',
     }))
@@ -237,7 +238,7 @@ describe('switchNetworkIfNecessary', () => {
       wallet_switchEthereumChain: () => Promise.reject({ code: 4001 }),
     })
     const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-    await expect(switchNetworkIfNecessary('0xe', asProvider(p))).resolves.toBe(false)
+    await expect(switchNetworkIfNecessary('0xe', asProvider(p))).resolves.toMatchObject({ ok: false })
     errSpy.mockRestore()
   })
 })

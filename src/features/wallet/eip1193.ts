@@ -1,5 +1,24 @@
 import { chainIdToConfig } from "../../utils/misc/translations"
 
+
+// Result of a user-initiated wallet action. The read-only query helpers
+// below (getChainId / getAccounts) still degrade to sentinels ('' / []) —
+// their callers don't surface failures, so "couldn't read it" is a fine
+// silent fallback. The *actions* (requestAccounts / personalSign /
+// switchNetworkIfNecessary) instead return this discriminated result so the
+// UI can tell "user rejected" (4001) from "wallet disconnected" (4900) from
+// "RPC down", via extractFriendlyError(result.error).
+// Note: a single shape with optional value/error rather than a discriminated
+// union — this project compiles with strictNullChecks off, where TS won't
+// narrow a boolean discriminant to the `ok: false` member, so `.error` on a
+// narrowed union is inaccessible. Optional fields keep both readable; callers
+// gate on `.ok`. Constructors below only ever set the field for their branch.
+export type WalletResult<T> = {
+  ok: boolean
+  value?: T
+  error?: unknown
+}
+
 export async function getChainId(
   ethereum: EIP1193Provider
 ): Promise<string> {
@@ -30,15 +49,15 @@ export async function getAccounts(
 
 export async function requestAccounts(
   ethereum: EIP1193Provider
-): Promise<string[]> {
+): Promise<WalletResult<string[]>> {
   try {
     const accounts = await ethereum.request({
       method: 'eth_requestAccounts',
       params: []
     })
-    return accounts as string[]
-  } catch (err: any) {
-    return []
+    return { ok: true, value: accounts as string[] }
+  } catch (error) {
+    return { ok: false, error }
   }
 }
 
@@ -46,15 +65,15 @@ export async function personalSign(
   message: string,
   address: string,
   ethereum: EIP1193Provider
-): Promise<string | null> {
+): Promise<WalletResult<string>> {
   try {
     const sig = await ethereum.request({
       method: 'personal_sign',
       params: [message, address],
     })
-    return sig as string
-  } catch (err: any) {
-    return null
+    return { ok: true, value: sig as string }
+  } catch (error) {
+    return { ok: false, error }
   }
 }
 
@@ -73,7 +92,7 @@ export async function switchNetworkIfNecessary(
   chainId: string | null,
   ethereum: EIP1193Provider,
   addChain = true
-): Promise<boolean> {
+): Promise<WalletResult<void>> {
   const _chainId = await getChainId(ethereum)
   if (chainId != null && chainId != _chainId) {
     try {
@@ -94,15 +113,15 @@ export async function switchNetworkIfNecessary(
             method: 'wallet_addEthereumChain',
             params: [chainIdToConfig(chainId)],
           })
-        } catch (err: any) {
-          console.error(err)
-          return false
+        } catch (addErr) {
+          console.error(addErr)
+          return { ok: false, error: addErr }
         }
       } else {
         console.error(err)
-        return false
+        return { ok: false, error: err }
       }
     }
   }
-  return true
+  return { ok: true, value: undefined }
 }

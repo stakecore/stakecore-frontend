@@ -170,7 +170,7 @@ describe('contractCallAdapter', () => {
 
   it('returns CHAIN_SWITCH_REJECTED when the user declines the network swap', async () => {
     withStore({ walletProvider: fakeProvider, walletAddress: '0xabc' })
-    mockedSwitchNetwork.mockResolvedValue(false)
+    mockedSwitchNetwork.mockResolvedValue({ ok: false, error: { code: 4001 } })
     const fn = vi.fn()
     const result = await contractCallAdapter(fn, '0xabc', [])
     expect(result).toEqual({ status: StatusCode.CHAIN_SWITCH_REJECTED })
@@ -179,8 +179,8 @@ describe('contractCallAdapter', () => {
 
   it('returns ACCOUNT_REQUEST_REJECTED when the wallet has no addresses for us', async () => {
     withStore({ walletProvider: fakeProvider, walletAddress: null })
-    mockedSwitchNetwork.mockResolvedValue(true)
-    mockedRequestAccounts.mockResolvedValue([])
+    mockedSwitchNetwork.mockResolvedValue({ ok: true, value: undefined })
+    mockedRequestAccounts.mockResolvedValue({ ok: true, value: [] })
     const fn = vi.fn()
     const result = await contractCallAdapter(fn, '0xabc', [])
     expect(result).toEqual({ status: StatusCode.ACCOUNT_REQUEST_REJECTED })
@@ -189,7 +189,7 @@ describe('contractCallAdapter', () => {
 
   it('returns CONTRACT_CALL_EXECUTED + hash on the happy path', async () => {
     withStore({ walletProvider: fakeProvider, walletAddress: '0xabc' })
-    mockedSwitchNetwork.mockResolvedValue(true)
+    mockedSwitchNetwork.mockResolvedValue({ ok: true, value: undefined })
     const fn = vi.fn().mockResolvedValue('0xdeadbeef')
     const result = await contractCallAdapter(fn, '0xabc', [42] as unknown as never)
     expect(result).toEqual({ status: StatusCode.CONTRACT_CALL_EXECUTED, hash: '0xdeadbeef' })
@@ -198,7 +198,7 @@ describe('contractCallAdapter', () => {
 
   it('maps a thrown user rejection to a friendly status string (no hash)', async () => {
     withStore({ walletProvider: fakeProvider, walletAddress: '0xabc' })
-    mockedSwitchNetwork.mockResolvedValue(true)
+    mockedSwitchNetwork.mockResolvedValue({ ok: true, value: undefined })
     const fn = vi.fn().mockRejectedValue({ code: 4001 })
     const result = await contractCallAdapter(fn, '0xabc', [])
     expect(result).toEqual({ status: 'rejected in wallet' })
@@ -206,8 +206,8 @@ describe('contractCallAdapter', () => {
 
   it('requests accounts + stores the first one when walletAddress is initially null', async () => {
     const state = withStore({ walletProvider: fakeProvider, walletAddress: null })
-    mockedSwitchNetwork.mockResolvedValue(true)
-    mockedRequestAccounts.mockResolvedValue(['0xnew'])
+    mockedSwitchNetwork.mockResolvedValue({ ok: true, value: undefined })
+    mockedRequestAccounts.mockResolvedValue({ ok: true, value: ['0xnew'] })
     const fn = vi.fn().mockResolvedValue('0xhash')
     await contractCallAdapter(fn, '0xnew', [])
     expect(state.setWalletAddress).toHaveBeenCalledWith('0xnew')

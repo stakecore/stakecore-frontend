@@ -18,8 +18,8 @@ vi.mock('~/utils/dom', () => ({
   changeOpacity: vi.fn(),
 }))
 vi.mock('./eip1193', () => ({
-  requestAccounts: vi.fn().mockResolvedValue([]),
-  switchNetworkIfNecessary: vi.fn().mockResolvedValue(false),
+  requestAccounts: vi.fn().mockResolvedValue({ ok: false, error: null }),
+  switchNetworkIfNecessary: vi.fn().mockResolvedValue({ ok: false, error: null }),
 }))
 vi.mock('./discover', () => ({
   useExternalStore: () => ({

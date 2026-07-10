@@ -5,6 +5,7 @@ import { RiCloseCircleFill } from '@remixicon/react'
 import { useGlobalStore } from './store'
 import { useShallow } from 'zustand/react/shallow'
 import { requestAccounts, switchNetworkIfNecessary } from './eip1193'
+import { extractFriendlyError } from './contract'
 import { changeOpacity } from '../../utils/dom'
 import { useExternalStore } from './discover'
 import './picker.scss'
@@ -81,23 +82,24 @@ export const Eip6963 = () => {
 
   const executeConnect = async (detail: EIP6963ProviderDetail, address: string) => {
     const switched = await switchNetworkIfNecessary(chain, detail.provider)
-    if (!switched) {
-      // The helper swallows the underlying reason, so keep the message
-      // generic — but at least tell the user the modal is still open on
-      // purpose rather than leaving them staring at a dead dialog.
-      toast.error('Could not switch to the required network. Check your wallet and try again.')
-      return
+    if (switched.ok) {
+      setWalletAddress(address, detail)
+      setWalletChoiceVisible(false)
+    } else {
+      toast.error(extractFriendlyError(switched.error))
     }
-    setWalletAddress(address, detail)
-    setWalletChoiceVisible(false)
   }
 
   const handleConnect = async (providerWithInfo: EIP6963ProviderDetail) => {
-    const accounts: string[] | undefined = await requestAccounts(providerWithInfo.provider)
-    if (accounts?.[0]) {
-      await executeConnect(providerWithInfo, accounts[0])
+    const accounts = await requestAccounts(providerWithInfo.provider)
+    if (accounts.ok) {
+      if (accounts.value[0]) {
+        await executeConnect(providerWithInfo, accounts.value[0])
+      } else {
+        toast.error('Your wallet returned no accounts.')
+      }
     } else {
-      toast.error('Wallet connection was cancelled or failed.')
+      toast.error(extractFriendlyError(accounts.error))
     }
   }
 

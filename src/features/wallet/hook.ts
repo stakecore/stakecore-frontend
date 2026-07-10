@@ -9,7 +9,7 @@ export async function onInternalChainSwitch(
   const connectedChainId = await getChainId(wallet.provider)
   if (chainId != null && connectedChainId != chainId) {
     const switched = await switchNetworkIfNecessary(chainId, wallet.provider, false)
-    if (!switched) {
+    if (!switched.ok) {
       return null
     }
   }

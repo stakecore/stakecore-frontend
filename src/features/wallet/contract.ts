@@ -20,16 +20,17 @@ export async function ensureProvider(): Promise<[Eip1193Provider | null, StatusC
     setWalletChoiceVisible(true)
     return [null, StatusCode.WALLET_CHOICE_SHOWN]
   }
-  if (!await switchNetworkIfNecessary(chain, walletProvider.provider)) {
+  const switched = await switchNetworkIfNecessary(chain, walletProvider.provider)
+  if (!switched.ok) {
     return [null, StatusCode.CHAIN_SWITCH_REJECTED]
   }
   const { walletAddress, setWalletAddress } = useGlobalStore.getState()
   if (walletAddress == null) {
-    const addresses = await requestAccounts(walletProvider.provider)
-    if (!addresses.length) {
+    const accounts = await requestAccounts(walletProvider.provider)
+    if (!accounts.ok || !accounts.value.length) {
       return [null, StatusCode.ACCOUNT_REQUEST_REJECTED]
     }
-    setWalletAddress(addresses[0])
+    setWalletAddress(accounts.value[0])
   }
   return [walletProvider.provider, StatusCode.WALLET_PROVIDER_OBTAINED]
 }
