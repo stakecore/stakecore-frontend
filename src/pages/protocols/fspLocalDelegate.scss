@@ -156,7 +156,9 @@
     border: 0;
     padding: 10px 8px 10px 14px;
 
-    &::placeholder { color: rgba(255, 255, 255, 0.3); }
+    // opacity 0.4 preserves the faint look the global input::placeholder rule
+    // used to contribute (now removed from style.css).
+    &::placeholder { color: rgba(255, 255, 255, 0.3); opacity: 0.4; }
     &:focus { outline: none; }
     &:disabled {
         opacity: 0.6;

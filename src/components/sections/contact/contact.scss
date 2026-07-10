@@ -96,6 +96,11 @@
         }
 
         .form-control {
+            // display/width/border-radius were inherited from the global
+            // input rule in style.css; self-contained here now that it's gone.
+            display: block;
+            width: 100%;
+            border-radius: 0;
             font-family: var(--font-sans);
             font-size: t.$text-base;
             color: var(--heading-color);
@@ -106,7 +111,8 @@
             border: 1px solid var(--border-subtle);
             transition: border-color 150ms ease-out, background-color 150ms ease-out;
 
-            &::placeholder { color: var(--heading-color); }
+            // opacity 0.4 was the global placeholder rule's contribution.
+            &::placeholder { color: var(--heading-color); opacity: 0.4; }
 
             &:focus {
                 box-shadow: none;

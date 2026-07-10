@@ -175,63 +175,14 @@ a:visited {
 
 a:hover { color: inherit; }
 
-/* ---- 04. Forms ---- */
-
-input,
-select,
-textarea,
-.form-control {
-    width: 100%;
-    height: auto;
-    border: none;
-    color: var(--heading-color);
-    font-family: var(--font-sans);
-    font-size: 20px;
-    border-radius: 0;
-    padding: 20px 0;
-    background-color: #fff;
-    border-bottom: 2px solid rgba(41, 41, 41, 0.1);
-}
-
-input::placeholder,
-select::placeholder,
-textarea::placeholder,
-.form-control::placeholder {
-    color: var(--heading-color);
-    opacity: 0.4;
-}
-
-input:focus,
-button:focus,
-.form-control:focus {
-    box-shadow: none;
-    border-color: #cfdbf1;
-}
-
-input[type=search]::-ms-clear,
-input[type=search]::-ms-reveal {
-    display: none;
-    width: 0;
-    height: 0;
-}
-
-input[type=search]::-webkit-search-decoration,
-input[type=search]::-webkit-search-cancel-button,
-input[type=search]::-webkit-search-results-button,
-input[type=search]::-webkit-search-results-decoration {
-    display: none;
-}
-
-input[type=checkbox],
-input[type=radio] {
-    height: auto;
-    width: auto;
-}
-
-textarea {
-    display: inherit;
-    padding-top: 20px;
-}
+/* ---- 04. Forms ----
+ *
+ * The input / .form-control styling here was a light-theme template leftover
+ * (white background, 20px, underline) fully overridden by the only two form
+ * consumers — the contact form (contact.scss) and the FSP delegate inputs
+ * (fspLocalDelegate.scss). Removed; the few base props they actually inherited
+ * (width, border-radius, placeholder opacity) are now self-contained there.
+ */
 
 label {
     cursor: pointer;
