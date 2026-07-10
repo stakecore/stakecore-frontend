@@ -92,12 +92,16 @@ const HeroRuneCanvas = () => {
       return
     }
 
-    const dpr = window.devicePixelRatio || 1
+    // Density + cell metrics. Recomputed in setup() on every resize so a DPI
+    // switch (window dragged to a different-density monitor) or crossing the
+    // 768px breakpoint re-renders at the right density instead of these stale
+    // mount-time values.
     // Smaller cells on phones: more rune-silhouette samples (logo detail
     // becomes visible) and denser wave bands so the field doesn't read
     // as a few wide stretched stripes against a tall narrow viewport.
-    const cellSize = window.innerWidth < 768 ? 6 : 10  // CSS pixels per cell
-    const cellSizePx = cellSize * dpr // backing-store pixels per cell
+    let dpr = window.devicePixelRatio || 1
+    let cellSize = window.innerWidth < 768 ? 6 : 10  // CSS pixels per cell
+    let cellSizePx = cellSize * dpr // backing-store pixels per cell
 
     // --- shader compile + link ---
     const compile = (type: number, src: string): WebGLShader | null => {
@@ -184,6 +188,15 @@ const HeroRuneCanvas = () => {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
 
+    // Re-render the glyph atlas at the current cellSizePx. Only called from
+    // setup() when the backing-store cell size actually changes (DPI switch
+    // or breakpoint cross) — not on ordinary resizes.
+    const rebuildGlyphAtlas = () => {
+      gl.activeTexture(gl.TEXTURE0)
+      gl.bindTexture(gl.TEXTURE_2D, glyphTex)
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, buildGlyphAtlas())
+    }
+
     // --- rune mask texture (filled by rasterize() once per resize) ---
     const runeTex = gl.createTexture()
     gl.activeTexture(gl.TEXTURE1)
@@ -201,6 +214,11 @@ const HeroRuneCanvas = () => {
       const rect = canvas.getBoundingClientRect()
       w = rect.width
       h = rect.height
+      // Refresh density + cell size in case the DPI or the 768px breakpoint
+      // changed since the last setup (monitor swap, orientation, zoom).
+      dpr = window.devicePixelRatio || 1
+      cellSize = window.innerWidth < 768 ? 6 : 10
+      const nextCellSizePx = cellSize * dpr
       canvas.width = Math.ceil(w * dpr)
       canvas.height = Math.ceil(h * dpr)
       gl.viewport(0, 0, canvas.width, canvas.height)
@@ -215,6 +233,14 @@ const HeroRuneCanvas = () => {
         runeH = Math.round(runeW / SVG_ASPECT)
       }
       gl.useProgram(program)
+      // The backing-store cell size is stable across ordinary resizes, so
+      // only re-render the glyph atlas + refresh its uniform when it actually
+      // changes (matches on the initial call, so no redundant first rebuild).
+      if (nextCellSizePx !== cellSizePx) {
+        cellSizePx = nextCellSizePx
+        rebuildGlyphAtlas()
+        if (uCellSize) gl.uniform1f(uCellSize, cellSizePx)
+      }
       if (uResolution) gl.uniform2f(uResolution, canvas.width, canvas.height)
       if (uRuneSize) gl.uniform2f(uRuneSize, runeW, runeH)
     }
