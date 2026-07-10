@@ -55,7 +55,7 @@ const CallToAction = () => {
           <div className="col-lg-12">
             <div className="call-to-action-part">
               { !hasError && <>
-                <h2>Earn yield</h2>
+                <h2>Earn Yield</h2>
                 <p>Put your dormant FLR, AVAX, or SGB to work and earn yield with a risk profile close to simply holding the asset.</p>
               </> }
               {component}

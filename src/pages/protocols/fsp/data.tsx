@@ -9,6 +9,7 @@ import { HashLink } from "~/components/ui/links"
 import type { ISpecs, ISummary } from "../types"
 
 
+// Shared FSP data layer — used by both the Flare and Songbird FSP routes.
 namespace FspDataLayer {
 
   export async function getPageData(chain: string): Promise<FspPageDataDto> {

@@ -1,44 +1,13 @@
-import { BrowserProvider, Contract } from 'ethers'
-import * as C from '../../../constants'
+import { createFspContracts } from "../fsp/contracts"
+import * as C from "~/constants"
 
-
-// Each function submits a tx, then awaits one confirmation via tx.wait(1)
-// so on-chain reverts surface as exceptions (caught by contractCallAdapter)
-// and the returned hash is from a mined transaction the user can verify
-// on an explorer.
-
-export async function delegate(ethereum: EIP1193Provider, address: string, args: [number]): Promise<string> {
-  const provider = new BrowserProvider(ethereum)
-  const signer = await provider.getSigner(address)
-  const contract = new Contract(C.wrappedFlrAdr, C.wrappedFlrAbi, signer)
-  const tx = await contract.delegate(C.flareDelegationAdr, args[0])
-  await tx.wait(1)
-  return tx.hash
-}
-
-export async function deposit(ethereum: EIP1193Provider, address: string, args: [bigint]): Promise<string> {
-  const provider = new BrowserProvider(ethereum)
-  const signer = await provider.getSigner(address)
-  const contract = new Contract(C.wrappedFlrAdr, C.wrappedFlrAbi, signer)
-  const tx = await contract.deposit({ value: args[0] })
-  await tx.wait(1)
-  return tx.hash
-}
-
-export async function withdraw(ethereum: EIP1193Provider, address: string, args: [bigint]): Promise<string> {
-  const provider = new BrowserProvider(ethereum)
-  const signer = await provider.getSigner(address)
-  const contract = new Contract(C.wrappedFlrAdr, C.wrappedFlrAbi, signer)
-  const tx = await contract.withdraw(args[0])
-  await tx.wait(1)
-  return tx.hash
-}
-
-export async function claim(ethereum: EIP1193Provider, address: string, args: [number]): Promise<string> {
-  const provider = new BrowserProvider(ethereum)
-  const signer = await provider.getSigner(address)
-  const contract = new Contract(C.flareFspRewardManagerAdr, C.flareFspRewardManagerAbi, signer)
-  const tx = await contract.claim(address, address, args[0], true, [])
-  await tx.wait(1)
-  return tx.hash
-}
+// Thin per-chain binding of the shared FSP contract flow. Kept as its own
+// module (not inlined) so delegateLocal can dynamically import it for the
+// ethers chunk split, and so contracts.test.ts can exercise the Flare targets.
+export const { delegate, deposit, withdraw, claim } = createFspContracts({
+  wrappedAdr: C.wrappedFlrAdr,
+  wrappedAbi: C.wrappedFlrAbi,
+  rewardManagerAdr: C.flareFspRewardManagerAdr,
+  rewardManagerAbi: C.flareFspRewardManagerAbi,
+  delegationAdr: C.flareDelegationAdr,
+})

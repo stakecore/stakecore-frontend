@@ -4,46 +4,61 @@ import { useGlobalStore } from "~/features/wallet/store"
 import ServerError from "~/components/ui/serverError"
 import FspLocalDelegate from "~/pages/protocols/fspLocalDelegate"
 import { contractCallAdapter } from "~/features/wallet/contract"
-import FspDataLayer from "../../flare-fsp/data"
 import { expbigint } from "~/utils/misc/bigint"
-import * as C from "~/constants"
+import { CHAIN_CONFIG } from "~/config/chains"
+import { REFRESH_QUERY_FAST_MS } from "~/constants"
+import { Chain } from "~/enums"
+import FspDataLayer from "./data"
+import type { FspContractApi } from "./contracts"
 
 
-const SongbirdFspLocalDelegateComponent = () => {
+export interface FspDelegateConfig {
+  chain: Chain
+  // Dynamic import of the per-chain contracts module, so ethers' heavy
+  // BrowserProvider/Contract stack loads only on a wallet transaction rather
+  // than in the FSP page chunk.
+  loadContracts: () => Promise<FspContractApi>
+}
+
+// On-site FSP delegate flow (wrap / delegate / unwrap / claim). Everything is
+// derived from CHAIN_CONFIG[chain] + the loadContracts thunk, so the two FSP
+// routes share this verbatim.
+const FspLocalDelegateComponent = ({ config }: { config: FspDelegateConfig }) => {
+  const chainCfg = CHAIN_CONFIG[config.chain]
   const setWalletChoiceVisible = useGlobalStore(state => state.setWalletChoiceVisible)
   const walletAddress = useGlobalStore(state => state.walletAddress)
   const walletChoiceVisible = useGlobalStore(state => state.walletChoiceVisible)
   const { mutate } = useSWRConfig()
 
-  const swrKey = ['songbird-delegate', walletAddress] as const
+  const swrKey = [`${chainCfg.slug}-delegate`, walletAddress] as const
   const { data, error, isLoading } = useSWR(swrKey, ([_, address]) => {
     if (address == null) return null
-    return FspDataLayer.getDelegatorInfo('songbird', address)
-  }, { refreshInterval: C.REFRESH_QUERY_FAST_MS })
+    return FspDataLayer.getDelegatorInfo(chainCfg.slug, address)
+  }, { refreshInterval: REFRESH_QUERY_FAST_MS })
 
   async function connectWallet() {
     if (walletChoiceVisible || walletAddress != null) return
     setWalletChoiceVisible(true)
   }
 
-  // Contract-call adapters for SSP — same pattern as the Flare-FSP wiring,
-  // including the dynamic import of contracts.ts so ethers stays out of the
-  // FSP page chunk and loads only on a wallet transaction.
+  // Each adapter dynamically loads the per-chain contracts, then wraps the
+  // raw function with contractCallAdapter (provider acquisition + error
+  // handling) and the appropriate bigint conversion.
   const actions = {
     deposit: async (address: string, amount: number) => {
-      const { deposit } = await import("../contracts")
-      return contractCallAdapter(deposit, address, [expbigint(amount, C.SGB_DECIMALS)])
+      const { deposit } = await config.loadContracts()
+      return contractCallAdapter(deposit, address, [expbigint(amount, chainCfg.decimals)])
     },
     withdraw: async (address: string, amount: number) => {
-      const { withdraw } = await import("../contracts")
-      return contractCallAdapter(withdraw, address, [expbigint(amount, C.SGB_DECIMALS)])
+      const { withdraw } = await config.loadContracts()
+      return contractCallAdapter(withdraw, address, [expbigint(amount, chainCfg.decimals)])
     },
     delegate: async (address: string, bips: number) => {
-      const { delegate } = await import("../contracts")
+      const { delegate } = await config.loadContracts()
       return contractCallAdapter(delegate, address, [bips])
     },
     claim: async (address: string, epoch: number) => {
-      const { claim } = await import("../contracts")
+      const { claim } = await config.loadContracts()
       return contractCallAdapter(claim, address, [epoch])
     },
   }
@@ -57,16 +72,16 @@ const SongbirdFspLocalDelegateComponent = () => {
     </div>
   } else if (isLoading) {
     component = <div style={{ textAlign: 'center' }}>
-      <SpinnerCircular color={C.SONGBIRD_COLOR_CODE} size={45} />
+      <SpinnerCircular color={chainCfg.color} size={45} />
     </div>
   } else if (data == null) {
     component = <ServerError error={error} />
   } else {
     component = <>
       <p>
-        Delegation on Songbird is stored as a percentage of your {C.WSGB_SYMBOL} balance.
-        To delegate {C.SGB_SYMBOL}, first wrap it into {C.WSGB_SYMBOL}, then set the
-        delegation percentage. The {C.WSGB_SYMBOL} stays in your wallet and can be
+        Delegation on {chainCfg.name} is stored as a percentage of your {chainCfg.wrappedSymbol} balance.
+        To delegate {chainCfg.symbol}, first wrap it into {chainCfg.wrappedSymbol}, then set the
+        delegation percentage. The {chainCfg.wrappedSymbol} stays in your wallet and can be
         unwrapped or transferred at any time — moving it to another address reassigns
         the stake to that address.
       </p>
@@ -74,11 +89,11 @@ const SongbirdFspLocalDelegateComponent = () => {
         <FspLocalDelegate
           data={data}
           walletAddress={walletAddress}
-          symbol={C.SGB_SYMBOL}
-          wrappedSymbol={C.WSGB_SYMBOL}
+          symbol={chainCfg.symbol}
+          wrappedSymbol={chainCfg.wrappedSymbol!}
           delegationLabel="Stakecore"
           actions={actions}
-          explorerTxUrl={C.songbirdEvmTransactionUrl}
+          explorerTxUrl={chainCfg.explorers.evmTx!}
           onRefresh={() => mutate(swrKey)}
         />
       </div>
@@ -93,4 +108,4 @@ const SongbirdFspLocalDelegateComponent = () => {
   )
 }
 
-export default SongbirdFspLocalDelegateComponent
+export default FspLocalDelegateComponent
