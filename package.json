@@ -60,7 +60,7 @@
     "openapi-typescript": "^7.6.1",
     "openapi-typescript-codegen": "^0.29.0",
     "sass-embedded": "^1.93.2",
-    "vite": "^7.3.2",
+    "vite": "^7.3.6",
     "vitest": "^4.1.8"
   },
   "pnpm": {
@@ -68,9 +68,11 @@
       "esbuild"
     ],
     "overrides": {
+      "esbuild": "^0.28.1",
       "flatted": "^3.4.2",
       "handlebars": "^4.7.9",
       "immutable": "^5.1.5",
+      "js-yaml": "^4.2.0",
       "minimatch": "^5.1.8",
       "postcss": "^8.5.10",
       "rollup": "^4.59.0",
