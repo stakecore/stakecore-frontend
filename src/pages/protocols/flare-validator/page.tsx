@@ -2,7 +2,6 @@ import { Chain } from '~/enums'
 import ValidatorPage from '../validator/page'
 import ProjectDescription from './components/description'
 import FlareValidatorOfficialDelegateComponent from './components/delegateOfficial'
-import FlareValidatorLocalDelegateComponent from './components/delegateLocal'
 import FlareValidatorDataAccess from './data'
 
 
@@ -15,7 +14,6 @@ export const FlareValidatorPage = () => (
     dataAccess={FlareValidatorDataAccess}
     Description={ProjectDescription}
     OfficialDelegate={FlareValidatorOfficialDelegateComponent}
-    LocalDelegate={FlareValidatorLocalDelegateComponent}
   />
 )
 
