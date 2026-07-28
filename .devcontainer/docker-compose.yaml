@@ -1,0 +1,10 @@
+name: ${WORKSPACE_NAME}-devbox
+
+services:
+  dev:
+    image: mcr.microsoft.com/devcontainers/base:ubuntu24.04
+    volumes:
+      - ..:/workspaces/${WORKSPACE_NAME}:cached
+      - ${HOME}/.claude:/home/vscode/.claude
+      - ${HOME}/.claude.json:/home/vscode/.claude.json
+    command: sleep infinity

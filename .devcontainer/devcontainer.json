@@ -1,48 +1,61 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/docker-existing-dockerfile
 {
-	"name": "StakeCore Frontend Devcontainer",
-    "image": "mcr.microsoft.com/devcontainers/typescript-node:20",
-    // The base image ships pnpm via npm-global, which shadows Corepack and pins
-    // a version unrelated to this repo. Remove it and hand pnpm to Corepack so
-    // `pnpm` always resolves to package.json's "packageManager" version (the
-    // committed source of truth) — keeping the container in lockstep with CI and
-    // any host that has Corepack enabled. The shim goes in the npm-global bin
-    // because the `node` user can't write to /usr/local/bin (where Corepack
-    // defaults), and that bin is already first on PATH.
-    "postCreateCommand": "npm rm -g pnpm 2>/dev/null; corepack enable --install-directory \"$(npm config get prefix)/bin\" pnpm; npm install -g @anthropic-ai/claude-code",
-    // Let Corepack download the pinned pnpm without the interactive y/n prompt,
-    // so the first `pnpm` call (even non-interactive) doesn't hang.
+	"name": "${localWorkspaceFolderBasename}",
+    "dockerComposeFile": "docker-compose.yaml",
+    "service": "dev",
+    "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+    "features": {
+        "ghcr.io/devcontainers/features/node:1": {
+            "version": "22"
+        }
+    },
+    "postCreateCommand": ".devcontainer/post-create.sh",
+    "initializeCommand": ".devcontainer/initialize.sh",
+    // Let Corepack download the pinned pnpm without the interactive y/n
+    // prompt, so post-create.sh's non-interactive `pnpm install` doesn't
+    // hang waiting on stdin.
     "containerEnv": {
         "COREPACK_ENABLE_DOWNLOAD_PROMPT": "0"
     },
-    "mounts": [
-        "source=${localEnv:HOME}/.claude,target=/home/node/.claude,type=bind",
-        "source=${localEnv:HOME}/.claude.json,target=/home/node/.claude.json,type=bind"
-    ],
     "customizations": {
         "vscode": {
             "extensions": [
                 "mikestead.dotenv",
-                "esbenp.prettier-vscode",
-                "dbaeumer.vscode-eslint",
                 "eamodio.gitlens",
                 "usernamehw.errorlens",
-                "ms-azuretools.vscode-docker",
                 "christian-kohler.path-intellisense",
-                "wayou.vscode-todo-highlight",
+                "gruntfuggly.todo-tree",
                 "pkief.material-icon-theme",
-                "anthropic.claude-code"
+                "editorconfig.editorconfig",
+                "redhat.vscode-yaml",
+                "timonwong.shellcheck",
+                "anthropic.claude-code",
+                "esbenp.prettier-vscode",
+                "dbaeumer.vscode-eslint"
             ],
             "settings": {
-                "[typescript]": {
-                    "editor.defaultFormatter": "vscode.typescript-language-features",
-                    "editor.tabSize": 2
-                },
                 "editor.insertSpaces": true,
                 "editor.detectIndentation": false,
                 "files.trimFinalNewlines": true,
-                "files.trimTrailingWhitespace": true
+                "files.trimTrailingWhitespace": true,
+                "[typescript]": {
+                    "editor.defaultFormatter": "esbenp.prettier-vscode",
+                    "editor.tabSize": 2
+                },
+                "[javascript]": {
+                    "editor.defaultFormatter": "esbenp.prettier-vscode",
+                    "editor.tabSize": 2
+                },
+                "[json]": {
+                    "editor.defaultFormatter": "esbenp.prettier-vscode",
+                    "editor.tabSize": 2
+                },
+                "[jsonc]": {
+                    "editor.defaultFormatter": "esbenp.prettier-vscode",
+                    "editor.tabSize": 2
+                },
+                "[markdown]": {
+                    "editor.defaultFormatter": "esbenp.prettier-vscode"
+                }
             }
         }
     }

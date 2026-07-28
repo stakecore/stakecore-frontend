@@ -21,8 +21,8 @@ The version is pinned in `package.json#packageManager` (`pnpm@10.34.1`). There i
 
 Setup is in two places:
 
-- **Devcontainer** ([.devcontainer/devcontainer.json](.devcontainer/devcontainer.json)): the base `typescript-node:20` image ships a global pnpm via npm-global that shadows Corepack's shim. `postCreateCommand` runs `npm rm -g pnpm` then `corepack enable --install-directory "$(npm config get prefix)/bin" pnpm` so the shim lands in a writable, on-PATH bin (the `node` user can't write to `/usr/local/bin`). `COREPACK_ENABLE_DOWNLOAD_PROMPT=0` is set in `containerEnv` so the first run doesn't hang on an interactive download prompt.
-- **CI** ([.github/workflows/deploy-site.yml](.github/workflows/deploy-site.yml)): `corepack enable` runs **before** `actions/setup-node@v4` — otherwise `cache: pnpm` in setup-node fails because `pnpm` doesn't resolve yet.
+- **Devcontainer** ([.devcontainer/post-create.sh](.devcontainer/post-create.sh)): the container is built from [docker-compose.yaml](.devcontainer/docker-compose.yaml) (`base:ubuntu24.04` plus the `devcontainers/features/node` feature, pinned to Node 22 in [devcontainer.json](.devcontainer/devcontainer.json) and hash-locked in `devcontainer-lock.json`). The node feature installs a global pnpm that shadows Corepack's shim, so `postCreateCommand` → `post-create.sh` runs `npm rm -g pnpm` then `corepack enable --install-directory "$(npm config get prefix)/bin" pnpm` — the shim lands in a writable, on-PATH bin (the `vscode` user can't write to `/usr/local/bin`, where Corepack defaults). `COREPACK_ENABLE_DOWNLOAD_PROMPT=0` is set in `containerEnv` so the `pnpm install` at the end of that script doesn't hang on an interactive download prompt.
+- **CI** ([.github/workflows/deploy-site.yml](.github/workflows/deploy-site.yml)): `corepack enable` runs **before** `actions/setup-node@v4` — otherwise `cache: pnpm` in setup-node fails because `pnpm` doesn't resolve yet. `node-version` is kept at 22 to match the devcontainer.
 
 Symptoms that point at a Corepack misconfig:
 
@@ -72,7 +72,7 @@ Global stylesheets are aggregated through `src/assets/css/index.scss`, which `ma
 
 ### Testing
 
-Vitest + happy-dom + `@testing-library/react` / `user-event`. 233 tests across 21 files at last count, all co-located next to source as `*.test.ts(x)`. Test files declare their environment per-file via a top-of-file `// @vitest-environment happy-dom` directive (no global config).
+Vitest + happy-dom + `@testing-library/react` / `user-event`. 241 tests across 22 files at last count, all co-located next to source as `*.test.ts(x)`. Test files declare their environment per-file via a top-of-file `// @vitest-environment happy-dom` directive (no global config).
 
 Common patterns: `vi.mock('~/features/wallet/store', ...)` to provide a fake Zustand store, `vi.mock('~/features/wallet/eip1193', ...)` for the RPC helpers, Proxy-mocked `Contract` instances for ethers calls, `MemoryRouter` wrapping for components that use `useLocation` / `NavLink`. `fireEvent.click` instead of `userEvent.click` when targeting react-router-dom `<Link>` (userEvent's synthetic chain doesn't reach the onClick prop reliably through Link's `preventDefault`).
 
