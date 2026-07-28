@@ -33,6 +33,10 @@
                 "dbaeumer.vscode-eslint"
             ],
             "settings": {
+                // Todo Tree only looks for ripgrep under VS Code's appRoot and
+                // never on PATH, so it can't find the copy post-create.sh
+                // installs unless we point it there explicitly.
+                "todo-tree.ripgrep": "/usr/bin/rg",
                 "editor.insertSpaces": true,
                 "editor.detectIndentation": false,
                 "files.trimFinalNewlines": true,
