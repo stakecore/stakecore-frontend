@@ -109,7 +109,9 @@ export function createValidatorDataAccess(chain: Chain, service: ValidatorServic
       countdown: {
         startTimeMs: data.validatorStartTime * 1000,
         endTimeMs: data.validatorEndTime * 1000
-      }
+      },
+      // `?? []` in case the deployed backend predates the epochApys field.
+      epochApys: data.epochApys ?? [],
     }
   }
 

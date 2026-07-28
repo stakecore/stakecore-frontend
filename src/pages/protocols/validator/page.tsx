@@ -39,8 +39,6 @@ export interface ValidatorPageProps {
   dataAccess: Pick<ValidatorDataAccess, 'getPageData'>
   Description: ComponentType
   OfficialDelegate: ComponentType<{ validatorLink: ValidatorData['delegation']['validatorLink'] }>
-  // Flare exposes an on-site P-chain signing flow; Avalanche doesn't.
-  LocalDelegate?: ComponentType<{ selectedNodeId: string }>
 }
 
 // Shared validator page shell. The Flare and Avalanche routes differ only in
@@ -55,7 +53,6 @@ const ValidatorPage = ({
   dataAccess,
   Description,
   OfficialDelegate,
-  LocalDelegate,
 }: ValidatorPageProps) => {
   const accentColor = CHAIN_CONFIG[chain].color
   const { data, error, isLoading } = useSWR(swrKey, () => dataAccess.getPageData())
@@ -81,7 +78,6 @@ const ValidatorPage = ({
   } else {
     component = <>
       <InfoComponent specs={selected.specs} summary={selected.summary} />
-      {LocalDelegate && <LocalDelegate selectedNodeId={selected.base.validatorNodeId} />}
       <OfficialDelegate validatorLink={selected.delegation.validatorLink} />
       <ValidatorStatistics config={selected.graphics} />
     </>

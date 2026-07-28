@@ -1,5 +1,5 @@
 import type { ISummary, ISpecs, ILink } from "../types"
-import type { PChainValidatorInfoDto } from "~/backendApi"
+import type { PChainValidatorInfoDto, ValidatorEpochApyDto } from "~/backendApi"
 
 // Shared shape for a single validator's page data, used by both the Flare
 // and Avalanche validator routes.
@@ -36,6 +36,9 @@ export type IGraphics = {
     startTimeMs: number
     endTimeMs: number
   }
+  // APY per reward epoch (up to the latest 25). Empty where the backend
+  // doesn't track the series — the chart section hides itself then.
+  epochApys: ValidatorEpochApyDto[]
 }
 
 export type IDelegation = {
