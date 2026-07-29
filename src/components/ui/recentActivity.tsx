@@ -23,8 +23,31 @@ function chainToAddressUrl(chain: number, protocol: number, address: string): st
   return build ? build(address) : ''
 }
 
+// One transaction can emit several activity entries — a batched delegation, or
+// a redelegation that arrives as a +/- amount pair — so the transaction hash
+// alone doesn't identify a card. Key on the whole entry instead; `withKeys`
+// below disambiguates the remaining exact repeats.
 function itemKey(item: PageActivityDto): string {
-  return `${item.type}-${item.transaction}`
+  return [
+    item.type, item.transaction, item.chain, item.protocol,
+    item.delegator, item.delegatee, item.amount,
+  ].join('-')
+}
+
+type KeyedActivity = { item: PageActivityDto, key: string }
+
+// Two entries can still be identical in every field the API exposes, which
+// would collide again. Suffix repeats with an occurrence counter so each card
+// gets a unique key that stays stable across refreshes (keeping ActivityCard's
+// memo effective) instead of falling back to array indices.
+function withKeys(items: PageActivityDto[]): KeyedActivity[] {
+  const seen = new Map<string, number>()
+  return items.map(item => {
+    const base = itemKey(item)
+    const n = seen.get(base) ?? 0
+    seen.set(base, n + 1)
+    return { item, key: n === 0 ? base : `${base}#${n}` }
+  })
 }
 
 // Derive a per-chain/protocol token price from the aggregate stats
@@ -45,14 +68,14 @@ const RecentActivity = ({ data, isLoading }: {
   const delegated = data?.data?.delegated
   const marqueeRef = useRef<HTMLDivElement | null>(null)
 
-  const items = useMemo<PageActivityDto[] | null>(() => {
+  const items = useMemo<KeyedActivity[] | null>(() => {
     if (activity == null) return null
     // Drop entries whose type or chain we don't have a renderer for — a new
     // backend activity type or chain id would otherwise dereference an
     // undefined config in ActivityCard and crash the whole hero marquee.
-    return [...activity]
+    return withKeys([...activity]
       .filter(a => a.type in ACTIVITY_CONFIG && a.chain in CHAIN_CONFIG)
-      .sort((a, b) => b.timestamp - a.timestamp)
+      .sort((a, b) => b.timestamp - a.timestamp))
   }, [activity])
 
   const priceByKey = useMemo(() => buildPriceMap(data), [delegated])
@@ -146,11 +169,11 @@ const RecentActivity = ({ data, isLoading }: {
 
   return <div ref={marqueeRef} className="activity-marquee" aria-label="Recent activity">
     <div className="activity-marquee-track">
-      {items.map(item =>
-        <ActivityCard key={`a-${itemKey(item)}`} activity={item} priceByKey={priceByKey} />
+      {items.map(({ item, key }) =>
+        <ActivityCard key={`a-${key}`} activity={item} priceByKey={priceByKey} />
       )}
-      {items.map(item =>
-        <ActivityCard key={`b-${itemKey(item)}`} activity={item} priceByKey={priceByKey} aria-hidden />
+      {items.map(({ item, key }) =>
+        <ActivityCard key={`b-${key}`} activity={item} priceByKey={priceByKey} aria-hidden />
       )}
     </div>
   </div>
