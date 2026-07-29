@@ -96,7 +96,7 @@ const valueProps = [
     {
         icon: <RiUserVoiceLine size={28} />,
         title: 'Direct access to the engineers',
-        body: 'Partners get a direct line to the engineers who built the cluster: integration questions, custom reporting, reward routing, answered by whoever is on call for it. Everyone else reaches the same team through the contact page.',
+        body: 'Partners get a direct line to the engineers who built the cluster: integration questions, custom reporting, reward routing, answered by whoever is on call for it. Everyone else reaches the same team through our socials or the contact page.',
     },
 ]
 
