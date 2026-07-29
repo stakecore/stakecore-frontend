@@ -76,32 +76,115 @@
     @include t.up(md) { font-size: 40px; }
 }
 
-// Section body paragraph used under the section header (e.g. the
-// Infrastructure section above the constellation viz).
-.about-section-body {
-    font-family: var(--font-sans);
-    font-size: t.$text-base;
-    line-height: 1.5;
-    color: var(--main-color);
-    margin: 16px 0 32px;
-    max-width: 640px;
+// Emphasis accent, used in both headings and body copy. Sage rather than
+// white is the whole point: this page also has underlined white links
+// (a.about-inline-link), so the two underlines must not be confusable —
+// sage means emphasis, white means it goes somewhere. Sized in em so one
+// rule tracks everything from 40px headings down to 20px body text.
+.about-mark {
+    text-decoration: underline;
+    text-decoration-color: var(--success);
+    text-decoration-thickness: 0.055em;
+    text-underline-offset: 0.14em;
 }
 
-// Reserves a generous square block for the constellation SVG and
-// centres it. The SVG itself is responsive (max-width: 600px,
-// aspect-ratio 1/1), so this just adds vertical breathing room.
-.about-constellation-wrap {
-    display: flex;
-    justify-content: center;
+// --- Infrastructure section: alternating prose / visual rows ---
+//
+// Each visual is paired with the argument it illustrates rather than
+// standing alone: the globe beside the geographic spread, the constellation
+// beside the failover behaviour. The two rows mirror each other, so the
+// visuals sit on opposite sides and the eye zig-zags down the section.
+//
+// Below lg both rows collapse to a single column. Text is first in the DOM
+// in both rows, which keeps the stacked order heading → prose → visual;
+// only at lg does --visual-first pull its visual into the left column.
+.about-split {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    align-items: center;
     padding: 24px 0;
 
-    @include t.up(md) { padding: 48px 0; }
+    @include t.up(lg) {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 56px;
+        padding: 32px 0;
+    }
+}
+
+.about-split--visual-first {
+    @include t.up(lg) {
+        .about-split-visual { grid-area: 1 / 1; }
+        .about-split-text { grid-area: 1 / 2; }
+    }
+}
+
+.about-split-text {
+    min-width: 0;
+    max-width: 560px;
+}
+
+.about-split-visual {
+    display: flex;
+    justify-content: center;
+    min-width: 0; // grid children default to min-content; let the canvas shrink
+
+    // Both visuals cap at the same width so the two rows read as a pair.
+    // Left alone, the constellation SVG draws at its own 600px maximum
+    // against the globe's 420px, and the second row towers over the first.
+    > * {
+        width: 100%;
+        max-width: 440px;
+    }
+}
+
+.about-split-title {
+    font-family: t.$font-display;
+    font-size: t.$text-lg;
+    font-weight: t.$weight-bold;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    color: var(--heading-color);
+    margin: 0 0 12px;
+
+    @include t.up(md) { font-size: t.$text-xl; }
+}
+
+.about-split-body {
+    font-family: var(--font-sans);
+    font-size: t.$text-base;
+    line-height: 1.6;
+    color: var(--main-color);
+    margin: 0;
+}
+
+// Inline prose link. The global rule paints anchors in --main-color with no
+// underline, which inside a --main-color paragraph leaves them invisible —
+// so this restores an affordance. The element+class+pseudo selector is
+// deliberate: plain `.about-inline-link:hover` ties with the global
+// `a:hover { color: inherit }` on specificity and would lose to load order.
+a.about-inline-link {
+    color: var(--heading-color);
+    text-decoration: underline;
+    text-decoration-color: rgba(255, 255, 255, 0.32);
+    text-underline-offset: 0.18em;
+    transition: text-decoration-color 150ms ease-out;
+}
+
+a.about-inline-link:hover,
+a.about-inline-link:focus-visible {
+    color: var(--heading-color);
+    text-decoration-color: var(--success);
 }
 
 .about-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 16px;
+    // Whitespace is what separates entries now that the borders are gone; the
+    // old 16px was sized for the gap between two bordered cards and reads as
+    // cramped without them. Row gap runs larger than column gap so a rule
+    // never crowds the body text sitting above it.
+    gap: 36px 32px;
 
     @include t.up(md) { grid-template-columns: repeat(3, 1fr); }
 }
@@ -110,13 +193,16 @@
     @include t.up(md) { grid-template-columns: repeat(2, 1fr); }
 }
 
+// Entries are marked by a hairline above rather than boxed in. Across a row
+// the rules line up into one continuous band, which gives the grid structure
+// without drawing a card around every item — the boxes were the only
+// enclosed shapes on an otherwise open page.
+//
+// No hover state, deliberately: these are static text, and a hover response
+// reads as an affordance, inviting clicks that go nowhere.
 .about-tile {
-    padding: 24px;
-    border: 1px solid var(--border-subtle);
-    background: var(--surface-raised);
-    transition: border-color 150ms ease-out;
-
-    &:hover { border-color: var(--border-strong); }
+    padding-top: 20px;
+    border-top: 1px solid var(--border-subtle);
 }
 
 .about-tile--wide {

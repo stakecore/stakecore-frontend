@@ -1,0 +1,131 @@
+// @vitest-environment happy-dom
+
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { render, screen, cleanup } from '@testing-library/react'
+import ServerGlobe, { NODES } from './serverGlobe'
+
+// happy-dom has no canvas backend and no layout engine, so three things
+// need standing in for:
+//   - getContext('2d'), which otherwise returns null and the effect bails
+//   - clientWidth, which is always 0 without layout, so the globe would
+//     size itself to nothing and never draw
+//   - requestAnimationFrame, which must NOT actually run the callback or
+//     the render loop spins forever inside the test
+
+let ctxCalls: string[]
+
+const makeFakeCtx = () => {
+  const target: Record<string, unknown> = {}
+  return new Proxy(target, {
+    get: (t, prop: string) => {
+      if (!(prop in t)) {
+        t[prop] = (...args: unknown[]) => { ctxCalls.push(prop); return args }
+      }
+      return t[prop]
+    },
+    set: () => true,
+  }) as unknown as CanvasRenderingContext2D
+}
+
+const setReducedMotion = (reduce: boolean) => {
+  vi.stubGlobal('matchMedia', (query: string) => ({
+    matches: reduce && query.includes('prefers-reduced-motion'),
+    media: query,
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+  }))
+}
+
+let rafSpy: ReturnType<typeof vi.fn>
+let cafSpy: ReturnType<typeof vi.fn>
+
+beforeEach(() => {
+  ctxCalls = []
+  rafSpy = vi.fn(() => 1)
+  cafSpy = vi.fn()
+
+  vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockImplementation(() => makeFakeCtx())
+  Object.defineProperty(HTMLElement.prototype, 'clientWidth', { configurable: true, value: 400 })
+  vi.stubGlobal('requestAnimationFrame', rafSpy)
+  vi.stubGlobal('cancelAnimationFrame', cafSpy)
+  vi.stubGlobal('ResizeObserver', class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  })
+  setReducedMotion(false)
+})
+
+afterEach(() => {
+  cleanup()
+  vi.restoreAllMocks()
+  vi.unstubAllGlobals()
+  delete (HTMLElement.prototype as unknown as Record<string, unknown>).clientWidth
+})
+
+describe('ServerGlobe', () => {
+  it('exposes every node location to assistive tech via the canvas label', () => {
+    render(<ServerGlobe />)
+    const label = screen.getByRole('img').getAttribute('aria-label') ?? ''
+    for (const node of NODES) expect(label).toContain(node.city)
+  })
+
+  it('lists server and worker nodes separately in the legend', () => {
+    render(<ServerGlobe />)
+
+    const servers = screen.getByText('Server nodes').parentElement?.textContent ?? ''
+    const workers = screen.getByText('Worker nodes').parentElement?.textContent ?? ''
+
+    for (const node of NODES.filter(n => n.role === 'server')) {
+      expect(servers).toContain(node.city)
+      expect(workers).not.toContain(node.city)
+    }
+    for (const node of NODES.filter(n => n.role === 'worker')) {
+      expect(workers).toContain(node.city)
+      expect(servers).not.toContain(node.city)
+    }
+  })
+
+  it('labels the legend without Nomad-specific vocabulary', () => {
+    render(<ServerGlobe />)
+    // "Client" means workload host in Nomad and the opposite to everyone
+    // else — it must not resurface in anything the reader sees.
+    expect(screen.queryByText(/client/i)).toBeNull()
+    expect(screen.getByRole('img').getAttribute('aria-label')).not.toMatch(/client/i)
+  })
+
+  it('has three server nodes and four worker nodes', () => {
+    expect(NODES.filter(n => n.role === 'server')).toHaveLength(3)
+    expect(NODES.filter(n => n.role === 'worker')).toHaveLength(4)
+  })
+
+  it('draws the globe and starts the rotation loop', () => {
+    render(<ServerGlobe />)
+    expect(ctxCalls).toContain('arc')
+    expect(ctxCalls).toContain('stroke')
+    expect(rafSpy).toHaveBeenCalled()
+  })
+
+  it('draws a single static frame and never animates under reduced motion', () => {
+    setReducedMotion(true)
+    render(<ServerGlobe />)
+    // The frame is still painted — the globe is visible, it just holds still.
+    expect(ctxCalls).toContain('arc')
+    expect(rafSpy).not.toHaveBeenCalled()
+  })
+
+  it('sizes the backing store for the device pixel ratio', () => {
+    vi.stubGlobal('devicePixelRatio', 2)
+    render(<ServerGlobe />)
+    const canvas = screen.getByRole('img') as HTMLCanvasElement
+    // 400px container, capped at the 420px max, doubled for the DPR.
+    expect(canvas.width).toBe(800)
+    expect(canvas.style.width).toBe('400px')
+  })
+
+  it('cancels the pending frame on unmount', () => {
+    const { unmount } = render(<ServerGlobe />)
+    unmount()
+    expect(cafSpy).toHaveBeenCalled()
+  })
+})
