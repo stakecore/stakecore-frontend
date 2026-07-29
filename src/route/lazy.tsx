@@ -7,6 +7,7 @@ import "./lazy.scss";
 const RELOAD_FLAG = 'stakecore:chunk-reload-attempted'
 
 export function routeLazy<T extends ComponentType<any>>(
+  path: string,
   factory: () => Promise<{ default: T }>
 ) {
   return async () => {
@@ -17,6 +18,14 @@ export function routeLazy<T extends ComponentType<any>>(
     } catch (err) {
       if (sessionStorage.getItem(RELOAD_FLAG) !== '1') {
         sessionStorage.setItem(RELOAD_FLAG, '1')
+        // The data router commits the URL only *after* lazy() resolves, so
+        // the hash still points at the route being left. Reloading as-is
+        // would replay that page and swallow the navigation — the user
+        // clicks "Songbird FSP" from Home and lands back on Home. Point the
+        // hash at where they were going before handing over to the reload.
+        const url = new URL(window.location.href)
+        url.hash = `#${path}`
+        window.history.replaceState(null, '', url)
         window.location.reload()
         return new Promise<{ Component: T }>(() => {})
       }

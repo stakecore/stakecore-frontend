@@ -6,7 +6,7 @@ import { routeLazy, ChunkLoadError, RouteHydrateFallback } from "./lazy";
 
 const lazyRoute = (path, factory) => ({
     path,
-    lazy: routeLazy(factory),
+    lazy: routeLazy(path, factory),
     errorElement: <ChunkLoadError />
 })
 
