@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { RiArrowRightUpLine } from '@remixicon/react'
 import { protocolsData } from '../../utils/data/protocols'
 import './portfolio.scss'

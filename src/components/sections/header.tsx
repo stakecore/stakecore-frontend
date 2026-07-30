@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, NavLink, useLocation } from 'react-router-dom'
+import { Link, NavLink, useLocation } from 'react-router'
 import { RiGithubLine, RiSendPlaneLine, RiTwitterXLine } from '@remixicon/react'
 import { menuList } from '../../utils/data/menu'
 import { useGlobalStore } from '~/features/wallet/store'

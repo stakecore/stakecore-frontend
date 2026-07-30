@@ -1,4 +1,4 @@
-import { Outlet, useLocation, useMatches, useNavigation } from 'react-router-dom'
+import { Outlet, useLocation, useMatches, useNavigation } from 'react-router'
 import { ToastContainer } from 'react-toastify'
 import { useGlobalStore } from '~/features/wallet/store'
 import { useShallow } from 'zustand/react/shallow'

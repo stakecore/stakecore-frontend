@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react'
 import useSWR from 'swr'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router'
 import { SpinnerCircular } from 'spinners-react'
 import { Chain } from '~/enums'
 import { CHAIN_CONFIG } from '~/config/chains'
