@@ -3,8 +3,9 @@
 // Custom dropdown (button + absolutely-positioned popup) so the open
 // menu can be styled to match the rest of the dark UI instead of
 // inheriting OS / browser <select> chrome. Lives in ProjectTitle's
-// right slot. Per-chain accent (--validator-picker-accent) lights the
-// trigger border while focused/open and the chevron while open.
+// slot below the title. Per-chain accent (--validator-picker-accent)
+// lights the trigger border while focused/open and the chevron while
+// open.
 .validator-picker {
     position: relative;
     display: inline-flex;
@@ -46,12 +47,18 @@
     background: var(--surface-raised);
 }
 
+// Node ids are monospaced so every truncated id (always the same
+// character count out of Formatter.address) renders at the same pixel
+// width — in the proportional UI font two ids of equal length could
+// differ by ~25px, which made the trigger resize on each selection.
+// nowrap keeps an id on one line regardless of the box it lands in.
 .validator-picker-value {
     flex: 1;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
     text-align: left;
+    font-family: t.$font-mono;
+    white-space: nowrap;
 }
 
 // Chevron rotates 180° while the menu is open — a quiet visual signal
@@ -67,23 +74,24 @@
     color: var(--heading-color);
 }
 
-// Featured marker (★). Muted so it reads as a marker, not an accent;
-// inherits the surrounding text colour in the trigger so it tones down
-// at rest and brightens when this row is the active option.
-.validator-picker-star {
-    font-size: 12px;
-    line-height: 1;
-    color: var(--main-color);
-}
-
 // Popup menu. Anchored to the right edge of the trigger so it doesn't
-// clip off the page; full-width-of-trigger via min-width so node ids
-// align between trigger and options. z-index is just high enough to
-// clear the page chrome but below any future modal overlays.
+// clip off the page; at least as wide as the trigger via min-width so
+// node ids align between trigger and options. z-index is just high
+// enough to clear the page chrome but below any future modal overlays.
+//
+// `width: max-content` keeps the menu sized by its own widest row. As
+// an absolutely-positioned box its shrink-to-fit width would otherwise
+// be clamped to the containing block (.validator-picker, i.e. the
+// trigger), which is sized by whichever id happens to be *selected* —
+// so a narrower selection used to squeeze the menu until a row wrapped
+// onto two lines. Monospaced ids now render at equal width, which
+// removes the usual trigger of that, but keeping the menu independent
+// of the selection means a future label change can't reintroduce it.
 .validator-picker-menu {
     position: absolute;
     top: calc(100% + 6px);
     right: 0;
+    width: max-content;
     min-width: 100%;
     margin: 0;
     padding: 4px;
@@ -104,7 +112,6 @@
 .validator-picker-option {
     display: flex;
     align-items: center;
-    gap: 8px;
     width: 100%;
     padding: 8px 10px;
     font-family: var(--font-sans);
@@ -127,11 +134,13 @@
     &.active {
         background: var(--surface-hover);
         box-shadow: inset 2px 0 0 var(--validator-picker-accent, rgba(255, 255, 255, 0.6));
-
-        .validator-picker-star { color: var(--heading-color); }
     }
 }
 
+// Monospaced to match the trigger, so an id occupies the same width in
+// both places and the rows align as a column of equal-length ids.
 .validator-picker-option-label {
     flex: 1;
+    font-family: t.$font-mono;
+    white-space: nowrap;
 }

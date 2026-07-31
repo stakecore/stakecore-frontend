@@ -4,12 +4,14 @@ import { Formatter } from "~/utils/misc/formatter"
 import './validatorPicker.scss'
 
 
-// Custom dropdown floated top-right of the page title on
-// /flare/validator and /avalanche/validator when more than one
-// validator is returned. Built as a button-plus-popup rather than a
-// native <select> so the open menu inherits the page's dark palette
-// instead of the OS dropdown chrome. Selection is owned by the parent
-// (URL-state friendly).
+// Custom dropdown rendered under the page title on /flare/validator
+// and /avalanche/validator when more than one validator is returned.
+// Built as a button-plus-popup rather than a native <select> so the
+// open menu inherits the page's dark palette instead of the OS dropdown
+// chrome. Selection is owned by the parent (URL-state friendly).
+//
+// `featured` is not surfaced visually — it only decides which validator
+// the parent selects by default (see pickSelected in validator/page.tsx).
 const ValidatorPicker = ({ validators, selectedNodeId, onSelect, accentColor }: {
   validators: PChainValidatorInfoDto[]
   selectedNodeId: string
@@ -58,9 +60,6 @@ const ValidatorPicker = ({ validators, selectedNodeId, onSelect, accentColor }: 
       >
         <span className="validator-picker-value">
           {Formatter.address(selected.validatorNodeId, 10)}
-          {selected.featured && (
-            <span className="validator-picker-star" aria-label="Featured">★</span>
-          )}
         </span>
         <svg
           className="validator-picker-chevron"
@@ -98,9 +97,6 @@ const ValidatorPicker = ({ validators, selectedNodeId, onSelect, accentColor }: 
                   <span className="validator-picker-option-label">
                     {Formatter.address(v.validatorNodeId, 10)}
                   </span>
-                  {v.featured && (
-                    <span className="validator-picker-star" aria-label="Featured">★</span>
-                  )}
                 </button>
               </li>
             )
