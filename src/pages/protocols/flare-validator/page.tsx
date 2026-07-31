@@ -9,7 +9,7 @@ export const FlareValidatorPage = () => (
   <ValidatorPage
     chain={Chain.FLARE}
     swrKey='flare-validator-page'
-    title='Flare Validator Delegation'
+    title='Flare Validator'
     suptitle='Secure Flare Network Consensus Layer'
     dataAccess={FlareValidatorDataAccess}
     Description={ProjectDescription}
