@@ -13,26 +13,29 @@
     h1 { font-size: t.$text-2xl; }
 }
 
+// Column stack: the aside always sits below the title block. This was
+// previously a wrapping flex row, where the aside dropped to its own
+// line only because the longest title ("Flare Validator Delegation")
+// overflowed max-width — shortening a title pulled the control back up
+// beside the h1. Stacking explicitly makes the layout independent of
+// title length.
 .project-title {
     display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 16px 24px;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
     padding-bottom: 32px;
     max-width: 880px;
 }
 
-// Holds the suptitle + h1 stack. Flex item that fills the remaining
-// width so the aside (e.g. the validator dropdown) hugs the right edge.
+// Holds the suptitle + h1 stack.
 .project-title-text {
-    flex: 1 1 auto;
     min-width: 0;
 }
 
-// Right-side slot for page-level controls (currently: the validator
-// dropdown on the two validator pages). Flexes to its natural width
-// and wraps below the title on narrow viewports.
+// Slot for page-level controls (currently: the validator dropdown on
+// the two validator pages), rendered under the title. align-items on
+// the parent keeps it at its natural width rather than stretching.
 .project-title-aside {
     flex: 0 0 auto;
 }

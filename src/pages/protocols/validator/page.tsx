@@ -83,7 +83,7 @@ const ValidatorPage = ({
     </>
   }
 
-  // Picker lives top-right of the page title — only rendered once data has
+  // Picker lives directly under the page title — only rendered once data has
   // loaded and a selection exists. ValidatorPicker hides itself when
   // validators.length <= 1 so a single-entry response still looks like the
   // original (pre-multi-validator) page.
