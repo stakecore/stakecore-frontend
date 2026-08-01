@@ -81,7 +81,7 @@ const valueProps = [
     {
         icon: <RiShieldCheckLine size={28} />,
         title: 'Tokens that never move',
-        body: 'Delegation is a vote, not a transfer. Nothing gets bridged, wrapped, or routed through a smart contract, and we never take custody of anything — your keys stay yours the entire time.',
+        body: <>Delegation is a vote, not a transfer. Nothing gets bridged, wrapped, or routed through a smart contract, and <u>we never take custody of anything</u> — your keys stay yours the entire time.</>,
     },
     {
         icon: <RiLineChartLine size={28} />,
