@@ -54,6 +54,39 @@ export function project(
   }
 }
 
+/** Tilt limit for interactive rotation — far enough to explore either
+ * hemisphere, short of the disorienting pole-on view. */
+export const MAX_TILT_DEG = 60
+
+/**
+ * Apply a pointer drag to the view centre, drag-follows-finger.
+ *
+ * A drag of `radius` pixels rotates by one radian, so the surface under the
+ * pointer tracks it at the disc centre regardless of globe size. Dragging
+ * right decreases centreLon (the surface sweeps rightward with the pointer);
+ * dragging down increases centreLat (north tilts into view). Longitude wraps
+ * to (-180, 180]; latitude clamps to ±MAX_TILT_DEG.
+ */
+export function dragRotation(
+  centreLonDeg: number,
+  centreLatDeg: number,
+  dxPx: number,
+  dyPx: number,
+  radius: number,
+): { lon: number, lat: number } {
+  let lon = centreLonDeg - dxPx / radius / DEG
+  // Shift into [0, 360), then down to (-180, 180].
+  lon = ((lon % 360) + 360) % 360
+  if (lon > 180) lon -= 360
+
+  const lat = Math.max(
+    -MAX_TILT_DEG,
+    Math.min(MAX_TILT_DEG, centreLatDeg + dyPx / radius / DEG),
+  )
+
+  return { lon, lat }
+}
+
 /**
  * Lat/lon mesh as a list of polylines, each a flat [lon, lat, lon, lat, ...].
  *

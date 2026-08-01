@@ -22,6 +22,14 @@
 
     canvas {
         display: block;
+        // Drag rotates the globe; pan-y keeps one-finger vertical scrolling
+        // over the canvas working on touch screens (horizontal drags spin).
+        touch-action: pan-y;
+        cursor: grab;
+
+        &.is-dragging {
+            cursor: grabbing;
+        }
     }
 }
 

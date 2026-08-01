@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { render, screen, cleanup } from '@testing-library/react'
+import { render, screen, cleanup, fireEvent } from '@testing-library/react'
 import ServerGlobe, { NODES } from './serverGlobe'
 
 // happy-dom has no canvas backend and no layout engine, so three things
@@ -127,5 +127,70 @@ describe('ServerGlobe', () => {
     const { unmount } = render(<ServerGlobe />)
     unmount()
     expect(cafSpy).toHaveBeenCalled()
+  })
+
+  describe('interactive rotation', () => {
+    const drag = (canvas: HTMLElement, from: [number, number], to: [number, number]) => {
+      fireEvent.pointerDown(canvas, { pointerId: 1, clientX: from[0], clientY: from[1] })
+      fireEvent.pointerMove(canvas, { pointerId: 1, clientX: to[0], clientY: to[1] })
+    }
+
+    it('pauses the auto-spin while the pointer is down', () => {
+      render(<ServerGlobe />)
+      expect(cafSpy).not.toHaveBeenCalled()
+      fireEvent.pointerDown(screen.getByRole('img'), { pointerId: 1, clientX: 200, clientY: 200 })
+      expect(cafSpy).toHaveBeenCalled()
+    })
+
+    it('redraws as the pointer drags', () => {
+      render(<ServerGlobe />)
+      const canvas = screen.getByRole('img')
+      ctxCalls = []
+      drag(canvas, [200, 200], [240, 200])
+      expect(ctxCalls).toContain('arc')
+    })
+
+    it('resumes the auto-spin a moment after the drag ends', () => {
+      // Only fake the timeout — faking rAF too would displace the rafSpy
+      // stub this test asserts on.
+      vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
+      try {
+        render(<ServerGlobe />)
+        const canvas = screen.getByRole('img')
+        drag(canvas, [200, 200], [240, 200])
+        rafSpy.mockClear()
+        fireEvent.pointerUp(canvas, { pointerId: 1 })
+        expect(rafSpy).not.toHaveBeenCalled() // not immediately
+        vi.advanceTimersByTime(5_000)
+        expect(rafSpy).toHaveBeenCalled()
+      } finally {
+        vi.useRealTimers()
+      }
+    })
+
+    it('lets reduced-motion users drag, still without ever animating', () => {
+      vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
+      try {
+        setReducedMotion(true)
+        render(<ServerGlobe />)
+        const canvas = screen.getByRole('img')
+        ctxCalls = []
+        drag(canvas, [200, 200], [240, 200])
+        expect(ctxCalls).toContain('arc') // the drag itself redraws
+        fireEvent.pointerUp(canvas, { pointerId: 1 })
+        vi.advanceTimersByTime(60_000)
+        expect(rafSpy).not.toHaveBeenCalled() // auto-spin never starts
+      } finally {
+        vi.useRealTimers()
+      }
+    })
+
+    it('ignores pointer moves when no drag is in progress', () => {
+      render(<ServerGlobe />)
+      const canvas = screen.getByRole('img')
+      ctxCalls = []
+      fireEvent.pointerMove(canvas, { pointerId: 1, clientX: 240, clientY: 200 })
+      expect(ctxCalls).not.toContain('arc')
+    })
   })
 })

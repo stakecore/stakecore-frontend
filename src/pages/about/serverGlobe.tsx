@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { COASTLINE_RINGS } from './coastlines'
-import { project, graticule } from './globeProjection'
+import { project, graticule, dragRotation } from './globeProjection'
 import './serverGlobe.scss'
 
 // Spinning globe showing where the Nomad cluster actually runs.
@@ -25,6 +25,7 @@ import './serverGlobe.scss'
 const ROTATION_PERIOD_MS = 45_000
 const TILT_DEG = 30          // every node sits 45–60°N; tilt brings them to centre
 const STATIC_CENTRE_LON = -25 // Atlantic-centred: Quebec and Europe both in view
+const RESUME_DELAY_MS = 2_500 // idle time after a drag before auto-spin returns
 
 const MAX_SIZE_PX = 420
 const GLOBE_RADIUS_RATIO = 0.42 // leaves room for halos at the limb
@@ -82,13 +83,14 @@ function strokeLines(
   cy: number,
   radius: number,
   centreLon: number,
+  centreLat: number,
   nearFace: boolean,
 ) {
   ctx.beginPath()
   for (const line of lines) {
     let penDown = false
     for (let i = 0; i < line.length; i += 2) {
-      const p = project(line[i], line[i + 1], centreLon, TILT_DEG, radius)
+      const p = project(line[i], line[i + 1], centreLon, centreLat, radius)
       if (p.visible !== nearFace) {
         penDown = false
         continue
@@ -106,12 +108,13 @@ function drawNodes(
   cy: number,
   radius: number,
   centreLon: number,
+  centreLat: number,
   nearFace: boolean,
   serverColor: string,
   clientColor: string,
 ) {
   for (const node of NODES) {
-    const p = project(node.lon, node.lat, centreLon, TILT_DEG, radius)
+    const p = project(node.lon, node.lat, centreLon, centreLat, radius)
     if (p.visible !== nearFace) continue
 
     const x = cx + p.x
@@ -144,6 +147,7 @@ function draw(
   ctx: CanvasRenderingContext2D,
   size: number,
   centreLon: number,
+  centreLat: number,
   serverColor: string,
   clientColor: string,
 ) {
@@ -163,15 +167,15 @@ function draw(
   // Far face first, so the near face paints over it.
   ctx.lineWidth = 1
   ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)'
-  strokeLines(ctx, GRATICULE_LINES, cx, cy, radius, centreLon, false)
+  strokeLines(ctx, GRATICULE_LINES, cx, cy, radius, centreLon, centreLat, false)
   ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)'
-  strokeLines(ctx, COASTLINE_RINGS, cx, cy, radius, centreLon, false)
-  drawNodes(ctx, cx, cy, radius, centreLon, false, serverColor, clientColor)
+  strokeLines(ctx, COASTLINE_RINGS, cx, cy, radius, centreLon, centreLat, false)
+  drawNodes(ctx, cx, cy, radius, centreLon, centreLat, false, serverColor, clientColor)
 
   ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)'
-  strokeLines(ctx, GRATICULE_LINES, cx, cy, radius, centreLon, true)
+  strokeLines(ctx, GRATICULE_LINES, cx, cy, radius, centreLon, centreLat, true)
   ctx.strokeStyle = 'rgba(255, 255, 255, 0.34)'
-  strokeLines(ctx, COASTLINE_RINGS, cx, cy, radius, centreLon, true)
+  strokeLines(ctx, COASTLINE_RINGS, cx, cy, radius, centreLon, centreLat, true)
 
   // Limb, to close the silhouette.
   ctx.strokeStyle = 'rgba(255, 255, 255, 0.14)'
@@ -179,7 +183,7 @@ function draw(
   ctx.arc(cx, cy, radius, 0, Math.PI * 2)
   ctx.stroke()
 
-  drawNodes(ctx, cx, cy, radius, centreLon, true, serverColor, clientColor)
+  drawNodes(ctx, cx, cy, radius, centreLon, centreLat, true, serverColor, clientColor)
 }
 
 const ServerGlobe = () => {
@@ -200,6 +204,7 @@ const ServerGlobe = () => {
     // CSS pixels; the backing store is this times devicePixelRatio.
     let size = 0
     let centreLon = STATIC_CENTRE_LON
+    let centreLat = TILT_DEG
 
     const resize = () => {
       const width = canvas.parentElement?.clientWidth ?? 0
@@ -212,7 +217,7 @@ const ServerGlobe = () => {
       canvas.style.width = `${size}px`
       canvas.style.height = `${size}px`
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-      draw(ctx, size, centreLon, serverColor, clientColor)
+      draw(ctx, size, centreLon, centreLat, serverColor, clientColor)
     }
 
     resize()
@@ -221,12 +226,6 @@ const ServerGlobe = () => {
     if (typeof ResizeObserver !== 'undefined' && canvas.parentElement != null) {
       observer = new ResizeObserver(resize)
       observer.observe(canvas.parentElement)
-    }
-
-    // A static frame is the whole implementation for reduced-motion users —
-    // no rAF loop is ever started.
-    if (reduceMotion) {
-      return () => { observer?.disconnect() }
     }
 
     let frame: number | null = null
@@ -240,26 +239,80 @@ const ServerGlobe = () => {
         centreLon = (centreLon + ((now - lastTime) / ROTATION_PERIOD_MS) * 360) % 360
       }
       lastTime = now
-      if (size > 0) draw(ctx, size, centreLon, serverColor, clientColor)
+      if (size > 0) draw(ctx, size, centreLon, centreLat, serverColor, clientColor)
       frame = requestAnimationFrame(tick)
     }
 
+    // Auto-spin never runs for reduced-motion users — their globe only
+    // moves under their own pointer. The guard lives here so every resume
+    // path (post-drag timer, tab becoming visible) inherits it.
     const start = () => {
-      if (frame == null) {
-        lastTime = null
-        frame = requestAnimationFrame(tick)
-      }
+      if (reduceMotion || dragPointer != null || frame != null) return
+      lastTime = null
+      frame = requestAnimationFrame(tick)
     }
     const stop = () => {
       if (frame != null) { cancelAnimationFrame(frame); frame = null }
     }
     const onVisibility = () => { document.hidden ? stop() : start() }
 
+    // Drag to rotate. While a drag is live the rAF loop is stopped and
+    // pointermove drives redraws directly; auto-spin returns (longitude
+    // only — the tilt stays where the user left it) after a short idle.
+    let dragPointer: number | null = null
+    let lastX = 0
+    let lastY = 0
+    let resumeTimer: ReturnType<typeof setTimeout> | null = null
+
+    const onPointerDown = (e: PointerEvent) => {
+      if (dragPointer != null || size === 0) return
+      dragPointer = e.pointerId
+      lastX = e.clientX
+      lastY = e.clientY
+      if (resumeTimer != null) { clearTimeout(resumeTimer); resumeTimer = null }
+      stop()
+      canvas.classList.add('is-dragging')
+      // happy-dom (tests) has no pointer capture; browsers need it so the
+      // drag survives the pointer leaving the canvas.
+      if (typeof canvas.setPointerCapture === 'function') canvas.setPointerCapture(e.pointerId)
+    }
+
+    const onPointerMove = (e: PointerEvent) => {
+      if (e.pointerId !== dragPointer) return
+      const next = dragRotation(
+        centreLon, centreLat,
+        e.clientX - lastX, e.clientY - lastY,
+        size * GLOBE_RADIUS_RATIO,
+      )
+      lastX = e.clientX
+      lastY = e.clientY
+      centreLon = next.lon
+      centreLat = next.lat
+      draw(ctx, size, centreLon, centreLat, serverColor, clientColor)
+    }
+
+    const onPointerEnd = (e: PointerEvent) => {
+      if (e.pointerId !== dragPointer) return
+      dragPointer = null
+      canvas.classList.remove('is-dragging')
+      if (!reduceMotion) resumeTimer = setTimeout(start, RESUME_DELAY_MS)
+    }
+
+    canvas.addEventListener('pointerdown', onPointerDown)
+    canvas.addEventListener('pointermove', onPointerMove)
+    canvas.addEventListener('pointerup', onPointerEnd)
+    canvas.addEventListener('pointercancel', onPointerEnd)
+
     if (!document.hidden) start()
     document.addEventListener('visibilitychange', onVisibility)
 
     return () => {
       stop()
+      if (resumeTimer != null) clearTimeout(resumeTimer)
+      canvas.removeEventListener('pointerdown', onPointerDown)
+      canvas.removeEventListener('pointermove', onPointerMove)
+      canvas.removeEventListener('pointerup', onPointerEnd)
+      canvas.removeEventListener('pointercancel', onPointerEnd)
       observer?.disconnect()
       document.removeEventListener('visibilitychange', onVisibility)
     }

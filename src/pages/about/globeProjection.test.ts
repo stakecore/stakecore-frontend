@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { project, graticule } from './globeProjection'
+import { project, graticule, dragRotation } from './globeProjection'
 
 const R = 100
 
@@ -90,6 +90,53 @@ describe('project', () => {
     const large = project(40, 20, 10, 30, 100)
     expect(large.x).toBeCloseTo(small.x * 2, 10)
     expect(large.y).toBeCloseTo(small.y * 2, 10)
+  })
+})
+
+describe('dragRotation', () => {
+  const DEG_PER_RADIUS = 180 / Math.PI // one radian of surface travel
+
+  it('spins the surface after a horizontal drag: dragging right turns the centre westward', () => {
+    // Drag-follows-finger: the point under the pointer should move the way
+    // the pointer moves. `project` sweeps points westward (leftward) as
+    // centreLon advances, so a rightward drag must DECREASE centreLon.
+    const r = dragRotation(0, 30, R, 0, R)
+    expect(r.lon).toBeCloseTo(-DEG_PER_RADIUS, 10)
+    expect(r.lat).toBe(30)
+  })
+
+  it('tilts north into view on a downward drag', () => {
+    // Increasing centreLat moves the visible surface downward on screen
+    // (canvas y grows down), so dragging down must INCREASE centreLat.
+    const r = dragRotation(0, 0, 0, R, R)
+    expect(r.lat).toBeCloseTo(DEG_PER_RADIUS, 10)
+    expect(r.lon).toBe(0)
+  })
+
+  it('scales rotation inversely with radius so a drag feels the same at any size', () => {
+    const small = dragRotation(0, 0, 10, 0, 100)
+    const large = dragRotation(0, 0, 10, 0, 200)
+    expect(small.lon).toBeCloseTo(large.lon * 2, 10)
+  })
+
+  it('clamps the tilt so the globe cannot be dragged into a pole-on view', () => {
+    expect(dragRotation(0, 59, 0, 10_000, R).lat).toBe(60)
+    expect(dragRotation(0, -59, 0, -10_000, R).lat).toBe(-60)
+  })
+
+  it('wraps longitude across the antimeridian instead of accumulating', () => {
+    const westward = dragRotation(-179, 30, R, 0, R) // -179 − 57.3 → wraps
+    expect(westward.lon).toBeGreaterThan(0)
+    expect(westward.lon).toBeLessThanOrEqual(180)
+
+    const eastward = dragRotation(179, 30, -R, 0, R) // 179 + 57.3 → wraps
+    expect(eastward.lon).toBeLessThan(0)
+    expect(eastward.lon).toBeGreaterThanOrEqual(-180)
+  })
+
+  it('is a no-op for a zero-length drag', () => {
+    const r = dragRotation(-25, 30, 0, 0, R)
+    expect(r).toEqual({ lon: -25, lat: 30 })
   })
 })
 
