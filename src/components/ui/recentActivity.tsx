@@ -38,8 +38,8 @@ type KeyedActivity = { item: PageActivityDto, key: string }
 
 // Two entries can still be identical in every field the API exposes, which
 // would collide again. Suffix repeats with an occurrence counter so each card
-// gets a unique key that stays stable across refreshes (keeping ActivityCard's
-// memo effective) instead of falling back to array indices.
+// gets a unique key that stays stable across refreshes instead of falling
+// back to array indices.
 function withKeys(items: PageActivityDto[]): KeyedActivity[] {
   const seen = new Map<string, number>()
   return items.map(item => {
@@ -47,6 +47,18 @@ function withKeys(items: PageActivityDto[]): KeyedActivity[] {
     const n = seen.get(base) ?? 0
     seen.set(base, n + 1)
     return { item, key: n === 0 ? base : `${base}#${n}` }
+  })
+}
+
+// Every SWR poll parses fresh JSON, so an unchanged entry still arrives as a
+// new object — which would defeat ActivityCard's memo (it compares the
+// `activity` prop by reference). Entries sharing a key can only differ in
+// timestamp (the key covers every other field), so when that matches too,
+// hand back the previous poll's object and the memo holds.
+function reuseItems(next: KeyedActivity[], prev: Map<string, PageActivityDto>): KeyedActivity[] {
+  return next.map(({ item, key }) => {
+    const old = prev.get(key)
+    return old && old.timestamp === item.timestamp ? { item: old, key } : { item, key }
   })
 }
 
@@ -67,15 +79,21 @@ const RecentActivity = ({ data, isLoading }: {
   const activity = data?.data?.activity
   const delegated = data?.data?.delegated
   const marqueeRef = useRef<HTMLDivElement | null>(null)
+  const prevItemsRef = useRef<Map<string, PageActivityDto>>(new Map())
 
   const items = useMemo<KeyedActivity[] | null>(() => {
     if (activity == null) return null
     // Drop entries whose type or chain we don't have a renderer for — a new
     // backend activity type or chain id would otherwise dereference an
     // undefined config in ActivityCard and crash the whole hero marquee.
-    return withKeys([...activity]
-      .filter(a => a.type in ACTIVITY_CONFIG && a.chain in CHAIN_CONFIG)
-      .sort((a, b) => b.timestamp - a.timestamp))
+    const keyed = reuseItems(
+      withKeys([...activity]
+        .filter(a => a.type in ACTIVITY_CONFIG && a.chain in CHAIN_CONFIG)
+        .sort((a, b) => b.timestamp - a.timestamp)),
+      prevItemsRef.current,
+    )
+    prevItemsRef.current = new Map(keyed.map(({ item, key }) => [key, item]))
+    return keyed
   }, [activity])
 
   const priceByKey = useMemo(() => buildPriceMap(data), [delegated])
@@ -94,11 +112,25 @@ const RecentActivity = ({ data, isLoading }: {
     // browser resumes rAF after a long pause (backgrounded tab, window
     // minimised, etc.). 100ms ≈ 3px at 30px/s — well below visible.
     const MAX_DT_MS = 100
+    // Our own writes round-trip through scrollLeft within a device pixel;
+    // any larger divergence means the user scrolled natively (swipe momentum
+    // can outlast the interaction pause) and we adopt their position.
+    const EXTERNAL_SCROLL_PX = 1
     let pauseUntil = 0
     let hovering = false
     let lastTs = performance.now()
     let raf = 0
     let running = false
+    // Scroll offsets snap to device pixels on write, and some engines round
+    // scrollLeft on read, so read-modify-writing sub-pixel steps (0.5px per
+    // 60Hz frame at this speed) drops the fraction and judders — or stalls
+    // outright. Accumulate the true position here and assign it.
+    let pos = el.scrollLeft
+    // Half the track width, re-measured on resize instead of read per frame:
+    // scrollWidth on a ~24k px-wide flex track right after a React commit is
+    // a forced layout in the middle of the animation.
+    let half = 0
+    const measure = () => { half = el.scrollWidth / 2 }
 
     const markInteraction = () => { pauseUntil = performance.now() + PAUSE_MS }
     const onPointerEnter = () => { hovering = true }
@@ -115,14 +147,16 @@ const RecentActivity = ({ data, isLoading }: {
       lastTs = ts
       const paused = hovering || ts < pauseUntil
       if (!paused) {
-        el.scrollLeft += SPEED_PX_PER_SEC * (dt / 1000)
-      }
-      // Content is duplicated, so scrollLeft and scrollLeft - half look identical.
-      // Wrap only while auto-scrolling so we never yank scrollLeft mid-swipe.
-      const half = el.scrollWidth / 2
-      if (!paused && half > 0) {
-        if (el.scrollLeft >= half) el.scrollLeft -= half
-        else if (el.scrollLeft < 0) el.scrollLeft += half
+        const current = el.scrollLeft
+        if (Math.abs(current - pos) > EXTERNAL_SCROLL_PX) pos = current
+        pos += SPEED_PX_PER_SEC * (dt / 1000)
+        // Content is duplicated, so pos and pos - half look identical. Wrap
+        // only while auto-scrolling so we never yank scrollLeft mid-swipe.
+        if (half > 0) {
+          if (pos >= half) pos -= half
+          else if (pos < 0) pos += half
+        }
+        el.scrollLeft = pos
       }
       raf = requestAnimationFrame(tick)
     }
@@ -132,6 +166,7 @@ const RecentActivity = ({ data, isLoading }: {
       // Reset the clock so the first frame after (re)entering the viewport
       // doesn't see a huge dt; the MAX_DT_MS clamp backs this up too.
       lastTs = performance.now()
+      measure()
       raf = requestAnimationFrame(tick)
     }
     const stop = () => {
@@ -148,9 +183,15 @@ const RecentActivity = ({ data, isLoading }: {
     )
     io.observe(el)
 
+    // The track only changes width when cards are added/removed or the
+    // mobile breakpoint flips the card size — re-measure then, not per frame.
+    const ro = new ResizeObserver(measure)
+    if (el.firstElementChild) ro.observe(el.firstElementChild)
+
     return () => {
       stop()
       io.disconnect()
+      ro.disconnect()
       el.removeEventListener('pointerenter', onPointerEnter)
       el.removeEventListener('pointerleave', onPointerLeave)
       el.removeEventListener('wheel', markInteraction)
@@ -167,14 +208,34 @@ const RecentActivity = ({ data, isLoading }: {
 
   if (!items || items.length === 0) return null
 
-  return <div ref={marqueeRef} className="activity-marquee" aria-label="Recent activity">
-    <div className="activity-marquee-track">
-      {items.map(({ item, key }) =>
-        <ActivityCard key={`a-${key}`} activity={item} priceByKey={priceByKey} />
-      )}
-      {items.map(({ item, key }) =>
-        <ActivityCard key={`b-${key}`} activity={item} priceByKey={priceByKey} aria-hidden />
-      )}
+  // The USD and relative-time strings are computed here, per poll, and passed
+  // as primitives: memo then compares them by value, so a card only
+  // re-renders when its *displayed* text actually changes — not because a
+  // fresh priceByKey object arrived or "N minutes ago" ticked for some other
+  // card. Formatting 50 strings is far cheaper than re-rendering 100 cards.
+  const cards = items.map(({ item, key }) => {
+    const price = priceByKey[`${item.chain}-${item.protocol}`]
+    const usd = price != null ? Number(item.amount) * price : null
+    return {
+      item, key,
+      usdText: usd != null && Number.isFinite(usd) ? Formatter.usd(usd) : null,
+      timeText: Formatter.relativeDate(item.timestamp),
+    }
+  })
+
+  // The fade mask lives on this non-scrolling wrapper, not on the scroller
+  // itself — a mask directly on a scroll container can force the browser off
+  // composited scrolling, repainting the whole track on every 1px step.
+  return <div className="activity-marquee-mask">
+    <div ref={marqueeRef} className="activity-marquee" aria-label="Recent activity">
+      <div className="activity-marquee-track">
+        {cards.map(({ item, key, usdText, timeText }) =>
+          <ActivityCard key={`a-${key}`} activity={item} usdText={usdText} timeText={timeText} />
+        )}
+        {cards.map(({ item, key, usdText, timeText }) =>
+          <ActivityCard key={`b-${key}`} activity={item} usdText={usdText} timeText={timeText} aria-hidden />
+        )}
+      </div>
     </div>
   </div>
 }
@@ -184,8 +245,11 @@ const ACTIVITY_CONFIG = {
   [PageActivityDto.type.DELEGATION]: { label: 'Delegated', cssType: 'delegated', cssAmount: 'delegation', addrLabel: 'By' },
 }
 
-const ActivityCard = memo(({ activity, priceByKey, ...rest }: {
-  activity: PageActivityDto, priceByKey: Record<string, number>, 'aria-hidden'?: boolean
+// Props are a stable object reference (`activity`, via reuseItems) plus
+// primitives, so the default shallow memo comparison skips every card whose
+// content hasn't visibly changed since the previous poll.
+const ActivityCard = memo(({ activity, usdText, timeText, ...rest }: {
+  activity: PageActivityDto, usdText: string | null, timeText: string, 'aria-hidden'?: boolean
 }) => {
   const config = ACTIVITY_CONFIG[activity.type]
   const chainCfg = chainConfig(activity.chain)
@@ -193,8 +257,6 @@ const ActivityCard = memo(({ activity, priceByKey, ...rest }: {
   const symbol = chainCfg?.symbol
   const txUrl = chainToTransactionUrl(activity.chain, activity.protocol, activity.transaction)
   const addrUrl = chainToAddressUrl(activity.chain, activity.protocol, activity.delegator)
-  const price = priceByKey[`${activity.chain}-${activity.protocol}`]
-  const usd = price != null ? Number(activity.amount) * price : null
 
   return <div className="activity-card" {...rest}>
     <div className="activity-card-top">
@@ -204,8 +266,8 @@ const ActivityCard = memo(({ activity, priceByKey, ...rest }: {
     </div>
     <div className={`activity-amount ${config.cssAmount}`}>
       <span className="activity-amount-value">{Formatter.number(activity.amount)}</span> <span className="activity-symbol">{symbol}</span>
-      {usd != null && Number.isFinite(usd) && (
-        <div className="activity-amount-usd">≈ {Formatter.usd(usd)}</div>
+      {usdText != null && (
+        <div className="activity-amount-usd">≈ {usdText}</div>
       )}
     </div>
     <div className="activity-details">
@@ -218,7 +280,7 @@ const ActivityCard = memo(({ activity, priceByKey, ...rest }: {
         <HashLink address={activity.delegator} url={addrUrl} length={6} copy={false} />
       </div>
     </div>
-    <div className="activity-time">{Formatter.relativeDate(activity.timestamp)}</div>
+    <div className="activity-time">{timeText}</div>
   </div>
 })
 
