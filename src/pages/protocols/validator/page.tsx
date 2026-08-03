@@ -105,7 +105,14 @@ const ValidatorPage = ({
       />
       <div className="container pt-30">
         <Description />
-        {component}
+        {/* Every state in the ladder above renders into a box of the same
+            minimum height. The loaded page runs to a couple of thousand
+            pixels; the spinner is 100px, so without this the call-to-action
+            and footer sat in the viewport during load and were shoved off it
+            the moment data arrived — a 0.62 layout shift, almost the entire
+            CLS on this route. Reserving roughly a screen keeps them below the
+            fold from the start, where moving them costs nothing. */}
+        <div className="protocol-body">{component}</div>
       </div>
     </div>
     {selected && <UnavailabilityBanner summary={selected.summary} />}

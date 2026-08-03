@@ -99,7 +99,7 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
         </div>
       </div>
       <div className="row mt-50">
-        <h5 className='meter-bar-title'>Primary FTSO success rate</h5>
+        <h3 className='meter-bar-title'>Primary FTSO success rate</h3>
         <p>
           Prices on Flare are submitted in 90 second epochs called rounds. Each round, all FSP providers
           are required to submit a price for each of the ~60 crypto tickers. When the submitted price
@@ -111,7 +111,7 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
       </div>
 
       <div className="row mt-50">
-        <h5 className='meter-bar-title'>Secondary FTSO success rate</h5>
+        <h3 className='meter-bar-title'>Secondary FTSO success rate</h3>
         <p>
           When the submitted price falls within the percentage band (defined separately for each ticker) of the accepted median, it is considered a secondary
           success. Secondary success was introduced after the primary reward band became too competitive.
@@ -120,7 +120,7 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
       </div>
 
       <div className="row mt-40">
-        <h5 className='meter-bar-title'>Total delegated weight</h5>
+        <h3 className='meter-bar-title'>Total delegated weight</h3>
         <p>
           At the end of each <i>reward epoch</i>, delegated W{symbol} of each provider is evaluated according
           to the state from a randomly selected <i>vote power block</i> within that epoch. That delegation amount is then
@@ -132,7 +132,7 @@ const FspStatsComponent = ({ stats, chain }: { stats: FspStatisticsDto, chain: C
       </div>
 
       <div className="row mt-40">
-        <h5 className='meter-bar-title'>APY through reward epochs</h5>
+        <h3 className='meter-bar-title'>APY through reward epochs</h3>
         <p>
           Annual percentage yield (APY) earned by delegators for each <i>reward epoch</i>, based on the
           provider's performance and delegation weight during the vote power block.

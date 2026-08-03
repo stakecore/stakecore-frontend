@@ -42,31 +42,37 @@ const FspPage = ({ config }: { config: FspPageConfig }) => {
       <ProjectTitle title={config.title} suptitle={config.suptitle} />
       <div className="container pt-30">
         <Description />
-        <QueryState
-          isLoading={isLoading} error={error} data={data}
-          spinnerColor={chainCfg.color}
-          emptyTitle='Provider data unavailable'
-          emptyDescription="We couldn't load the FSP provider details right now. Please check back soon."
-        >
-          {data => <>
-            <InfoComponent
-              specs={FspDataLayer.extractSpecs(chainCfg.slug, data.info)}
-              summary={FspDataLayer.extractSummary(chainCfg.slug, data.info, data.statistics)}
-            />
-            <FspLocalDelegateComponent config={{ chain: config.chain, loadContracts: config.loadContracts }} />
-            <OfficialDelegate validatorLink={{
-              url: chainCfg.explorers.evmAddress!(data.info.delegationAddress),
-              hash: data.info.delegationAddress,
-            }} />
-            <Suspense fallback={
-              <div style={{ textAlign: 'center' }} className="mt-50 mb-30">
-                <SpinnerCircular color={chainCfg.color} size={45} />
-              </div>
-            }>
-              <FspStatsComponent stats={data.statistics} chain={config.chain} />
-            </Suspense>
-          </>}
-        </QueryState>
+        {/* Height reserved for the whole state ladder — see .protocol-body in
+            protocols.scss. Without it the call-to-action and footer render
+            inside the viewport next to the spinner and get shoved out of it
+            when the data lands, which measured 0.30 CLS on this route. */}
+        <div className="protocol-body">
+          <QueryState
+            isLoading={isLoading} error={error} data={data}
+            spinnerColor={chainCfg.color}
+            emptyTitle='Provider data unavailable'
+            emptyDescription="We couldn't load the FSP provider details right now. Please check back soon."
+          >
+            {data => <>
+              <InfoComponent
+                specs={FspDataLayer.extractSpecs(chainCfg.slug, data.info)}
+                summary={FspDataLayer.extractSummary(chainCfg.slug, data.info, data.statistics)}
+              />
+              <FspLocalDelegateComponent config={{ chain: config.chain, loadContracts: config.loadContracts }} />
+              <OfficialDelegate validatorLink={{
+                url: chainCfg.explorers.evmAddress!(data.info.delegationAddress),
+                hash: data.info.delegationAddress,
+              }} />
+              <Suspense fallback={
+                <div style={{ textAlign: 'center' }} className="mt-50 mb-30">
+                  <SpinnerCircular color={chainCfg.color} size={45} />
+                </div>
+              }>
+                <FspStatsComponent stats={data.statistics} chain={config.chain} />
+              </Suspense>
+            </>}
+          </QueryState>
+        </div>
       </div>
     </div>
   )

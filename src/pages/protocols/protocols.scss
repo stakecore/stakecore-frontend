@@ -13,6 +13,15 @@
     h1 { font-size: t.$text-2xl; }
 }
 
+// Holds whichever of the loading / error / empty / loaded states the page is
+// in, so the chrome underneath starts below the fold and doesn't get pushed
+// around when the state changes. Sized in vh because what matters is
+// "past the bottom of the viewport", not any particular pixel count. The
+// loaded page is always far taller, so this only ever affects the other three.
+.protocol-body {
+    min-height: 60vh;
+}
+
 // Column stack: the aside always sits below the title block. This was
 // previously a wrapping flex row, where the aside dropped to its own
 // line only because the longest title ("Flare Validator Delegation")

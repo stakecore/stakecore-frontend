@@ -43,6 +43,7 @@ const ValidatorPicker = ({ validators, selectedNodeId, onSelect, accentColor }: 
   if (validators.length <= 1) return null
 
   const selected = validators.find(v => v.validatorNodeId === selectedNodeId) ?? validators[0]
+  const selectedLabel = Formatter.address(selected.validatorNodeId, 10)
 
   return (
     <div
@@ -54,12 +55,16 @@ const ValidatorPicker = ({ validators, selectedNodeId, onSelect, accentColor }: 
         type="button"
         className="validator-picker-trigger"
         aria-haspopup="listbox"
-        aria-label="Select validator"
+        // The accessible name has to start with the button's visible text.
+        // A bare "Select validator" label overrode the node id on screen and
+        // left speech-input users with no way to address the control by what
+        // they can read (axe: label-content-name-mismatch, WCAG 2.5.3).
+        aria-label={`${selectedLabel}, select validator`}
         aria-expanded={open}
         onClick={() => setOpen(o => !o)}
       >
         <span className="validator-picker-value">
-          {Formatter.address(selected.validatorNodeId, 10)}
+          {selectedLabel}
         </span>
         <svg
           className="validator-picker-chevron"

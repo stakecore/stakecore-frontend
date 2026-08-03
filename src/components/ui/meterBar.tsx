@@ -68,7 +68,7 @@ const MeterBar = ({ name, value, text, ranges, height = 40 }: args) => {
 
   return (
     <div className="meter-bar-container">
-      <h5 className='meter-bar-title'>{name}</h5>
+      <h3 className='meter-bar-title'>{name}</h3>
       <div className='meter-bar' style={{ height }}>
         {
           data.map((d, i) => {

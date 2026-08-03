@@ -9,8 +9,14 @@
     margin-top: t.$space-3;
 }
 
+// These are <h3> so the document's heading levels stay sequential — the
+// nearest preceding heading on every page that uses them is an <h2>, and the
+// <h5> this used to be skipped two levels (axe: heading-order). line-height
+// is pinned because it used to come from the global h5 rule (1.4) and h3's is
+// 1.3, which would have shifted the rendering for a purely semantic change.
 .meter-bar-title {
     font-size: t.$text-base;
+    line-height: 1.4;
     color: var(--heading-color);
 }
 

@@ -39,7 +39,7 @@ const ValidatorStatistics = ({ config }: { config: IGraphics }) => {
       </div>
       {config.epochApys.length > 0 && (
         <div className="row mt-40">
-          <h5 className='meter-bar-title'>APY through reward epochs</h5>
+          <h3 className='meter-bar-title'>APY through reward epochs</h3>
           <p>
             Annual percentage yield (APY) earned by stake delegators for each <i>reward epoch</i>,
             based on the validator's uptime and total stake during that epoch.
