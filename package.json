@@ -13,6 +13,8 @@
     "preview": "NODE_OPTIONS=--no-warnings vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
     "----------- openapi -----------------------": "",
     "openapi-fix": "sed -i \"s|BASE: *'',|BASE: 'https://backend.stakecore.org',|\" ./src/backendApi/core/OpenAPI.ts",
     "openapi-gen": "pnpm exec openapi -i ./openapi.json -o ./src/backendApi && pnpm openapi-fix",
@@ -41,6 +43,7 @@
   "devDependencies": {
     "@eslint/js": "^9.8.0",
     "@metamask/providers": "^22.1.1",
+    "@playwright/test": "1.62.1",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
