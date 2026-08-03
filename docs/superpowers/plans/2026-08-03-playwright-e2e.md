@@ -40,6 +40,8 @@ Do not re-derive these; they were read from source while writing this plan.
 
 The protocol pages render their `<h1>` through `ProjectTitle` as `h1.project-title-main`.
 
+Verified current as of `51976c8`, which changed `.meter-bar-title` from `<h5>` to `<h3>` but left every `<h1>` untouched. The `verify` skill still documents the old `h5.meter-bar-title` — Task 6 corrects it.
+
 There is **no** `/protocols` route in `src/route/router.tsx`, despite CLAUDE.md listing one. Do not test it.
 
 **Error markup collision — important.** `NotFound` (`src/pages/notFound.tsx`) and `ServerError` (`src/components/ui/serverError.tsx`) both render `.error-container` / `.error-status` / `.error-label`. Only `NotFound` adds the `error-container--centered` modifier. So:
@@ -922,7 +924,7 @@ Reusable pieces already in the repo:
   connected wallet
 
 Useful selectors: route headings are `h1` (`h1.project-title-main` on protocol
-pages); chart sections are `h5.meter-bar-title`; recharts renders
+pages); chart sections are `h3.meter-bar-title`; recharts renders
 `.recharts-responsive-container`, `.recharts-line`, `.recharts-line-dots circle`
 (one circle per data point), tooltip in `.recharts-tooltip-wrapper` (hover a dot
 first). `ServerError` and `NotFound` share `.error-container` — only `NotFound`
