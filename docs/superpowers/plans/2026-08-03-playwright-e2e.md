@@ -459,7 +459,11 @@ test('connects a discovered EIP-6963 wallet', async ({ page, consoleErrors }) =>
   await injectMockWallet(page)
   await page.goto('/#/')
 
-  await page.getByRole('button', { name: 'Connect Wallet' }).click()
+  // The home page's CallToAction section renders its own "Connect Wallet"
+  // button whenever no wallet is connected, so the plain role query is
+  // ambiguous. Scope to the header — it's the button that later shows
+  // MOCK_ADDRESS_DISPLAY, so the post-connect assertion stays meaningful.
+  await page.getByRole('banner').getByRole('button', { name: 'Connect Wallet' }).click()
 
   const dialog = page.getByRole('dialog', { name: 'Connect a wallet' })
   await expect(dialog).toBeVisible({ timeout: PICKER_MOUNT_TIMEOUT })
@@ -483,7 +487,9 @@ test('requests a chain switch when connecting on a protocol route', async ({ pag
   await injectMockWallet(page, { chainId: '0x13' })
   await page.goto('/#/flare/fsp')
 
-  await page.getByRole('button', { name: 'Connect Wallet' }).click()
+  // Same ambiguity as the other test: CallToAction on this route also
+  // renders a "Connect Wallet" button, so scope to the header.
+  await page.getByRole('banner').getByRole('button', { name: 'Connect Wallet' }).click()
 
   const dialog = page.getByRole('dialog', { name: 'Connect a wallet' })
   await expect(dialog).toBeVisible({ timeout: PICKER_MOUNT_TIMEOUT })
