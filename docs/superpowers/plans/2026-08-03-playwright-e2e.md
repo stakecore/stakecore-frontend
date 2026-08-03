@@ -118,10 +118,14 @@ pnpm 10 blocks build scripts by default, so it will print a warning that `@playw
 - [ ] **Step 2: Install the browser**
 
 ```bash
-sudo -n pnpm exec playwright install --with-deps chromium
+pnpm exec playwright install --with-deps chromium
 ```
 
-`--with-deps` shells out to apt for `libnspr4`, `libnss3`, `libasound2t64` and friends, which the `mcr.microsoft.com/devcontainers/base:ubuntu24.04` image lacks. The `vscode` user has passwordless sudo. Verify it landed:
+`--with-deps` shells out to apt for `libnspr4`, `libnss3`, `libasound2t64` and friends, which the `mcr.microsoft.com/devcontainers/base:ubuntu24.04` image lacks.
+
+**Run it without `sudo`.** Playwright self-elevates for the apt step only, and the `vscode` user has passwordless sudo so that succeeds non-interactively. Wrapping the whole command in `sudo` breaks it two ways, both verified in this container: `sudo` has `env_reset`, so `HOME` becomes `/root` and the browser downloads to `/root/.cache/ms-playwright` where the test runner — running as `vscode` — will never find it; and Corepack's `pnpm` shim lives in the `vscode` user's npm prefix bin, which is not on root's `secure_path`, so `sudo -n pnpm …` fails with `sudo: pnpm: command not found` (exit 1) before any of that matters.
+
+Verify it landed:
 
 ```bash
 pnpm exec playwright --version   # Expected: Version 1.62.1
@@ -704,19 +708,27 @@ if [ -f package.json ]; then
     # runs unconditionally rather than being guarded on "some chromium
     # exists" — a hand-rolled existence check would silently skip the
     # re-download after a version bump. With the playwright-browsers volume
-    # warm it is a fast no-op. --with-deps needs root for apt: the base image
-    # has no libnspr4/libnss3, and the vscode user has passwordless sudo.
-    sudo -n pnpm exec playwright install --with-deps chromium
+    # warm it is a fast no-op.
+    #
+    # Deliberately NOT wrapped in sudo. --with-deps does need root for apt
+    # (the base image has no libnspr4/libnss3), but Playwright self-elevates
+    # for that step alone and the vscode user has passwordless sudo. Running
+    # the whole command as root instead would put the browser in
+    # /root/.cache/ms-playwright — outside the playwright-browsers volume and
+    # invisible to the test runner — and would fail first anyway, since
+    # corepack's pnpm shim is not on root's secure_path.
+    pnpm exec playwright install --with-deps chromium
 fi
 ```
 
 - [ ] **Step 4: Verify the script is valid and idempotent**
 
 ```bash
-bash -n .devcontainer/post-create.sh                      # syntax
-sudo -n pnpm exec playwright install --with-deps chromium # re-run: should be a fast no-op
+bash -n .devcontainer/post-create.sh                 # syntax
+pnpm exec playwright install --with-deps chromium    # re-run: should be a fast no-op
+ls ~/.cache/ms-playwright                            # confirm it is the vscode cache, not root's
 ```
-Expected: `bash -n` silent; the install reports the browser is already downloaded and exits 0.
+Expected: `bash -n` silent; the install reports the browser is already downloaded and exits 0; the `ls` shows a `chromium-*` directory under `/home/vscode/.cache/ms-playwright`, which is the path the named volume covers.
 
 - [ ] **Step 5: Commit**
 
