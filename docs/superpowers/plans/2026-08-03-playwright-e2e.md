@@ -363,8 +363,6 @@ import { test as base } from '@playwright/test'
 const IGNORED = [
   // The preview server's self-signed cert. Expected; we set ignoreHTTPSErrors.
   /ERR_CERT_AUTHORITY_INVALID/,
-  // Chromium logs a console error for the favicon 404 on some routes.
-  /favicon/i,
 ]
 
 type ConsoleFixtures = {
