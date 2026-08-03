@@ -1,5 +1,4 @@
 import { Outlet, useLocation, useMatches, useNavigation } from 'react-router'
-import { ToastContainer } from 'react-toastify'
 import { useGlobalStore } from '~/features/wallet/store'
 import { useShallow } from 'zustand/react/shallow'
 import { onInternalChainSwitch } from '~/features/wallet/hook'
@@ -8,11 +7,21 @@ import Header from '../components/sections/header'
 import Footer from '../components/sections/footer'
 import CallToAction from '../components/sections/callToAction'
 import { PreloaderContent } from '../components/ui/preloader'
-import DiscoverWalletProviders from '../features/wallet/picker'
-import { Tooltip } from 'react-tooltip'
-import { useEffect, useState } from 'react'
+import { useAfterIdle } from '../utils/useAfterIdle'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { CookiesProvider } from 'react-cookie'
 import { CHAIN_CONFIG } from '~/config/chains'
+
+
+// Deferred chrome. None of it is visible until the user acts — toasts fire on
+// wallet/contact actions, the tooltip on hover, the picker on "Connect
+// Wallet" — but importing it eagerly put react-toastify, react-tooltip and
+// the EIP-6963 picker (~79 kB of the eager bundle) in front of first paint on
+// a page whose LCP already waits on script execution. Mounted at idle
+// instead, so the chunks are warm well before anyone can click.
+const Toasts = lazy(() => import('react-toastify').then(m => ({ default: m.ToastContainer })))
+const Tooltips = lazy(() => import('react-tooltip').then(m => ({ default: m.Tooltip })))
+const DiscoverWalletProviders = lazy(() => import('../features/wallet/picker'))
 
 
 const NavigationPreloader = () => {
@@ -34,6 +43,7 @@ const NavigationPreloader = () => {
 
 const RootLayout = () => {
   const { pathname } = useLocation()
+  const deferredChrome = useAfterIdle()
   const matches = useMatches()
   const hideCallToAction = matches.some(m => (m.handle as { hideCallToAction?: boolean } | undefined)?.hideCallToAction)
   const chain = chainFromRoute(pathname)
@@ -90,9 +100,13 @@ const RootLayout = () => {
           <Footer />
         </CookiesProvider>
       </div>
-      <ToastContainer theme='dark' position='top-left' />
-      <Tooltip id="tooltip" />
-      <DiscoverWalletProviders />
+      {deferredChrome && (
+        <Suspense fallback={null}>
+          <Toasts theme='dark' position='top-left' />
+          <Tooltips id="tooltip" />
+          <DiscoverWalletProviders />
+        </Suspense>
+      )}
     </>
   )
 }

@@ -60,6 +60,13 @@ All wallet + chain-session state lives under `src/features/wallet/`:
 - `eip1193.ts` — EIP-1193 RPC helpers (account/chain queries, network switching, personal sign)
 - `hook.ts` — `onInternalChainSwitch` (call when the route's target chain changes)
 
+### Deferred Work
+
+`src/utils/useAfterIdle.ts` returns false on the first render and true once the browser is idle (with a 2s timeout escape hatch). Two things use it, both to keep work off the first commit:
+
+- [root.tsx](src/layout/root.tsx) lazy-mounts the toast container, the tooltip singleton, and the wallet picker. None are visible until the user acts, but importing them eagerly cost ~79 kB of the eager bundle. `toast()` call sites import `react-toastify` directly and are all inside lazy route chunks, so they don't drag it back onto the critical path.
+- [recentActivity.tsx](src/components/ui/recentActivity.tsx) renders `INITIAL_CARDS` activity cards first and fills in the remaining ~40 at idle. Pass `enabled` (`useAfterIdle(itemCount > 0)`) when deferring work that needs data first — an ungated callback fires during the initial empty render and lifts the deferral before there's anything to defer.
+
 ### Constants & Config
 
 - `src/constants.ts` — Chain configs, contract addresses/ABIs, explorer URL builders, token configs, epoch configs, color codes

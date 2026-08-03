@@ -1,4 +1,5 @@
 import { memo, useEffect, useMemo, useRef } from "react"
+import { useAfterIdle } from "~/utils/useAfterIdle"
 import { SpinnerCircular } from "spinners-react"
 import { ApiResponseDto_PageStatsDto, PageActivityDto } from "~/backendApi"
 import { Formatter } from "~/utils/misc/formatter"
@@ -33,6 +34,10 @@ function itemKey(item: PageActivityDto): string {
     item.delegator, item.delegatee, item.amount,
   ].join('-')
 }
+
+// Cards rendered in the first commit, before the idle callback fills in the
+// rest. See the comment at the render site for how this number is derived.
+const INITIAL_CARDS = 12
 
 type KeyedActivity = { item: PageActivityDto, key: string }
 
@@ -99,6 +104,16 @@ const RecentActivity = ({ data, isLoading }: {
   const priceByKey = useMemo(() => buildPriceMap(data), [delegated])
 
   const itemCount = items?.length ?? 0
+
+  // The backend sends ~50 entries, each rendered twice — ~1300 elements, over
+  // half the page's DOM, committed the moment SWR resolves, which on a slow
+  // device lands in front of the paint for an LCP element further down the
+  // page. Render a slice first and fill in the rest at idle.
+  //
+  // Gated on itemCount: the idle callback has to start when the cards do. On
+  // mount this component is still a spinner, and an ungated callback fires
+  // during that empty render — lifting the cap before there is anything to cap.
+  const showAllCards = useAfterIdle(itemCount > 0)
 
   useEffect(() => {
     if (itemCount === 0) return
@@ -223,16 +238,23 @@ const RecentActivity = ({ data, isLoading }: {
     }
   })
 
+  // Each half of the track is INITIAL_CARDS * (230 + 14)px ≈ 2900px until idle
+  // fills in the rest — comfortably wider than the 1320px .container the
+  // marquee lives in, so the wrap point stays off screen either way. The
+  // ResizeObserver in the effect above re-measures when the track grows, so
+  // nothing here needs to depend on the rendered count.
+  const visible = showAllCards ? cards : cards.slice(0, INITIAL_CARDS)
+
   // The fade mask lives on this non-scrolling wrapper, not on the scroller
   // itself — a mask directly on a scroll container can force the browser off
   // composited scrolling, repainting the whole track on every 1px step.
   return <div className="activity-marquee-mask">
     <div ref={marqueeRef} className="activity-marquee" aria-label="Recent activity">
       <div className="activity-marquee-track">
-        {cards.map(({ item, key, usdText, timeText }) =>
+        {visible.map(({ item, key, usdText, timeText }) =>
           <ActivityCard key={`a-${key}`} activity={item} usdText={usdText} timeText={timeText} />
         )}
-        {cards.map(({ item, key, usdText, timeText }) =>
+        {visible.map(({ item, key, usdText, timeText }) =>
           <ActivityCard key={`b-${key}`} activity={item} usdText={usdText} timeText={timeText} clone />
         )}
       </div>
