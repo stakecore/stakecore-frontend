@@ -178,12 +178,21 @@ New `.github/workflows/e2e.yml`, independent of `deploy-site.yml`, so a backend
 outage never blocks a Pages publish.
 
 - Triggers: push to `main`, and pull requests
-- Container: `mcr.microsoft.com/playwright:v1.62.1-noble` (browsers and system deps
-  preinstalled; `noble` matches the devcontainer's Ubuntu 24.04). The image tag must
-  be bumped in lockstep with the `@playwright/test` version in `package.json`.
-- Steps: `corepack enable` → checkout → `pnpm install --frozen-lockfile` →
-  `pnpm exec playwright test`
-- On failure, upload the HTML report as a workflow artifact
+- Runner: plain `ubuntu-latest`, mirroring the known-good setup in
+  `deploy-site.yml` (`corepack enable` before `actions/setup-node`, Node 22,
+  `cache: pnpm`). Chromium is installed as an explicit step and cached with
+  `actions/cache` keyed on the resolved Playwright version.
+- Steps: checkout → `corepack enable` → setup-node → `pnpm install --frozen-lockfile`
+  → cache/install Chromium → `pnpm test:e2e`
+- Upload the HTML report as a workflow artifact
+
+The official `mcr.microsoft.com/playwright:v1.62.1-noble` container image was
+considered and rejected. Running in it requires `options: --user 1001`, because
+Chromium refuses to launch as root without `--no-sandbox` — and uid 1001 cannot
+write to `/usr/local/bin`, so `corepack enable` fails. That is the same problem
+`post-create.sh` works around with `--install-directory`, and porting the
+workaround into CI costs more than the ~30s of browser download it would save on
+a cache miss.
 
 `deploy-site.yml` is not modified.
 
