@@ -233,7 +233,7 @@ const RecentActivity = ({ data, isLoading }: {
           <ActivityCard key={`a-${key}`} activity={item} usdText={usdText} timeText={timeText} />
         )}
         {cards.map(({ item, key, usdText, timeText }) =>
-          <ActivityCard key={`b-${key}`} activity={item} usdText={usdText} timeText={timeText} aria-hidden />
+          <ActivityCard key={`b-${key}`} activity={item} usdText={usdText} timeText={timeText} clone />
         )}
       </div>
     </div>
@@ -248,8 +248,15 @@ const ACTIVITY_CONFIG = {
 // Props are a stable object reference (`activity`, via reuseItems) plus
 // primitives, so the default shallow memo comparison skips every card whose
 // content hasn't visibly changed since the previous poll.
-const ActivityCard = memo(({ activity, usdText, timeText, ...rest }: {
-  activity: PageActivityDto, usdText: string | null, timeText: string, 'aria-hidden'?: boolean
+// `clone` marks the duplicated second half of the track. It hides that half
+// from assistive tech and drops its links out of the tab order — an
+// aria-hidden subtree containing focusable children is an axe violation
+// (aria-hidden-focus), and tabbing through 50 invisible duplicate links was
+// a real keyboard trap regardless. tabindex="-1" rather than `inert` so the
+// clones stay clickable: the marquee wraps, so users spend half their time
+// looking at them.
+const ActivityCard = memo(({ activity, usdText, timeText, clone = false }: {
+  activity: PageActivityDto, usdText: string | null, timeText: string, clone?: boolean
 }) => {
   const config = ACTIVITY_CONFIG[activity.type]
   const chainCfg = chainConfig(activity.chain)
@@ -258,9 +265,12 @@ const ActivityCard = memo(({ activity, usdText, timeText, ...rest }: {
   const txUrl = chainToTransactionUrl(activity.chain, activity.protocol, activity.transaction)
   const addrUrl = chainToAddressUrl(activity.chain, activity.protocol, activity.delegator)
 
-  return <div className="activity-card" {...rest}>
+  return <div className="activity-card" aria-hidden={clone || undefined}>
     <div className="activity-card-top">
-      <img src={logo} width={28} alt={symbol} />
+      {/* Both dimensions, or the browser can't reserve the box before the
+          SVG loads and the card reflows (Lighthouse: unsized-images, and a
+          named layout-shift culprit). */}
+      <img src={logo} width={28} height={28} alt={symbol} />
       <span className="activity-protocol">{C.PROTOCOL_NAME[activity.protocol]}</span>
       <span className={`activity-type ${config.cssType}`}>{config.label}</span>
     </div>
@@ -273,11 +283,11 @@ const ActivityCard = memo(({ activity, usdText, timeText, ...rest }: {
     <div className="activity-details">
       <div className="activity-row">
         <span className="activity-label">Tx</span>
-        <HashLink address={activity.transaction} url={txUrl} length={6} copy={false} />
+        <HashLink address={activity.transaction} url={txUrl} length={6} copy={false} tabIndex={clone ? -1 : undefined} />
       </div>
       <div className="activity-row">
         <span className="activity-label">{config.addrLabel}</span>
-        <HashLink address={activity.delegator} url={addrUrl} length={6} copy={false} />
+        <HashLink address={activity.delegator} url={addrUrl} length={6} copy={false} tabIndex={clone ? -1 : undefined} />
       </div>
     </div>
     <div className="activity-time">{timeText}</div>

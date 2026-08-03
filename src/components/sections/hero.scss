@@ -157,4 +157,15 @@
 
 .hero-activity {
     padding: 32px 0;
+
+    // Reserve the marquee's height up front. The activity feed arrives from
+    // SWR after first paint, and without this the 40px spinner is replaced by
+    // a ~220px card strip, shoving everything below it down — a layout shift
+    // measured at 0.074 locally. Card height is content-driven but fixed
+    // (logo row, amount + USD, two hash rows, timestamp), so these match what
+    // the loaded marquee actually occupies at each breakpoint (border-box, so
+    // these include the 32px padding on each side).
+    min-height: 258px;
+
+    @include t.up(md) { min-height: 283px; }
 }

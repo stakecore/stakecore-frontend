@@ -1,0 +1,65 @@
+/*
+ * Self-hosted webfonts.
+ *
+ * These used to come from fonts.googleapis.com. That stylesheet was
+ * render-blocking on a cold third-party origin (873 ms simulated on mobile in
+ * Lighthouse) and it sat in front of the actual font files, so the critical
+ * chain was HTML -> Google CSS -> gstatic woff2 before a single glyph landed.
+ * Serving the woff2 files from our own origin collapses that to one hop, and
+ * lets index.html preload them at parse time.
+ *
+ * Files live in public/fonts/ (not src/assets) so the URLs stay unhashed and
+ * the <link rel="preload"> in index.html can name them literally — a hashed
+ * asset name would drift on every build and silently stop matching.
+ *
+ * Only the latin subsets are shipped. Inter and Roboto Mono are variable
+ * fonts: one file covers the whole weight range we use.
+ */
+
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400 800;
+    font-display: swap;
+    src: url('/fonts/inter-latin-var.woff2') format('woff2');
+}
+
+/*
+ * Metric-matched stand-in for Inter, used only during the swap window.
+ * Without it the fallback renders wider, the hero tagline and wordmark take
+ * an extra line, and everything below them jumps when Inter arrives — that
+ * reflow was the bulk of the 0.119 CLS Lighthouse measured on desktop.
+ * The overrides scale a local grotesque onto Inter's metrics so the fallback
+ * occupies the same box.
+ */
+@font-face {
+    font-family: 'Inter Fallback';
+    src: local('Arial'), local('Helvetica Neue'), local('Liberation Sans');
+    size-adjust: 107.12%;
+    ascent-override: 90.2%;
+    descent-override: 22.48%;
+    line-gap-override: 0%;
+}
+
+@font-face {
+    font-family: 'Roboto Mono';
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url('/fonts/roboto-mono-latin-var.woff2') format('woff2');
+}
+
+/*
+ * `optional` rather than `swap`: the header wordmark is the only thing using
+ * this face, and a late swap on it shifts the whole page down. With the
+ * preload in index.html the font almost always wins its ~100 ms block period
+ * and gets used; when it doesn't, the browser keeps the fallback for that
+ * load instead of reflowing mid-paint. Either way, no layout shift.
+ */
+@font-face {
+    font-family: 'Major Mono Display';
+    font-style: normal;
+    font-weight: 400;
+    font-display: optional;
+    src: url('/fonts/major-mono-display-latin.woff2') format('woff2');
+}

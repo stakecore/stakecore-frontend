@@ -1,0 +1,100 @@
+// Minimal 12-column grid — a drop-in replacement for bootstrap-grid.min.css.
+//
+// The Bootstrap file was 51.8 kB of render-blocking CSS serving 13 distinct
+// class usages across the whole app (Lighthouse: 76% of the eager stylesheet
+// unused, 450 ms of render-blocking time on mobile). Everything the app uses
+// is reproduced here with identical semantics — same breakpoints, same
+// --bs-gutter-x/--bs-gutter-y custom properties, same !important on the
+// utilities — so existing markup and the `.row { --bs-gutter-x: 30px }`
+// override in responsive.css keep working unchanged.
+//
+// Columns are generated for every breakpoint even though only a handful are
+// used today: the rules are a few hundred bytes gzipped, and a partial grid
+// fails silently the first time someone reaches for `col-xl-4`.
+
+@use 'sass:map';
+@use 'sass:math';
+@use './tokens' as t;
+
+$container-max-widths: (
+    sm: 540px,
+    md: 720px,
+    lg: 960px,
+    xl: 1140px,
+    xxl: 1320px,
+);
+
+.container,
+.container-fluid {
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+    width: 100%;
+    padding-right: calc(var(--bs-gutter-x) * 0.5);
+    padding-left: calc(var(--bs-gutter-x) * 0.5);
+    margin-right: auto;
+    margin-left: auto;
+}
+
+@each $name, $width in t.$breakpoints {
+    @media (min-width: $width) {
+        .container { max-width: map.get($container-max-widths, $name); }
+    }
+}
+
+.row {
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: calc(-1 * var(--bs-gutter-y));
+    margin-right: calc(-0.5 * var(--bs-gutter-x));
+    margin-left: calc(-0.5 * var(--bs-gutter-x));
+}
+
+// Direct children, not just `.col-*`: Bootstrap gutters any child of a row,
+// and some markup relies on that for unclassed wrappers.
+.row > * {
+    flex-shrink: 0;
+    width: 100%;
+    max-width: 100%;
+    padding-right: calc(var(--bs-gutter-x) * 0.5);
+    padding-left: calc(var(--bs-gutter-x) * 0.5);
+    margin-top: var(--bs-gutter-y);
+}
+
+@mixin columns($infix: '') {
+    .col#{$infix} {
+        flex: 1 0 0%;
+    }
+
+    .col#{$infix}-auto {
+        flex: 0 0 auto;
+        width: auto;
+    }
+
+    @for $i from 1 through 12 {
+        .col#{$infix}-#{$i} {
+            flex: 0 0 auto;
+            width: math.percentage(math.div($i, 12));
+        }
+    }
+}
+
+@include columns();
+
+@each $name, $width in t.$breakpoints {
+    @media (min-width: $width) {
+        @include columns('-#{$name}');
+    }
+}
+
+// --- The handful of Bootstrap utilities the markup still uses ---
+//
+// !important is deliberate: it is how Bootstrap emits these, and dropping it
+// would change which rule wins against component CSS.
+
+.d-flex { display: flex !important; }
+.align-items-center { align-items: center !important; }
+.justify-content-center { justify-content: center !important; }
+.mx-auto { margin-right: auto !important; margin-left: auto !important; }
+.mb-0 { margin-bottom: 0 !important; }

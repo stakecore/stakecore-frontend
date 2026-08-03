@@ -22,9 +22,13 @@ export const CopyPasteButton = ({ text }) => {
   </button>
 }
 
-export const HashLink = ({ address: hash, url, length = 10, copy = true }) => {
+// `tabIndex` exists for content that is duplicated for visual reasons and
+// marked aria-hidden — passing -1 keeps the link clickable but takes it out
+// of the tab order, which is what axe requires of anything inside an
+// aria-hidden subtree (see the marquee clones in recentActivity.tsx).
+export const HashLink = ({ address: hash, url, length = 10, copy = true, tabIndex = undefined }) => {
   return <span>
-    <a style={{ fontFamily: 'monospace' }} href={url} target="_blank" rel="noopener noreferrer">
+    <a style={{ fontFamily: 'monospace' }} href={url} target="_blank" rel="noopener noreferrer" tabIndex={tabIndex}>
       {Formatter.address(hash, length)}
     </a>
     { copy && <>&nbsp; <CopyPasteButton text={hash} /></> }

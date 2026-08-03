@@ -14,11 +14,12 @@
   <meta property="og:description" content="Validator and FSP/SSP signing infrastructure across Flare, Avalanche, and Songbird. Non-custodial delegation, transparent on-chain reporting." />
   <!-- TODO: add a 1200x630 social card and point og:image / twitter:image at it. -->
   <meta name="twitter:card" content="summary_large_image" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Roboto+Mono&family=Major+Mono+Display&display=swap"
-    rel="stylesheet">
+  <!-- Fonts are self-hosted (see src/assets/css/fonts.css). Preloading them
+       here starts the fetch during HTML parse, in parallel with the bundle,
+       instead of waiting for the stylesheet to be parsed first. Roboto Mono
+       is deliberately not preloaded — only the validator picker uses it. -->
+  <link rel="preload" href="/fonts/inter-latin-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/major-mono-display-latin.woff2" as="font" type="font/woff2" crossorigin>
 </head>
 
 <body>

@@ -80,8 +80,13 @@ const RootLayout = () => {
       <div className='background'>
         {image && <div className={`background-image ${bgClass}`} style={{ backgroundImage: `url("${image}")` }} />}
         <CookiesProvider>
-          <Outlet />
-          {!hideCallToAction && <CallToAction />}
+          {/* The page needs exactly one <main> landmark for screen-reader
+              "skip to content" navigation (axe: landmark-one-main). The
+              footer stays outside it — it's not main content. */}
+          <main>
+            <Outlet />
+            {!hideCallToAction && <CallToAction />}
+          </main>
           <Footer />
         </CookiesProvider>
       </div>

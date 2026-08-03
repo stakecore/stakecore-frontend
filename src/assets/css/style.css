@@ -56,10 +56,15 @@
        sm 576 / md 768 / lg 992 / xl 1200 / xxl 1400 — Bootstrap-aligned. */
 
     /* Redesign token system (mirrors _tokens.scss) */
-    --font-sans: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    /* 'Inter Fallback' (fonts.css) is metric-matched to Inter, so the swap
+       when the real face lands doesn't re-wrap text and shift the page. */
+    --font-sans: 'Inter', 'Inter Fallback', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
     --font-mono: 'Roboto Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-    --font-display: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-    --font-wordmark: 'Major Mono Display', 'Roboto Mono', ui-monospace, monospace;
+    --font-display: 'Inter', 'Inter Fallback', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    /* Falls back to the generic monospace, not Roboto Mono: naming a second
+       webfont here pulled a 33 kB download onto the home page, where the only
+       user of this stack is the header wordmark. */
+    --font-wordmark: 'Major Mono Display', ui-monospace, monospace;
 
     --text-xs: 12px;
     --text-sm: 14px;
