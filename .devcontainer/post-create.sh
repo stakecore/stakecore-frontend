@@ -32,4 +32,18 @@ fi
 
 if [ -f package.json ]; then
     pnpm install
+    # Playwright's npm version and its browser build are coupled, so this
+    # runs unconditionally rather than being guarded on "some chromium
+    # exists" — a hand-rolled existence check would silently skip the
+    # re-download after a version bump. With the playwright-browsers volume
+    # warm it is a fast no-op.
+    #
+    # Deliberately NOT wrapped in sudo. --with-deps does need root for apt
+    # (the base image has no libnspr4/libnss3), but Playwright self-elevates
+    # for that step alone and the vscode user has passwordless sudo. Running
+    # the whole command as root instead would put the browser in
+    # /root/.cache/ms-playwright — outside the playwright-browsers volume and
+    # invisible to the test runner — and would fail first anyway, since
+    # corepack's pnpm shim is not on root's secure_path.
+    pnpm exec playwright install --with-deps chromium
 fi

@@ -7,4 +7,11 @@ services:
       - ..:/workspaces/${WORKSPACE_NAME}:cached
       - ${HOME}/.claude:/home/vscode/.claude
       - ${HOME}/.claude.json:/home/vscode/.claude.json
+      # Playwright downloads ~170 MB of Chromium into this path. Without a
+      # volume it lives in the container's writable layer and is re-downloaded
+      # on every rebuild.
+      - playwright-browsers:/home/vscode/.cache/ms-playwright
     command: sleep infinity
+
+volumes:
+  playwright-browsers:
