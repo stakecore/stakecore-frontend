@@ -1,17 +1,5 @@
 import { test, expect } from './fixtures/console'
-
-// Every route in src/route/router.tsx, plus the `*` fallback. Headings are
-// literal per route — read from each page component, not inferred — so a
-// wrong page rendering under the right URL still fails.
-const ROUTES = [
-  { path: '/', heading: 'StakeCore' },
-  { path: '/about', heading: 'Your stake, our engine' },
-  { path: '/contact', heading: 'Get in touch' },
-  { path: '/flare/fsp', heading: 'Flare Systems Protocol' },
-  { path: '/songbird/fsp', heading: 'Songbird Systems Protocol' },
-  { path: '/flare/validator', heading: 'Flare Validator' },
-  { path: '/avalanche/validator', heading: 'Avalanche Validator' },
-]
+import { ROUTES } from './fixtures/routes'
 
 for (const { path, heading } of ROUTES) {
   test(`${path} renders`, async ({ page, consoleErrors }) => {
