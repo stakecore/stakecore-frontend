@@ -38,3 +38,9 @@ dist-ssr
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# Superpowers scratch: per-plan ledgers, task briefs, agent reports, review
+# packages. Working state for a run, not a record of it — the record is the
+# commits. The sdd/ subtree self-ignores, but that only covers what today's
+# scripts happen to write; anchor the whole directory instead.
+/.superpowers/
