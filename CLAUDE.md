@@ -101,7 +101,11 @@ them would let a routine axe bump redden CI — and axe's `incomplete` results a
 logged and attached to the Playwright report rather than gated. Component-level
 axe under happy-dom was measured and rejected: it cannot evaluate `color-contrast`
 (no style computation, so the check lands in `incomplete` and a green run proves
-nothing) and cannot see cross-component `heading-order`.
+nothing) and cannot see cross-component `heading-order`. The YouTube embed on
+the protocol routes is excluded from every scan (`.exclude('iframe')`), since
+its markup isn't this project's to fix — a scope decision, not rule
+suppression: the rules it would otherwise trip stay fully active against
+everything that is actually our markup.
 
 - **Vitest and Playwright split by include glob.** Vitest's default include
   (`**/*.{test,spec}.*`) would swallow `e2e/*.spec.ts`, so `vite.config.js`
