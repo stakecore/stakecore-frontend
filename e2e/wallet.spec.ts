@@ -4,12 +4,8 @@ import {
   walletCalls,
   MOCK_WALLET_NAME,
   MOCK_ADDRESS_DISPLAY,
+  PICKER_MOUNT_TIMEOUT,
 } from './fixtures/wallet'
-
-// root.tsx lazy-mounts the picker via useAfterIdle, whose requestIdleCallback
-// timeout is 2s — so the dialog can appear a beat after the click. Give the
-// first assertion after opening it room beyond the 5s default.
-const PICKER_MOUNT_TIMEOUT = 15_000
 
 // CallToAction (rendered on every route these tests visit) fires a real SWR
 // call to LandingPageService.pageControllerGetUserInfo(address) once a

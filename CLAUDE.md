@@ -91,8 +91,17 @@ Common patterns: `vi.mock('~/features/wallet/store', ...)` to provide a fake Zus
 
 Playwright 1.62.1, Chromium only, specs in `e2e/`. `pnpm test:e2e` (or
 `pnpm test:e2e:ui`). Coverage is deliberately thin: every route renders with
-its real heading and no error panel, plus a wallet connect against a mocked
-EIP-6963 provider.
+its real heading and no error panel, a wallet connect against a mocked
+EIP-6963 provider, and an axe-core accessibility scan of all eight page states
+plus the open wallet picker.
+
+Accessibility scans (`e2e/a11y.spec.ts`) gate on WCAG 2a/2aa/21a/21aa only.
+`best-practice` rules are scanned and logged but never fail a test — gating on
+them would let a routine axe bump redden CI — and axe's `incomplete` results are
+logged and attached to the Playwright report rather than gated. Component-level
+axe under happy-dom was measured and rejected: it cannot evaluate `color-contrast`
+(no style computation, so the check lands in `incomplete` and a green run proves
+nothing) and cannot see cross-component `heading-order`.
 
 - **Vitest and Playwright split by include glob.** Vitest's default include
   (`**/*.{test,spec}.*`) would swallow `e2e/*.spec.ts`, so `vite.config.js`

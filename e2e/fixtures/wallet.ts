@@ -2,6 +2,11 @@ import type { Page } from '@playwright/test'
 
 export const MOCK_WALLET_NAME = 'Mock Wallet'
 
+// root.tsx lazy-mounts the picker via useAfterIdle, whose requestIdleCallback
+// timeout is 2s — so the dialog can appear a beat after the click. Well beyond
+// the 5s default, deliberately.
+export const PICKER_MOUNT_TIMEOUT = 15_000
+
 // All-digit hex: EIP-55 checksumming (Formatter.address runs getAddress) can
 // only change letter case, so this address survives it byte-for-byte and the
 // expected display string below stays a literal.

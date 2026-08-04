@@ -1,6 +1,7 @@
 import { test, expect, type Page, type TestInfo } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 import { ROUTES } from './fixtures/routes'
+import { injectMockWallet, MOCK_WALLET_NAME, PICKER_MOUNT_TIMEOUT } from './fixtures/wallet'
 
 // Gated: a violation carrying any of these fails the test.
 const WCAG_TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']
@@ -82,4 +83,25 @@ test('the 404 page has no WCAG violations', async ({ page }, testInfo) => {
   await page.waitForLoadState('networkidle')
 
   expect(await scanForWcagViolations(page, testInfo, '404')).toEqual([])
+})
+
+// The picker is the densest a11y surface in the app: role="dialog", aria-modal,
+// a hand-rolled focus trap. Scanning the whole page rather than just the dialog
+// is deliberate — the rules worth having here concern the relationship between
+// the modal and the content behind it.
+test('the wallet picker has no WCAG violations', async ({ page }, testInfo) => {
+  await injectMockWallet(page)
+  await page.goto('/#/')
+  await page.waitForLoadState('networkidle')
+
+  // Scoped to the header: CallToAction renders a second "Connect Wallet"
+  // button, so the unscoped role query is a strict-mode violation.
+  await page.getByRole('banner').getByRole('button', { name: 'Connect Wallet' }).click()
+
+  const dialog = page.getByRole('dialog', { name: 'Connect a wallet' })
+  await expect(dialog).toBeVisible({ timeout: PICKER_MOUNT_TIMEOUT })
+  // Scan with a provider listed, not the "No browser wallets detected" state.
+  await expect(dialog.getByRole('button', { name: MOCK_WALLET_NAME })).toBeVisible()
+
+  expect(await scanForWcagViolations(page, testInfo, 'wallet-picker')).toEqual([])
 })
