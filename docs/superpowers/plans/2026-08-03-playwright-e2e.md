@@ -441,6 +441,14 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 
 Create `e2e/wallet.spec.ts`:
 
+Note: the `test.beforeEach` block below (stubbing `**/api/page/info/**`) was
+added after the first run of this suite, in a follow-up commit. `CallToAction`
+renders on every route these tests visit and fires a real SWR call once a
+wallet is connected; without the stub the connect-flow tests depended on
+whatever the live backend happened to return for a synthetic address that has
+never held FLR/AVAX/SGB. Stubbing it isolates the connect flow from that live
+fetch.
+
 ```ts
 import { test, expect } from './fixtures/console'
 import {
@@ -454,6 +462,31 @@ import {
 // timeout is 2s — so the dialog can appear a beat after the click. Give the
 // first assertion after opening it room beyond the 5s default.
 const PICKER_MOUNT_TIMEOUT = 15_000
+
+// CallToAction (rendered on every route these tests visit) fires a real SWR
+// call to LandingPageService.pageControllerGetUserInfo(address) once a
+// wallet is connected. MOCK_ADDRESS has never held FLR/AVAX/SGB, so an
+// empty portfolio is genuinely what the backend should return for it —
+// stubbing that keeps these wallet-connect tests from depending on
+// whatever the live backend happens to say about a synthetic address.
+// Do not delete this as redundant: there's no SWRConfig onError and no
+// error boundary anywhere in the app, and getProposalData has no shape
+// guard on the response, so an unstubbed, unexpected reply here could throw
+// during render and fail these tests for a reason unrelated to wallet
+// connect. e2e/routes.spec.ts intentionally stays unstubbed and hits the
+// live backend — this interception is scoped to this file only.
+test.beforeEach(async ({ page }) => {
+  await page.route('**/api/page/info/**', route =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        status: 200,
+        data: { balances: [], apys: [], prices: { avax: 0, flr: 0, sgb: 0 } },
+      }),
+    })
+  )
+})
 
 test('connects a discovered EIP-6963 wallet', async ({ page, consoleErrors }) => {
   await injectMockWallet(page)

@@ -36,7 +36,7 @@ React 19, TypeScript, Vite 7, React Router 8 (hash router), SWR for data fetchin
 
 ## Architecture
 
-- `src/route/router.tsx` — Hash router config. Routes: `/`, `/about`, `/contact`, `/protocols`, `/flare/fsp`, `/flare/validator`, `/songbird/fsp`, `/avalanche/validator`
+- `src/route/router.tsx` — Hash router config. Routes: `/`, `/about`, `/contact`, `/flare/fsp`, `/flare/validator`, `/songbird/fsp`, `/avalanche/validator`
 - `src/layout/root.tsx` — Root layout wrapping all pages (header, footer, wallet UI, toasts)
 - `src/pages/` — Route-level page components. Pages with sub-components live as folders (e.g. `pages/about/`); single-file routes (`home.tsx`, `contact.tsx`, `notFound.tsx`) stay flat. `pages/protocols/` holds the four protocol routes plus shared pieces used by all of them (`info.tsx`, `title.tsx`, `tooltip.tsx`, `fsp-stats.tsx`, `fspLocalDelegate.{tsx,scss}`, `unavailabilityBanner.{tsx,scss}`, `protocols.scss`, `types.ts`, `utils.ts`). Both page shells (`validator/page.tsx`, `fsp/page.tsx`) wrap their loading/error/empty/loaded ladder in `.protocol-body`, which reserves `60vh`. That keeps the call-to-action and footer below the fold while data loads instead of letting them get shoved out of the viewport when it arrives — worth 0.62 and 0.30 CLS on the validator and FSP routes respectively. Keep new state branches inside that wrapper.
 - `src/components/sections/` — Page sections used across multiple routes (hero, portfolio, header, footer, callToAction, proposal, etc.).

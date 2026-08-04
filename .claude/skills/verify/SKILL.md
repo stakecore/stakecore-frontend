@@ -14,6 +14,15 @@ pnpm build
 pnpm exec vite preview --port 4173 &   # background
 ```
 
+Playwright's `webServer.command` (`pnpm build && vite preview --port 4173`)
+only runs when nothing is already listening on that URL — `reuseExistingServer`
+is on outside CI specifically so an iterating session doesn't pay for a rebuild
+on every run. That cuts both ways: leave this preview running, edit source, and
+`pnpm test:e2e` reuses it as-is, skipping its own `pnpm build` entirely and
+testing whatever `dist/` was built before your edit. Kill this background
+process (or run `pnpm build` yourself again) before trusting a `pnpm test:e2e`
+result after a source change.
+
 - Serves at **https**://localhost:4173 (self-signed; browsers need `ignoreHTTPSErrors: true`).
 - Routes use a hash router: `https://localhost:4173/#/flare/validator`, `/#/flare/fsp`, `/#/songbird/fsp`, `/#/avalanche/validator`.
 - Rebuild (`pnpm build`, ~6s) after each source change; there is no HMR. Worth it — this exercises the artifact that actually ships.
@@ -40,9 +49,18 @@ is unnecessary:
 
 ```bash
 pnpm test:e2e            # whole suite
-pnpm test:e2e --headed   # watch it
-pnpm test:e2e:ui         # pick and step through tests
+pnpm test:e2e --headed   # watch it (needs a display — see below)
+pnpm test:e2e:ui         # pick and step through tests (needs a display — see below)
 ```
+
+If a `vite preview` from the Launch step above is still running on 4173, these
+commands reuse it and skip their own `pnpm build` — see the warning there
+before trusting the result after a source change.
+
+Both `--headed` and `test:e2e:ui` open a real browser window, so they need an
+X server. That's satisfied in this WSL2 checkout but not in a plain Linux
+container or Codespaces — there, run them under `xvfb-run` (e.g. `xvfb-run
+pnpm test:e2e --headed`) or stick to the headless default.
 
 For ad-hoc exploration against a server you launched yourself, write a throwaway
 spec in `e2e/` and delete it after, or drive the library API directly with

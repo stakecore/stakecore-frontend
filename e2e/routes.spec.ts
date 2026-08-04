@@ -35,10 +35,12 @@ for (const { path, heading } of ROUTES) {
   })
 }
 
-test('unknown paths render the 404 page', async ({ page }) => {
+test('unknown paths render the 404 page', async ({ page, consoleErrors }) => {
   await page.goto('/#/no-such-page')
 
   await expect(page.locator('.error-container--centered')).toBeVisible()
   await expect(page.getByText('404', { exact: true })).toBeVisible()
   await expect(page.getByText('Page not found')).toBeVisible()
+
+  expect(consoleErrors).toEqual([])
 })

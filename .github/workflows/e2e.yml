@@ -18,6 +18,10 @@ concurrency:
 jobs:
   e2e:
     runs-on: ubuntu-latest
+    # Realistic worst case is ~20 min (install + browser cache miss + suite);
+    # bound it well short of the 6-hour default so a hang fails fast instead
+    # of quietly burning runner minutes.
+    timeout-minutes: 25
     steps:
       - name: Checkout
         uses: actions/checkout@v4

@@ -36,10 +36,11 @@ export async function injectMockWallet(
   const chainId = opts.chainId ?? '0xe'
 
   await page.addInitScript(
-    ({ name, address, icon, chainId }) => {
+    ({ name, address, icon, chainId: initialChainId }) => {
       const listeners: Record<string, ((...args: unknown[]) => void)[]> = {}
       const calls: RpcCall[] = []
       let authorized = false
+      let chainId = initialChainId
 
       const provider = {
         request: async ({ method, params }: { method: string; params?: unknown }) => {
@@ -53,6 +54,11 @@ export async function injectMockWallet(
               authorized = true
               return [address]
             case 'wallet_switchEthereumChain':
+              // A real wallet reports the new chain on the next eth_chainId
+              // call once the switch succeeds — mirror that so callers that
+              // check-before-switching (root.tsx's onInternalChainSwitch)
+              // see it and skip a redundant second request.
+              chainId = (params as [{ chainId: string }])[0].chainId
               return null
             default:
               // EIP-1193 "unsupported method".

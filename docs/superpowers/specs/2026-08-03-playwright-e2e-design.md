@@ -55,6 +55,7 @@ playwright.config.ts          # root, next to vite.config.js
 e2e/
   routes.spec.ts              # all 8 routes render
   wallet.spec.ts              # mocked EIP-6963 connect
+  fixtures/console.ts         # consoleErrors test fixture + allowlist
   fixtures/wallet.ts          # injectMockWallet() helper
 ```
 
