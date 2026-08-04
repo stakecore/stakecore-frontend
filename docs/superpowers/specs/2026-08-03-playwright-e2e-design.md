@@ -87,7 +87,7 @@ Scripts:
 - One project: `chromium`, from `devices['Desktop Chrome']`
 - `baseURL: 'https://localhost:4173'`, `ignoreHTTPSErrors: true` (the app is served
   over self-signed HTTPS by `@vitejs/plugin-basic-ssl`)
-- `webServer`: `pnpm build && pnpm exec vite preview --port 4173`, with
+- `webServer`: `pnpm build && pnpm exec vite preview --port 4173 --strictPort`, with
   `reuseExistingServer: !process.env.CI` and a timeout generous enough for the
   build (120s)
 - `retries: process.env.CI ? 2 : 0` — live backend, so a transient blip should not
@@ -160,13 +160,18 @@ the existing `if [ -f package.json ]` guard, immediately after `pnpm install`:
 ```bash
 if [ -f package.json ]; then
     pnpm install
-    sudo -n pnpm exec playwright install --with-deps chromium
+    pnpm exec playwright install --with-deps chromium
 fi
 ```
 
 `--with-deps` needs root for apt — the ubuntu24.04 base image lacks `libnspr4` and
-friends — and the `vscode` user has passwordless sudo. When the named volume is
-warm the download is a no-op and only the apt check runs.
+friends — but the command itself must **not** be wrapped in `sudo`. Playwright
+self-elevates for the apt step alone, and the `vscode` user has passwordless
+sudo so that succeeds non-interactively; wrapping the outer command instead
+sends the browser download to root's `HOME` (outside the named volume, invisible
+to the `vscode`-run test suite) and fails outright besides, since Corepack's
+`pnpm` shim isn't on root's `secure_path`. When the named volume is warm the
+download is a no-op and only the apt check runs.
 
 Playwright's npm version and its browser build are coupled, so bumping
 `@playwright/test` requires re-running this command. The install is not guarded on
