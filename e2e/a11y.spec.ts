@@ -28,7 +28,15 @@ async function scanForWcagViolations(
   testInfo: TestInfo,
   label: string
 ): Promise<string[]> {
-  const results = await new AxeBuilder({ page }).withTags(SCAN_TAGS).analyze()
+  // Excludes the YouTube embed in movieClip.tsx: axe injects into every frame,
+  // including cross-origin ones, so without this the scan audits YouTube's own
+  // player markup (their aria-label strings, their button roles) rather than
+  // ours. Scope, not suppression — aria-allowed-attr, aria-prohibited-attr and
+  // button-name stay fully active on everything that is actually our markup.
+  const results = await new AxeBuilder({ page })
+    .withTags(SCAN_TAGS)
+    .exclude('iframe')
+    .analyze()
 
   const isWcag = (v: { tags: string[] }) => v.tags.some(t => WCAG_TAGS.includes(t))
   const gated = results.violations.filter(isWcag)
