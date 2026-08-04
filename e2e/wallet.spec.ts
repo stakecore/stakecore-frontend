@@ -11,6 +11,31 @@ import {
 // first assertion after opening it room beyond the 5s default.
 const PICKER_MOUNT_TIMEOUT = 15_000
 
+// CallToAction (rendered on every route these tests visit) fires a real SWR
+// call to LandingPageService.pageControllerGetUserInfo(address) once a
+// wallet is connected. MOCK_ADDRESS has never held FLR/AVAX/SGB, so an
+// empty portfolio is genuinely what the backend should return for it —
+// stubbing that keeps these wallet-connect tests from depending on
+// whatever the live backend happens to say about a synthetic address.
+// Do not delete this as redundant: there's no SWRConfig onError and no
+// error boundary anywhere in the app, and getProposalData has no shape
+// guard on the response, so an unstubbed, unexpected reply here could throw
+// during render and fail these tests for a reason unrelated to wallet
+// connect. e2e/routes.spec.ts intentionally stays unstubbed and hits the
+// live backend — this interception is scoped to this file only.
+test.beforeEach(async ({ page }) => {
+  await page.route('**/api/page/info/**', route =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        status: 200,
+        data: { balances: [], apys: [], prices: { avax: 0, flr: 0, sgb: 0 } },
+      }),
+    })
+  )
+})
+
 test('connects a discovered EIP-6963 wallet', async ({ page, consoleErrors }) => {
   await injectMockWallet(page)
   await page.goto('/#/')
