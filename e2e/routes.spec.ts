@@ -1,5 +1,5 @@
 import { test, expect } from './fixtures/console'
-import { ROUTES } from './fixtures/routes'
+import { ROUTES, NOT_FOUND_PATH } from './fixtures/routes'
 
 for (const { path, heading } of ROUTES) {
   test(`${path} renders`, async ({ page, consoleErrors }) => {
@@ -24,7 +24,7 @@ for (const { path, heading } of ROUTES) {
 }
 
 test('unknown paths render the 404 page', async ({ page, consoleErrors }) => {
-  await page.goto('/#/no-such-page')
+  await page.goto(NOT_FOUND_PATH)
 
   await expect(page.locator('.error-container--centered')).toBeVisible()
   await expect(page.getByText('404', { exact: true })).toBeVisible()

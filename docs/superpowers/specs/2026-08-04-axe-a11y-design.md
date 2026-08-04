@@ -101,6 +101,11 @@ turn the build red — while `heading-order` regressions stay visible.
 `experimental` is not scanned at all. Its rules are unstable by axe's own
 definition.
 
+WCAG 2.2 (`wcag22a`, `wcag22aa` — e.g. `target-size`) is deliberately out of
+scope for this pass: not gated, not scanned as advisory, not included in
+`SCAN_TAGS` at all. This is a scope decision, not an oversight — a future pass
+can add it.
+
 ### Reporting
 
 `expect(violations).toEqual([])` on raw axe objects produces an unreadable wall of
@@ -169,6 +174,12 @@ decided with the actual findings in hand.
 - Contrast on hover and focus states
 - Any change under `src/`
 - `experimental` axe rules
+
+Two deviations from this list were approved by the human during execution; see
+"Deviations, approved during execution" in the plan for what changed and why.
+Both are narrow: one genuine `src/` fix for a real WCAG failure the new gate
+caught, and one scope narrowing of the iframe exclusion. Neither reopens "any
+change under `src/`" as a general allowance.
 
 ## Success criteria
 

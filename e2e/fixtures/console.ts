@@ -5,6 +5,10 @@ import { test as base } from '@playwright/test'
 const IGNORED = [
   // The preview server's self-signed cert. Expected; we set ignoreHTTPSErrors.
   /ERR_CERT_AUTHORITY_INVALID/,
+  // The YouTube iframe (movieClip.tsx) intermittently emits this permissions-
+  // policy warning itself; it's YouTube's player code reacting to a policy we
+  // don't control, not a defect in our pages.
+  /compute-pressure/,
 ]
 
 type ConsoleFixtures = {

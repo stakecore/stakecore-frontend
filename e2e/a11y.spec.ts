@@ -1,6 +1,6 @@
 import { test, expect, type Page, type TestInfo } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
-import { ROUTES } from './fixtures/routes'
+import { ROUTES, NOT_FOUND_PATH } from './fixtures/routes'
 import { injectMockWallet, MOCK_WALLET_NAME, PICKER_MOUNT_TIMEOUT } from './fixtures/wallet'
 
 // Gated: a violation carrying any of these fails the test.
@@ -29,14 +29,25 @@ async function scanForWcagViolations(
   testInfo: TestInfo,
   label: string
 ): Promise<string[]> {
-  // Excludes the YouTube embed in movieClip.tsx: axe injects into every frame,
-  // including cross-origin ones, so without this the scan audits YouTube's own
-  // player markup (their aria-label strings, their button roles) rather than
-  // ours. Scope, not suppression — aria-allowed-attr, aria-prohibited-attr and
-  // button-name stay fully active on everything that is actually our markup.
+  // Excludes only the *contents* of the YouTube embed in movieClip.tsx: axe
+  // injects into every frame, including cross-origin ones, so without this the
+  // scan audits YouTube's own player markup (their aria-label strings, their
+  // button roles) rather than ours. Excluding the whole `iframe` element (as
+  // opposed to its contents) would also drop frame-title and
+  // frame-focusable-content, which select the <iframe> itself in *our*
+  // document — so the frame-path form here scopes out only what's inside it.
+  // The second segment must be 'body', not 'html': axe's context resolution
+  // defaults `include` to the whole document, i.e. the frame's own <html>, so
+  // excluding 'html' ties with that boundary and axe's own containment check
+  // (Node.contains() is true for self) resolves the tie in favour of
+  // "in context" — the exclude is silently a no-op. 'body' is a strict
+  // descendant of that boundary, so it excludes as intended. Verified via
+  // axe's raw violation/pass output, not inferred from the docs.
+  // Scope, not suppression — every rule stays fully active against everything
+  // that is actually our markup, including the iframe element itself.
   const results = await new AxeBuilder({ page })
     .withTags(SCAN_TAGS)
-    .exclude('iframe')
+    .exclude(['.video-container iframe', 'body'])
     .analyze()
 
   const isWcag = (v: { tags: string[] }) => v.tags.some(t => WCAG_TAGS.includes(t))
@@ -44,10 +55,23 @@ async function scanForWcagViolations(
   const advisory = results.violations.filter(v => !isWcag(v))
 
   if (advisory.length > 0) {
+    const advisoryLines = advisory.map(summarise)
     console.warn(
-      `[a11y] ${label} — best-practice, not gated:\n  ` +
-        advisory.map(summarise).join('\n  ')
+      `[a11y] ${label} — best-practice, not gated:\n  ` + advisoryLines.join('\n  ')
     )
+    // console.warn alone is invisible on a green run: Playwright's reporters
+    // only print captured output for failing tests, and visibility is the
+    // whole reason best-practice is scanned at all. attach() puts the full
+    // list in the report; the annotation surfaces it in the HTML report's
+    // test *list*, not just the per-test detail pane.
+    await testInfo.attach(`axe-best-practice-${label.replace(/\W+/g, '-')}`, {
+      body: advisoryLines.join('\n'),
+      contentType: 'text/plain',
+    })
+    testInfo.annotations.push({
+      type: 'a11y-best-practice',
+      description: advisory.map(r => r.id).join(', '),
+    })
   }
 
   // axe files a check here when it cannot decide — e.g. contrast over a
@@ -68,9 +92,15 @@ async function scanForWcagViolations(
   return gated.map(summarise)
 }
 
-for (const { path } of ROUTES) {
+for (const { path, heading } of ROUTES) {
   test(`${path} has no WCAG violations`, async ({ page }, testInfo) => {
     await page.goto(`/#${path}`)
+    // Guards against a vacuous pass: if a lazy chunk fails or React throws,
+    // the body is effectively empty and every rule is inapplicable, so an
+    // unscanned page would still report zero violations. This is not a
+    // duplicate of routes.spec.ts's heading assertion — that spec doesn't run
+    // when this one is invoked alone via --grep.
+    await expect(page.getByRole('heading', { level: 1, name: heading })).toBeVisible()
     // Without this the audit targets a loading spinner, not the rendered page.
     await page.waitForLoadState('networkidle')
 
@@ -79,7 +109,9 @@ for (const { path } of ROUTES) {
 }
 
 test('the 404 page has no WCAG violations', async ({ page }, testInfo) => {
-  await page.goto('/#/no-such-page')
+  await page.goto(NOT_FOUND_PATH)
+  // Same vacuous-pass guard as the route loop above.
+  await expect(page.getByText('Page not found')).toBeVisible()
   await page.waitForLoadState('networkidle')
 
   expect(await scanForWcagViolations(page, testInfo, '404')).toEqual([])

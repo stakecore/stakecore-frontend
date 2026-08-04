@@ -101,11 +101,17 @@ them would let a routine axe bump redden CI — and axe's `incomplete` results a
 logged and attached to the Playwright report rather than gated. Component-level
 axe under happy-dom was measured and rejected: it cannot evaluate `color-contrast`
 (no style computation, so the check lands in `incomplete` and a green run proves
-nothing) and cannot see cross-component `heading-order`. The YouTube embed on
-the protocol routes is excluded from every scan (`.exclude('iframe')`), since
-its markup isn't this project's to fix — a scope decision, not rule
-suppression: the rules it would otherwise trip stay fully active against
-everything that is actually our markup.
+nothing) and cannot see cross-component `heading-order`. The *contents* of the
+YouTube embed on the protocol routes are excluded from every scan
+(`.exclude(['.video-container iframe', 'body'])`), since that markup isn't this
+project's to fix — a scope decision, not rule suppression. The `<iframe>`
+element itself stays in the scanned document, so rules that target the frame
+element in our own markup (e.g. `frame-title`) stay fully active. The exclude
+selector's second segment must be `body`, not `html`: axe's own containment
+check treats an `html` exclude as tied with the default document-wide
+`include` boundary and resolves ties in favour of "in context", making it a
+silent no-op — `body` is a strict descendant of that boundary, so it excludes
+as intended.
 
 - **Vitest and Playwright split by include glob.** Vitest's default include
   (`**/*.{test,spec}.*`) would swallow `e2e/*.spec.ts`, so `vite.config.js`

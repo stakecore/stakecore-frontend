@@ -11,3 +11,6 @@ export const ROUTES = [
   { path: '/flare/validator', heading: 'Flare Validator' },
   { path: '/avalanche/validator', heading: 'Avalanche Validator' },
 ]
+
+// Not a real route — used by both specs to exercise the 404 fallback.
+export const NOT_FOUND_PATH = '/#/no-such-page'
