@@ -87,6 +87,33 @@ Vitest + happy-dom + `@testing-library/react` / `user-event`. 289 tests across 2
 
 Common patterns: `vi.mock('~/features/wallet/store', ...)` to provide a fake Zustand store, `vi.mock('~/features/wallet/eip1193', ...)` for the RPC helpers, Proxy-mocked `Contract` instances for ethers calls, `MemoryRouter` wrapping for components that use `useLocation` / `NavLink`. `fireEvent.click` instead of `userEvent.click` when targeting react-router `<Link>` (userEvent's synthetic chain doesn't reach the onClick prop reliably through Link's `preventDefault`).
 
+#### End-to-end (Playwright)
+
+Playwright 1.62.1, Chromium only, specs in `e2e/`. `pnpm test:e2e` (or
+`pnpm test:e2e:ui`). Coverage is deliberately thin: every route renders with
+its real heading and no error panel, plus a wallet connect against a mocked
+EIP-6963 provider.
+
+- **Vitest and Playwright split by include glob.** Vitest's default include
+  (`**/*.{test,spec}.*`) would swallow `e2e/*.spec.ts`, so `vite.config.js`
+  pins `test.include` to `src/**/*.test.{ts,tsx}`. Unit tests stay co-located
+  next to source; e2e specs are the only thing under `e2e/`. Name a new unit
+  test `*.test.ts(x)` inside `src/`, or it will not run.
+- **The app under test is `vite preview`, not `pnpm dev`** — configured as
+  Playwright's `webServer`, which runs `pnpm build` first. The devcontainer
+  bind-mounts the project, so host and container share one
+  `node_modules/.vite` dep cache and each `vite dev` invalidates the other
+  side's pre-bundled deps. Preview also exercises the artifact that ships.
+- Preview is **HTTPS** with a self-signed cert; contexts need
+  `ignoreHTTPSErrors: true` (set globally in `playwright.config.ts`). Routes
+  are hash routes — navigate `/#/flare/fsp`.
+- **Tests hit the live backend**, so they assert structure only, never exact
+  values. `e2e/fixtures/console.ts` fails a test on any unallowlisted console
+  error; `e2e/fixtures/wallet.ts` installs a fake EIP-6963 provider via
+  `addInitScript`.
+- CI runs them in `.github/workflows/e2e.yml`, separate from the deploy
+  workflow so a backend outage cannot block a Pages publish.
+
 ## Conventions
 
 - Import alias: `~/` resolves to `src/` (configured in tsconfig.json and vite.config.js)

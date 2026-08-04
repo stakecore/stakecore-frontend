@@ -30,19 +30,36 @@ If you ever do need the dev server here, `--force` won't save you — it re-bund
 
 ## Drive (headless browser)
 
-Playwright is not a repo dependency. Bootstrap it in the session scratchpad:
+Playwright is a repo dependency (`@playwright/test`, Chromium only) and the
+devcontainer installs the browser in `post-create.sh`. There is nothing to
+bootstrap.
+
+For a quick check that nothing is broken, run the committed suite — it starts
+its own `vite preview` via Playwright's `webServer`, so the manual launch above
+is unnecessary:
 
 ```bash
-cd <scratchpad> && npm init -y && npm i playwright
-npx playwright install chromium --only-shell
-sudo -n npx playwright install-deps chromium   # image lacks libnspr4 etc.; node user has passwordless sudo
+pnpm test:e2e            # whole suite
+pnpm test:e2e --headed   # watch it
+pnpm test:e2e:ui         # pick and step through tests
 ```
 
-The browser binary usually survives between sessions in `~/.cache/ms-playwright` (look for `chromium_headless_shell-*`); if it's already there only the `npm i playwright` step is needed, and the two `install` commands are no-ops.
+For ad-hoc exploration against a server you launched yourself, write a throwaway
+spec in `e2e/` and delete it after, or drive the library API directly with
+`chromium.launch()` + `newContext({ ignoreHTTPSErrors: true })`.
 
-Then drive with the library API (`chromium.launch()` + `newContext({ ignoreHTTPSErrors: true })`).
+Reusable pieces already in the repo:
 
-Useful selectors: chart sections are `h5.meter-bar-title`; recharts renders `.recharts-responsive-container`, `.recharts-line`, `.recharts-line-dots circle` (one circle per data point), tooltip in `.recharts-tooltip-wrapper` (hover a dot first).
+- `e2e/fixtures/console.ts` — `test` fixture exposing `consoleErrors`
+- `e2e/fixtures/wallet.ts` — `injectMockWallet()` for anything behind a
+  connected wallet
+
+Useful selectors: route headings are `h1` (`h1.project-title-main` on protocol
+pages); chart sections are `h3.meter-bar-title`; recharts renders
+`.recharts-responsive-container`, `.recharts-line`, `.recharts-line-dots circle`
+(one circle per data point), tooltip in `.recharts-tooltip-wrapper` (hover a dot
+first). `ServerError` and `NotFound` share `.error-container` — only `NotFound`
+adds `--centered`.
 
 ## Backend
 
