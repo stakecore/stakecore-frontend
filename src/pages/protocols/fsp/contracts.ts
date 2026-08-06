@@ -28,7 +28,11 @@ export function createFspContracts(cfg: FspContractConfig): FspContractApi {
     const provider = new BrowserProvider(ethereum)
     const signer = await provider.getSigner(address)
     const contract = new Contract(cfg.wrappedAdr, cfg.wrappedAbi, signer)
-    const tx = await contract.delegate(cfg.delegationAdr, args[0])
+    // getFunction() rather than contract.delegate(...): the proxy's index
+    // signature is optional, so a name that isn't in the ABI reads as
+    // undefined and fails as "not a function" at call time. getFunction
+    // resolves against the ABI and throws naming the missing method.
+    const tx = await contract.getFunction('delegate')(cfg.delegationAdr, args[0])
     await tx.wait(1)
     return tx.hash
   }
@@ -37,7 +41,7 @@ export function createFspContracts(cfg: FspContractConfig): FspContractApi {
     const provider = new BrowserProvider(ethereum)
     const signer = await provider.getSigner(address)
     const contract = new Contract(cfg.wrappedAdr, cfg.wrappedAbi, signer)
-    const tx = await contract.deposit({ value: args[0] })
+    const tx = await contract.getFunction('deposit')({ value: args[0] })
     await tx.wait(1)
     return tx.hash
   }
@@ -46,7 +50,7 @@ export function createFspContracts(cfg: FspContractConfig): FspContractApi {
     const provider = new BrowserProvider(ethereum)
     const signer = await provider.getSigner(address)
     const contract = new Contract(cfg.wrappedAdr, cfg.wrappedAbi, signer)
-    const tx = await contract.withdraw(args[0])
+    const tx = await contract.getFunction('withdraw')(args[0])
     await tx.wait(1)
     return tx.hash
   }
@@ -55,7 +59,7 @@ export function createFspContracts(cfg: FspContractConfig): FspContractApi {
     const provider = new BrowserProvider(ethereum)
     const signer = await provider.getSigner(address)
     const contract = new Contract(cfg.rewardManagerAdr, cfg.rewardManagerAbi, signer)
-    const tx = await contract.claim(address, address, args[0], true, [])
+    const tx = await contract.getFunction('claim')(address, address, args[0], true, [])
     await tx.wait(1)
     return tx.hash
   }

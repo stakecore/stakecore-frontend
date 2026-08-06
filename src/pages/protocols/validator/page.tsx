@@ -1,4 +1,4 @@
-import type { ComponentType } from 'react'
+import type { ComponentType, ReactNode } from 'react'
 import useSWR from 'swr'
 import { useSearchParams } from 'react-router'
 import { SpinnerCircular } from 'spinners-react'
@@ -28,7 +28,7 @@ function pickSelected<T extends { base: { validatorNodeId: string, featured: boo
     const match = list.find(d => d.base.validatorNodeId === nodeId)
     if (match) return match
   }
-  return list.find(d => d.base.featured) ?? list[0]
+  return list.find(d => d.base.featured) ?? list[0] ?? null
 }
 
 export interface ValidatorPageProps {
@@ -59,7 +59,7 @@ const ValidatorPage = ({
   const [params, setParams] = useSearchParams()
   const selected = data ? pickSelected(data, params.get('node')) : null
 
-  let component = null
+  let component: ReactNode = null
   if (isLoading) {
     component = <>
       <div style={{ textAlign: 'center' }} className="mt-30 mb-30" >

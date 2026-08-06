@@ -26,7 +26,15 @@ export const CopyPasteButton = ({ text }) => {
 // marked aria-hidden — passing -1 keeps the link clickable but takes it out
 // of the tab order, which is what axe requires of anything inside an
 // aria-hidden subtree (see the marquee clones in recentActivity.tsx).
-export const HashLink = ({ address: hash, url, length = 10, copy = true, tabIndex = undefined }) => {
+type HashLinkProps = {
+  address: string
+  url: string
+  length?: number
+  copy?: boolean
+  tabIndex?: number
+}
+
+export const HashLink = ({ address: hash, url, length = 10, copy = true, tabIndex = undefined }: HashLinkProps) => {
   return <span>
     <a style={{ fontFamily: 'monospace' }} href={url} target="_blank" rel="noopener noreferrer" tabIndex={tabIndex}>
       {Formatter.address(hash, length)}

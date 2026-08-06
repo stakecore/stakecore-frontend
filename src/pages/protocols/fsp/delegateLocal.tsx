@@ -1,3 +1,4 @@
+import type { ReactNode } from "react"
 import useSWR, { useSWRConfig } from "swr"
 import { SpinnerCircular } from 'spinners-react'
 import { useGlobalStore } from "~/features/wallet/store"
@@ -63,7 +64,7 @@ const FspLocalDelegateComponent = ({ config }: { config: FspDelegateConfig }) =>
     },
   }
 
-  let component = null
+  let component: ReactNode = null
   if (walletAddress == null) {
     component = <div style={{ textAlign: 'center' }}>
       <button type="button" onClick={connectWallet} className="theme-btn">

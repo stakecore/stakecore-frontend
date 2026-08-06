@@ -27,10 +27,14 @@ export async function ensureProvider(): Promise<[Eip1193Provider | null, StatusC
   const { walletAddress, setWalletAddress } = useGlobalStore.getState()
   if (walletAddress == null) {
     const accounts = await requestAccounts(walletProvider.provider)
-    if (!accounts.ok || !accounts.value.length) {
+    // Bound to a local so the null check narrows: `accounts.value` is an
+    // optional property, and checking `.length` on it doesn't tell TS
+    // anything about the element read on the next line.
+    const address = accounts.ok ? accounts.value?.[0] : undefined
+    if (address == null) {
       return [null, StatusCode.ACCOUNT_REQUEST_REJECTED]
     }
-    setWalletAddress(accounts.value[0])
+    setWalletAddress(address)
   }
   return [walletProvider.provider, StatusCode.WALLET_PROVIDER_OBTAINED]
 }

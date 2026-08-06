@@ -23,25 +23,45 @@ function structureBalanceData(balances: BalanceDto[]): Map<string, number> {
   return mp
 }
 
+// Zips the three parallel arrays and drops the zero-balance entries, so a
+// wallet holding only WFLR reads "1.2k WFLR" rather than "0 FLR and 1.2k WFLR".
 function joinTokenValues(values: number[], svalues: string[], names: string[]): string {
-  const nonzeros = Array(values.length).fill(0).map((_, i) => i).filter(i => values[i] > 0)
-  return nonzeros.map(i => svalues[i] + ' ' + names[i]).join(' and ')
+  return values
+    .map((value, i) => ({ value, label: `${svalues[i]} ${names[i]}` }))
+    .filter(({ value }) => value > 0)
+    .map(({ label }) => label)
+    .join(' and ')
 }
 
-export const getProposalData = (info: PageUserInfoDto) => {
+export interface ProposalFeature {
+  id: number
+  feature: string
+  link: string
+}
+
+export interface ProposalCard {
+  id: number
+  title: string
+  price: string
+  sortInfo: string
+  features: ProposalFeature[]
+}
+
+export const getProposalData = (info: PageUserInfoDto): ProposalCard[] => {
   const apydata = structureApyData(info.apys)
   const baldata = structureBalanceData(info.balances)
 
-  // Missing balances/APYs must default to 0, not undefined — otherwise
-  // `undefined + n` or `undefined * n` yields NaN, and Formatter.number(NaN)
-  // throws (BigInt("NaN")), crashing the CallToAction on every page.
+  // Missing balances/APYs default to 0, not undefined: `undefined + n` and
+  // `undefined * n` are NaN, and while Formatter now renders that as a
+  // placeholder rather than throwing, "— APY" is not what a zero balance
+  // means. 0 is the honest value for a token the wallet doesn't hold.
   const totalFlr = baldata.get(C.FLR_SYMBOL) ?? 0
   const totalWFlr = baldata.get(C.WFLR_SYMBOL) ?? 0
   const totalSgb = baldata.get(C.SGB_SYMBOL) ?? 0
   const totalWSgb = baldata.get(C.WSGB_SYMBOL) ?? 0
   const totalAvax = baldata.get(C.AVAX_SYMBOL) ?? 0
 
-  const ret = []
+  const ret: ProposalCard[] = []
 
   if (totalFlr > 0 || totalWFlr > 0) {
     const apyFsp = apydata.get('Flare')?.get('FSP') ?? 0

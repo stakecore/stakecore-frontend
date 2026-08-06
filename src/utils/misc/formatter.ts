@@ -144,7 +144,9 @@ export namespace Formatter {
     // toISOString throws RangeError on an invalid date rather than returning
     // "Invalid Date" the way toLocaleDateString does.
     if (Number.isNaN(d.getTime())) return NO_VALUE
-    return d.toISOString().replace('T', ' ').split('.')[0];
+    // Fixed-width slice rather than split('.')[0] — the ISO layout is
+    // "YYYY-MM-DDTHH:mm:ss.sssZ", so 19 chars is exactly through the seconds.
+    return d.toISOString().replace('T', ' ').slice(0, 19)
   }
 
   export function dateHuman(unix: number): string {
@@ -227,7 +229,9 @@ export namespace Formatter {
 
   function splitintfrac(s: string, n: number): [string, string] {
     const spl = s.split('.')
-    return shiftleft(spl[0], spl[1] ?? '', n)
+    // split always yields at least one element; the ?? satisfies
+    // noUncheckedIndexedAccess without pretending the empty case is reachable.
+    return shiftleft(spl[0] ?? '', spl[1] ?? '', n)
   }
 
 }

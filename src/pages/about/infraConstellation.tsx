@@ -103,17 +103,20 @@ const InfraConstellation = () => {
       for (let i = 0; i < N_WORKLOADS; i++) if (active[i]) activeIdxs.push(i)
       if (activeIdxs.length === 0) return
       const failingIdx = activeIdxs[Math.floor(Math.random() * activeIdxs.length)]
-      const failingType = WORKLOADS[failingIdx].type
+      const failing = failingIdx == null ? undefined : WORKLOADS[failingIdx]
+      if (failingIdx == null || failing == null) return
+      const failingType = failing.type
 
       // Find a hot spare of the same type. The server is implicit —
       // every workload of a given type connects to that type's
       // dedicated server, so there's no server reassignment to do.
       const spareIdxs: number[] = []
       for (let i = 0; i < N_WORKLOADS; i++) {
-        if (!active[i] && WORKLOADS[i].type === failingType) spareIdxs.push(i)
+        if (!active[i] && WORKLOADS[i]?.type === failingType) spareIdxs.push(i)
       }
       if (spareIdxs.length === 0) return
       const replacementIdx = spareIdxs[Math.floor(Math.random() * spareIdxs.length)]
+      if (replacementIdx == null) return
 
       // Atomic swap. CSS transitions on opacity handle the cross-fade:
       // the failing dot fades from 0.95 → 0.2 (active → spare),
@@ -156,7 +159,11 @@ const InfraConstellation = () => {
           nodes during failovers. Each line's server endpoint is fixed
           by the workload's type. */}
       {WORKLOADS.map((w, i) => {
+        // w.type is i % N_TYPES and SERVERS has N_TYPES entries, so this
+        // always resolves; skipping the line beats a thrown render if the
+        // two ever drift apart.
         const s = SERVERS[w.type]
+        if (s == null) return null
         const cls = `infra-line${active[i] ? ' active' : ''}`
         return (
           <line

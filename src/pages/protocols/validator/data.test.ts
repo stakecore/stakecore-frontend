@@ -36,7 +36,7 @@ describe('createValidatorDataAccess epoch APYs', () => {
     const epochApys = [{ rewardEpoch: 100, apy: 0.05 }, { rewardEpoch: 101, apy: 0.06 }]
     const access = createValidatorDataAccess(Chain.FLARE, serviceOf(infoOf({ epochApys })))
     const [validator] = await access.getPageData()
-    expect(validator.graphics.epochApys).toEqual(epochApys)
+    expect(validator?.graphics.epochApys).toEqual(epochApys)
   })
 
   it('defaults epochApys to [] when the backend omits the field', async () => {
@@ -44,6 +44,6 @@ describe('createValidatorDataAccess epoch APYs', () => {
     delete (info as Partial<PChainValidatorInfoDto>).epochApys
     const access = createValidatorDataAccess(Chain.FLARE, serviceOf(info))
     const [validator] = await access.getPageData()
-    expect(validator.graphics.epochApys).toEqual([])
+    expect(validator?.graphics.epochApys).toEqual([])
   })
 })

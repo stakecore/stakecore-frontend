@@ -133,6 +133,15 @@ as intended.
 - CI runs them in `.github/workflows/e2e.yml`, separate from the deploy
   workflow so a backend outage cannot block a Pages publish.
 
+### Type strictness
+
+`tsconfig.json` runs `strict: false` but `strictNullChecks: true`. The split is deliberate: `strictNullChecks` is what catches the null-deref class that white-screens a route, while full `strict` would also enable `noImplicitAny` and light up every untyped callback param (the router's `lazyRoute`, several component props) without catching runtime crashes. Two consequences worth knowing:
+
+- `noUncheckedIndexedAccess` is only load-bearing *because* `strictNullChecks` is on. Without it the `| undefined` that flag adds stays assignable to everything and the setting is a silent no-op. Don't turn `strictNullChecks` off without also dropping that one, or the config will claim a guarantee it isn't providing.
+- Array/record indexing therefore yields `T | undefined`. Prefer a real guard (`const x = arr[i]; if (x == null) return`) or `?? fallback` over `!`. Where an invariant genuinely holds but isn't expressible — `SERVERS[w.type]` in `infraConstellation.tsx`, `paletteAt` in `meterBar.tsx` — the codebase uses a total accessor with a fallback rather than an assertion, so drift becomes a wrong colour instead of a blank page.
+
+`pnpm lint` does not typecheck. Run `npx tsc -p tsconfig.json --noEmit` before pushing.
+
 ### Route error boundaries
 
 `src/route/routeError.tsx` is the render boundary for every route, wired as `errorElement` on each **child** route in `router.tsx` plus the root as a backstop. Child placement is the point: an `errorElement` on the root route replaces `<RootLayout />` itself, so a single bad component would take the header, footer and wallet UI down with it. On a child, the crash is contained to the `<Outlet />`.

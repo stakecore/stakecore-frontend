@@ -90,7 +90,12 @@ function strokeLines(
   for (const line of lines) {
     let penDown = false
     for (let i = 0; i < line.length; i += 2) {
-      const p = project(line[i], line[i + 1], centreLon, centreLat, radius)
+      const lon = line[i]
+      const lat = line[i + 1]
+      // Coordinates are stored flat as [lon, lat, lon, lat, …]; a trailing
+      // odd element would otherwise project NaN and break the whole path.
+      if (lon == null || lat == null) break
+      const p = project(lon, lat, centreLon, centreLat, radius)
       if (p.visible !== nearFace) {
         penDown = false
         continue

@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import useSWR from 'swr'
 import { SpinnerCircular } from 'spinners-react'
 import ServerError from '../ui/serverError'
@@ -26,7 +27,7 @@ const CallToAction = () => {
   }
 
   let hasError = false
-  let component = null
+  let component: ReactNode = null
   if (walletAddress == null) {
     component = <div className="hero-btns">
       <button type="button" onClick={onConnectWallet} className="theme-btn">

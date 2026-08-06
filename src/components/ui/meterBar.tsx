@@ -20,6 +20,13 @@ const STATUS_MEDIUM: StatusPalette = { label: '#e58630', gradient: 'radial-gradi
 const STATUS_GOOD:   StatusPalette = { label: '#76B768', gradient: 'radial-gradient(#487e3c 25%, #64ae55)' }
 const STATUS_PALETTE = [STATUS_BAD, STATUS_MEDIUM, STATUS_GOOD]
 
+// getColorIdx returns 0..ranges.length, and `ranges` is a 2-tuple against a
+// 3-tier palette, so the index is always in bounds today. Widening `ranges`
+// without adding a tier would otherwise read `undefined.gradient` mid-render
+// and blank the page; falling back to the top tier keeps that a colour bug.
+const paletteAt = (idx: number): StatusPalette =>
+  STATUS_PALETTE[idx] ?? STATUS_GOOD
+
 type args = {
   name: string
   ranges: [number, number]
@@ -43,9 +50,10 @@ const MeterBar = ({ name, value, text, ranges, height = 40 }: args) => {
 
     function getColorIdx(ratio: number, val: number): number {
       if (ratio < val) return valueidx
-      let coloridx = null
+      let coloridx: number | null = null
       for (let i = 0; i < ranges.length; i++) {
-        if (ranges[i] >= ratio) {
+        const bound = ranges[i]
+        if (bound != null && bound >= ratio) {
           coloridx = i
           break
         }
@@ -60,7 +68,7 @@ const MeterBar = ({ name, value, text, ranges, height = 40 }: args) => {
       const ratio = getRatio(i)
       const idx = getColorIdx(ratio, scaledValue)
       const opacity = scaledValue < ratio ? OPACITY_BEFORE : OPACITY_AFTER
-      data.push({ palette: STATUS_PALETTE[idx], opacity })
+      data.push({ palette: paletteAt(idx), opacity })
     }
 
     return { data, valueidx }
@@ -76,7 +84,7 @@ const MeterBar = ({ name, value, text, ranges, height = 40 }: args) => {
               key={i} style={{ background: d.palette.gradient, opacity: d.opacity }}></span>
           })
         }
-        <span className='meter-bar-desc' style={{ color: STATUS_PALETTE[valueidx].label }}>
+        <span className='meter-bar-desc' style={{ color: paletteAt(valueidx).label }}>
           { text ?? Formatter.percent(scaledValue / MAX_PERC) }
         </span>
       </div>

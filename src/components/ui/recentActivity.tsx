@@ -78,8 +78,11 @@ function buildPriceMap(data: ApiResponseDto_PageStatsDto | undefined): Record<st
   return map
 }
 
+// `data` is absent on the first render and on a failed fetch — the body has
+// always read it as `data?.data?.…`, and buildPriceMap above already declares
+// it optional. Only this signature claimed otherwise.
 const RecentActivity = ({ data, isLoading }: {
-  data: ApiResponseDto_PageStatsDto, isLoading: boolean, error: string
+  data?: ApiResponseDto_PageStatsDto, isLoading: boolean, error?: unknown
 }) => {
   const activity = data?.data?.activity
   const delegated = data?.data?.delegated
@@ -193,7 +196,7 @@ const RecentActivity = ({ data, isLoading }: {
     // per-frame scrollLeft writes + scrollWidth reads when the user has
     // scrolled it out of view.
     const io = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) start(); else stop() },
+      ([entry]) => { if (entry?.isIntersecting) start(); else stop() },
       { threshold: 0 }
     )
     io.observe(el)

@@ -8,6 +8,12 @@
       "esModuleInterop": false,
       "allowSyntheticDefaultImports": true,
       "strict": false,
+      // Enabled on its own rather than via `strict` (which would also turn on
+      // noImplicitAny and light up every untyped callback param). This is the
+      // flag that matters here: without it "noUncheckedIndexedAccess" below is
+      // a silent no-op, because the `| undefined` it adds stays assignable to
+      // everything.
+      "strictNullChecks": true,
       "forceConsistentCasingInFileNames": true,
       "noUncheckedIndexedAccess": true,
       "module": "ESNext",

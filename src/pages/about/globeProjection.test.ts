@@ -162,10 +162,13 @@ describe('graticule', () => {
 
   it('omits degenerate parallels at the poles', () => {
     for (const line of graticule()) {
-      const lats = []
-      for (let i = 1; i < line.length; i += 2) lats.push(line[i])
-      const isParallel = new Set(lats).size === 1
-      if (isParallel) expect(Math.abs(lats[0])).toBeLessThan(90)
+      const lats: number[] = []
+      for (let i = 1; i < line.length; i += 2) {
+        const lat = line[i]
+        if (lat != null) lats.push(lat)
+      }
+      const isParallel = lats.length > 0 && new Set(lats).size === 1
+      if (isParallel) expect(Math.abs(lats[0]!)).toBeLessThan(90)
     }
   })
 })

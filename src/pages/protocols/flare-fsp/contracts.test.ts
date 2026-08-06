@@ -36,17 +36,24 @@ vi.mock('ethers', () => {
     const ref: ContractRef = { address, abi, calls: {} }
     contractRefs.push(ref)
     // Proxy: every method call records its args and resolves to a fake tx.
+    // Records one call against `name` and resolves to a fake tx.
+    const record = (name: string) => (...args: unknown[]) => {
+      const calls = ref.calls[name] ?? (ref.calls[name] = [])
+      calls.push(args)
+      return Promise.resolve({
+        hash: MOCK_HASH,
+        wait: () => Promise.resolve(undefined),
+      })
+    }
     return new Proxy({}, {
       get: (_, prop: string | symbol) => {
         if (typeof prop !== 'string') return undefined
-        return (...args: unknown[]) => {
-          if (!ref.calls[prop]) ref.calls[prop] = []
-          ref.calls[prop].push(args)
-          return Promise.resolve({
-            hash: MOCK_HASH,
-            wait: () => Promise.resolve(undefined),
-          })
-        }
+        // Real ethers exposes both `contract.foo(...)` and
+        // `contract.getFunction('foo')(...)`. The call sites use the latter,
+        // so a name missing from the ABI throws naming the method instead of
+        // failing as "undefined is not a function" — mirror both here.
+        if (prop === 'getFunction') return record
+        return record(prop)
       },
     })
   }
@@ -75,13 +82,13 @@ describe('flare-fsp / delegate', () => {
   it('builds the WFLR contract with the right address + ABI', async () => {
     await delegate(fakeEthereum, '0xabc', [5_000])
     expect(contractRefs).toHaveLength(1)
-    expect(contractRefs[0].address).toBe(wrappedFlrAdr)
-    expect(contractRefs[0].abi).toBe(wrappedFlrAbi)
+    expect(contractRefs[0]?.address).toBe(wrappedFlrAdr)
+    expect(contractRefs[0]?.abi).toBe(wrappedFlrAbi)
   })
 
   it('calls .delegate(flareDelegationAdr, bips) with the supplied bips', async () => {
     await delegate(fakeEthereum, '0xabc', [5_000])
-    expect(contractRefs[0].calls.delegate).toEqual([[flareDelegationAdr, 5_000]])
+    expect(contractRefs[0]?.calls.delegate).toEqual([[flareDelegationAdr, 5_000]])
   })
 
   it('returns the on-chain hash after waiting for confirmation', async () => {
@@ -95,14 +102,14 @@ describe('flare-fsp / delegate', () => {
 describe('flare-fsp / deposit', () => {
   it('builds the WFLR contract', async () => {
     await deposit(fakeEthereum, '0xabc', [100n])
-    expect(contractRefs[0].address).toBe(wrappedFlrAdr)
-    expect(contractRefs[0].abi).toBe(wrappedFlrAbi)
+    expect(contractRefs[0]?.address).toBe(wrappedFlrAdr)
+    expect(contractRefs[0]?.abi).toBe(wrappedFlrAbi)
   })
 
   it('forwards the bigint amount via the { value } overrides object', async () => {
     // ethers payable txs take the value via the trailing overrides arg.
     await deposit(fakeEthereum, '0xabc', [100n])
-    expect(contractRefs[0].calls.deposit).toEqual([[{ value: 100n }]])
+    expect(contractRefs[0]?.calls.deposit).toEqual([[{ value: 100n }]])
   })
 
   it('returns the on-chain hash', async () => {
@@ -116,13 +123,13 @@ describe('flare-fsp / deposit', () => {
 describe('flare-fsp / withdraw', () => {
   it('builds the WFLR contract', async () => {
     await withdraw(fakeEthereum, '0xabc', [100n])
-    expect(contractRefs[0].address).toBe(wrappedFlrAdr)
-    expect(contractRefs[0].abi).toBe(wrappedFlrAbi)
+    expect(contractRefs[0]?.address).toBe(wrappedFlrAdr)
+    expect(contractRefs[0]?.abi).toBe(wrappedFlrAbi)
   })
 
   it('forwards the bigint amount positionally', async () => {
     await withdraw(fakeEthereum, '0xabc', [100n])
-    expect(contractRefs[0].calls.withdraw).toEqual([[100n]])
+    expect(contractRefs[0]?.calls.withdraw).toEqual([[100n]])
   })
 
   it('returns the on-chain hash', async () => {
@@ -136,15 +143,15 @@ describe('flare-fsp / withdraw', () => {
 describe('flare-fsp / claim', () => {
   it('builds the reward-manager contract, not the WFLR contract', async () => {
     await claim(fakeEthereum, '0xabc', [42])
-    expect(contractRefs[0].address).toBe(flareFspRewardManagerAdr)
-    expect(contractRefs[0].abi).toBe(flareFspRewardManagerAbi)
+    expect(contractRefs[0]?.address).toBe(flareFspRewardManagerAdr)
+    expect(contractRefs[0]?.abi).toBe(flareFspRewardManagerAbi)
   })
 
   it('calls .claim(owner, recipient, rewardEpochId, true, []) with the address as both owner and recipient', async () => {
     // The contract claims everything up to + including rewardEpochId, so
     // passing the latest epoch from claimableEpochs is the intended use.
     await claim(fakeEthereum, '0xabc', [42])
-    expect(contractRefs[0].calls.claim).toEqual([['0xabc', '0xabc', 42, true, []]])
+    expect(contractRefs[0]?.calls.claim).toEqual([['0xabc', '0xabc', 42, true, []]])
   })
 
   it('returns the on-chain hash', async () => {

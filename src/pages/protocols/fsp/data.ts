@@ -11,13 +11,20 @@ import type { ISpecs, ISummary } from "../types"
 // Shared FSP data layer — used by both the Flare and Songbird FSP routes.
 namespace FspDataLayer {
 
+  // `data` is optional on the response envelope — the backend omits it and
+  // fills `error` instead when a request fails upstream. Returning it
+  // unchecked handed the page an undefined it had already been promised was a
+  // DTO; throwing routes it into SWR's error channel, which the page shells
+  // already render as <ServerError />.
   export async function getPageData(chain: string): Promise<FspPageDataDto> {
     const info = await FspService.fspControllerGetFlareFspPageInfo(chain)
+    if (info?.data == null) throw new Error(info?.error ?? 'FSP page data unavailable')
     return info.data
   }
 
   export async function getDelegatorInfo(chain: string, address: string): Promise<FspDelegatorInfoDto> {
     const resp = await FspService.fspControllerGetFlareFspDelegatorInfo(chain, address)
+    if (resp?.data == null) throw new Error(resp?.error ?? 'FSP delegator info unavailable')
     return resp.data
   }
 
@@ -28,7 +35,7 @@ namespace FspDataLayer {
     // reward epochs" chart on this page). Prefer the chart's most recent
     // point so the card matches what the user sees plotted.
     const apys = statistics.apys.result
-    const apy = apys.length > 0 ? apys[apys.length - 1].apy : info.apy
+    const apy = apys[apys.length - 1]?.apy ?? info.apy
     return {
       asset: symbol,
       apy: Formatter.percent(apy),

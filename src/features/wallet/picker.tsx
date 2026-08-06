@@ -60,9 +60,9 @@ export const Eip6963 = () => {
       }
       if (e.key !== 'Tab' || !dialog) return
       const focusables = dialog.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)
-      if (focusables.length === 0) return
       const firstEl = focusables[0]
       const lastEl = focusables[focusables.length - 1]
+      if (firstEl == null || lastEl == null) return
       const active = document.activeElement as HTMLElement | null
       if (e.shiftKey && (active === firstEl || !dialog.contains(active))) {
         e.preventDefault()
@@ -93,8 +93,9 @@ export const Eip6963 = () => {
   const handleConnect = async (providerWithInfo: EIP6963ProviderDetail) => {
     const accounts = await requestAccounts(providerWithInfo.provider)
     if (accounts.ok) {
-      if (accounts.value[0]) {
-        await executeConnect(providerWithInfo, accounts.value[0])
+      const address = accounts.value?.[0]
+      if (address) {
+        await executeConnect(providerWithInfo, address)
       } else {
         toast.error('Your wallet returned no accounts.')
       }

@@ -187,6 +187,9 @@ const FspLocalDelegate = ({
     // single signature with the latest claimable epoch is enough —
     // no per-epoch loop / per-epoch signature needed.
     const latestEpoch = claimableEpochs[claimableEpochs.length - 1]
+    // Guarded by the length check above; the guard keeps the type honest and
+    // stops an empty list from signing a claim for `undefined`.
+    if (latestEpoch == null) return
     setPhase({ kind: 'claiming', epoch: latestEpoch })
     const toastId = toast.loading(`Claiming rewards through epoch ${latestEpoch}…`)
     const { status, hash } = await actions.claim(walletAddress, latestEpoch)

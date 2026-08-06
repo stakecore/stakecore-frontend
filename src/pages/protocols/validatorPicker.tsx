@@ -42,7 +42,11 @@ const ValidatorPicker = ({ validators, selectedNodeId, onSelect, accentColor }: 
   // Single-validator case: no picker needed.
   if (validators.length <= 1) return null
 
+  // The length check above guarantees an entry, but only at runtime — the
+  // fallback keeps a future reordering of these two lines from crashing the
+  // whole protocol route on an empty list.
   const selected = validators.find(v => v.validatorNodeId === selectedNodeId) ?? validators[0]
+  if (selected == null) return null
   const selectedLabel = Formatter.address(selected.validatorNodeId, 10)
 
   return (

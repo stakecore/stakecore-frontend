@@ -18,7 +18,9 @@ const ValidatorStatistics = ({ config }: { config: IGraphics }) => {
     endMs: endTimeMs,
     // An expired validator comes back with a 0 (epoch) end time; drop the
     // pill in that case rather than showing a 1970-01-01 expiration.
-    metadata: endTimeMs > 0 ? [{ label: "Validator Expiration", value: new Date(endTimeMs).toISOString().split('T')[0] }] : [],
+    // Fixed-width slice rather than split('T')[0]: the ISO layout is
+    // "YYYY-MM-DDTHH:mm:ss.sssZ", so 10 chars is exactly the date.
+    metadata: endTimeMs > 0 ? [{ label: "Validator Expiration", value: new Date(endTimeMs).toISOString().slice(0, 10) }] : [],
   }), [startTimeMs, endTimeMs])
 
   return (

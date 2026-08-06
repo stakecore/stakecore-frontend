@@ -27,17 +27,24 @@ vi.mock('ethers', () => {
   function Contract(address: string, abi: unknown) {
     const ref: ContractRef = { address, abi, calls: {} }
     contractRefs.push(ref)
+    // Records one call against `name` and resolves to a fake tx.
+    const record = (name: string) => (...args: unknown[]) => {
+      const calls = ref.calls[name] ?? (ref.calls[name] = [])
+      calls.push(args)
+      return Promise.resolve({
+        hash: MOCK_HASH,
+        wait: () => Promise.resolve(undefined),
+      })
+    }
     return new Proxy({}, {
       get: (_, prop: string | symbol) => {
         if (typeof prop !== 'string') return undefined
-        return (...args: unknown[]) => {
-          if (!ref.calls[prop]) ref.calls[prop] = []
-          ref.calls[prop].push(args)
-          return Promise.resolve({
-            hash: MOCK_HASH,
-            wait: () => Promise.resolve(undefined),
-          })
-        }
+        // Real ethers exposes both `contract.foo(...)` and
+        // `contract.getFunction('foo')(...)`. The call sites use the latter,
+        // so a name missing from the ABI throws naming the method instead of
+        // failing as "undefined is not a function" — mirror both here.
+        if (prop === 'getFunction') return record
+        return record(prop)
       },
     })
   }
@@ -65,8 +72,8 @@ describe('songbird-fsp / delegate', () => {
   it('builds the WSGB contract with the right address + ABI', async () => {
     await delegate(fakeEthereum, '0xabc', [5_000])
     expect(contractRefs).toHaveLength(1)
-    expect(contractRefs[0].address).toBe(wrappedSgbAdr)
-    expect(contractRefs[0].abi).toBe(wrappedSgbAbi)
+    expect(contractRefs[0]?.address).toBe(wrappedSgbAdr)
+    expect(contractRefs[0]?.abi).toBe(wrappedSgbAbi)
   })
 
   it('calls .delegate(songbirdDelegationAdr, bips) — the Songbird address, not the Flare one', async () => {
@@ -74,7 +81,7 @@ describe('songbird-fsp / delegate', () => {
     // (the two happened to be the same address, so on-chain behavior
     // was identical, but the code was wrong).
     await delegate(fakeEthereum, '0xabc', [5_000])
-    expect(contractRefs[0].calls.delegate).toEqual([[songbirdDelegationAdr, 5_000]])
+    expect(contractRefs[0]?.calls.delegate).toEqual([[songbirdDelegationAdr, 5_000]])
   })
 
   it('returns the on-chain hash', async () => {
@@ -88,13 +95,13 @@ describe('songbird-fsp / delegate', () => {
 describe('songbird-fsp / deposit', () => {
   it('builds the WSGB contract', async () => {
     await deposit(fakeEthereum, '0xabc', [100n])
-    expect(contractRefs[0].address).toBe(wrappedSgbAdr)
-    expect(contractRefs[0].abi).toBe(wrappedSgbAbi)
+    expect(contractRefs[0]?.address).toBe(wrappedSgbAdr)
+    expect(contractRefs[0]?.abi).toBe(wrappedSgbAbi)
   })
 
   it('forwards the bigint amount via the { value } overrides object', async () => {
     await deposit(fakeEthereum, '0xabc', [100n])
-    expect(contractRefs[0].calls.deposit).toEqual([[{ value: 100n }]])
+    expect(contractRefs[0]?.calls.deposit).toEqual([[{ value: 100n }]])
   })
 
   it('returns the on-chain hash', async () => {
@@ -108,13 +115,13 @@ describe('songbird-fsp / deposit', () => {
 describe('songbird-fsp / withdraw', () => {
   it('builds the WSGB contract', async () => {
     await withdraw(fakeEthereum, '0xabc', [100n])
-    expect(contractRefs[0].address).toBe(wrappedSgbAdr)
-    expect(contractRefs[0].abi).toBe(wrappedSgbAbi)
+    expect(contractRefs[0]?.address).toBe(wrappedSgbAdr)
+    expect(contractRefs[0]?.abi).toBe(wrappedSgbAbi)
   })
 
   it('forwards the bigint amount positionally', async () => {
     await withdraw(fakeEthereum, '0xabc', [100n])
-    expect(contractRefs[0].calls.withdraw).toEqual([[100n]])
+    expect(contractRefs[0]?.calls.withdraw).toEqual([[100n]])
   })
 
   it('returns the on-chain hash', async () => {
@@ -128,13 +135,13 @@ describe('songbird-fsp / withdraw', () => {
 describe('songbird-fsp / claim', () => {
   it('builds the Songbird reward-manager contract, not the WSGB contract', async () => {
     await claim(fakeEthereum, '0xabc', [42])
-    expect(contractRefs[0].address).toBe(songbirdFspRewardManagerAdr)
-    expect(contractRefs[0].abi).toBe(songbirdFspRewardManagerAbi)
+    expect(contractRefs[0]?.address).toBe(songbirdFspRewardManagerAdr)
+    expect(contractRefs[0]?.abi).toBe(songbirdFspRewardManagerAbi)
   })
 
   it('calls .claim(owner, recipient, rewardEpochId, true, []) with the address as both owner and recipient', async () => {
     await claim(fakeEthereum, '0xabc', [42])
-    expect(contractRefs[0].calls.claim).toEqual([['0xabc', '0xabc', 42, true, []]])
+    expect(contractRefs[0]?.calls.claim).toEqual([['0xabc', '0xabc', 42, true, []]])
   })
 
   it('returns the on-chain hash', async () => {

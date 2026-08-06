@@ -3,8 +3,11 @@ import { getAccounts, getChainId, switchNetworkIfNecessary, tryAutoConnect } fro
 import type { MetaMaskInpageProvider } from '@metamask/providers'
 
 
+// chainId is nullable: the chain-less routes (/, /about, /contact) map to
+// null via chainToChainId, and the null branch below is the whole reason the
+// guard is there. The signature said `string`.
 export async function onInternalChainSwitch(
-  chainId: string, wallet: EIP6963ProviderDetail
+  chainId: string | null, wallet: EIP6963ProviderDetail
 ): Promise<string | null> {
   const connectedChainId = await getChainId(wallet.provider)
   if (chainId != null && connectedChainId != chainId) {
@@ -14,10 +17,7 @@ export async function onInternalChainSwitch(
     }
   }
   const accounts = await getAccounts(wallet.provider)
-  if (accounts.length > 0) {
-    return accounts[0]
-  }
-  return null
+  return accounts[0] ?? null
 }
 
 export async function addEip6963Hook(wallet: EIP6963ProviderDetail): Promise<void> {
@@ -56,8 +56,9 @@ function attachAccountChangeHandler(wallet: EIP6963ProviderDetail): void {
     if (!isSelectedWallet(wallet)) return
     const { chain, setWalletAddress } = useGlobalStore.getState()
     const _chainId = await getChainId(wallet.provider)
-    if ((chain == null || _chainId == chain) && accounts?.length > 0) {
-      setWalletAddress(accounts[0], wallet)
+    const next = accounts?.[0]
+    if ((chain == null || _chainId == chain) && next != null) {
+      setWalletAddress(next, wallet)
     } else {
       setWalletAddress(null, null)
     }
@@ -71,8 +72,9 @@ function attachChainChangeHandler(wallet: EIP6963ProviderDetail): void {
     const { chain, setWalletAddress } = useGlobalStore.getState()
     if (chain == null || _chainId == chain) {
       const accounts = await getAccounts(wallet.provider)
-      if (accounts.length > 0) {
-        return setWalletAddress(accounts[0], wallet)
+      const next = accounts[0]
+      if (next != null) {
+        return setWalletAddress(next, wallet)
       }
     }
     setWalletAddress(null, null)

@@ -65,21 +65,21 @@ describe('getProposalData — Flare card', () => {
   it('also renders when only WFLR is held (the if-test ORs FLR and WFLR)', () => {
     const out = getProposalData(fakeInfo({ balances: balancesFor({ WFLR: 50 }) }))
     expect(out).toHaveLength(1)
-    expect(out[0].title).toBe('Flare Network')
+    expect(out[0]?.title).toBe('Flare Network')
   })
 
   it('lists both balances in sortInfo when FLR + WFLR are both present', () => {
     const out = getProposalData(fakeInfo({
       balances: balancesFor({ FLR: 100, WFLR: 50 }),
     }))
-    expect(out[0].sortInfo).toBe('Invest your 100 FLR and 50.0 WFLR into our protocols to earn up to')
+    expect(out[0]?.sortInfo).toBe('Invest your 100 FLR and 50.0 WFLR into our protocols to earn up to')
   })
 
   it('omits the zero side from sortInfo (joinTokenValues filters zeros)', () => {
     const out = getProposalData(fakeInfo({
       balances: balancesFor({ FLR: 100, WFLR: 0 }),
     }))
-    expect(out[0].sortInfo).toBe('Invest your 100 FLR into our protocols to earn up to')
+    expect(out[0]?.sortInfo).toBe('Invest your 100 FLR into our protocols to earn up to')
   })
 
   it('computes earned as validator APY × (FLR + WFLR) × FLR price', () => {
@@ -87,12 +87,12 @@ describe('getProposalData — Flare card', () => {
     const out = getProposalData(fakeInfo({
       balances: balancesFor({ FLR: 100, WFLR: 50 }),
     }))
-    expect(out[0].price).toBe('0.21')
+    expect(out[0]?.price).toBe('0.21')
   })
 
   it('produces the two-feature link list (validator + FSP) with formatted APYs', () => {
     const out = getProposalData(fakeInfo({ balances: balancesFor({ FLR: 10 }) }))
-    expect(out[0].features).toEqual([
+    expect(out[0]?.features).toEqual([
       { id: 1, feature: 'Earn 7.00% APY by delegating FLR to our validator', link: '/flare/validator' },
       { id: 2, feature: 'Earn 5.00% APY by delegating WFLR to our FSP provider', link: '/flare/fsp' },
     ])
@@ -109,17 +109,17 @@ describe('getProposalData — Avalanche card', () => {
   it('computes earned as validator APY × AVAX × AVAX price', () => {
     // 0.06 × 2 × 25 = 3
     const out = getProposalData(fakeInfo({ balances: balancesFor({ AVAX: 2 }) }))
-    expect(out[0].price).toBe('3.00')
+    expect(out[0]?.price).toBe('3.00')
   })
 
   it('sortInfo uses the AVAX balance directly (no FLR-style "and" joining)', () => {
     const out = getProposalData(fakeInfo({ balances: balancesFor({ AVAX: 2 }) }))
-    expect(out[0].sortInfo).toBe('Invest your 2.00 AVAX into our protocols to earn up to')
+    expect(out[0]?.sortInfo).toBe('Invest your 2.00 AVAX into our protocols to earn up to')
   })
 
   it('produces a single feature pointing to the avalanche validator route', () => {
     const out = getProposalData(fakeInfo({ balances: balancesFor({ AVAX: 1 }) }))
-    expect(out[0].features).toEqual([
+    expect(out[0]?.features).toEqual([
       { id: 1, feature: 'Earn 6.00% APY by delegating AVAX to our validator', link: '/avalanche/validator' },
     ])
   })
@@ -140,12 +140,12 @@ describe('getProposalData — Songbird card', () => {
     const out = getProposalData(fakeInfo({
       balances: balancesFor({ SGB: 1000, WSGB: 500 }),
     }))
-    expect(out[0].price).toBe('0.60')
+    expect(out[0]?.price).toBe('0.60')
   })
 
   it('produces a single feature pointing to the songbird FSP route', () => {
     const out = getProposalData(fakeInfo({ balances: balancesFor({ SGB: 1 }) }))
-    expect(out[0].features).toEqual([
+    expect(out[0]?.features).toEqual([
       { id: 1, feature: 'Earn 4.00% APY by delegating WSGB to our FSP provider', link: '/songbird/fsp' },
     ])
   })

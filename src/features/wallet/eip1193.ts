@@ -9,10 +9,12 @@ import { chainIdToConfig } from "../../utils/misc/translations"
 // UI can tell "user rejected" (4001) from "wallet disconnected" (4900) from
 // "RPC down", via extractFriendlyError(result.error).
 // Note: a single shape with optional value/error rather than a discriminated
-// union — this project compiles with strictNullChecks off, where TS won't
-// narrow a boolean discriminant to the `ok: false` member, so `.error` on a
-// narrowed union is inaccessible. Optional fields keep both readable; callers
-// gate on `.ok`. Constructors below only ever set the field for their branch.
+// union. That was originally forced by strictNullChecks being off; now that
+// it is on, a proper `{ok: true, value} | {ok: false, error}` union would
+// narrow correctly and let callers drop the `?.` on value. Left as-is
+// deliberately — the change touches every call site, so it is a refactor of
+// its own, not a drive-by. Constructors below only ever set the field for
+// their branch, so `ok` remains a reliable gate.
 export type WalletResult<T> = {
   ok: boolean
   value?: T
@@ -77,13 +79,11 @@ export async function personalSign(
   }
 }
 
-export async function tryAutoConnect(chainId: string, detail: EIP6963ProviderDetail): Promise<string | null> {
+export async function tryAutoConnect(chainId: string | null, detail: EIP6963ProviderDetail): Promise<string | null> {
   const _chainId = await getChainId(detail.provider)
   if (chainId == null || _chainId == chainId) {
     const accounts = await getAccounts(detail.provider)
-    if (accounts?.length) {
-      return accounts[0]
-    }
+    return accounts?.[0] ?? null
   }
   return null
 }

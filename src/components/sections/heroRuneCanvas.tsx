@@ -171,7 +171,7 @@ const HeroRuneCanvas = () => {
         octx.fillStyle = '#FFFFFF'
         octx.textBaseline = 'top'
         for (let i = 0; i < RAMP.length; i++) {
-          octx.fillText(RAMP[i], i * charW, 0)
+          octx.fillText(RAMP[i] ?? '', i * charW, 0)
         }
       }
       return off
@@ -331,7 +331,7 @@ const HeroRuneCanvas = () => {
     })
 
     const io = new IntersectionObserver(([entry]) => {
-      if (destroyed) return
+      if (destroyed || entry == null) return
       intersecting = entry.isIntersecting
       if (intersecting) startLoop()
       else stopLoop()

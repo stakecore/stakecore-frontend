@@ -63,8 +63,8 @@ describe('useExternalStore — subscribe', () => {
     const addSpy = vi.spyOn(window, 'addEventListener')
     const dispatchSpy = vi.spyOn(window, 'dispatchEvent')
     useExternalStore()
-    const [subscribe] = mockedUseSync.mock.calls[0]
-    subscribe(() => {})
+    const [subscribe] = mockedUseSync.mock.calls[0] ?? []
+    subscribe?.(() => {})
     expect(addSpy).toHaveBeenCalledWith('eip6963:announceProvider', expect.any(Function))
     expect(dispatchSpy).toHaveBeenCalledWith(expect.objectContaining({ type: 'eip6963:requestProvider' }))
     addSpy.mockRestore()
@@ -74,8 +74,8 @@ describe('useExternalStore — subscribe', () => {
   it('returns a teardown function that removes the listener', () => {
     const removeSpy = vi.spyOn(window, 'removeEventListener')
     useExternalStore()
-    const [subscribe] = mockedUseSync.mock.calls[0]
-    const teardown = subscribe(() => {})
+    const [subscribe] = mockedUseSync.mock.calls[0] ?? []
+    const teardown = subscribe?.(() => {})
     teardown!()
     expect(removeSpy).toHaveBeenCalledWith('eip6963:announceProvider', expect.any(Function))
     removeSpy.mockRestore()
@@ -92,8 +92,8 @@ describe('useExternalStore — announcement event', () => {
   const captureListener = (rerender: () => void) => {
     const addSpy = vi.spyOn(window, 'addEventListener')
     useExternalStore()
-    const [subscribe] = mockedUseSync.mock.calls[0]
-    subscribe(rerender)
+    const [subscribe] = mockedUseSync.mock.calls[0] ?? []
+    subscribe?.(rerender)
     const call = addSpy.mock.calls.find(c => c[0] === 'eip6963:announceProvider')!
     addSpy.mockRestore()
     return call[1] as (e: Event) => Promise<void>
@@ -104,7 +104,7 @@ describe('useExternalStore — announcement event', () => {
     const listener = captureListener(rerender)
     await listener(announceEvent('wallet-1'))
     expect(externalState.walletProviders).toHaveLength(1)
-    expect(externalState.walletProviders[0].info.uuid).toBe('wallet-1')
+    expect(externalState.walletProviders[0]?.info.uuid).toBe('wallet-1')
     expect(mockedAddHook).toHaveBeenCalledTimes(1)
     expect(rerender).toHaveBeenCalledTimes(1)
   })
@@ -134,8 +134,8 @@ describe('useExternalStore — announcement event', () => {
 describe('useExternalStore — snapshot getters', () => {
   it('returns the live externalState reference for both client + server snapshots', () => {
     useExternalStore()
-    const [, getSnapshot, getServerSnapshot] = mockedUseSync.mock.calls[0]
-    expect(getSnapshot()).toBe(externalState)
+    const [, getSnapshot, getServerSnapshot] = mockedUseSync.mock.calls[0] ?? []
+    expect(getSnapshot!()).toBe(externalState)
     expect(getServerSnapshot!()).toBe(externalState)
   })
 })
