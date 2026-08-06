@@ -133,6 +133,12 @@ as intended.
 - CI runs them in `.github/workflows/e2e.yml`, separate from the deploy
   workflow so a backend outage cannot block a Pages publish.
 
+### Route error boundaries
+
+`src/route/routeError.tsx` is the render boundary for every route, wired as `errorElement` on each **child** route in `router.tsx` plus the root as a backstop. Child placement is the point: an `errorElement` on the root route replaces `<RootLayout />` itself, so a single bad component would take the header, footer and wallet UI down with it. On a child, the crash is contained to the `<Outlet />`.
+
+It also tells a failed dynamic import (a deploy replaced the hashed chunk — reloading genuinely fixes it) apart from an ordinary render throw, and only shows the "a new version may have been deployed" copy for the former. The previous `ChunkLoadError` component doubled as both and blamed a deployment for every error it caught. Its markup reuses the `.error-*` classes shared with `ServerError` / the 404 page, plus a `.route-error` hook that `e2e/routes.spec.ts` asserts is absent on every content route.
+
 ## Conventions
 
 - Import alias: `~/` resolves to `src/` (configured in tsconfig.json and vite.config.js)

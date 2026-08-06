@@ -13,11 +13,13 @@ for (const { path, heading } of ROUTES) {
     // against it: nothing on these pages holds a connection open.
     await page.waitForLoadState('networkidle')
 
-    // NotFound shares .error-container with ServerError; only NotFound carries
-    // the --centered modifier. Neither belongs on a content route.
+    // NotFound and RouteError share .error-container with ServerError; only
+    // the first two carry the --centered modifier. None belongs on a content
+    // route, so the bare-class assertion covers all three.
     await expect(page.locator('.error-container')).toHaveCount(0)
-    // Rendered by ChunkLoadError when a lazy route chunk fails to load.
-    await expect(page.locator('.lazy-load-error')).toHaveCount(0)
+    // Called out separately because it is the loudest failure of the three:
+    // the route's render boundary caught a throw, or its chunk never loaded.
+    await expect(page.locator('.route-error')).toHaveCount(0)
 
     expect(consoleErrors).toEqual([])
   })

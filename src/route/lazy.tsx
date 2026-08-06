@@ -1,8 +1,6 @@
 import { type ComponentType } from "react";
-import { useRouteError } from "react-router";
 import { SpinnerCircular } from "spinners-react";
 import { PAGE_COLOR_CODE } from "~/constants";
-import "./lazy.scss";
 
 const RELOAD_FLAG = 'stakecore:chunk-reload-attempted'
 
@@ -45,20 +43,7 @@ export const RouteHydrateFallback = () => (
   </div>
 )
 
-export const ChunkLoadError = () => {
-  const error = useRouteError()
-  console.error('Lazy route load failed:', error)
-
-  const handleReload = () => {
-    sessionStorage.removeItem(RELOAD_FLAG)
-    window.location.reload()
-  }
-
-  return (
-    <div className="lazy-load-error">
-      <h3>Couldn't load this page</h3>
-      <p>A new version may have been deployed. Reloading should fix it.</p>
-      <button className="theme-btn" onClick={handleReload}>Reload</button>
-    </div>
-  )
-}
+// The chunk-load fallback that used to live here is now RouteError, which
+// covers render throws as well and tells the two apart — the old component
+// blamed a deployment for every error it caught, including ones a reload
+// could not fix.
