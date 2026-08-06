@@ -73,6 +73,78 @@ describe('Formatter.number', () => {
   })
 })
 
+// Every formatter below is called during render with values derived from
+// backend JSON. A missing field turns into NaN through arithmetic (or arrives
+// as undefined outright), and the BigInt()/toISOString() calls inside these
+// helpers throw on it — which unmounts the whole route. They must degrade to a
+// placeholder instead of throwing; see NO_VALUE.
+describe('Formatter non-finite input', () => {
+  it('renders NaN as the placeholder instead of throwing', () => {
+    expect(Formatter.number(NaN)).toBe(Formatter.NO_VALUE)
+  })
+
+  it('renders undefined and null as the placeholder instead of throwing', () => {
+    expect(Formatter.number(undefined as never)).toBe(Formatter.NO_VALUE)
+    expect(Formatter.number(null as never)).toBe(Formatter.NO_VALUE)
+  })
+
+  it('renders infinities as the placeholder instead of throwing', () => {
+    expect(Formatter.number(Infinity)).toBe(Formatter.NO_VALUE)
+    expect(Formatter.number(-Infinity)).toBe(Formatter.NO_VALUE)
+  })
+
+  it('renders unparseable numeric strings as the placeholder', () => {
+    expect(Formatter.number('abc')).toBe(Formatter.NO_VALUE)
+    expect(Formatter.number('')).toBe(Formatter.NO_VALUE)
+  })
+
+  it('returns a bare placeholder from usd, without a $ affix', () => {
+    // "$—" reads as a real amount of nothing; the placeholder stands alone.
+    expect(Formatter.usd(NaN)).toBe(Formatter.NO_VALUE)
+  })
+
+  it('returns a bare placeholder from percent, without a % affix', () => {
+    expect(Formatter.percent(NaN)).toBe(Formatter.NO_VALUE)
+  })
+
+  it('renders invalid dates as the placeholder instead of throwing', () => {
+    expect(Formatter.date(NaN)).toBe(Formatter.NO_VALUE)
+    expect(Formatter.dateHuman(NaN)).toBe(Formatter.NO_VALUE)
+  })
+
+  it('still formats a genuine zero rather than treating it as missing', () => {
+    // Guard against an over-eager falsy check swallowing 0.
+    expect(Formatter.number(0)).toBe('0.00')
+    expect(Formatter.usd(0)).toBe('$0.00')
+    expect(Formatter.percent(0)).toBe('0.00%')
+  })
+
+  // These three don't throw on bad input — they render garbage, which is
+  // worse in one specific way: it looks like a real answer. "NaNs" and a
+  // "0 seconds ago" that actually means "no timestamp" both read as data.
+  it('returns a bare placeholder from days, without a unit suffix', () => {
+    expect(Formatter.days(NaN)).toBe(Formatter.NO_VALUE)
+    expect(Formatter.days(Infinity)).toBe(Formatter.NO_VALUE)
+  })
+
+  it('renders a non-finite duration as the placeholder, not "NaNs"', () => {
+    expect(Formatter.duration(NaN)).toBe(Formatter.NO_VALUE)
+    expect(Formatter.duration(Infinity)).toBe(Formatter.NO_VALUE)
+  })
+
+  it('renders a non-finite relative date as the placeholder, not "0 seconds ago"', () => {
+    // The dangerous one: a missing timestamp currently reports "just now".
+    expect(Formatter.relativeDate(NaN)).toBe(Formatter.NO_VALUE)
+    expect(Formatter.relativeDate(Infinity)).toBe(Formatter.NO_VALUE)
+  })
+
+  it('keeps the meaningful zero cases on the duration helpers', () => {
+    // 0s / "0 seconds ago" are real answers when the input is a real 0.
+    expect(Formatter.duration(0)).toBe('0s')
+    expect(Formatter.days(0)).toBe('0 days')
+    expect(Formatter.relativeDate(Date.now() / 1000)).toBe('0 seconds ago')
+  })
+})
 
 describe('Formatter.address', () => {
   it('checksums a valid lowercase address', () => {

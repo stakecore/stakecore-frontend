@@ -12,7 +12,29 @@ const UNITS: [number, string][] = [
 
 export namespace Formatter {
 
+  // Rendered in place of a number that doesn't exist. Every formatter here is
+  // called during render with values derived from backend JSON, where a missing
+  // field becomes NaN through arithmetic (or arrives as undefined outright).
+  // BigInt() and Date#toISOString() both *throw* on those, and a throw inside
+  // render unmounts the whole route — a blank protocol page because one field
+  // was late. Degrading to this marker keeps the rest of the page alive.
+  export const NO_VALUE = '—'
+
+  // True only for values `number()` can actually render. bigint is always
+  // finite; a numeric string is validated by parsing (the parse is a gate, not
+  // a conversion — the digits themselves still go through BigInt below, so
+  // precision beyond a double survives). Anything else — undefined, null, NaN,
+  // ±Infinity, '' , 'abc' — is not renderable.
+  function renderable(value: intish): boolean {
+    if (typeof value === 'bigint') return true
+    if (typeof value === 'number') return Number.isFinite(value)
+    if (typeof value === 'string') return value.trim() !== '' && Number.isFinite(Number(value))
+    return false
+  }
+
   export function percent(value: number, length: number = 0): string {
+    // Bare marker, no '%' affix — "—%" reads as a real measurement.
+    if (!renderable(value)) return NO_VALUE
     return number(100 * value, 3 + length) + '%'
   }
 
@@ -21,6 +43,8 @@ export namespace Formatter {
   // "<$0.01" instead of the malformed "$-1.2k" / "$<0.01" you'd get from
   // concatenating "$" + number(...) directly.
   export function usd(value: intish, length = NUMBER_DISPLAY_LENGTH, decimals = 0): string {
+    // Bare marker, no '$' affix — "$—" reads as a real amount.
+    if (!renderable(value)) return NO_VALUE
     const str = value.toString()
     const negative = str.startsWith('-')
     const formatted = number(negative ? str.slice(1) : str, length, decimals)
@@ -37,6 +61,7 @@ export namespace Formatter {
   // "<0.01" sub-precision rail is a marker rather than a number, so neither is
   // padded.
   export function number(value: intish, length = NUMBER_DISPLAY_LENGTH, decimals = 0): string {
+    if (!renderable(value)) return NO_VALUE
     let str = value.toString()
 
     if (str.includes('e')) {
@@ -116,16 +141,23 @@ export namespace Formatter {
 
   export function date(unix: number): string {
     const d = new Date(unix * 1000)
+    // toISOString throws RangeError on an invalid date rather than returning
+    // "Invalid Date" the way toLocaleDateString does.
+    if (Number.isNaN(d.getTime())) return NO_VALUE
     return d.toISOString().replace('T', ' ').split('.')[0];
   }
 
   export function dateHuman(unix: number): string {
     const d = new Date(unix * 1000)
+    if (Number.isNaN(d.getTime())) return NO_VALUE
     return d.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
       + ', ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })
   }
 
   export function relativeDate(unix: number, n = 1): string {
+    // Without this a missing timestamp falls through every unit and reports
+    // "0 seconds ago" — an absent value rendered as "just now".
+    if (!renderable(unix)) return NO_VALUE
     let dif = Date.now() - unix * 1000
     const parts: string[] = []
 
@@ -142,10 +174,15 @@ export namespace Formatter {
   }
 
   export function days(unix: number): string {
+    // Bare marker, no ' days' suffix — the unit implies a quantity.
+    if (!renderable(unix)) return NO_VALUE
     return number(unix / 86400, 1) + ' days'
   }
 
   export function duration(ms: number): string {
+    // NaN fails the <= 0 test below, then every part comes out NaN and the
+    // zero-fallback emits the literal string "NaNs".
+    if (!renderable(ms)) return NO_VALUE
     if (ms <= 0) return "0s"
     const s = Math.floor(ms / 1000)
     const d = Math.floor(s / 86400)
