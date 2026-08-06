@@ -57,7 +57,7 @@ const Hero = () => {
         ) : (
           <>
             <div className="hero-stats">
-              <Stat label="Total Delegated" prefix="$" value={stats?.delegated} diff={stats?.delegatedDiff} />
+              <Stat label="Delegated" prefix="$" value={stats?.delegated} diff={stats?.delegatedDiff} />
               <Stat label="Delegators" value={stats?.delegators} diff={stats?.delegatorDiff} />
             </div>
 

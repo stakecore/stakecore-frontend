@@ -36,7 +36,8 @@ const Mission = () => (
                     Your stake, our engine
                 </h1>
                 <p className="about-header-body">
-                    StakeCore runs validator and protocol-signing infrastructure — a
+                    StakeCore runs validator and other core protocol-signing
+                    infrastructure — a
                     redundant cluster we build, orchestrate, and monitor ourselves, today
                     serving the Flare, Avalanche, and Songbird networks. From individual
                     holders to protocols, custodians, and treasuries, anyone can delegate
@@ -81,7 +82,7 @@ const valueProps = [
     {
         icon: <RiShieldCheckLine size={28} />,
         title: 'Tokens that never move',
-        body: <>Delegation is a vote, not a transfer. Nothing gets bridged, wrapped, or routed through a smart contract, and <u>we never take custody of anything</u> — your keys stay yours the entire time.</>,
+        body: <>Delegation is a vote, not a transfer. Nothing gets bridged, wrapped, or routed through a smart contract, and <span className="about-mark">we never take custody of anything</span> — your keys stay yours the entire time.</>,
     },
     {
         icon: <RiLineChartLine size={28} />,
