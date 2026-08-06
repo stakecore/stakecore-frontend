@@ -142,6 +142,17 @@ as intended.
 
 `pnpm lint` does not typecheck. Run `npx tsc -p tsconfig.json --noEmit` before pushing.
 
+### Chain config (`src/config/chains.ts`)
+
+`CHAIN_CONFIG` is declared with **`satisfies Record<Chain, ChainConfig>`**, not a `: Record<Chain, ChainConfig>` annotation. Keep it that way. An annotation widens every entry to `ChainConfig`, where `epoch`, `video`, `wrappedSymbol` and the explorer builders are all optional — which is why `constants.ts` used to assert ~20 of them with `!` on module-scope lines that run at import, inside the eager bundle. A rename or deletion in `chains.ts` was invisible to the compiler and surfaced as `Cannot read properties of undefined` during module evaluation: a blank page on **every** route, thrown before React mounts and before any error boundary exists. `satisfies` still checks each entry is a valid `ChainConfig` (and that no `Chain` is missing) while preserving the literal shape, so per-chain field presence is compile-checked and the `!`s are gone.
+
+Protocol availability is carried by two exported types rather than re-asserted at each use:
+
+- `ValidatorChain = Chain.FLARE | Chain.AVALANCHE` — Songbird runs no validator, so it has no P-chain or validator explorer. Used by `createValidatorDataAccess`.
+- `FspChain = Chain.FLARE | Chain.SONGBIRD` — Avalanche runs no FSP, so it has no `wrappedSymbol` and no EVM explorer. Used by `FspPageConfig` / `FspDelegateConfig`.
+
+Passing the wrong chain to either shell is now a compile error instead of a pair of `undefined` URL builders reaching a click handler. If you add a chain or move a protocol, expect errors at the call sites — that is the mechanism working, not something to `!` past.
+
 ### Route error boundaries
 
 `src/route/routeError.tsx` is the render boundary for every route, wired as `errorElement` on each **child** route in `router.tsx` plus the root as a backstop. Child placement is the point: an `errorElement` on the root route replaces `<RootLayout />` itself, so a single bad component would take the header, footer and wallet UI down with it. On a child, the crash is contained to the `<Outlet />`.

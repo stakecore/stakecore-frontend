@@ -1,7 +1,7 @@
 import { Formatter } from "~/utils/misc/formatter"
 import { unixnow } from "~/utils/misc/time"
 import { Chain } from "~/enums"
-import { CHAIN_CONFIG } from "~/config/chains"
+import { CHAIN_CONFIG, type ValidatorChain } from "~/config/chains"
 import { checkRangeAvailable } from "../utils"
 import type { ApiResponseDto_AvalancheDelegatorInfoDto, PChainValidatorInfoDto } from "~/backendApi"
 import type { ValidatorData, IDelegation, IGraphics } from "./types"
@@ -22,10 +22,13 @@ export interface ValidatorService {
 // and Avalanche are the backend service, the native asset symbol, and the
 // P-chain/validator explorer URLs — all derived from CHAIN_CONFIG[chain] —
 // so the DTO→UI mapping below is shared verbatim.
-export function createValidatorDataAccess(chain: Chain, service: ValidatorService) {
+// ValidatorChain, not Chain: Songbird runs no validator and so has neither a
+// P-chain nor a validator explorer. Passing it here used to typecheck and
+// then hand this function two undefined URL builders, which the `!`s hid.
+export function createValidatorDataAccess(chain: ValidatorChain, service: ValidatorService) {
   const asset = CHAIN_CONFIG[chain].symbol
-  const pChainTransactionUrl = CHAIN_CONFIG[chain].explorers.pChainTx!
-  const validatorUrl = CHAIN_CONFIG[chain].explorers.validator!
+  const pChainTransactionUrl = CHAIN_CONFIG[chain].explorers.pChainTx
+  const validatorUrl = CHAIN_CONFIG[chain].explorers.validator
 
   function getSummary(data: PChainValidatorInfoDto): ISummary {
     const minDelegated = Formatter.number(data.minimumDelegated)

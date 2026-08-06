@@ -6,7 +6,7 @@ import ServerError from "~/components/ui/serverError"
 import FspLocalDelegate from "~/pages/protocols/fspLocalDelegate"
 import { contractCallAdapter } from "~/features/wallet/contract"
 import { expbigint } from "~/utils/misc/bigint"
-import { CHAIN_CONFIG } from "~/config/chains"
+import { CHAIN_CONFIG, type FspChain } from "~/config/chains"
 import { REFRESH_QUERY_FAST_MS } from "~/constants"
 import { Chain } from "~/enums"
 import FspDataLayer from "./data"
@@ -14,7 +14,8 @@ import type { FspContractApi } from "./contracts"
 
 
 export interface FspDelegateConfig {
-  chain: Chain
+  // See FspPageConfig — wrappedSymbol / evmTx are FSP-chain-only.
+  chain: FspChain
   // Dynamic import of the per-chain contracts module, so ethers' heavy
   // BrowserProvider/Contract stack loads only on a wallet transaction rather
   // than in the FSP page chunk.
@@ -91,10 +92,10 @@ const FspLocalDelegateComponent = ({ config }: { config: FspDelegateConfig }) =>
           data={data}
           walletAddress={walletAddress}
           symbol={chainCfg.symbol}
-          wrappedSymbol={chainCfg.wrappedSymbol!}
+          wrappedSymbol={chainCfg.wrappedSymbol}
           delegationLabel="StakeCore"
           actions={actions}
-          explorerTxUrl={chainCfg.explorers.evmTx!}
+          explorerTxUrl={chainCfg.explorers.evmTx}
           onRefresh={() => mutate(swrKey)}
         />
       </div>

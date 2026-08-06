@@ -2,7 +2,7 @@ import { lazy, Suspense, type ComponentType } from 'react'
 import useSWR from 'swr'
 import { SpinnerCircular } from 'spinners-react'
 import QueryState from '~/components/ui/queryState'
-import { CHAIN_CONFIG } from '~/config/chains'
+import { CHAIN_CONFIG, type FspChain } from '~/config/chains'
 import { Chain } from '~/enums'
 import ProjectTitle from "../title"
 import InfoComponent from "../info"
@@ -18,7 +18,9 @@ import '../protocols.scss'
 const FspStatsComponent = lazy(() => import("../fsp-stats"))
 
 export interface FspPageConfig {
-  chain: Chain
+  // FspChain, not Chain: this shell reads wrappedSymbol and the EVM explorer
+  // builders, none of which Avalanche has — it runs no FSP.
+  chain: FspChain
   title: string
   suptitle: string
   loadContracts: () => Promise<FspContractApi>

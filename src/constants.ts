@@ -73,10 +73,10 @@ export const CHAIN_SYMBOL: Record<number, string> = {
 // tokens
 export const FLR_DECIMALS = flare.decimals
 export const FLR_SYMBOL = flare.symbol
-export const WFLR_SYMBOL = flare.wrappedSymbol!
+export const WFLR_SYMBOL = flare.wrappedSymbol
 export const SGB_DECIMALS = songbird.decimals
 export const SGB_SYMBOL = songbird.symbol
-export const WSGB_SYMBOL = songbird.wrappedSymbol!
+export const WSGB_SYMBOL = songbird.wrappedSymbol
 export const AVAX_DECIMALS = avalanche.decimals
 export const AVAX_SYMBOL = avalanche.symbol
 
@@ -89,22 +89,22 @@ export const avalancheChainId = avalanche.chainIdHex
 export const avalancheWalletConfig = avalanche.walletConfig
 
 // epoch configs
-export const flareEpochConfig = flare.epoch!
-export const songbirdEpochConfig = songbird.epoch!
+export const flareEpochConfig = flare.epoch
+export const songbirdEpochConfig = songbird.epoch
 
 // explorer URL builders
-export const flareEvmAddressUrl = flare.explorers.evmAddress!
-export const flareEvmTransactionUrl = flare.explorers.evmTx!
-export const flareFspAddressUrl = flare.explorers.fspAddress!
-export const flareValidatorUrl = flare.explorers.validator!
-export const flarePChainAddressUrl = flare.explorers.pChainAddress!
-export const flarePChainTransactionUrl = flare.explorers.pChainTx!
-export const songbirdEvmAddressUrl = songbird.explorers.evmAddress!
-export const songbirdEvmTransactionUrl = songbird.explorers.evmTx!
-export const songbirdFspAddressUrl = songbird.explorers.fspAddress!
-export const avalancheValidatorUrl = avalanche.explorers.validator!
-export const avalanchePChainTransactionUrl = avalanche.explorers.pChainTx!
-export const avalanchePChainAddressUrl = avalanche.explorers.pChainAddress!
+export const flareEvmAddressUrl = flare.explorers.evmAddress
+export const flareEvmTransactionUrl = flare.explorers.evmTx
+export const flareFspAddressUrl = flare.explorers.fspAddress
+export const flareValidatorUrl = flare.explorers.validator
+export const flarePChainAddressUrl = flare.explorers.pChainAddress
+export const flarePChainTransactionUrl = flare.explorers.pChainTx
+export const songbirdEvmAddressUrl = songbird.explorers.evmAddress
+export const songbirdEvmTransactionUrl = songbird.explorers.evmTx
+export const songbirdFspAddressUrl = songbird.explorers.fspAddress
+export const avalancheValidatorUrl = avalanche.explorers.validator
+export const avalanchePChainTransactionUrl = avalanche.explorers.pChainTx
+export const avalanchePChainAddressUrl = avalanche.explorers.pChainAddress
 
 // brand colours
 export const FLARE_COLOR_CODE = flare.color
@@ -112,10 +112,10 @@ export const SONGBIRD_COLOR_CODE = songbird.color
 export const AVALANCHE_COLOR_CODE = avalanche.color
 
 // videos
-export const FLARE_FSP_VIDEO_ID = flare.video!.fsp!
-export const SONGBIRD_FSP_VIDEO_ID = songbird.video!.fsp!
-export const FLARE_VALIDATOR_VIDEO_ID = flare.video!.validator!
-export const AVALANCHE_VALIDATOR_VIDEO_ID = avalanche.video!.validator!
+export const FLARE_FSP_VIDEO_ID = flare.video.fsp
+export const SONGBIRD_FSP_VIDEO_ID = songbird.video.fsp
+export const FLARE_VALIDATOR_VIDEO_ID = flare.video.validator
+export const AVALANCHE_VALIDATOR_VIDEO_ID = avalanche.video.validator
 
 // bech32 human-readable parts
 export const HRP = {

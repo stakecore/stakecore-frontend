@@ -67,7 +67,27 @@ const songbirdEvmExplorer = 'https://songbird-explorer.flare.network'
 const songbirdFspExplorer = 'https://songbird-systems-explorer.flare.network'
 const avalancheExplorer = 'https://subnets.avax.network'
 
-export const CHAIN_CONFIG: Record<Chain, ChainConfig> = {
+// The chains on which each protocol actually exists. Spelled out as types so
+// "Avalanche is validator-only" is enforced at the call site rather than
+// re-asserted with `!` every time a protocol reaches for its explorer URLs.
+export type ValidatorChain = Chain.FLARE | Chain.AVALANCHE
+export type FspChain = Chain.FLARE | Chain.SONGBIRD
+
+// `satisfies` rather than a `: Record<Chain, ChainConfig>` annotation, and the
+// difference is load-bearing. An annotation widens every entry to ChainConfig,
+// where `epoch`, `video` and the explorer builders are all optional — so
+// constants.ts had to assert each one with `!` on a module-scope line that
+// runs at import, in the eager bundle. A rename or deletion in this file was
+// invisible to the compiler and surfaced as `Cannot read properties of
+// undefined` during module evaluation: a blank page on *every* route, thrown
+// before React mounts and before any error boundary exists to catch it.
+//
+// `satisfies` still checks that each entry is a valid ChainConfig (and that
+// every Chain has one), but preserves the literal shape, so the fields below
+// are known-present per chain and the `!`s are gone. Delete `video.fsp` from
+// Flare and constants.ts fails to compile; rename a key and the excess-
+// property check here fails first.
+export const CHAIN_CONFIG = {
   [Chain.FLARE]: {
     id: Chain.FLARE,
     slug: "flare",
@@ -147,7 +167,7 @@ export const CHAIN_CONFIG: Record<Chain, ChainConfig> = {
     },
     video: { validator: "wRPxDEMgDdM" },
   },
-}
+} satisfies Record<Chain, ChainConfig>
 
 // Reverse lookup by EIP-155 hex chain id (as reported by the wallet).
 export const CHAIN_BY_HEX: Record<string, ChainConfig> = Object.fromEntries(
