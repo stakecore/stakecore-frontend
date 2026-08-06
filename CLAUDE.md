@@ -83,7 +83,7 @@ Fonts are **self-hosted** in `public/fonts/` (latin subsets; Inter and Roboto Mo
 
 ### Testing
 
-Vitest + happy-dom + `@testing-library/react` / `user-event`. 289 tests across 28 files at last count, all co-located next to source as `*.test.ts(x)`. Test files declare their environment per-file via a top-of-file `// @vitest-environment happy-dom` directive (no global config).
+Vitest + happy-dom + `@testing-library/react` / `user-event`. 322 tests across 30 files at last count, all co-located next to source as `*.test.ts(x)`. Test files declare their environment per-file via a top-of-file `// @vitest-environment happy-dom` directive (no global config). There is no global setup file, so RTL's auto-cleanup does not run — a test that renders more than once must call `afterEach(cleanup)` itself, or later queries will match elements left behind by earlier renders.
 
 Common patterns: `vi.mock('~/features/wallet/store', ...)` to provide a fake Zustand store, `vi.mock('~/features/wallet/eip1193', ...)` for the RPC helpers, Proxy-mocked `Contract` instances for ethers calls, `MemoryRouter` wrapping for components that use `useLocation` / `NavLink`. `fireEvent.click` instead of `userEvent.click` when targeting react-router `<Link>` (userEvent's synthetic chain doesn't reach the onClick prop reliably through Link's `preventDefault`).
 
@@ -133,6 +133,20 @@ as intended.
 - CI runs them in `.github/workflows/e2e.yml`, separate from the deploy
   workflow so a backend outage cannot block a Pages publish.
 
+## Conventions
+
+- Import alias: `~/` resolves to `src/` (configured in tsconfig.json and vite.config.js)
+- `src/utils/misc/formatter.ts` — Shared number / currency / date / address formatting (use `Formatter.usd()` for dollar amounts so signs and the `<` sub-precision marker land outside the `$`). The `length` argument on `number` / `usd` / `percent` is an **exact** digit count, not a maximum: results are zero-padded to it (`2` → `2.00`, `2000` → `2.00k`, `0` → `0.00` at the length-3 default) so figures in a column share one decimal precision. Only two things escape it — an integer part that already fills `length` renders whole, and the `<0.01` sub-precision rail is a marker rather than a number. `percent` spends its budget after the ×100 shift, so `percent(0.5)` is `50.0%` and `percent(1)` is `100%`. Every formatter is **total**: NaN, ±Infinity, undefined/null, an unparseable string, or an invalid date renders as `Formatter.NO_VALUE` (`—`) instead of throwing or inventing a value. That matters because these run during render on values derived from backend JSON. Two distinct failure modes were folded into one rule here:
+
+  - `number` / `usd` / `percent` / `date` / `dateHuman` used to **throw** — `BigInt()` and `Date#toISOString()` both do on bad input, and a throw during render unmounts the whole route.
+  - `days` / `duration` / `relativeDate` used to **lie**, which is worse in one specific way: the output looked like data. `duration(NaN)` rendered the literal `"NaNs"`, and `relativeDate(NaN)` fell through every unit to report `"0 seconds ago"` — an absent timestamp displayed as "just now".
+
+  All of them return the marker **bare**, with no `$` / `%` / `' days'` affix, so it never reads as a real quantity. Genuine zeros are unaffected (`usd(0)` is `$0.00`, `duration(0)` is `0s`) — there are tests pinning that, since a falsy check here would silently swallow them.
+- Explorer URLs follow pattern: `chain{Evm|PChain}{AddressUrl|TransactionUrl}(hash)` in constants
+- Three chains supported: Flare (chain._0), Songbird (chain._1), Avalanche (chain._2)
+- Two protocols: FSP (protocol._0), Validator (protocol._1)
+- Package manager: pnpm (see the dedicated section above); run scripts with `pnpm <script>` except the reserved `deploy` name, which needs `pnpm run deploy`
+
 ### Type strictness
 
 `tsconfig.json` runs `strict: false` but `strictNullChecks: true`. The split is deliberate: `strictNullChecks` is what catches the null-deref class that white-screens a route, while full `strict` would also enable `noImplicitAny` and light up every untyped callback param (the router's `lazyRoute`, several component props) without catching runtime crashes. Two consequences worth knowing:
@@ -153,22 +167,16 @@ Protocol availability is carried by two exported types rather than re-asserted a
 
 Passing the wrong chain to either shell is now a compile error instead of a pair of `undefined` URL builders reaching a click handler. If you add a chain or move a protocol, expect errors at the call sites — that is the mechanism working, not something to `!` past.
 
+### Web Storage
+
+Never touch `sessionStorage` / `localStorage` directly — go through `safeSession` / `safeLocal` in [safeStorage.ts](src/utils/safeStorage.ts). Storage doesn't merely fail, it **throws**: Chrome with cookies fully blocked raises `SecurityError` on *property access* to `sessionStorage`, before any method runs. The helper fetches the storage object through a thunk inside each `try` so the property access is covered too, and resolves it per call rather than at module scope — caching it at import would move the failure into module evaluation, which is the blank-page-before-React case.
+
+`set()` returns a **boolean**, and callers recording a decision they must later read back have to branch on it. `routeLazy` is the cautionary example: its `RELOAD_FLAG` is the only thing stopping a permanently broken chunk from reloading forever, so it reloads only `if (get(...) !== '1' && set(...))`. Swallowing the write failure and reloading anyway would produce an infinite reload loop — strictly worse than the crash being fixed.
+
+Testing blocked storage: replace the property with a throwing getter via `Object.defineProperty(window, 'sessionStorage', { get() { throw ... } })`, and restore the saved descriptor afterwards. Do **not** use `vi.spyOn(Storage.prototype, …)` — those spies were observed to silently stop applying once another test in the same file had already touched storage, which turns the storage tests green against code that is still broken. Both storage test suites assert the block is live before asserting anything else, for exactly that reason.
+
 ### Route error boundaries
 
 `src/route/routeError.tsx` is the render boundary for every route, wired as `errorElement` on each **child** route in `router.tsx` plus the root as a backstop. Child placement is the point: an `errorElement` on the root route replaces `<RootLayout />` itself, so a single bad component would take the header, footer and wallet UI down with it. On a child, the crash is contained to the `<Outlet />`.
 
 It also tells a failed dynamic import (a deploy replaced the hashed chunk — reloading genuinely fixes it) apart from an ordinary render throw, and only shows the "a new version may have been deployed" copy for the former. The previous `ChunkLoadError` component doubled as both and blamed a deployment for every error it caught. Its markup reuses the `.error-*` classes shared with `ServerError` / the 404 page, plus a `.route-error` hook that `e2e/routes.spec.ts` asserts is absent on every content route.
-
-## Conventions
-
-- Import alias: `~/` resolves to `src/` (configured in tsconfig.json and vite.config.js)
-- `src/utils/misc/formatter.ts` — Shared number / currency / date / address formatting (use `Formatter.usd()` for dollar amounts so signs and the `<` sub-precision marker land outside the `$`). The `length` argument on `number` / `usd` / `percent` is an **exact** digit count, not a maximum: results are zero-padded to it (`2` → `2.00`, `2000` → `2.00k`, `0` → `0.00` at the length-3 default) so figures in a column share one decimal precision. Only two things escape it — an integer part that already fills `length` renders whole, and the `<0.01` sub-precision rail is a marker rather than a number. `percent` spends its budget after the ×100 shift, so `percent(0.5)` is `50.0%` and `percent(1)` is `100%`. Every formatter is **total**: NaN, ±Infinity, undefined/null, an unparseable string, or an invalid date renders as `Formatter.NO_VALUE` (`—`) instead of throwing or inventing a value. That matters because these run during render on values derived from backend JSON. Two distinct failure modes were folded into one rule here:
-
-  - `number` / `usd` / `percent` / `date` / `dateHuman` used to **throw** — `BigInt()` and `Date#toISOString()` both do on bad input, and a throw during render unmounts the whole route.
-  - `days` / `duration` / `relativeDate` used to **lie**, which is worse in one specific way: the output looked like data. `duration(NaN)` rendered the literal `"NaNs"`, and `relativeDate(NaN)` fell through every unit to report `"0 seconds ago"` — an absent timestamp displayed as "just now".
-
-  All of them return the marker **bare**, with no `$` / `%` / `' days'` affix, so it never reads as a real quantity. Genuine zeros are unaffected (`usd(0)` is `$0.00`, `duration(0)` is `0s`) — there are tests pinning that, since a falsy check here would silently swallow them.
-- Explorer URLs follow pattern: `chain{Evm|PChain}{AddressUrl|TransactionUrl}(hash)` in constants
-- Three chains supported: Flare (chain._0), Songbird (chain._1), Avalanche (chain._2)
-- Two protocols: FSP (protocol._0), Validator (protocol._1)
-- Package manager: pnpm (see the dedicated section above); run scripts with `pnpm <script>` except the reserved `deploy` name, which needs `pnpm run deploy`

@@ -1,6 +1,6 @@
 import { Link, useRouteError } from 'react-router'
-
-const RELOAD_FLAG = 'stakecore:chunk-reload-attempted'
+import { safeSession } from '~/utils/safeStorage'
+import { RELOAD_FLAG } from './lazy'
 
 // Vite's failure modes when a lazily-imported route chunk can't be fetched.
 // The usual cause is a deploy replacing the hashed assets the currently-loaded
@@ -32,9 +32,9 @@ export const RouteError = () => {
   const handleReload = () => {
     // routeLazy sets this to stop a reload loop. Clearing it means a genuine
     // chunk failure after this point still gets its one automatic retry.
-    try {
-      sessionStorage.removeItem(RELOAD_FLAG)
-    } catch { /* storage blocked — the reload below is what matters */ }
+    // Blocked storage is fine to ignore here — this reload is user-initiated,
+    // so there is no loop to guard against.
+    safeSession.remove(RELOAD_FLAG)
     window.location.reload()
   }
 

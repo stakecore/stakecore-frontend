@@ -1,8 +1,9 @@
 import { type ComponentType } from "react";
 import { SpinnerCircular } from "spinners-react";
 import { PAGE_COLOR_CODE } from "~/constants";
+import { safeSession } from "~/utils/safeStorage";
 
-const RELOAD_FLAG = 'stakecore:chunk-reload-attempted'
+export const RELOAD_FLAG = 'stakecore:chunk-reload-attempted'
 
 export function routeLazy<T extends ComponentType<any>>(
   path: string,
@@ -11,11 +12,18 @@ export function routeLazy<T extends ComponentType<any>>(
   return async () => {
     try {
       const mod = await factory()
-      sessionStorage.removeItem(RELOAD_FLAG)
+      safeSession.remove(RELOAD_FLAG)
       return { Component: mod.default }
     } catch (err) {
-      if (sessionStorage.getItem(RELOAD_FLAG) !== '1') {
-        sessionStorage.setItem(RELOAD_FLAG, '1')
+      // Two conditions, and the second is not redundant. RELOAD_FLAG is the
+      // only thing stopping a permanently broken chunk from reloading
+      // forever, so the reload is conditional on having actually *recorded*
+      // the attempt. Where storage is unavailable (Chrome with cookies
+      // blocked) the flag can never persist, and an unconditional reload
+      // would fire again on every load — an infinite loop, strictly worse
+      // than the failure it was trying to paper over. Falling through to
+      // RouteError instead gives the user a manual Reload button.
+      if (safeSession.get(RELOAD_FLAG) !== '1' && safeSession.set(RELOAD_FLAG, '1')) {
         // The data router commits the URL only *after* lazy() resolves, so
         // the hash still points at the route being left. Reloading as-is
         // would replay that page and swallow the navigation — the user

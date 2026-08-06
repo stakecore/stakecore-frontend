@@ -1,6 +1,6 @@
 // @vitest-environment happy-dom
 
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { routeLazy } from './lazy'
 
 const RELOAD_FLAG = 'stakecore:chunk-reload-attempted'
@@ -56,6 +56,56 @@ describe('routeLazy', () => {
 
   it('rethrows instead of reload-looping when a retry was already attempted', async () => {
     sessionStorage.setItem(RELOAD_FLAG, '1')
+
+    await expect(
+      routeLazy('/songbird/fsp', async () => { throw new Error('chunk 504') })()
+    ).rejects.toThrow('chunk 504')
+    expect(reload).not.toHaveBeenCalled()
+  })
+})
+
+// Chrome with cookies fully blocked throws SecurityError on any sessionStorage
+// access. Every branch of routeLazy touches storage, so an unguarded call
+// turns a working browser into one that cannot open a single lazy route.
+//
+// Blocked by swapping the property for a throwing getter, not by spying on
+// Storage.prototype — those spies were observed to silently stop applying
+// once earlier tests in this file had used storage, which made these tests
+// pass against code that was still broken.
+describe('routeLazy with blocked sessionStorage', () => {
+  const realDescriptor = Object.getOwnPropertyDescriptor(window, 'sessionStorage')
+
+  const blockStorage = () => {
+    Object.defineProperty(window, 'sessionStorage', {
+      configurable: true,
+      get() { throw new DOMException('access denied', 'SecurityError') },
+    })
+    // Self-check, so a technique that stops working fails here rather than
+    // turning the assertions below vacuously green.
+    expect(() => sessionStorage).toThrow()
+  }
+
+  afterEach(() => {
+    if (realDescriptor) Object.defineProperty(window, 'sessionStorage', realDescriptor)
+  })
+
+  it('still resolves a successfully loaded chunk', async () => {
+    // The worst of the three call sites: it clears the retry flag on the
+    // *success* path, so a throw there fails a route that loaded perfectly.
+    blockStorage()
+    const Component = () => null
+
+    const result = await routeLazy('/about', async () => ({ default: Component }))()
+
+    expect(result).toEqual({ Component })
+  })
+
+  it('does not auto-reload when the retry attempt cannot be recorded', async () => {
+    // The loop hazard: RELOAD_FLAG is the only thing stopping a permanently
+    // broken chunk from reloading forever. If the flag can't persist, an
+    // automatic reload would repeat on every single load — so surrender to
+    // the error UI and its manual Reload button instead.
+    blockStorage()
 
     await expect(
       routeLazy('/songbird/fsp', async () => { throw new Error('chunk 504') })()
