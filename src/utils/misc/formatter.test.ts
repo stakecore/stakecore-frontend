@@ -1,19 +1,36 @@
 import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest'
 import { Formatter } from './formatter'
 
-// Default NUMBER_DISPLAY_LENGTH is 3 — most expected outputs below reflect that.
+// Default NUMBER_DISPLAY_LENGTH is 3 — most expected outputs below reflect
+// that. `length` is an exact digit count, so short values are zero-padded to
+// it ("2" -> "2.00") and a column of figures shares one decimal precision.
 
 describe('Formatter.number', () => {
-  it('renders zero as a bare "0" regardless of decimal padding', () => {
-    expect(Formatter.number(0)).toBe('0')
-    expect(Formatter.number('0.00')).toBe('0')
-    expect(Formatter.number('0e0')).toBe('0')
+  it('pads zero to the requested precision, sign dropped', () => {
+    expect(Formatter.number(0)).toBe('0.00')
+    expect(Formatter.number('0.00')).toBe('0.00')
+    expect(Formatter.number('0e0')).toBe('0.00')
+    expect(Formatter.number(-0)).toBe('0.00')
+    expect(Formatter.number(0, 1)).toBe('0')
   })
 
-  it('keeps small integers unscaled', () => {
-    expect(Formatter.number(1)).toBe('1')
-    expect(Formatter.number(42)).toBe('42')
+  it('pads small integers to the exact digit count', () => {
+    expect(Formatter.number(1)).toBe('1.00')
+    expect(Formatter.number(42)).toBe('42.0')
     expect(Formatter.number(999)).toBe('999')
+  })
+
+  it('never truncates the integer part to fit the digit count', () => {
+    // Padding only ever adds decimals; an integer that already fills (or
+    // overruns) `length` renders whole, without a trailing point.
+    expect(Formatter.number(999, 2)).toBe('999')
+    expect(Formatter.number(42, 1)).toBe('42')
+  })
+
+  it('honors a custom length', () => {
+    expect(Formatter.number(2, 1)).toBe('2')
+    expect(Formatter.number(2, 5)).toBe('2.0000')
+    expect(Formatter.number(1.5, 4)).toBe('1.500')
   })
 
   it('scales to k / M / B suffixes at length-3 default', () => {
@@ -22,16 +39,23 @@ describe('Formatter.number', () => {
     expect(Formatter.number(1_234_567_890)).toBe('1.23B')
   })
 
+  it('pads scaled values whose fraction truncates to zero', () => {
+    // 2000 -> "2k" would break the column alignment "1.23k" sets.
+    expect(Formatter.number(2000)).toBe('2.00k')
+    expect(Formatter.number(1_000_000)).toBe('1.00M')
+    expect(Formatter.number(1_200_000_000)).toBe('1.20B')
+  })
+
   it('preserves the sign on negative values', () => {
     expect(Formatter.number(-1234)).toBe('-1.23k')
-    expect(Formatter.number(-7)).toBe('-7')
+    expect(Formatter.number(-7)).toBe('-7.00')
   })
 
   it('keeps the sign on short negative decimals', () => {
     // Regression: the int != '0' short-decimal branch used to drop the
     // prefix, so a negative delta rendered as a positive one.
-    expect(Formatter.number(-5.2)).toBe('-5.2')
-    expect(Formatter.number(-1.5)).toBe('-1.5')
+    expect(Formatter.number(-5.2)).toBe('-5.20')
+    expect(Formatter.number(-1.5)).toBe('-1.50')
   })
 
   it('expands scientific-notation strings before parsing', () => {
@@ -49,6 +73,7 @@ describe('Formatter.number', () => {
   })
 })
 
+
 describe('Formatter.address', () => {
   it('checksums a valid lowercase address', () => {
     const out = Formatter.address('0x' + 'a'.repeat(40))
@@ -64,15 +89,15 @@ describe('Formatter.address', () => {
 
 describe('Formatter.usd', () => {
   it('prefixes positive values with $', () => {
-    expect(Formatter.usd(0)).toBe('$0')
-    expect(Formatter.usd(42)).toBe('$42')
+    expect(Formatter.usd(0)).toBe('$0.00')
+    expect(Formatter.usd(42)).toBe('$42.0')
     expect(Formatter.usd(1234)).toBe('$1.23k')
   })
 
   it('places the sign in front of $ for negative values (not "$-…")', () => {
     expect(Formatter.usd(-136)).toBe('-$136')
     expect(Formatter.usd(-1234)).toBe('-$1.23k')
-    expect(Formatter.usd('-7')).toBe('-$7')
+    expect(Formatter.usd('-7')).toBe('-$7.00')
   })
 
   it('places "<" in front of $ for sub-precision values (not "$<…")', () => {
@@ -82,13 +107,20 @@ describe('Formatter.usd', () => {
 
 describe('Formatter.percent', () => {
   it('multiplies by 100 and appends %', () => {
-    expect(Formatter.percent(0)).toBe('0%')
-    expect(Formatter.percent(0.5)).toBe('50%')
+    // percent() spends its length budget on the ×100 shift: three digits by
+    // default, so 50 gets one decimal and 100 gets none.
+    expect(Formatter.percent(0)).toBe('0.00%')
+    expect(Formatter.percent(0.5)).toBe('50.0%')
     expect(Formatter.percent(1)).toBe('100%')
   })
 
+  it('adds decimals to the percentage with its length argument', () => {
+    expect(Formatter.percent(0.5, 1)).toBe('50.00%')
+    expect(Formatter.percent(0.9998, 1)).toBe('99.98%')
+  })
+
   it('keeps the sign on negative percentages', () => {
-    expect(Formatter.percent(-0.5)).toBe('-50%')
+    expect(Formatter.percent(-0.5)).toBe('-50.0%')
   })
 })
 

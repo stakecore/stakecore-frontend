@@ -29,6 +29,13 @@ export namespace Formatter {
     return (negative ? '-$' : '$') + formatted
   }
 
+  // `length` is an exact digit count, not a maximum: results are padded with
+  // trailing zeros until they carry exactly that many digits ("2" -> "2.00",
+  // "2k" -> "2.00k" at the length-3 default), so a column of figures shares one
+  // decimal precision. Only the integer part can exceed it — a value whose
+  // integer digits already fill `length` renders without a fraction, and the
+  // "<0.01" sub-precision rail is a marker rather than a number, so neither is
+  // padded.
   export function number(value: intish, length = NUMBER_DISPLAY_LENGTH, decimals = 0): string {
     let str = value.toString()
 
@@ -47,16 +54,12 @@ export namespace Formatter {
     }
 
     let [int, dec] = splitintfrac(str, decimals)
-    if (BigInt(int + dec) == BigInt(0)) return '0'
+    // Zero drops the sign but keeps the padding, so an empty stat still lines
+    // up with its non-zero neighbours.
+    if (BigInt(int + dec) == BigInt(0)) return padfrac('0', '', length)
 
     if (int.length + dec.length <= length) {
-      if (dec.length == 0) {
-        return prefix + int
-      } else if (int == '0') {
-        return `${prefix}0.${dec}`
-      } else {
-        return `${prefix}${int}.${dec}`
-      }
+      return prefix + padfrac(int, dec, length)
     }
 
     let res = ''
@@ -81,18 +84,17 @@ export namespace Formatter {
     if (maxdeclen <= 0) {
       res = int
     } else if (maxdeclen >= dec.length) {
-      res = int + '.' + dec
+      res = padfrac(int, dec, length)
     } else {
       const cutdec = dec.substring(0, maxdeclen)
-      if (Number(cutdec) != 0) {
-        res = int + '.' + cutdec
+      // Everything visible truncated to zero and nothing left of the point:
+      // the value is below the displayable precision, so say so instead of
+      // rendering a padded "0.00" that reads as an exact zero.
+      if (Number(cutdec) == 0 && Number(int) == 0) {
+        const zeros = '0'.repeat(length - 2)
+        res = `<0.${zeros}1`
       } else {
-        if (Number(int) != 0) {
-          res = int
-        } else {
-          const zeros = '0'.repeat(length - 2)
-          res = `<0.${zeros}1`
-        }
+        res = int + '.' + cutdec
       }
     }
 
@@ -166,6 +168,15 @@ export namespace Formatter {
       return `user rejected action "${action}"`
     }
     return msg
+  }
+
+  // Joins an integer and fractional part into exactly `length` digits, padding
+  // the fraction with trailing zeros. Callers only reach it with a fraction
+  // that fits, so this pads and never rounds.
+  function padfrac(int: string, dec: string, length: number): string {
+    const declen = Math.max(length - int.length, 0)
+    if (declen == 0) return int
+    return int + '.' + dec.padEnd(declen, '0')
   }
 
   function shiftleft(int: string, dec: string, n: number): [string, string] {

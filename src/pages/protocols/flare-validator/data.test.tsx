@@ -32,7 +32,7 @@ describe('FlareValidatorDataAccess.getSummary', () => {
   })
 
   it('formats the APY through Formatter.percent', () => {
-    expect(FlareValidatorDataAccess.getSummary(infoOf({ apy: 0.075 })).apy).toBe('7.5%')
+    expect(FlareValidatorDataAccess.getSummary(infoOf({ apy: 0.075 })).apy).toBe('7.50%')
   })
 
   it('renders the delegation range when min <= capacity', () => {
@@ -40,7 +40,7 @@ describe('FlareValidatorDataAccess.getSummary', () => {
       minimumDelegated: 25,
       validatorAvailableCapacity: 1_000_000,
     }))
-    expect(out.delegation).toBe('25 to 1M')
+    expect(out.delegation).toBe('25.0 to 1.00M')
   })
 
   it('reports delegation as "Unavailable" when the capacity is exhausted (min > available)', () => {

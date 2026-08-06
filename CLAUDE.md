@@ -136,7 +136,7 @@ as intended.
 ## Conventions
 
 - Import alias: `~/` resolves to `src/` (configured in tsconfig.json and vite.config.js)
-- `src/utils/misc/formatter.ts` — Shared number / currency / date / address formatting (use `Formatter.usd()` for dollar amounts so signs and the `<` sub-precision marker land outside the `$`)
+- `src/utils/misc/formatter.ts` — Shared number / currency / date / address formatting (use `Formatter.usd()` for dollar amounts so signs and the `<` sub-precision marker land outside the `$`). The `length` argument on `number` / `usd` / `percent` is an **exact** digit count, not a maximum: results are zero-padded to it (`2` → `2.00`, `2000` → `2.00k`, `0` → `0.00` at the length-3 default) so figures in a column share one decimal precision. Only two things escape it — an integer part that already fills `length` renders whole, and the `<0.01` sub-precision rail is a marker rather than a number. `percent` spends its budget after the ×100 shift, so `percent(0.5)` is `50.0%` and `percent(1)` is `100%`.
 - Explorer URLs follow pattern: `chain{Evm|PChain}{AddressUrl|TransactionUrl}(hash)` in constants
 - Three chains supported: Flare (chain._0), Songbird (chain._1), Avalanche (chain._2)
 - Two protocols: FSP (protocol._0), Validator (protocol._1)

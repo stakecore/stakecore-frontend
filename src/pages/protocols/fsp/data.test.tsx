@@ -44,7 +44,7 @@ describe('FspDataLayer.extractSummary', () => {
   it("falls back to info.apy when statistics carries no APY history", () => {
     // Backend's info.apy is `0.04` here; statistics.apys.result is empty.
     const out = FspDataLayer.extractSummary('flare', infoOf({ apy: 0.04 }), statsOf([]))
-    expect(out.apy).toBe('4%')
+    expect(out.apy).toBe('4.00%')
   })
 
   it('prefers the last APY entry from statistics.apys.result over info.apy', () => {
@@ -52,14 +52,14 @@ describe('FspDataLayer.extractSummary', () => {
     // Card should match the chart — the most recent entry.
     const out = FspDataLayer.extractSummary(
       'flare',
-      infoOf({ apy: 0.04 }),       // would render as 4%
-      statsOf([                     // latest is 0.075 (= 7.5% exactly in IEEE-754)
+      infoOf({ apy: 0.04 }),       // would render as 4.00%
+      statsOf([                     // latest is 0.075 (= 7.50% exactly in IEEE-754)
         { rewardEpoch: 1, apy: 0.04 },
         { rewardEpoch: 2, apy: 0.06 },
         { rewardEpoch: 3, apy: 0.075 },
       ]),
     )
-    expect(out.apy).toBe('7.5%')
+    expect(out.apy).toBe('7.50%')
   })
 })
 
