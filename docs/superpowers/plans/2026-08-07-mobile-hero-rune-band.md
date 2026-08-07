@@ -21,7 +21,7 @@
 - Never replace globals with `vi.spyOn`. Use `Object.defineProperty` with a saved descriptor — `src/utils/safeStorage.test.ts` documents spies silently ceasing to apply once another test has touched the same global.
 - The breakpoint literal is exactly `(max-width: 767.98px)` — `t.down(md)` from `src/assets/css/_tokens.scss`. Do not round to `768px`.
 - SCSS uses design tokens: `@use '../../assets/css/tokens' as t;` then `t.$radius-md`, `t.up(md)`, etc.
-- Package manager is pnpm. Baseline before Task 1 is **339 unit tests passing**.
+- Package manager is pnpm. Baseline before Task 1 is **346 unit tests passing** at `563b284`. (An earlier draft of this plan said 339; that predated `12e11c2`, which added seven `Formatter.count` tests.)
 - Commit after each task.
 
 ---
@@ -377,7 +377,7 @@ In `src/components/sections/hero.scss`, append at the end of the file:
 - [ ] **Step 5: Run the test and the full suite**
 
 Run: `pnpm exec vitest run heroRuneBand && pnpm test`
-Expected: 4 new tests pass; full suite **349 passing** (339 baseline + 6 from Task 1 + 4 here).
+Expected: 4 new tests pass; full suite **356 passing** (346 baseline + 6 from Task 1 + 4 here).
 
 - [ ] **Step 6: Typecheck**
 
@@ -655,7 +655,7 @@ git rm src/components/sections/heroBackground.tsx \
 - [ ] **Step 8: Run the full suite and typecheck**
 
 Run: `pnpm test && npx tsc -p tsconfig.json --noEmit`
-Expected: **349 passing** (349 after Task 2, +6 from the hook, −6 from the deleted `heroBackground` tests), clean typecheck. If `tsc` reports an unresolved `./heroRuneShimmer` or `./heroBackground`, a reference was missed — find it with `grep -rn "heroRuneShimmer\|heroBackground" src/ e2e/`.
+Expected: **356 passing** (356 after Task 2, +6 from the hook, −6 from the deleted `heroBackground` tests), clean typecheck. If `tsc` reports an unresolved `./heroRuneShimmer` or `./heroBackground`, a reference was missed — find it with `grep -rn "heroRuneShimmer\|heroBackground" src/ e2e/`.
 
 - [ ] **Step 9: Check it in a real browser**
 
@@ -803,7 +803,7 @@ Matches inside `docs/` are historical spec text describing the old design — le
 - [ ] **Step 5: Run the full suite and typecheck**
 
 Run: `pnpm test && npx tsc -p tsconfig.json --noEmit`
-Expected: **338 passing** (349 from Task 3, minus the 11 `runeGrid` tests), clean typecheck.
+Expected: **345 passing** (356 from Task 3, minus the 11 `runeGrid` tests), clean typecheck.
 
 - [ ] **Step 6: Confirm the desktop field is unchanged in a real browser**
 
@@ -986,7 +986,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 
 ## Final verification
 
-- [ ] `pnpm test` — 338 passing
+- [ ] `pnpm test` — 345 passing
 - [ ] `npx tsc -p tsconfig.json --noEmit` — clean
 - [ ] `pnpm test:e2e` — 20 passing
 - [ ] At 390×844: one `.hero-rune-band`, zero `canvas.hero-rune-canvas`, band's box clears the activity feed's, no console errors
