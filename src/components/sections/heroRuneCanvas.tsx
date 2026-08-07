@@ -377,7 +377,16 @@ const HeroRuneCanvas = () => {
       // reclaimed — Chrome caps a renderer at ~16 live WebGL contexts and
       // force-loses the oldest once that's hit. Deleting the objects above
       // frees their GPU memory but not the context itself; this does.
-      gl.getExtension('WEBGL_lose_context')?.loseContext()
+      //
+      // The isConnected guard is load-bearing, not defensive. A canvas hands
+      // back the SAME context object on every getContext call, and a lost one
+      // stays lost until restoreContext — so losing it while the element will
+      // be reused kills the remount: every shader then fails to compile with a
+      // null info log. StrictMode's mount/unmount/mount runs this cleanup with
+      // the node still in the document, which is exactly that case, and it
+      // took the whole dev-mode hero out. A genuine unmount reaches here after
+      // React has already detached the node, so isConnected separates the two.
+      if (!canvas.isConnected) gl.getExtension('WEBGL_lose_context')?.loseContext()
     }
   }, [])
 

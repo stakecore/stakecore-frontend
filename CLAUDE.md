@@ -223,6 +223,20 @@ canvas; the one exception is the fragment shader's `RAMP_LEN` GLSL constant,
 which can't import a JS value and is commented at its declaration to track
 `RAMP.length` by hand.
 
+`heroRuneCanvas.tsx`'s cleanup releases its WebGL context with
+`WEBGL_lose_context`, but only `if (!canvas.isConnected)`. That guard is
+load-bearing. A canvas returns the **same** context object from every
+`getContext` call and a lost context stays lost until `restoreContext`, so
+losing it while the element will be reused kills the next mount — every shader
+fails to compile and `getShaderInfoLog` returns `null` rather than a GLSL
+message, which is the tell. StrictMode's mount/unmount/mount runs the cleanup
+with the node still in the document; a genuine unmount runs it after React has
+detached the node. Without the guard the hero is dead on every dev page load.
+None of this is reachable by the test suite: headless Chromium in this
+devcontainer exposes no WebGL at all (`getContext('webgl2')` returns null under
+every swiftshader flag), so the e2e specs only ever exercise the
+`WebGL2 unavailable` warn path. Changes to that component need a real browser.
+
 The breakpoint literal in `heroBackground.tsx`, `(max-width: 767.98px)`, has
 to stay in lockstep with `t.down(md)` in `_tokens.scss` — a rounded `768px`
 would leave a band where the stylesheet has already switched to the mobile
