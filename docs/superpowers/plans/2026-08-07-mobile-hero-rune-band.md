@@ -576,7 +576,7 @@ export function useBelowMd(): boolean {
 - [ ] **Step 4: Run the hook's test**
 
 Run: `pnpm exec vitest run useBelowMd`
-Expected: PASS, 7 tests.
+Expected: PASS, 6 tests.
 
 - [ ] **Step 5: Rewire `hero.tsx`**
 
@@ -784,7 +784,38 @@ with:
       img.src = RUNE_DATA_URI
 ```
 
-- [ ] **Step 4: Delete the superseded module and asset**
+- [ ] **Step 4: Clear the two stale `heroBackground.tsx` references**
+
+`heroBackground.tsx` no longer exists — the choice moved into `~/utils/useBelowMd`. Two comments in this file still name it. Replace:
+
+```tsx
+    // cellSize is a constant: heroBackground.tsx only mounts this component at
+    // >= md, so the phone branch this used to carry is unreachable. Crossing
+    // the breakpoint unmounts the component rather than re-measuring it.
+```
+
+with:
+
+```tsx
+    // cellSize is a constant: hero.tsx only mounts this component at >= md,
+    // gated on useBelowMd, so the phone branch this used to carry is
+    // unreachable. Crossing the breakpoint unmounts the component rather than
+    // re-measuring it.
+```
+
+and replace:
+
+```tsx
+      // heroBackground.tsx unmounts this component on every crossing of the
+```
+
+with:
+
+```tsx
+      // hero.tsx unmounts this component on every crossing of the
+```
+
+- [ ] **Step 5: Delete the superseded module and asset**
 
 ```bash
 git rm src/components/sections/runeGrid.ts \
@@ -800,18 +831,18 @@ grep -rn "runeGrid\|profile.svg" src/ e2e/ docs/ || echo "no references remain"
 
 Matches inside `docs/` are historical spec text describing the old design — leave those. Any match in `src/` or `e2e/` is a real problem.
 
-- [ ] **Step 5: Run the full suite and typecheck**
+- [ ] **Step 6: Run the full suite and typecheck**
 
 Run: `pnpm test && npx tsc -p tsconfig.json --noEmit`
 Expected: **346 passing** (357 from Task 3, minus the 11 `runeGrid` tests), clean typecheck.
 
-- [ ] **Step 6: Confirm the desktop field is unchanged in a real browser**
+- [ ] **Step 7: Confirm the desktop field is unchanged in a real browser**
 
 This is the check that matters for this task, and it cannot be done in the test suite: **headless Chromium in this devcontainer exposes no WebGL under any swiftshader flag**, so `getContext('webgl2')` returns null and the component only ever reaches its `WebGL2 unavailable` warn path there.
 
 Build, preview, and open `https://localhost:4173/#/` at 1280×900 in a browser that has WebGL. Confirm the hero's ASCII wave renders as before, with the rune silhouette visible as the brighter region. Report explicitly whether you were able to verify this or not — if the environment cannot run WebGL, say so rather than implying the check passed.
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 8: Commit**
 
 ```bash
 git add -A src/components/sections src/assets
