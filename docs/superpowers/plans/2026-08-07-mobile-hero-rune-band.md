@@ -165,7 +165,7 @@ export function runeSvgMarkup(strokeWidth: number): string {
   return (
     `<svg viewBox="${RUNE_VIEWBOX}" xmlns="http://www.w3.org/2000/svg">` +
     `<defs>` +
-    `<filter id="r" x="-8%" y="-8%" width="116%" height="116%">` +
+    `<filter id="r" x="-5%" y="-5%" width="110%" height="110%">` +
     `<feTurbulence type="fractalNoise" baseFrequency="${RUNE_ROUGH.baseFrequency}"` +
     ` numOctaves="${RUNE_ROUGH.numOctaves}" seed="${RUNE_ROUGH.seed}" result="noise"/>` +
     `<feDisplacementMap in="SourceGraphic" in2="noise" scale="${RUNE_ROUGH.scale}"` +
@@ -304,7 +304,7 @@ const HeroRuneBand = () => (
       focusable="false"
     >
       <defs>
-        <filter id={FILTER_ID} x="-8%" y="-8%" width="116%" height="116%">
+        <filter id={FILTER_ID} x="-5%" y="-5%" width="110%" height="110%">
           <feTurbulence
             type="fractalNoise"
             baseFrequency={RUNE_ROUGH.baseFrequency}
