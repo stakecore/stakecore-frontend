@@ -12,24 +12,32 @@ type Listener = () => void
 // global, which turns a broken implementation green.
 const installMatchMedia = (initial: boolean) => {
   let matches = initial
-  const listeners = new Set<Listener>()
-  const mql = {
-    get matches() { return matches },
-    addEventListener: (_type: string, listener: Listener) => { listeners.add(listener) },
-    removeEventListener: (_type: string, listener: Listener) => { listeners.delete(listener) },
-  }
+  // One instance per matchMedia() call, each with its own listener set. A
+  // subscribe that re-resolves the query for its cleanup then removes from a
+  // different object than it added to, and the total below stays non-zero.
+  const instances: { listeners: Set<Listener> }[] = []
   const saved = Object.getOwnPropertyDescriptor(window, 'matchMedia')
   Object.defineProperty(window, 'matchMedia', {
     configurable: true,
     writable: true,
-    value: vi.fn(() => mql),
+    value: vi.fn(() => {
+      const listeners = new Set<Listener>()
+      const instance = {
+        listeners,
+        get matches() { return matches },
+        addEventListener: (_type: string, listener: Listener) => { listeners.add(listener) },
+        removeEventListener: (_type: string, listener: Listener) => { listeners.delete(listener) },
+      }
+      instances.push(instance)
+      return instance
+    }),
   })
   return {
     set(next: boolean) {
       matches = next
-      listeners.forEach(listener => listener())
+      for (const i of instances) for (const l of i.listeners) l()
     },
-    listenerCount: () => listeners.size,
+    listenerCount: () => instances.reduce((n, i) => n + i.listeners.size, 0),
     restore() {
       if (saved) Object.defineProperty(window, 'matchMedia', saved)
       else delete (window as { matchMedia?: unknown }).matchMedia
