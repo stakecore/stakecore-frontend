@@ -11,6 +11,27 @@ services:
       # volume it lives in the container's writable layer and is re-downloaded
       # on every rebuild.
       - playwright-browsers:/home/vscode/.cache/ms-playwright
+    ports:
+      # Published to the host rather than left to the editor's port
+      # forwarding. Forwarding only exists while VS Code is attached and
+      # only reaches the host's own loopback; publishing makes the app
+      # reachable from a plain host browser and — the case that matters for
+      # this project — from a phone on the same LAN, which is the only
+      # honest way to check a mobile layout.
+      #
+      # Host-side numbers come from .devcontainer/.env (seeded by
+      # initialize.sh) so a collision is fixable without editing a tracked
+      # file: a host port already in use makes `docker compose up` fail
+      # outright, taking the whole devcontainer down with it.
+      - "${DEV_SERVER_PORT:-5173}:5173"
+      - "${PREVIEW_PORT:-4173}:4173"
+      # A small block for ad-hoc tooling that picks its own port (mockup
+      # servers, one-off static hosts). Ten ports and not a wide range:
+      # Docker starts a userland proxy process per published port, so a
+      # range in the hundreds measurably slows container start. Both sides
+      # of the mapping read the same variable — a range must be the same
+      # size on each side.
+      - "${TOOL_PORTS:-53770-53779}:${TOOL_PORTS:-53770-53779}"
     command: sleep infinity
 
 volumes:

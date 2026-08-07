@@ -28,3 +28,13 @@ ensure_var() {
 # current directory name — usually `stakecore-frontend`, but matches whatever
 # you cloned into.
 ensure_var WORKSPACE_NAME "$(basename "$PWD")"
+
+# Host-side ports published by docker-compose.yaml. Seeded here so they are
+# discoverable and editable: a port already taken on the host makes
+# `docker compose up` fail, and that failure takes the whole devcontainer
+# with it rather than just the one service you wanted to reach.
+# TOOL_PORTS is a range and is applied to both sides of the mapping, so it
+# must stay a range (or a single number) — not a list.
+ensure_var DEV_SERVER_PORT 5173
+ensure_var PREVIEW_PORT 4173
+ensure_var TOOL_PORTS 53770-53779

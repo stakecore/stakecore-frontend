@@ -16,6 +16,22 @@
     "containerEnv": {
         "COREPACK_ENABLE_DOWNLOAD_PROMPT": "0"
     },
+    // 5173 / 4173 / 53770-53779 are published straight to the host by
+    // docker-compose.yaml, so they are deliberately absent from
+    // forwardPorts — VS Code would try to bind the same host port a second
+    // time, fail, and silently land on a neighbouring one, which is more
+    // confusing than no entry at all. Labels still apply to auto-detected
+    // ports, so the two published app ports get named in the Ports view
+    // without being forwarded twice.
+    "portsAttributes": {
+        "5173": { "label": "vite dev", "onAutoForward": "silent" },
+        "4173": { "label": "vite preview (e2e target)", "onAutoForward": "silent" }
+    },
+    // Anything outside those blocks — an ad-hoc tool that picked its own
+    // port — is not published, so the editor's forwarding is the only way
+    // in. Notify rather than forward silently, or a server that started
+    // fine looks unreachable.
+    "otherPortsAttributes": { "onAutoForward": "notify" },
     "customizations": {
         "vscode": {
             "extensions": [

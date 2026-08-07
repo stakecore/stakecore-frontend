@@ -29,6 +29,26 @@ Symptoms that point at a Corepack misconfig:
 - `pnpm --version` reports a version that isn't `10.34.1` → a global pnpm is shadowing the shim. Remove it (`npm rm -g pnpm`) and re-enable Corepack.
 - `pnpm install` hangs with no output on first run → the download prompt is waiting on stdin. Set `COREPACK_ENABLE_DOWNLOAD_PROMPT=0`.
 - CI fails on `cache: pnpm` before any install step → `corepack enable` is missing or runs after `setup-node`.
+- `pnpm install` fails on a **fresh rebuild** with `EACCES … mkdir '/home/vscode/.cache/node/corepack/v1'` → `~/.cache` is root-owned. Docker creates the parent directories of a volume mount itself, as root, and the base image ships no `/home/vscode/.cache`, so mounting `playwright-browsers` at `.cache/ms-playwright` leaves both that directory and `.cache` owned by root. `post-create.sh` chowns them before corepack runs; if you add another volume under `$HOME`, chown it there too. Corepack is only the first casualty — `playwright install` writes to the same volume.
+
+## Ports
+
+The devcontainer **publishes** its ports in [docker-compose.yaml](.devcontainer/docker-compose.yaml) rather than relying on the editor's port forwarding. Forwarding only exists while VS Code is attached and only reaches the host's own loopback; publishing means a plain host browser works, and so does a phone on the same LAN — the only honest way to check a mobile layout.
+
+| Port | What | Reachable from host |
+| --- | --- | --- |
+| 5173 | `pnpm dev` | published |
+| 4173 | `vite preview` (the Playwright target) | published |
+| 53770–53779 | ad-hoc tooling that picks its own port | published |
+| anything else | — | editor forwarding only, via the Ports panel |
+
+Three things hold this together, and breaking any one of them makes a running server look unreachable:
+
+- **Vite binds all interfaces.** `server`/`preview` in [vite.config.js](vite.config.js) set `host: true`. Vite's default is loopback, which inside a container is the *container's* loopback — the published mapping would then reach an interface with nothing listening and refuse the connection. They also set `strictPort`, because the mapping is for those exact numbers: Vite's default hunt for the next free port would leave the server on an unpublished 5174 while reporting success.
+- **Host-side numbers come from `.devcontainer/.env`** (`DEV_SERVER_PORT`, `PREVIEW_PORT`, `TOOL_PORTS`), seeded by `initialize.sh` with the same `ensure_var` mechanism as `WORKSPACE_NAME`. They are overridable because a host port already in use makes `docker compose up` fail, and that failure takes the whole devcontainer with it, not just the one service. `TOOL_PORTS` is applied to *both* sides of the mapping, so it must stay a range or a single number — a published range has to be the same size on each side.
+- **Published ports are deliberately absent from `forwardPorts`** in [devcontainer.json](.devcontainer/devcontainer.json). Listing them would make VS Code try to bind the same host port a second time, fail, and silently land on a neighbouring one. `otherPortsAttributes` is set to `notify` so ports *outside* the published blocks — where forwarding is the only way in — announce themselves instead of being forwarded silently.
+
+The ad-hoc block is ten ports and not a wide range because Docker starts a userland proxy process per published port. The `host: true` rule applies to whatever you run there too: a tool that defaults to binding loopback needs its own equivalent flag (`--host 0.0.0.0`) or the published port reaches nothing. Changing any of this needs a **container rebuild** (*Dev Containers: Rebuild Container*); `forwardPorts`-style settings alone would only need a window reload.
 
 ## Tech Stack
 

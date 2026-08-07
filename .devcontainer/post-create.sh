@@ -6,6 +6,20 @@
 # the command stays valid in both states).
 set -euo pipefail
 
+# Docker creates the parent directories of a volume mount itself, as root,
+# before the container user is anywhere in the picture. The base image ships
+# no /home/vscode/.cache, so mounting playwright-browsers at
+# .cache/ms-playwright leaves BOTH the volume root and .cache owned by
+# root:root. Corepack then cannot create .cache/node/corepack for the pnpm
+# download and the `pnpm install` below dies with EACCES — before Playwright
+# ever gets its turn at a directory it also cannot write. Take ownership
+# first. Recursive on the volume itself because a volume warmed before this
+# fix carries root-owned browser files.
+cache_dir="$HOME/.cache"
+sudo mkdir -p "$cache_dir/ms-playwright"
+sudo chown "$(id -u):$(id -g)" "$cache_dir"
+sudo chown -R "$(id -u):$(id -g)" "$cache_dir/ms-playwright"
+
 # Drop any previous npm-installed pnpm so corepack's shim wins on PATH.
 # `|| true` because the package may not be there on a fresh container.
 npm rm -g pnpm 2>/dev/null || true
