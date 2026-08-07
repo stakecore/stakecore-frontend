@@ -47,8 +47,20 @@ describe('runeSvgMarkup', () => {
     expect(svg).toContain(`scale="${RUNE_ROUGH.scale}"`)
   })
 
-  it('survives URI encoding, which is how it reaches the canvas', () => {
-    const encoded = encodeURIComponent(runeSvgMarkup(RUNE_STROKE_NATIVE))
-    expect(decodeURIComponent(encoded)).toBe(runeSvgMarkup(RUNE_STROKE_NATIVE))
+  it('matches the source asset\'s filter region, so the canvas swap stays a no-op', () => {
+    expect(runeSvgMarkup(RUNE_STROKE_NATIVE)).toContain('x="-5%" y="-5%" width="110%" height="110%"')
+  })
+
+  it('produces markup that closes every tag it opens', () => {
+    const svg = runeSvgMarkup(RUNE_STROKE_NATIVE)
+    expect(svg.startsWith('<svg ')).toBe(true)
+    expect(svg.endsWith('</svg>')).toBe(true)
+    expect(svg).toContain('xmlns="http://www.w3.org/2000/svg"')
+    // One <path .../> per stroke, plus the two filter primitives, all self-closed.
+    expect((svg.match(/<path /g) ?? []).length).toBe(RUNE_PATHS.length)
+    for (const tag of ['defs', 'filter', 'g', 'svg']) {
+      expect((svg.match(new RegExp(`<${tag}[ >]`, 'g')) ?? []).length)
+        .toBe((svg.match(new RegExp(`</${tag}>`, 'g')) ?? []).length)
+    }
   })
 })
