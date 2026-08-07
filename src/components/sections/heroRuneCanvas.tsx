@@ -189,8 +189,8 @@ const HeroRuneCanvas = () => {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
 
     // Re-render the glyph atlas at the current cellSizePx. Only called from
-    // setup() when the backing-store cell size actually changes (DPI switch
-    // or breakpoint cross) — not on ordinary resizes.
+    // setup() when the backing-store cell size actually changes (a DPI
+    // switch — cellSize itself is now constant) — not on ordinary resizes.
     const rebuildGlyphAtlas = () => {
       gl.activeTexture(gl.TEXTURE0)
       gl.bindTexture(gl.TEXTURE_2D, glyphTex)
