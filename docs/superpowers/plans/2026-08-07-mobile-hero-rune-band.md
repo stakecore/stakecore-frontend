@@ -183,7 +183,7 @@ export function runeSvgMarkup(strokeWidth: number): string {
 - [ ] **Step 4: Run the test to verify it passes**
 
 Run: `pnpm exec vitest run runeMark`
-Expected: PASS, 6 tests.
+Expected: PASS, 7 tests.
 
 - [ ] **Step 5: Typecheck**
 
@@ -377,7 +377,7 @@ In `src/components/sections/hero.scss`, append at the end of the file:
 - [ ] **Step 5: Run the test and the full suite**
 
 Run: `pnpm exec vitest run heroRuneBand && pnpm test`
-Expected: 4 new tests pass; full suite **356 passing** (346 baseline + 6 from Task 1 + 4 here).
+Expected: 4 new tests pass; full suite **357 passing** (346 baseline + 7 from Task 1 + 4 here).
 
 - [ ] **Step 6: Typecheck**
 
@@ -576,7 +576,7 @@ export function useBelowMd(): boolean {
 - [ ] **Step 4: Run the hook's test**
 
 Run: `pnpm exec vitest run useBelowMd`
-Expected: PASS, 6 tests.
+Expected: PASS, 7 tests.
 
 - [ ] **Step 5: Rewire `hero.tsx`**
 
@@ -655,7 +655,7 @@ git rm src/components/sections/heroBackground.tsx \
 - [ ] **Step 8: Run the full suite and typecheck**
 
 Run: `pnpm test && npx tsc -p tsconfig.json --noEmit`
-Expected: **356 passing** (356 after Task 2, +6 from the hook, −6 from the deleted `heroBackground` tests), clean typecheck. If `tsc` reports an unresolved `./heroRuneShimmer` or `./heroBackground`, a reference was missed — find it with `grep -rn "heroRuneShimmer\|heroBackground" src/ e2e/`.
+Expected: **357 passing** (357 after Task 2, +6 from the hook, −6 from the deleted `heroBackground` tests), clean typecheck. If `tsc` reports an unresolved `./heroRuneShimmer` or `./heroBackground`, a reference was missed — find it with `grep -rn "heroRuneShimmer\|heroBackground" src/ e2e/`.
 
 - [ ] **Step 9: Check it in a real browser**
 
@@ -803,7 +803,7 @@ Matches inside `docs/` are historical spec text describing the old design — le
 - [ ] **Step 5: Run the full suite and typecheck**
 
 Run: `pnpm test && npx tsc -p tsconfig.json --noEmit`
-Expected: **345 passing** (356 from Task 3, minus the 11 `runeGrid` tests), clean typecheck.
+Expected: **346 passing** (357 from Task 3, minus the 11 `runeGrid` tests), clean typecheck.
 
 - [ ] **Step 6: Confirm the desktop field is unchanged in a real browser**
 
@@ -986,7 +986,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 
 ## Final verification
 
-- [ ] `pnpm test` — 345 passing
+- [ ] `pnpm test` — 346 passing
 - [ ] `npx tsc -p tsconfig.json --noEmit` — clean
 - [ ] `pnpm test:e2e` — 20 passing
 - [ ] At 390×844: one `.hero-rune-band`, zero `canvas.hero-rune-canvas`, band's box clears the activity feed's, no console errors
