@@ -145,7 +145,18 @@ against ~37M fragments/second today, and no WebGL context at all.
    canvas element mounts; since `HeroRuneCanvas` is the only caller of
    `getContext('webgl2')` on this route, its absence from the DOM is the
    guarantee.
-2. The StakeCore mark is recognisable on a phone, which it is not today.
+2. ~~The StakeCore mark is recognisable on a phone, which it is not today.~~
+   **Accepted as-is, not met as written.** This criterion was written before
+   it was known how much of the mobile hero the surrounding content fills: at
+   a 390×844 viewport the hero's stats and activity cards span y 88–663, and
+   the rune's own ink spans y 286–569 — the mark sits behind that content
+   rather than standing clear of it, so it reads as a subtle watermark rather
+   than a recognisable logo. The project owner reviewed screenshots of the
+   shipped shimmer and ruled the watermark acceptable: the visual-noise and
+   performance problems it was meant to fix (see "Why the current design
+   fails on phones," above) are still solved, and forcing the mark to full
+   legibility would mean fighting the content stacked on top of it rather
+   than sizing it sensibly.
 3. `prefers-reduced-motion: reduce` yields a single static paint, no RAF loop.
 4. Crossing the breakpoint mid-session swaps cleanly, releasing the WebGL context.
 5. `pnpm test`, `pnpm lint`, `npx tsc -p tsconfig.json --noEmit`, and `pnpm test:e2e`
