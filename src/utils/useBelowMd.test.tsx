@@ -2,18 +2,11 @@
 
 import { describe, it, expect, afterEach, vi } from 'vitest'
 import { render, screen, cleanup, act } from '@testing-library/react'
-
-// Both canvases are stubbed out. The chooser's job is picking one, and
-// neither real component can paint anything under happy-dom, which has no 2D
-// or WebGL context.
-vi.mock('./heroRuneCanvas', () => ({ default: () => <div data-testid="webgl-canvas" /> }))
-vi.mock('./heroRuneShimmer', () => ({ default: () => <div data-testid="shimmer-canvas" /> }))
-
-import HeroBackground from './heroBackground'
+import { BELOW_MD_QUERY, useBelowMd } from './useBelowMd'
 
 type Listener = () => void
 
-// Replace window.matchMedia with a controllable fake. defineProperty and a
+// Replace window.matchMedia with a controllable fake. defineProperty with a
 // saved descriptor, not vi.spyOn: the storage suites in this repo document
 // spies silently ceasing to apply once another test has touched the same
 // global, which turns a broken implementation green.
@@ -32,7 +25,6 @@ const installMatchMedia = (initial: boolean) => {
     value: vi.fn(() => mql),
   })
   return {
-    /** Flip the query result and notify subscribers, as a real MQL would. */
     set(next: boolean) {
       matches = next
       listeners.forEach(listener => listener())
@@ -47,61 +39,59 @@ const installMatchMedia = (initial: boolean) => {
 
 let mm: ReturnType<typeof installMatchMedia> | null = null
 
-// No global setup file, so RTL's auto-cleanup does not run and a second
-// render would match elements left behind by the first.
+// No global setup file, so RTL's auto-cleanup does not run.
 afterEach(() => {
   cleanup()
   mm?.restore()
   mm = null
 })
 
-describe('HeroBackground', () => {
-  it('renders the shimmer below the md breakpoint', () => {
+const Probe = () => <span data-testid="v">{String(useBelowMd())}</span>
+const value = () => screen.getByTestId('v').textContent
+
+describe('useBelowMd', () => {
+  it('is true below the md breakpoint', () => {
     mm = installMatchMedia(true)
-    render(<HeroBackground />)
-    expect(screen.getByTestId('shimmer-canvas')).toBeTruthy()
-    expect(screen.queryByTestId('webgl-canvas')).toBeNull()
+    render(<Probe />)
+    expect(value()).toBe('true')
   })
 
-  it('renders the WebGL field at and above the md breakpoint', () => {
+  it('is false at and above the md breakpoint', () => {
     mm = installMatchMedia(false)
-    render(<HeroBackground />)
-    expect(screen.getByTestId('webgl-canvas')).toBeTruthy()
-    expect(screen.queryByTestId('shimmer-canvas')).toBeNull()
+    render(<Probe />)
+    expect(value()).toBe('false')
   })
 
   it('queries exactly t.down(md), not a rounded 768px', () => {
     mm = installMatchMedia(false)
-    render(<HeroBackground />)
+    render(<Probe />)
+    expect(BELOW_MD_QUERY).toBe('(max-width: 767.98px)')
     expect(window.matchMedia).toHaveBeenCalledWith('(max-width: 767.98px)')
   })
 
-  it('swaps canvases when the viewport crosses the breakpoint', () => {
+  it('re-renders when the viewport crosses the breakpoint', () => {
     mm = installMatchMedia(false)
-    render(<HeroBackground />)
-    expect(screen.getByTestId('webgl-canvas')).toBeTruthy()
-
+    render(<Probe />)
+    expect(value()).toBe('false')
     act(() => mm?.set(true))
-
-    expect(screen.getByTestId('shimmer-canvas')).toBeTruthy()
-    expect(screen.queryByTestId('webgl-canvas')).toBeNull()
+    expect(value()).toBe('true')
   })
 
-  it('unsubscribes from the media query on unmount', () => {
+  it('unsubscribes on unmount', () => {
     mm = installMatchMedia(false)
-    const { unmount } = render(<HeroBackground />)
+    const { unmount } = render(<Probe />)
     expect(mm.listenerCount()).toBe(1)
     unmount()
     expect(mm.listenerCount()).toBe(0)
   })
 
-  it('falls back to the desktop field when matchMedia is unavailable', () => {
+  it('reports desktop when matchMedia is unavailable', () => {
     const saved = Object.getOwnPropertyDescriptor(window, 'matchMedia')
     // @ts-expect-error deliberately removing a DOM global to model old Safari
     delete window.matchMedia
     try {
-      render(<HeroBackground />)
-      expect(screen.getByTestId('webgl-canvas')).toBeTruthy()
+      render(<Probe />)
+      expect(value()).toBe('false')
     } finally {
       if (saved) Object.defineProperty(window, 'matchMedia', saved)
     }
