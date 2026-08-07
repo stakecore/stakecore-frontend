@@ -57,10 +57,12 @@ export const RUNE_ROUGH = {
  * overhang — the +5 for feDisplacementMap's scale — or its ends are sliced flat.
  *
  * These deliberately differ rather than deriving from stroke width. The native
- * one reproduces the original profile.svg exactly, clipping and all, because
- * the desktop field's rasterization is required to be byte-identical to it. The
- * heavy one is sized for RUNE_STROKE_HEAVY, where the same region would cut the
- * mark into a rectangle.
+ * one reproduces the SVG asset this module replaced, clipping and all, because
+ * the desktop field's rasterization is required to be byte-identical to it —
+ * at stroke 38 that region already clips by ~10 units a side, and reproducing
+ * the mark's established look means reproducing that too. The heavy one is
+ * sized for RUNE_STROKE_HEAVY, where the same region would cut the mark into a
+ * rectangle.
  */
 export const RUNE_FILTER_REGION_NATIVE = { x: '-5%', y: '-5%', width: '110%', height: '110%' }
 export const RUNE_FILTER_REGION_HEAVY = { x: '-16%', y: '-14%', width: '132%', height: '128%' }
