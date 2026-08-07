@@ -8,11 +8,12 @@ for (const { path, heading } of ROUTES) {
     await expect(page.getByRole('heading', { level: 1, name: heading })).toBeVisible()
 
     // Desktop side of the hero-background breakpoint swap (heroBackground.tsx).
-    // e2e/mobile.spec.ts proves the shimmer mounts below md; this is the only
-    // e2e coverage that the WebGL canvas mounts at a desktop viewport instead
-    // — an inverted ternary in the chooser would pass the unit test (mocked
-    // matchMedia) but reach here uncaught. Scoped to '/' since it's the only
-    // route that renders a hero background at all.
+    // e2e/mobile.spec.ts proves the shimmer mounts below md; this proves the
+    // WebGL canvas mounts at a desktop viewport instead. heroBackground.test.tsx
+    // already asserts both arms of the chooser, but against a fake matchMedia
+    // and two stubbed children — this is the same claim against a real viewport
+    // and the real components. Scoped to '/' since it's the only route that
+    // renders a hero background at all.
     if (path === '/') {
       const canvas = page.locator('canvas.hero-rune-canvas')
       await expect(canvas).toHaveCount(1)
