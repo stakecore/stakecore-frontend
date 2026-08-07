@@ -92,15 +92,15 @@ const HeroRuneCanvas = () => {
       return
     }
 
-    // Density + cell metrics. Recomputed in setup() on every resize so a DPI
-    // switch (window dragged to a different-density monitor) or crossing the
-    // 768px breakpoint re-renders at the right density instead of these stale
-    // mount-time values.
-    // Smaller cells on phones: more rune-silhouette samples (logo detail
-    // becomes visible) and denser wave bands so the field doesn't read
-    // as a few wide stretched stripes against a tall narrow viewport.
+    // Density + cell metrics. dpr is recomputed in setup() on every resize so
+    // a DPI switch (window dragged to a different-density monitor) re-renders
+    // at the right density instead of a stale mount-time value.
+    //
+    // cellSize is a constant: heroBackground.tsx only mounts this component at
+    // >= md, so the phone branch this used to carry is unreachable. Crossing
+    // the breakpoint unmounts the component rather than re-measuring it.
     let dpr = window.devicePixelRatio || 1
-    let cellSize = window.innerWidth < 768 ? 6 : 10  // CSS pixels per cell
+    const cellSize = 10  // CSS pixels per cell
     let cellSizePx = cellSize * dpr // backing-store pixels per cell
 
     // --- shader compile + link ---
@@ -214,10 +214,9 @@ const HeroRuneCanvas = () => {
       const rect = canvas.getBoundingClientRect()
       w = rect.width
       h = rect.height
-      // Refresh density + cell size in case the DPI or the 768px breakpoint
-      // changed since the last setup (monitor swap, orientation, zoom).
+      // Refresh density in case the DPI changed since the last setup
+      // (monitor swap, zoom).
       dpr = window.devicePixelRatio || 1
-      cellSize = window.innerWidth < 768 ? 6 : 10
       const nextCellSizePx = cellSize * dpr
       canvas.width = Math.ceil(w * dpr)
       canvas.height = Math.ceil(h * dpr)

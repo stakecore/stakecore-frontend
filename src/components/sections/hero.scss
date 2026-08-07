@@ -20,13 +20,14 @@
     @include t.up(lg) { padding: 140px 0 64px; }
 }
 
-// Fixed-grid ASCII display. The wave fills the full viewport (capped at
-// the initial screen height so it doesn't keep growing on long pages);
-// cells inside the rune silhouette render brighter, painting the
-// StakeCore mark as a lighter ASCII shape embedded in the dimmer field.
-// Renders at every breakpoint — the RAF loop is gated by
-// IntersectionObserver + page visibility so off-screen / backgrounded
-// instances don't burn cycles on phones.
+// Fixed-grid ASCII display, shared box for both hero backgrounds. The wave
+// fills the full viewport (capped at the initial screen height so it doesn't
+// keep growing on long pages) and fades into the page top and bottom.
+//
+// Which canvas fills it is chosen by heroBackground.tsx: the WebGL field at
+// >= md, the rune-local shimmer below it. Both RAF loops are gated by
+// IntersectionObserver + page visibility so off-screen or backgrounded
+// instances don't burn cycles.
 .hero-rune-canvas {
     display: block;
     position: absolute;
@@ -42,6 +43,12 @@
     // hero's overflow edge.
     mask-image: linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%);
     -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 25%, black 75%, transparent 100%);
+}
+
+// The shimmer draws far fewer and coarser glyphs than the desktop field, so it
+// carries a little more presence without competing with the wordmark.
+.hero-rune-canvas--shimmer {
+    opacity: 0.36;
 }
 
 .hero .container {

@@ -2,7 +2,7 @@ import useSWR from 'swr'
 import { LandingPageService } from '~/backendApi'
 import ServerError from '../ui/serverError'
 import RecentActivity from '../ui/recentActivity'
-import HeroRuneCanvas from './heroRuneCanvas'
+import HeroBackground from './heroBackground'
 import { Diff } from '../ui/diff'
 import { Formatter } from '~/utils/misc/formatter'
 import { REFRESH_QUERY_SLOW_MS } from '~/constants'
@@ -41,7 +41,7 @@ const Hero = () => {
 
   return (
     <section className="hero">
-      <HeroRuneCanvas />
+      <HeroBackground />
       <div className="container">
         <header className="hero-brand">
           <h1 className="hero-wordmark">StakeCore</h1>
