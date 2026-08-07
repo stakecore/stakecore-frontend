@@ -40,7 +40,7 @@ const ValidatorStatsStrip = ({ stats, accentColor = 'white' }: {
     <div className="validator-stats-strip" style={styleVars}>
       <div className="validator-stats-row">
         <MetaPill label="Capacity" value={`${Formatter.number(cap)} ${asset}`} />
-        <MetaPill label="Delegators" value={Formatter.number(stats.delegators)} />
+        <MetaPill label="Delegators" value={Formatter.count(stats.delegators)} />
         <MetaPill label="Network Share" value={Formatter.percent(stats.networkShare)} />
       </div>
       <div className="validator-capacity-bar" aria-hidden>

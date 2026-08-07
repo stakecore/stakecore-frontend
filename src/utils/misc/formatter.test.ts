@@ -73,6 +73,54 @@ describe('Formatter.number', () => {
   })
 })
 
+// A count is a cardinal quantity — there is no such thing as 2.00 delegators,
+// so `count` never pads and never compacts. It is the formatter for things you
+// count; `number` stays the formatter for things you measure.
+describe('Formatter.count', () => {
+  it('renders small integers whole, with no padding', () => {
+    expect(Formatter.count(2)).toBe('2')
+    expect(Formatter.count(0)).toBe('0')
+    expect(Formatter.count(999)).toBe('999')
+  })
+
+  it('groups thousands rather than compacting to a k/M suffix', () => {
+    // The exact answer exists and fits; "1.23k" would discard it.
+    expect(Formatter.count(1234)).toBe('1,234')
+    expect(Formatter.count(47_850)).toBe('47,850')
+    expect(Formatter.count(1_234_567)).toBe('1,234,567')
+  })
+
+  it('accepts the same input types as number', () => {
+    expect(Formatter.count('1234')).toBe('1,234')
+    expect(Formatter.count(1234n)).toBe('1,234')
+  })
+
+  it('truncates a fractional input toward zero', () => {
+    // Reaching this means the value was never a count upstream; render the
+    // countable part rather than inventing a fraction of a delegator.
+    expect(Formatter.count(2.7)).toBe('2')
+    expect(Formatter.count(-2.7)).toBe('-2')
+  })
+
+  it('keeps the sign, but not on zero', () => {
+    expect(Formatter.count(-5)).toBe('-5')
+    expect(Formatter.count(-1234)).toBe('-1,234')
+    expect(Formatter.count(-0)).toBe('0')
+  })
+
+  it('renders a missing count as the placeholder', () => {
+    expect(Formatter.count(NaN)).toBe(Formatter.NO_VALUE)
+    expect(Formatter.count(Infinity)).toBe(Formatter.NO_VALUE)
+    expect(Formatter.count(undefined as never)).toBe(Formatter.NO_VALUE)
+    expect(Formatter.count('abc')).toBe(Formatter.NO_VALUE)
+  })
+
+  it('does not throw on values >= 1e21 (exponential toString edge)', () => {
+    expect(() => Formatter.count(1e21)).not.toThrow()
+    expect(Formatter.count(1e21)).toMatch(/^\d[\d,]*$/)
+  })
+})
+
 // Every formatter below is called during render with values derived from
 // backend JSON. A missing field turns into NaN through arithmetic (or arrives
 // as undefined outright), and the BigInt()/toISOString() calls inside these

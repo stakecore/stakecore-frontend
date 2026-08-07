@@ -126,6 +126,36 @@ export namespace Formatter {
     return prefix + res + suffix
   }
 
+  // Cardinal quantities — delegators, validators, anything you count rather
+  // than measure. `number`'s exact-digit padding is wrong here: it renders 2
+  // delegators as "2.00", and a count has no sub-unit for those digits to
+  // describe. So this one never pads and never compacts to a k/M suffix — the
+  // exact answer exists and is short enough to show.
+  export function count(value: intish): string {
+    if (!renderable(value)) return NO_VALUE
+    let str = value.toString()
+
+    if (str.includes('e')) {
+      // Same expansion `number` does: BigInt() can't parse "1e+21", and
+      // toFixed bails back to exponential above that magnitude.
+      const n = Number(str)
+      str = Math.abs(n) >= 1e21 ? BigInt(n).toString() : n.toFixed(9)
+    }
+
+    let prefix = ''
+    if (str.startsWith('-')) {
+      prefix = '-'
+      str = str.slice(1)
+    }
+
+    // Truncation toward zero, not rounding: a fractional count means something
+    // upstream stopped being a count, and rounding 2.7 up to 3 would invent a
+    // delegator that isn't there.
+    const int = (str.split('.')[0] ?? '').replace(/^0+(?=\d)/, '')
+    if (int === '' || BigInt(int) == BigInt(0)) return '0'
+    return prefix + int.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  }
+
   export function address(adr: string, num = 5): string {
     if (adr.startsWith('0x') && adr.length == 42) {
       // getAddress throws on an invalid EIP-55 checksum; fall back to the raw

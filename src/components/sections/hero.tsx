@@ -31,7 +31,7 @@ const Hero = () => {
     const u1 = data.data.delegated.reduce((x, y) => x + y.delegators, 0)
     stats = {
       delegated: Formatter.number(d1),
-      delegators: Formatter.number(u1),
+      delegators: Formatter.count(u1),
       delegatedDiff: Formatter.percent(d0 > 0 ? d1 / d0 - 1 : 0),
       delegatorDiff: Formatter.percent(u0 > 0 ? u1 / u0 - 1 : 0),
     }
