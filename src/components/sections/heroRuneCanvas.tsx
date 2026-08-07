@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import profile from '../../assets/images/about/profile.svg'
+import { RAMP, SVG_ASPECT } from './runeGrid'
 
 
 // GPU implementation of the ASCII-wave hero background. A single
@@ -9,8 +10,6 @@ import profile from '../../assets/images/about/profile.svg'
 //
 // Per-frame main-thread work reduces to: update one `u_phase` uniform
 // + drawArrays(6). All shading happens on the GPU in parallel.
-const RAMP = ' .,:;+*x#@'
-const SVG_ASPECT = 340 / 380
 
 const VERTEX_SHADER = `#version 300 es
 in vec2 a_position;
@@ -34,6 +33,8 @@ uniform sampler2D u_runeMask;   // rune silhouette texture
 
 out vec4 fragColor;
 
+// Must track RAMP.length in runeGrid.ts — GLSL can't import a JS constant, so
+// this one genuinely can drift silently if the ramp string ever changes.
 const float RAMP_LEN = 10.0;
 const float INSIDE_COLOR = 1.0;       // white
 const float OUTSIDE_COLOR = 0.42;     // ~#6B6B6B
@@ -371,6 +372,12 @@ const HeroRuneCanvas = () => {
       gl.deleteBuffer(vbo)
       gl.deleteVertexArray(vao)
       gl.deleteProgram(program)
+      // heroBackground.tsx unmounts this component on every crossing of the
+      // md breakpoint, so this context can no longer wait on GC to be
+      // reclaimed — Chrome caps a renderer at ~16 live WebGL contexts and
+      // force-loses the oldest once that's hit. Deleting the objects above
+      // frees their GPU memory but not the context itself; this does.
+      gl.getExtension('WEBGL_lose_context')?.loseContext()
     }
   }, [])
 

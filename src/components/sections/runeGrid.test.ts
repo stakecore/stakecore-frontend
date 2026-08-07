@@ -1,7 +1,7 @@
 // @vitest-environment node
 
 import { describe, it, expect } from 'vitest'
-import { RAMP, SVG_ASPECT, runeBox, glyphIndex, glyphAt } from './runeGrid'
+import { RAMP, runeBox, glyphIndex, glyphAt } from './runeGrid'
 
 describe('runeBox', () => {
   it('sizes off the width and centres the box', () => {
@@ -13,8 +13,17 @@ describe('runeBox', () => {
     // A landscape phone: plenty of columns, almost no rows.
     const box = runeBox(200, 12, 0.72)
     expect(box.rh).toBe(12)
-    expect(box.rw).toBe(Math.round(12 * SVG_ASPECT))
+    expect(box.rw).toBe(11)
     expect(box.y0).toBe(0)
+  })
+
+  it('floors rw/rh at 1 for a degenerate zero-sized grid', () => {
+    // A canvas that measures 0 in either dimension (e.g. mid-layout-thrash)
+    // must still produce a box a caller can rasterize into — 0x0 would make
+    // getImageData(0, 0, 0, 0) throw IndexSizeError from inside img.onload.
+    const box = runeBox(0, 0, 0.72)
+    expect(box.rw).toBeGreaterThan(0)
+    expect(box.rh).toBeGreaterThan(0)
   })
 
   it('keeps the box inside the grid at every aspect ratio', () => {

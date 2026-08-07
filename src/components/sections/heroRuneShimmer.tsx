@@ -18,7 +18,7 @@ const PHASE_PER_FRAME = 0.22  // ~5.7s for a full wave cycle at FRAME_MS
 // A 100vh x 100vw backing store at 3x is ~12 MB to carry a few hundred glyphs.
 // At 0.36 opacity behind a gradient mask, 2x is indistinguishable.
 const MAX_DPR = 2
-const ALPHA_FLOOR = 0.06      // below this the cell is outside the mark
+const ALPHA_FLOOR = 0.06      // at or below this the cell is outside the mark
 
 const HeroRuneShimmer = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -91,8 +91,18 @@ const HeroRuneShimmer = () => {
 
     const drawFrame = () => {
       const { rw, rh, x0, y0 } = box
-      // Only the rune's box is ever painted, so only it needs clearing.
-      ctx.clearRect(x0 * CELL_SIZE, y0 * CELL_SIZE, rw * CELL_SIZE, rh * CELL_SIZE)
+      // Only the rune's box is ever painted, so only it needs clearing. Padded
+      // by one cell on each side: textBaseline is 'top', so a glyph's baseline
+      // sits at ~0.8em and descenders on ',' / ';' can paint a pixel or two
+      // below the box's last row. Those pixels would fall outside an
+      // exactly-sized clearRect and never get erased, accumulating into a
+      // faint permanent band. The drawing loop itself is unchanged.
+      ctx.clearRect(
+        (x0 - 1) * CELL_SIZE,
+        (y0 - 1) * CELL_SIZE,
+        (rw + 2) * CELL_SIZE,
+        (rh + 2) * CELL_SIZE,
+      )
       const cx = rw / 2
       const cy = rh / 2
       for (let y = 0; y < rh; y++) {

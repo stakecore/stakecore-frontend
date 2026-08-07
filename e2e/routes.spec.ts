@@ -7,6 +7,18 @@ for (const { path, heading } of ROUTES) {
 
     await expect(page.getByRole('heading', { level: 1, name: heading })).toBeVisible()
 
+    // Desktop side of the hero-background breakpoint swap (heroBackground.tsx).
+    // e2e/mobile.spec.ts proves the shimmer mounts below md; this is the only
+    // e2e coverage that the WebGL canvas mounts at a desktop viewport instead
+    // — an inverted ternary in the chooser would pass the unit test (mocked
+    // matchMedia) but reach here uncaught. Scoped to '/' since it's the only
+    // route that renders a hero background at all.
+    if (path === '/') {
+      const canvas = page.locator('canvas.hero-rune-canvas')
+      await expect(canvas).toHaveCount(1)
+      await expect(canvas).not.toHaveClass(/hero-rune-canvas--shimmer/)
+    }
+
     // The error assertions below are point-in-time, and ServerError only
     // appears once a fetch has actually failed — so wait for SWR to settle
     // first. networkidle is the right tool here despite the general advice

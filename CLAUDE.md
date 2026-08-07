@@ -175,6 +175,32 @@ Never touch `sessionStorage` / `localStorage` directly — go through `safeSessi
 
 Testing blocked storage: replace the property with a throwing getter via `Object.defineProperty(window, 'sessionStorage', { get() { throw ... } })`, and restore the saved descriptor afterwards. Do **not** use `vi.spyOn(Storage.prototype, …)` — those spies were observed to silently stop applying once another test in the same file had already touched storage, which turns the storage tests green against code that is still broken. Both storage test suites assert the block is live before asserting anything else, for exactly that reason.
 
+### Hero background (`src/components/sections/`)
+
+`heroBackground.tsx` chooses between two hero-background components by
+`matchMedia('(max-width: 767.98px)')`: `heroRuneShimmer.tsx` (canvas-2D) below
+that width, `heroRuneCanvas.tsx` (WebGL2) at or above it. `heroRuneCanvas.tsx`
+is now **desktop-only** — its `cellSize` is a hardcoded `10` and it does no
+breakpoint check of its own, both correct only because the chooser is the sole
+thing that decides whether it mounts at all. Rendering it directly from
+`hero.tsx` again, or from anywhere else, would silently reintroduce the full
+cost it was built to avoid: at 390×844 the WebGL path animates 9,165 cells at
+~37M fragments/second and pays for a context, two shader compiles and a
+program link at mount, against the shimmer's ~340 glyphs redrawn at 5fps with
+no WebGL context created at all. The two share their cell arithmetic —
+`RAMP`, `SVG_ASPECT`, `runeBox`, `glyphIndex`/`glyphAt` — from `runeGrid.ts`,
+a pure DOM-free module kept that way so the maths is unit-testable without a
+canvas; the one exception is the fragment shader's `RAMP_LEN` GLSL constant,
+which can't import a JS value and is commented at its declaration to track
+`RAMP.length` by hand.
+
+The breakpoint literal in `heroBackground.tsx`, `(max-width: 767.98px)`, has
+to stay in lockstep with `t.down(md)` in `_tokens.scss` — a rounded `768px`
+would leave a band where the stylesheet has already switched to the mobile
+layout and the chooser has not. Nothing enforces that correspondence at
+compile time; `heroBackground.test.tsx` only pins the literal string, so a
+future change to the SCSS breakpoint needs a matching, manual update here.
+
 ### Route error boundaries
 
 `src/route/routeError.tsx` is the render boundary for every route, wired as `errorElement` on each **child** route in `router.tsx` plus the root as a backstop. Child placement is the point: an `errorElement` on the root route replaces `<RootLayout />` itself, so a single bad component would take the header, footer and wallet UI down with it. On a child, the crash is contained to the `<Outlet />`.

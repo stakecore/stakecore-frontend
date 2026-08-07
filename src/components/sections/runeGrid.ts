@@ -34,6 +34,12 @@ export function runeBox(cols: number, rows: number, frac: number): RuneBox {
     rh = rows
     rw = Math.round(rh * SVG_ASPECT)
   }
+  // Floor both at 1: a degenerate (0-sized) grid would otherwise produce a
+  // 0x0 box, and a caller that rasterizes into it (heroRuneShimmer.tsx) would
+  // call getImageData(0, 0, 0, 0), which throws IndexSizeError from inside an
+  // img.onload — an uncaught exception with no try/catch above it.
+  rw = Math.max(1, rw)
+  rh = Math.max(1, rh)
   return { rw, rh, x0: Math.round((cols - rw) / 2), y0: Math.round((rows - rh) / 2) }
 }
 
