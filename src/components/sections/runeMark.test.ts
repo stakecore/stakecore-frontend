@@ -4,6 +4,8 @@
 import { describe, it, expect } from 'vitest'
 import {
   RUNE_ASPECT,
+  RUNE_FILTER_REGION_HEAVY,
+  RUNE_FILTER_REGION_NATIVE,
   RUNE_PATHS,
   RUNE_ROUGH,
   RUNE_STROKE_HEAVY,
@@ -25,6 +27,16 @@ describe('rune constants', () => {
 
   it('keeps the heavy weight heavier than the native one', () => {
     expect(RUNE_STROKE_HEAVY).toBeGreaterThan(RUNE_STROKE_NATIVE)
+  })
+
+  // The native region must stay pinned to the source asset's exact values
+  // (see the dedicated test below), while the heavy region is sized for a
+  // much wider stroke. Deriving one from the other — or unifying them —
+  // would either clip the band's mark or change the desktop rasterization,
+  // so the two are independent literals and this test guards against a
+  // future "simplification" that merges them.
+  it('keeps the two filter regions distinct, because unifying them would clip one renderer or the other', () => {
+    expect(RUNE_FILTER_REGION_HEAVY).not.toEqual(RUNE_FILTER_REGION_NATIVE)
   })
 })
 

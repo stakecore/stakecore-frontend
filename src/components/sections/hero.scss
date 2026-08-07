@@ -182,9 +182,20 @@
 // The 8px radius matches the activity cards so the band belongs to the same
 // system. It does not read as a third activity card despite sitting under two
 // of them, because those are outlined and near-black while this is filled.
+//
+// overflow: hidden does double duty: it clips the border radius, and it
+// establishes a block formatting context. The latter is load-bearing, not
+// incidental — without it, .hero-rune-band__mark's 25px top margin collapses
+// through this box and out into its parent, and the band ends up 165px tall
+// instead of 190px.
 .hero-rune-band {
     height: 190px;
     margin: 8px 0 24px;
+    // The mark is height-constrained (see .hero-rune-band__mark below), so an
+    // unbounded width just grows the empty panel around it — at ~740px wide
+    // the mark stays ~125px wide inside a 700px slab. Cap it and centre it.
+    max-width: 480px;
+    margin-inline: auto;
     background: rgba(255, 255, 255, 0.18);
     border-radius: t.$radius-md;
     overflow: hidden;
@@ -192,12 +203,13 @@
 
 // 140px of the band's 190px, with the remaining 50px split above and below.
 // `xMidYMid meet` on the SVG keeps the mark's aspect, so only the height is
-// set here.
+// set here. `auto` in the horizontal margin is inert at `width: 100%`, so it
+// stays 0.
 .hero-rune-band__mark {
     display: block;
     width: 100%;
     height: 140px;
-    margin: 25px auto;
+    margin: 25px 0;
 }
 
 // Geometry lives in runeMark.ts; the colour lives here, so the knockout

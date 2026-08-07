@@ -1,4 +1,4 @@
-import { RUNE_PATHS, RUNE_ROUGH, RUNE_STROKE_HEAVY, RUNE_VIEWBOX } from './runeMark'
+import { RUNE_FILTER_REGION_HEAVY, RUNE_PATHS, RUNE_ROUGH, RUNE_STROKE_HEAVY, RUNE_VIEWBOX_BAND } from './runeMark'
 
 
 // The hero's mark on phones (< md). Static: no canvas, no effects, no state.
@@ -26,12 +26,18 @@ const HeroRuneBand = () => (
   <div className="hero-rune-band" aria-hidden>
     <svg
       className="hero-rune-band__mark"
-      viewBox={RUNE_VIEWBOX}
+      viewBox={RUNE_VIEWBOX_BAND}
       preserveAspectRatio="xMidYMid meet"
       focusable="false"
     >
       <defs>
-        <filter id={FILTER_ID} x="-5%" y="-5%" width="110%" height="110%">
+        <filter
+          id={FILTER_ID}
+          x={RUNE_FILTER_REGION_HEAVY.x}
+          y={RUNE_FILTER_REGION_HEAVY.y}
+          width={RUNE_FILTER_REGION_HEAVY.width}
+          height={RUNE_FILTER_REGION_HEAVY.height}
+        >
           <feTurbulence
             type="fractalNoise"
             baseFrequency={RUNE_ROUGH.baseFrequency}

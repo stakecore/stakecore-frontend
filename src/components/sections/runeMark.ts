@@ -9,6 +9,17 @@
 /** viewBox of the mark as originally drawn. */
 export const RUNE_VIEWBOX = '170 180 340 380'
 
+/**
+ * Widened viewBox used only by heroRuneBand. At RUNE_STROKE_HEAVY the mark's
+ * geometry (x 200-480, y 208-530) plus half the stroke plus the filter's
+ * displacement extends to x 164-516, y 172-566 before the SVG even applies
+ * its filter region — outside RUNE_VIEWBOX on every side, and the outer
+ * <svg> has user-agent `overflow: hidden`, so anything outside is clipped.
+ * RUNE_VIEWBOX itself cannot change: heroRuneCanvas's rasterization depends
+ * on it staying exactly what the original asset used.
+ */
+export const RUNE_VIEWBOX_BAND = '160 165 360 410'
+
 /** Width / height of that viewBox. Used to size the rune texture. */
 export const RUNE_ASPECT = 340 / 380
 
@@ -41,6 +52,20 @@ export const RUNE_ROUGH = {
 }
 
 /**
+ * Filter regions, in the percentage form SVG resolves against the geometry
+ * bounding box (stroke excluded). A stroke of width W needs W/2 + 5 units of
+ * overhang — the +5 for feDisplacementMap's scale — or its ends are sliced flat.
+ *
+ * These deliberately differ rather than deriving from stroke width. The native
+ * one reproduces the original profile.svg exactly, clipping and all, because
+ * the desktop field's rasterization is required to be byte-identical to it. The
+ * heavy one is sized for RUNE_STROKE_HEAVY, where the same region would cut the
+ * mark into a rectangle.
+ */
+export const RUNE_FILTER_REGION_NATIVE = { x: '-5%', y: '-5%', width: '110%', height: '110%' }
+export const RUNE_FILTER_REGION_HEAVY = { x: '-16%', y: '-14%', width: '132%', height: '128%' }
+
+/**
  * A complete standalone SVG document for the mark, white on transparent.
  * heroRuneCanvas encodes this into a data URI and rasterizes it; the alpha
  * channel becomes its rune mask.
@@ -49,7 +74,8 @@ export function runeSvgMarkup(strokeWidth: number): string {
   return (
     `<svg viewBox="${RUNE_VIEWBOX}" xmlns="http://www.w3.org/2000/svg">` +
     `<defs>` +
-    `<filter id="r" x="-5%" y="-5%" width="110%" height="110%">` +
+    `<filter id="r" x="${RUNE_FILTER_REGION_NATIVE.x}" y="${RUNE_FILTER_REGION_NATIVE.y}"` +
+    ` width="${RUNE_FILTER_REGION_NATIVE.width}" height="${RUNE_FILTER_REGION_NATIVE.height}">` +
     `<feTurbulence type="fractalNoise" baseFrequency="${RUNE_ROUGH.baseFrequency}"` +
     ` numOctaves="${RUNE_ROUGH.numOctaves}" seed="${RUNE_ROUGH.seed}" result="noise"/>` +
     `<feDisplacementMap in="SourceGraphic" in2="noise" scale="${RUNE_ROUGH.scale}"` +

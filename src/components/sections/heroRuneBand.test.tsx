@@ -3,7 +3,7 @@
 import { describe, it, expect, afterEach } from 'vitest'
 import { render, cleanup } from '@testing-library/react'
 import HeroRuneBand from './heroRuneBand'
-import { RUNE_PATHS, RUNE_STROKE_HEAVY, RUNE_VIEWBOX } from './runeMark'
+import { RUNE_FILTER_REGION_HEAVY, RUNE_PATHS, RUNE_ROUGH, RUNE_STROKE_HEAVY, RUNE_VIEWBOX_BAND } from './runeMark'
 
 afterEach(cleanup)
 
@@ -27,9 +27,31 @@ describe('HeroRuneBand', () => {
     expect(group?.getAttribute('stroke-width')).toBe(String(RUNE_STROKE_HEAVY))
   })
 
-  it('carries the mark\'s own viewBox so the paths are not rescaled by hand', () => {
+  it('uses the widened band viewBox, not the native one, so the heavy stroke is not clipped', () => {
     const { container } = render(<HeroRuneBand />)
     const svg = container.querySelector('.hero-rune-band__mark')
-    expect(svg?.getAttribute('viewBox')).toBe(RUNE_VIEWBOX)
+    expect(svg?.getAttribute('viewBox')).toBe(RUNE_VIEWBOX_BAND)
+  })
+
+  it('shares RUNE_ROUGH\'s displacement parameters with the native renderer', () => {
+    const { container } = render(<HeroRuneBand />)
+    const turbulence = container.querySelector('feTurbulence')
+    const displacement = container.querySelector('feDisplacementMap')
+    expect(turbulence?.getAttribute('baseFrequency')).toBe(String(RUNE_ROUGH.baseFrequency))
+    expect(turbulence?.getAttribute('numOctaves')).toBe(String(RUNE_ROUGH.numOctaves))
+    expect(turbulence?.getAttribute('seed')).toBe(String(RUNE_ROUGH.seed))
+    expect(displacement?.getAttribute('scale')).toBe(String(RUNE_ROUGH.scale))
+  })
+
+  // This is the regression test for the clipped-into-a-rectangle finding: the
+  // band used to reuse the native region (sized for stroke 38) with a stroke
+  // of 72, slicing every terminal flat. It must use its own, wider region.
+  it('uses the heavy filter region sized for its heavier stroke, not the native one', () => {
+    const { container } = render(<HeroRuneBand />)
+    const filter = container.querySelector('filter')
+    expect(filter?.getAttribute('x')).toBe(RUNE_FILTER_REGION_HEAVY.x)
+    expect(filter?.getAttribute('y')).toBe(RUNE_FILTER_REGION_HEAVY.y)
+    expect(filter?.getAttribute('width')).toBe(RUNE_FILTER_REGION_HEAVY.width)
+    expect(filter?.getAttribute('height')).toBe(RUNE_FILTER_REGION_HEAVY.height)
   })
 })

@@ -22,9 +22,8 @@ test('the hero renders the rune band and no WebGL canvas', async ({ page, consol
   // no assertion caught because none compared their boxes. This one does.
   const band = await page.locator('.hero-rune-band').boundingBox()
   const activity = await page.locator('.hero-activity').boundingBox()
-  if (band == null || activity == null) {
-    throw new Error('hero band or activity feed has no layout box')
-  }
+  if (band == null) throw new Error('no .hero-rune-band — the mobile mark did not render')
+  if (activity == null) throw new Error('no .hero-activity — the backend may have errored into .hero-error')
   expect(band.y).toBeGreaterThanOrEqual(activity.y + activity.height)
 
   // Point-in-time assertions, so let SWR settle first — same reasoning as
