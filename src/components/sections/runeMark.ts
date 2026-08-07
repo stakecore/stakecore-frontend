@@ -3,7 +3,7 @@
 // Two components render it, and they render it differently: heroRuneCanvas
 // rasterizes it from an SVG data URI into a WebGL texture, heroRuneBand draws
 // it as JSX. Both read their geometry from here. This module replaced an
-// imported profile.svg for exactly that reason — an asset plus a set of inline
+// imported SVG asset for exactly that reason — an asset plus a set of inline
 // paths is two definitions of one mark, and they drift silently.
 
 /** viewBox of the mark as originally drawn. */

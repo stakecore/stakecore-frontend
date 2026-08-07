@@ -1,6 +1,16 @@
 import { useEffect, useRef } from 'react'
-import profile from '../../assets/images/about/profile.svg'
-import { RAMP, SVG_ASPECT } from './runeGrid'
+import { RUNE_ASPECT, RUNE_STROKE_NATIVE, runeSvgMarkup } from './runeMark'
+
+
+// Density ramp for the glyph atlas, faintest to brightest. This file is its
+// only consumer. The fragment shader's RAMP_LEN constant must track its length
+// by hand — GLSL source cannot import a JS value.
+const RAMP = ' .,:;+*x#@'
+
+// The mark, as a data URI, built once at module load. Pure string work, so
+// module scope is safe here — nothing touches the DOM.
+const RUNE_DATA_URI =
+  'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(runeSvgMarkup(RUNE_STROKE_NATIVE))
 
 
 // GPU implementation of the ASCII-wave hero background. A single
@@ -33,8 +43,9 @@ uniform sampler2D u_runeMask;   // rune silhouette texture
 
 out vec4 fragColor;
 
-// Must track RAMP.length in runeGrid.ts — GLSL can't import a JS constant, so
-// this one genuinely can drift silently if the ramp string ever changes.
+// Must track the RAMP constant's length above — GLSL can't import a JS
+// constant, so this one genuinely can drift silently if the ramp string
+// ever changes.
 const float RAMP_LEN = 10.0;
 const float INSIDE_COLOR = 1.0;       // white
 const float OUTSIDE_COLOR = 0.42;     // ~#6B6B6B
@@ -97,9 +108,10 @@ const HeroRuneCanvas = () => {
     // a DPI switch (window dragged to a different-density monitor) re-renders
     // at the right density instead of a stale mount-time value.
     //
-    // cellSize is a constant: heroBackground.tsx only mounts this component at
-    // >= md, so the phone branch this used to carry is unreachable. Crossing
-    // the breakpoint unmounts the component rather than re-measuring it.
+    // cellSize is a constant: hero.tsx only mounts this component at >= md,
+    // gated on useBelowMd, so the phone branch this used to carry is
+    // unreachable. Crossing the breakpoint unmounts the component rather than
+    // re-measuring it.
     let dpr = window.devicePixelRatio || 1
     const cellSize = 10  // CSS pixels per cell
     let cellSizePx = cellSize * dpr // backing-store pixels per cell
@@ -227,10 +239,10 @@ const HeroRuneCanvas = () => {
       // Rune sprite size: 55% of the shorter grid axis, preserve aspect.
       const minor = Math.min(cols, rows)
       runeH = Math.max(20, Math.round(minor * 0.55))
-      runeW = Math.round(runeH * SVG_ASPECT)
+      runeW = Math.round(runeH * RUNE_ASPECT)
       if (runeW > cols) {
         runeW = cols
-        runeH = Math.round(runeW / SVG_ASPECT)
+        runeH = Math.round(runeW / RUNE_ASPECT)
       }
       gl.useProgram(program)
       // The backing-store cell size is stable across ordinary resizes, so
@@ -245,7 +257,7 @@ const HeroRuneCanvas = () => {
       if (uRuneSize) gl.uniform2f(uRuneSize, runeW, runeH)
     }
 
-    // Rasterize profile.svg into a runeW × runeH texture. Sampled by
+    // Rasterize the mark into a runeW × runeH texture. Sampled by
     // the fragment shader to decide inside/outside per cell. Async
     // because <img> loading is async, but only runs at setup + resize.
     const rasterize = () => new Promise<void>((resolve) => {
@@ -267,7 +279,7 @@ const HeroRuneCanvas = () => {
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, off)
         resolve()
       }
-      img.src = profile
+      img.src = RUNE_DATA_URI
     })
 
     let phase = 0
@@ -372,7 +384,7 @@ const HeroRuneCanvas = () => {
       gl.deleteBuffer(vbo)
       gl.deleteVertexArray(vao)
       gl.deleteProgram(program)
-      // heroBackground.tsx unmounts this component on every crossing of the
+      // hero.tsx unmounts this component on every crossing of the
       // md breakpoint, so this context can no longer wait on GC to be
       // reclaimed — Chrome caps a renderer at ~16 live WebGL contexts and
       // force-loses the oldest once that's hit. Deleting the objects above
