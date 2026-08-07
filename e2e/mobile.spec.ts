@@ -1,23 +1,31 @@
 import { devices } from '@playwright/test'
 import { test, expect } from './fixtures/console'
 
-// The hero background is the only breakpoint-switched component in the app,
-// and the desktop-only project would never exercise its mobile path. Scoped to
-// one route at one viewport deliberately: a full mobile project roughly
-// doubles e2e runtime against the live backend for very little extra signal.
+// The hero's decoration is the only breakpoint-switched thing in the app, and
+// the desktop-only project would never exercise its mobile path. Scoped to one
+// route at one viewport deliberately: a full mobile project roughly doubles
+// e2e runtime against the live backend for very little extra signal.
 test.use({ ...devices['Pixel 5'] })
 
-test('the hero mounts the shimmer background, not the WebGL field', async ({ page, consoleErrors }) => {
+test('the hero renders the rune band and no WebGL canvas', async ({ page, consoleErrors }) => {
   await page.goto('/#/')
 
   await expect(page.getByRole('heading', { level: 1, name: 'StakeCore' })).toBeVisible()
 
-  // Exactly one background canvas, and it is the mobile one. HeroRuneCanvas is
-  // the only caller of getContext('webgl2') on this route, so its absence from
-  // the DOM is the guarantee that no WebGL context was created.
-  const canvas = page.locator('canvas.hero-rune-canvas')
-  await expect(canvas).toHaveCount(1)
-  await expect(canvas).toHaveClass(/hero-rune-canvas--shimmer/)
+  // HeroRuneCanvas is the only caller of getContext('webgl2') on this route, so
+  // its absence from the DOM is the guarantee that no context was created.
+  await expect(page.locator('.hero-rune-band')).toHaveCount(1)
+  await expect(page.locator('canvas.hero-rune-canvas')).toHaveCount(0)
+
+  // The band must clear the activity feed. The previous design centred a mark
+  // in a full-viewport canvas and it landed entirely inside the content, which
+  // no assertion caught because none compared their boxes. This one does.
+  const band = await page.locator('.hero-rune-band').boundingBox()
+  const activity = await page.locator('.hero-activity').boundingBox()
+  if (band == null || activity == null) {
+    throw new Error('hero band or activity feed has no layout box')
+  }
+  expect(band.y).toBeGreaterThanOrEqual(activity.y + activity.height)
 
   // Point-in-time assertions, so let SWR settle first — same reasoning as
   // routes.spec.ts. Nothing on this page holds a connection open.
