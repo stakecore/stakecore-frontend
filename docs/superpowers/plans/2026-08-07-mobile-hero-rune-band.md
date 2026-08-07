@@ -420,6 +420,8 @@ This task is deliberately one unit: deleting `heroBackground.tsx` without rewiri
 
 Create `src/utils/useBelowMd.test.tsx`:
 
+> **Post-review note:** the `installMatchMedia` fixture below returns one shared `MediaQueryList` from every call, which means the "unsubscribes on unmount" test passes even if `subscribe` re-resolves the query for its cleanup — the exact leak it exists to catch. The shipped version at `src/utils/useBelowMd.test.tsx` was strengthened to hand out a distinct instance per call with its own listener set, and aggregates the count across them. Copy the shipped file rather than the block below if re-running this task.
+
 ```tsx
 // @vitest-environment happy-dom
 
