@@ -204,56 +204,6 @@ Never touch `sessionStorage` / `localStorage` directly — go through `safeSessi
 
 Testing blocked storage: replace the property with a throwing getter via `Object.defineProperty(window, 'sessionStorage', { get() { throw ... } })`, and restore the saved descriptor afterwards. Do **not** use `vi.spyOn(Storage.prototype, …)` — those spies were observed to silently stop applying once another test in the same file had already touched storage, which turns the storage tests green against code that is still broken. Both storage test suites assert the block is live before asserting anything else, for exactly that reason.
 
-### Hero background (`src/components/sections/`)
-
-The hero decorates itself differently on each side of the md breakpoint, and
-the two decorations do not share a DOM position — which is why the choice lives
-in a hook (`~/utils/useBelowMd`) rather than in a wrapper component. At ≥768px
-`heroRuneCanvas.tsx` renders a WebGL2 ASCII wave as an absolutely positioned
-background at the top of the section. Below 768px **nothing renders behind the
-hero's content at all**; `heroRuneBand.tsx` puts the mark in a band of its own,
-in normal flow at the end of the container.
-
-That split is not a stylistic preference. A centred background mark spans
-y 286–569 at 390×844 while the hero's content spans y 88–663 — the content
-fills 68% of the viewport, so there is nothing to sit behind. The earlier
-attempt to put a canvas there shipped and had to be replaced. `e2e/mobile.spec.ts`
-now compares the band's bounding box against the activity feed's, which is the
-assertion that would have caught it.
-
-`heroRuneCanvas.tsx` is **desktop-only**: its `cellSize` is a hardcoded `10` and
-it does no breakpoint check of its own, both correct only because the hook is
-the sole thing deciding whether it mounts. Rendering it unconditionally would
-reintroduce the cost it exists to avoid — at 390×844 it animates 9,165 cells at
-~37M fragments/second and pays for a context, two shader compiles and a
-program link at mount.
-
-Its cleanup releases the context with `WEBGL_lose_context`, but only
-`if (!canvas.isConnected)`. That guard is load-bearing: a canvas returns the
-**same** context object from every `getContext` call and a lost context stays
-lost until `restoreContext`, so losing it while the element will be reused kills
-the next mount — every shader fails to compile and `getShaderInfoLog` returns
-`null` rather than a GLSL message, which is the tell. StrictMode runs the
-cleanup with the node still in the document; a genuine unmount runs it after
-React has detached it.
-
-Both renderers read the mark's geometry from `runeMark.ts` — the paths, viewBox,
-aspect and stroke weights. The canvas rasterizes `runeSvgMarkup()` from a data
-URI; the band draws `RUNE_PATHS` as JSX. Keep it that way: an SVG asset plus a
-set of inline paths is two definitions of one mark that drift without a compile
-error. The one thing that cannot import from it is the fragment shader's
-`RAMP_LEN` GLSL constant, which is commented at its declaration to track
-`RAMP.length` by hand.
-
-The breakpoint literal in `useBelowMd.ts`, `(max-width: 767.98px)`, has to stay
-in lockstep with `t.down(md)` in `_tokens.scss`; nothing enforces that at compile
-time and the test only pins the literal string.
-
-None of the WebGL path is reachable by the test suite: headless Chromium in this
-devcontainer exposes no WebGL at all (`getContext('webgl2')` returns null under
-every swiftshader flag), so the e2e specs only ever exercise the
-`WebGL2 unavailable` warn path. Changes to that component need a real browser.
-
 ### Route error boundaries
 
 `src/route/routeError.tsx` is the render boundary for every route, wired as `errorElement` on each **child** route in `router.tsx` plus the root as a backstop. Child placement is the point: an `errorElement` on the root route replaces `<RootLayout />` itself, so a single bad component would take the header, footer and wallet UI down with it. On a child, the crash is contained to the `<Outlet />`.

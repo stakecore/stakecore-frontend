@@ -1,0 +1,14 @@
+<svg viewBox="170 180 340 380" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="roughHeavy" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="3" seed="7" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="10" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+
+  <g fill="none" stroke="#FFFFFF" stroke-width="38" stroke-linecap="round" filter="url(#roughHeavy)">
+    <line x1="200" y1="208" x2="410" y2="208"/>
+    <path d="M 200 208 C 340 295, 340 445, 200 530"/>
+    <path d="M 480 208 C 340 295, 340 445, 480 530"/>
+  </g>
+</svg>

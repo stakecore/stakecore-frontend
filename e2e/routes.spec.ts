@@ -7,17 +7,6 @@ for (const { path, heading } of ROUTES) {
 
     await expect(page.getByRole('heading', { level: 1, name: heading })).toBeVisible()
 
-    // Desktop side of the hero's breakpoint swap. e2e/mobile.spec.ts proves the
-    // band renders below md; this proves the WebGL canvas renders above it and
-    // the band does not. useBelowMd.test.tsx already asserts both arms of the
-    // hook, but against a fake matchMedia — this is the same claim against a
-    // real viewport and the real components. Scoped to '/' since it's the only
-    // route with any hero decoration.
-    if (path === '/') {
-      await expect(page.locator('canvas.hero-rune-canvas')).toHaveCount(1)
-      await expect(page.locator('.hero-rune-band')).toHaveCount(0)
-    }
-
     // The error assertions below are point-in-time, and ServerError only
     // appears once a fetch has actually failed — so wait for SWR to settle
     // first. networkidle is the right tool here despite the general advice

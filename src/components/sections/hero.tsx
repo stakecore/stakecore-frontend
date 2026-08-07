@@ -3,11 +3,9 @@ import { LandingPageService } from '~/backendApi'
 import ServerError from '../ui/serverError'
 import RecentActivity from '../ui/recentActivity'
 import HeroRuneCanvas from './heroRuneCanvas'
-import HeroRuneBand from './heroRuneBand'
 import { Diff } from '../ui/diff'
 import { Formatter } from '~/utils/misc/formatter'
 import { REFRESH_QUERY_SLOW_MS } from '~/constants'
-import { useBelowMd } from '~/utils/useBelowMd'
 import './hero.scss'
 
 
@@ -19,7 +17,6 @@ type HeroStats = {
 }
 
 const Hero = () => {
-  const belowMd = useBelowMd()
   const { data, isLoading, error } = useSWR(['page-info'], async () => {
     const resp = await LandingPageService.pageControllerGetPageInfo()
     if (resp?.data == null) throw new Error(resp.error)
@@ -44,7 +41,7 @@ const Hero = () => {
 
   return (
     <section className="hero">
-      {!belowMd && <HeroRuneCanvas />}
+      <HeroRuneCanvas />
       <div className="container">
         <header className="hero-brand">
           <h1 className="hero-wordmark">StakeCore</h1>
@@ -69,8 +66,6 @@ const Hero = () => {
             </div>
           </>
         )}
-
-        {belowMd && <HeroRuneBand />}
       </div>
     </section>
   )

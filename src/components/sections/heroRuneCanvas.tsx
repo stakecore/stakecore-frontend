@@ -1,16 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { RUNE_ASPECT, RUNE_STROKE_NATIVE, runeSvgMarkup } from './runeMark'
-
-
-// Density ramp for the glyph atlas, faintest to brightest. This file is its
-// only consumer. The fragment shader's RAMP_LEN constant must track its length
-// by hand — GLSL source cannot import a JS value.
-const RAMP = ' .,:;+*x#@'
-
-// The mark, as a data URI, built once at module load. Pure string work, so
-// module scope is safe here — nothing touches the DOM.
-const RUNE_DATA_URI =
-  'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(runeSvgMarkup(RUNE_STROKE_NATIVE))
+import profile from '../../assets/images/about/profile.svg'
 
 
 // GPU implementation of the ASCII-wave hero background. A single
@@ -20,6 +9,8 @@ const RUNE_DATA_URI =
 //
 // Per-frame main-thread work reduces to: update one `u_phase` uniform
 // + drawArrays(6). All shading happens on the GPU in parallel.
+const RAMP = ' .,:;+*x#@'
+const SVG_ASPECT = 340 / 380
 
 const VERTEX_SHADER = `#version 300 es
 in vec2 a_position;
@@ -43,9 +34,6 @@ uniform sampler2D u_runeMask;   // rune silhouette texture
 
 out vec4 fragColor;
 
-// Must track the RAMP constant's length above — GLSL can't import a JS
-// constant, so this one genuinely can drift silently if the ramp string
-// ever changes.
 const float RAMP_LEN = 10.0;
 const float INSIDE_COLOR = 1.0;       // white
 const float OUTSIDE_COLOR = 0.42;     // ~#6B6B6B
@@ -104,16 +92,15 @@ const HeroRuneCanvas = () => {
       return
     }
 
-    // Density + cell metrics. dpr is recomputed in setup() on every resize so
-    // a DPI switch (window dragged to a different-density monitor) re-renders
-    // at the right density instead of a stale mount-time value.
-    //
-    // cellSize is a constant: hero.tsx only mounts this component at >= md,
-    // gated on useBelowMd, so the phone branch this used to carry is
-    // unreachable. Crossing the breakpoint unmounts the component rather than
-    // re-measuring it.
+    // Density + cell metrics. Recomputed in setup() on every resize so a DPI
+    // switch (window dragged to a different-density monitor) or crossing the
+    // 768px breakpoint re-renders at the right density instead of these stale
+    // mount-time values.
+    // Smaller cells on phones: more rune-silhouette samples (logo detail
+    // becomes visible) and denser wave bands so the field doesn't read
+    // as a few wide stretched stripes against a tall narrow viewport.
     let dpr = window.devicePixelRatio || 1
-    const cellSize = 10  // CSS pixels per cell
+    let cellSize = window.innerWidth < 768 ? 6 : 10  // CSS pixels per cell
     let cellSizePx = cellSize * dpr // backing-store pixels per cell
 
     // --- shader compile + link ---
@@ -202,8 +189,8 @@ const HeroRuneCanvas = () => {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
 
     // Re-render the glyph atlas at the current cellSizePx. Only called from
-    // setup() when the backing-store cell size actually changes (a DPI
-    // switch — cellSize itself is now constant) — not on ordinary resizes.
+    // setup() when the backing-store cell size actually changes (DPI switch
+    // or breakpoint cross) — not on ordinary resizes.
     const rebuildGlyphAtlas = () => {
       gl.activeTexture(gl.TEXTURE0)
       gl.bindTexture(gl.TEXTURE_2D, glyphTex)
@@ -227,9 +214,10 @@ const HeroRuneCanvas = () => {
       const rect = canvas.getBoundingClientRect()
       w = rect.width
       h = rect.height
-      // Refresh density in case the DPI changed since the last setup
-      // (monitor swap, zoom).
+      // Refresh density + cell size in case the DPI or the 768px breakpoint
+      // changed since the last setup (monitor swap, orientation, zoom).
       dpr = window.devicePixelRatio || 1
+      cellSize = window.innerWidth < 768 ? 6 : 10
       const nextCellSizePx = cellSize * dpr
       canvas.width = Math.ceil(w * dpr)
       canvas.height = Math.ceil(h * dpr)
@@ -239,10 +227,10 @@ const HeroRuneCanvas = () => {
       // Rune sprite size: 55% of the shorter grid axis, preserve aspect.
       const minor = Math.min(cols, rows)
       runeH = Math.max(20, Math.round(minor * 0.55))
-      runeW = Math.round(runeH * RUNE_ASPECT)
+      runeW = Math.round(runeH * SVG_ASPECT)
       if (runeW > cols) {
         runeW = cols
-        runeH = Math.round(runeW / RUNE_ASPECT)
+        runeH = Math.round(runeW / SVG_ASPECT)
       }
       gl.useProgram(program)
       // The backing-store cell size is stable across ordinary resizes, so
@@ -257,7 +245,7 @@ const HeroRuneCanvas = () => {
       if (uRuneSize) gl.uniform2f(uRuneSize, runeW, runeH)
     }
 
-    // Rasterize the mark into a runeW × runeH texture. Sampled by
+    // Rasterize profile.svg into a runeW × runeH texture. Sampled by
     // the fragment shader to decide inside/outside per cell. Async
     // because <img> loading is async, but only runs at setup + resize.
     const rasterize = () => new Promise<void>((resolve) => {
@@ -279,7 +267,7 @@ const HeroRuneCanvas = () => {
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, off)
         resolve()
       }
-      img.src = RUNE_DATA_URI
+      img.src = profile
     })
 
     let phase = 0
@@ -384,21 +372,6 @@ const HeroRuneCanvas = () => {
       gl.deleteBuffer(vbo)
       gl.deleteVertexArray(vao)
       gl.deleteProgram(program)
-      // hero.tsx unmounts this component on every crossing of the
-      // md breakpoint, so this context can no longer wait on GC to be
-      // reclaimed — Chrome caps a renderer at ~16 live WebGL contexts and
-      // force-loses the oldest once that's hit. Deleting the objects above
-      // frees their GPU memory but not the context itself; this does.
-      //
-      // The isConnected guard is load-bearing, not defensive. A canvas hands
-      // back the SAME context object on every getContext call, and a lost one
-      // stays lost until restoreContext — so losing it while the element will
-      // be reused kills the remount: every shader then fails to compile with a
-      // null info log. StrictMode's mount/unmount/mount runs this cleanup with
-      // the node still in the document, which is exactly that case, and it
-      // took the whole dev-mode hero out. A genuine unmount reaches here after
-      // React has already detached the node, so isConnected separates the two.
-      if (!canvas.isConnected) gl.getExtension('WEBGL_lose_context')?.loseContext()
     }
   }, [])
 
