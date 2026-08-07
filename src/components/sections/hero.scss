@@ -176,3 +176,40 @@
 
     @include t.up(md) { min-height: 283px; }
 }
+
+// Mobile-only mark, in its own band below the activity feed. The panel is a
+// plain filled box in CSS and the mark is painted on top in the page
+// background colour, which on a #000 page reads as a knockout.
+//
+// 18% was chosen against 30% and 45% in situ: at 30% the band becomes the
+// brightest block on the page, and at 45% it pulls focus off the stat values.
+// At 18% it sits just below them in the page's weight order.
+//
+// The 8px radius matches the activity cards so the band belongs to the same
+// system. It does not read as a third activity card despite sitting under two
+// of them, because those are outlined and near-black while this is filled.
+.hero-rune-band {
+    height: 190px;
+    margin: 8px 0 24px;
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: t.$radius-md;
+    overflow: hidden;
+}
+
+// 140px of the band's 190px, with the remaining 50px split above and below.
+// `xMidYMid meet` on the SVG keeps the mark's aspect, so only the height is
+// set here.
+.hero-rune-band__mark {
+    display: block;
+    width: 100%;
+    height: 140px;
+    margin: 25px auto;
+}
+
+// Geometry lives in runeMark.ts; the colour lives here, so the knockout
+// follows the page background rather than hardcoding #000 in the component.
+.hero-rune-band__mark path {
+    fill: none;
+    stroke: var(--body-background);
+    stroke-linecap: round;
+}
