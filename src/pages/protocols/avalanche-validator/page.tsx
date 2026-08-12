@@ -10,7 +10,7 @@ export const AvalancheValidatorPage = () => (
     chain={Chain.AVALANCHE}
     swrKey='avalanche-validator-page'
     title='Avalanche Validator'
-    suptitle='Secure Avalanche Network Consensus Layer'
+    suptitle='Secure Avalanche Network Consensus'
     dataAccess={AvalancheValidatorDataAccess}
     Description={ProjectDescription}
     OfficialDelegate={AvalancheValidatorOfficialDelegateComponent}
