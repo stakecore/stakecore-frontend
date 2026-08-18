@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Lists the markdown mirrors rather than the routes themselves. Every
+  route lives behind a fragment (https://stakecore.org/#/about), and a
+  fragment is never sent to the server — all seven routes return the
+  identical index.html, so listing them would be seven <loc> entries
+  pointing at one document. The mirrors are distinct, real URLs.
+
+  <lastmod> is maintained by hand. See CLAUDE.md — if a mirror is
+  edited without touching its date here, this file quietly starts
+  lying about freshness.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://stakecore.org/</loc>
+    <lastmod>2026-08-18</lastmod>
+  </url>
+  <url>
+    <loc>https://stakecore.org/index.md</loc>
+    <lastmod>2026-08-18</lastmod>
+  </url>
+  <url>
+    <loc>https://stakecore.org/about.md</loc>
+    <lastmod>2026-08-18</lastmod>
+  </url>
+  <url>
+    <loc>https://stakecore.org/contact.md</loc>
+    <lastmod>2026-08-18</lastmod>
+  </url>
+  <url>
+    <loc>https://stakecore.org/flare/fsp.md</loc>
+    <lastmod>2026-08-18</lastmod>
+  </url>
+  <url>
+    <loc>https://stakecore.org/songbird/fsp.md</loc>
+    <lastmod>2026-08-18</lastmod>
+  </url>
+  <url>
+    <loc>https://stakecore.org/flare/validator.md</loc>
+    <lastmod>2026-08-18</lastmod>
+  </url>
+  <url>
+    <loc>https://stakecore.org/avalanche/validator.md</loc>
+    <lastmod>2026-08-18</lastmod>
+  </url>
+  <url>
+    <loc>https://stakecore.org/AGENTS.md</loc>
+    <lastmod>2026-08-18</lastmod>
+  </url>
+  <url>
+    <loc>https://stakecore.org/glossary.md</loc>
+    <lastmod>2026-08-18</lastmod>
+  </url>
+  <url>
+    <loc>https://stakecore.org/sitemap.md</loc>
+    <lastmod>2026-08-18</lastmod>
+  </url>
+</urlset>

@@ -110,9 +110,59 @@ Layout uses a 12-column grid, but **not** Bootstrap's — `src/assets/css/grid.s
 
 Fonts are **self-hosted** in `public/fonts/` (latin subsets; Inter and Roboto Mono are variable). `src/assets/css/fonts.css` holds the `@font-face` rules and `index.html` preloads Inter + Major Mono Display. They were on fonts.googleapis.com, which was render-blocking on a cold third-party origin and sat in front of the font files themselves. Two details are load-bearing: the metric-matched `'Inter Fallback'` face (second in every sans stack) keeps text from re-wrapping when the real Inter arrives, and Major Mono Display uses `font-display: optional` so a late arrival can't shift the header. Font URLs are literal and unhashed — that's why the files live in `public/`, not `src/assets/`.
 
+### Agent readability
+
+The site ships a static, JS-free surface for LLM agents and crawlers, built to
+[Vercel's Agent Readability Spec](https://vercel.com/kb/guide/agent-readability-spec).
+Everything lives in `public/` (Vite copies `publicDir` verbatim into `dist/`),
+so it is additive — no route, component, or store is involved.
+
+`robots.txt`, `llms.txt`, `sitemap.xml`, `sitemap.md`, `AGENTS.md`,
+`glossary.md`, plus one markdown mirror per route: `index.md`, `about.md`,
+`contact.md`, `flare/fsp.md`, `flare/validator.md`, `songbird/fsp.md`,
+`avalanche/validator.md`.
+
+**The mirrors are the content, not a convenience copy.** The app is a hash
+router, so a fragment never reaches the server: all seven routes return the
+same `index.html`, and an agent that doesn't execute JavaScript sees an empty
+`<div id="root">` on every one of them. That is also why `sitemap.xml` lists
+the mirrors rather than the routes — seven `<loc>` entries pointing at one
+document would be worthless — and why the JSON-LD in [index.html](index.html)
+is inline and static rather than injected at runtime.
+
+Four things to know before changing any of it:
+
+- **`<lastmod>` in `sitemap.xml` and `dateModified` in each mirror's
+  frontmatter are hand-maintained.** Edit a mirror's copy without touching its
+  date and the file quietly starts lying about freshness — the one failure mode
+  here that no test can catch. A build-time generator stamping them from git
+  would fix it; that was deliberately deferred, not overlooked.
+- **Mirrors carry no live figures.** Delegation totals, APYs, and epoch
+  statistics refresh every 10–30s ([constants.ts](src/constants.ts)), so the
+  mirrors describe the protocol and link to the page and the API instead. Don't
+  paste numbers in; they'd be stale within the minute and unfalsifiable.
+- **`/openapi.json` is emitted by a plugin in [vite.config.js](vite.config.js)**,
+  not copied into `public/`. A copy is a second source of truth that
+  `pnpm openapi-gen` doesn't update, so it would silently drift from the schema
+  the generated client is built from.
+- **`e2e/agentReadability.spec.ts` must reject the SPA shell explicitly.**
+  `vite preview` falls back to `index.html` for any path it can't resolve, so a
+  200 alone proves nothing — a missing file returns the shell rather than the
+  404 GitHub Pages would give. The `not.toContain('<div id="root">')`
+  assertion is what makes those tests real. `Content-Type` is deliberately not
+  asserted: preview's MIME table is Vite's, not Pages'.
+
+**Two spec checks are unachievable on GitHub Pages** and are knowingly unmet:
+`Accept: text/markdown` content negotiation, and the `Link:` canonical header
+on markdown responses. Both need server-side logic; Pages serves static bytes
+with fixed headers. The page-level HTML checks that read rendered content
+(heading count, text-to-HTML ratio) also pass only for `/`, and can't be fixed
+without prerendering routes to real paths — i.e. leaving the hash router. Don't
+file these as bugs; they're the known cost of the current hosting.
+
 ### Testing
 
-Vitest + happy-dom + `@testing-library/react` / `user-event`. 322 tests across 30 files at last count, all co-located next to source as `*.test.ts(x)`. Test files declare their environment per-file via a top-of-file `// @vitest-environment happy-dom` directive (no global config). There is no global setup file, so RTL's auto-cleanup does not run — a test that renders more than once must call `afterEach(cleanup)` itself, or later queries will match elements left behind by earlier renders.
+Vitest + happy-dom + `@testing-library/react` / `user-event`. 329 tests across 30 files at last count, all co-located next to source as `*.test.ts(x)`. Test files declare their environment per-file via a top-of-file `// @vitest-environment happy-dom` directive (no global config). There is no global setup file, so RTL's auto-cleanup does not run — a test that renders more than once must call `afterEach(cleanup)` itself, or later queries will match elements left behind by earlier renders.
 
 Common patterns: `vi.mock('~/features/wallet/store', ...)` to provide a fake Zustand store, `vi.mock('~/features/wallet/eip1193', ...)` for the RPC helpers, Proxy-mocked `Contract` instances for ethers calls, `MemoryRouter` wrapping for components that use `useLocation` / `NavLink`. `fireEvent.click` instead of `userEvent.click` when targeting react-router `<Link>` (userEvent's synthetic chain doesn't reach the onClick prop reliably through Link's `preventDefault`).
 
@@ -121,8 +171,9 @@ Common patterns: `vi.mock('~/features/wallet/store', ...)` to provide a fake Zus
 Playwright 1.62.1, Chromium only, specs in `e2e/`. `pnpm test:e2e` (or
 `pnpm test:e2e:ui`). Coverage is deliberately thin: every route renders with
 its real heading and no error panel, a wallet connect against a mocked
-EIP-6963 provider, and an axe-core accessibility scan of all eight page states
-plus the open wallet picker.
+EIP-6963 provider, an axe-core accessibility scan of all eight page states
+plus the open wallet picker, and the agent-readable static surface
+(`e2e/agentReadability.spec.ts` — see below).
 
 Accessibility scans (`e2e/a11y.spec.ts`) gate on WCAG 2a/2aa/21a/21aa only.
 `best-practice` rules are scanned and logged but never fail a test — gating on

@@ -1,0 +1,33 @@
+# StakeCore
+
+> StakeCore runs validator and core protocol-signing infrastructure for the
+> Flare, Songbird, and Avalanche networks. Delegation is non-custodial: tokens
+> never leave the holder's wallet, and every published figure is on-chain.
+
+StakeCore operates a self-hosted, geographically distributed Nomad cluster
+spread across three infrastructure providers in two continents. The website at
+https://stakecore.org is a client-rendered single-page app on a hash router, so
+the markdown files below — not the HTML — are the readable surface for anything
+that does not execute JavaScript. Live figures on the protocol pages come from
+the public backend API; the mirrors describe the protocols and link to the
+pages rather than freezing numbers that change every 10 to 30 seconds.
+
+## Pages
+
+- [StakeCore](/index.md): Delegation totals, delegator counts, and recent on-chain activity across all three networks.
+- [About](/about.md): Who StakeCore serves, how the infrastructure is built, and why delegation carries a risk profile close to holding.
+- [Contact](/contact.md): How to reach the team, including the Telegram channel and the operating company.
+
+## Protocols
+
+- [Flare Systems Protocol](/flare/fsp.md): FTSO, Fast Updates, and FDC signing on Flare, rewarded per 3.5-day epoch.
+- [Songbird Systems Protocol](/songbird/fsp.md): The same protocol stack on Songbird, Flare's canary network.
+- [Flare Validator](/flare/validator.md): Snowball consensus staking on Flare, with rewards bound to FSP performance.
+- [Avalanche Validator](/avalanche/validator.md): Snowball consensus staking on Avalanche, rewarded from network inflation.
+
+## Reference
+
+- [Agent guide](/AGENTS.md): What an agent can do with StakeCore, including the public API.
+- [Glossary](/glossary.md): FSP, FTSO, FDC, reward epoch, P-chain vs C-chain, delegation vs staking.
+- [OpenAPI schema](/openapi.json): Machine-readable schema for the public backend API.
+- [Sitemap](/sitemap.md): Every page on the site.

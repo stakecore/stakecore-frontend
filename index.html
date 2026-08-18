@@ -7,7 +7,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#000000" />
   <title>StakeCore</title>
+  <link rel="canonical" href="https://stakecore.org/" />
   <meta name="description" content="StakeCore operates validator and FSP/SSP signing infrastructure for the Flare, Avalanche, and Songbird networks. Non-custodial delegation, transparent on-chain reporting." />
+  <!-- The app is a hash router, so this is the only HTML document the server
+       ever returns — the metadata here describes the site, not a route. The
+       per-route content lives in the markdown mirrors indexed by /llms.txt;
+       see the agent readability section in CLAUDE.md. -->
+  <link rel="alternate" type="text/markdown" href="/index.md" title="StakeCore (markdown)" />
+  <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://stakecore.org/" />
   <meta property="og:title" content="StakeCore — staking infrastructure for Flare, Songbird, Avalanche" />
@@ -20,6 +27,53 @@
        is deliberately not preloaded — only the validator picker uses it. -->
   <link rel="preload" href="/fonts/inter-latin-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/major-mono-display-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- Inline and static rather than injected at runtime: a crawler that does
+       not execute JavaScript is precisely the reader this is for. The
+       BreadcrumbList names the hash routes, which is the only form of them a
+       human can navigate to. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://stakecore.org/#organization",
+        "name": "StakeCore",
+        "url": "https://stakecore.org/",
+        "description": "Validator and core protocol-signing infrastructure for the Flare, Songbird, and Avalanche networks.",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Ljubljana",
+          "addressCountry": "SI"
+        },
+        "legalName": "Sarisoma d.o.o.",
+        "sameAs": ["https://t.me/+xZoChBQyyCo3OGY0"]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://stakecore.org/#website",
+        "url": "https://stakecore.org/",
+        "name": "StakeCore",
+        "description": "Validator infrastructure for Flare, Songbird, and Avalanche. Non-custodial delegation, transparent on-chain reporting.",
+        "inLanguage": "en",
+        "publisher": { "@id": "https://stakecore.org/#organization" }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://stakecore.org/#breadcrumbs",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "StakeCore", "item": "https://stakecore.org/" },
+          { "@type": "ListItem", "position": 2, "name": "About", "item": "https://stakecore.org/#/about" },
+          { "@type": "ListItem", "position": 3, "name": "Contact", "item": "https://stakecore.org/#/contact" },
+          { "@type": "ListItem", "position": 4, "name": "Flare Systems Protocol", "item": "https://stakecore.org/#/flare/fsp" },
+          { "@type": "ListItem", "position": 5, "name": "Songbird Systems Protocol", "item": "https://stakecore.org/#/songbird/fsp" },
+          { "@type": "ListItem", "position": 6, "name": "Flare Validator", "item": "https://stakecore.org/#/flare/validator" },
+          { "@type": "ListItem", "position": 7, "name": "Avalanche Validator", "item": "https://stakecore.org/#/avalanche/validator" }
+        ]
+      }
+    ]
+  }
+  </script>
 </head>
 
 <body>

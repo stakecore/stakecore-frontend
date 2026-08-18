@@ -1,0 +1,27 @@
+# StakeCore — https://stakecore.org
+#
+# Agent crawlers are allowed deliberately and by name. Omitting this file
+# would leave them unblocked too, but silence is not the same signal as
+# consent, and the Agent Readability Spec asks for the positive statement.
+#
+# The agent-readable surface is /llms.txt and the .md mirrors it indexes.
+# The site itself is a client-rendered SPA on a hash router, so a crawler
+# that does not execute JavaScript sees an empty document on every route —
+# the markdown mirrors are the content, not a convenience copy.
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: *
+Allow: /
+
+Sitemap: https://stakecore.org/sitemap.xml
