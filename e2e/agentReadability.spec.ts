@@ -1,3 +1,4 @@
+import http2 from 'node:http2'
 import { test, expect } from '@playwright/test'
 import { ROUTES } from './fixtures/routes'
 import {
@@ -28,6 +29,69 @@ for (const path of [...SITE_FILES, ...MIRRORS]) {
     // rather than the 404 GitHub Pages would give. Reject the shell explicitly
     // or every assertion below it passes on a file that was never written.
     expect(body, 'served the SPA shell instead of the file').not.toContain('<div id="root">')
+  })
+}
+
+// Text and markdown have no in-band way to declare an encoding the way HTML's
+// <meta charset> does, so a response without the parameter leaves the reader
+// guessing — browsers fall back to windows-1252 and every em dash in these
+// files renders as mojibake. GitHub Pages sends `; charset=utf-8` for both
+// extensions; this covers the dev/preview shim in vite.config.js, so a file
+// that reads as garbage locally is genuinely broken rather than an artifact of
+// the server we happen to test against.
+//
+// Asserted over BOTH protocols on purpose. The static middleware sets the type
+// through a different API on each, and an earlier version of the shim patched
+// only the HTTP/1.1 path: `request` (h1) went green while a browser, which
+// negotiates h2, still rendered mojibake. One protocol is not evidence for the
+// other here.
+const UTF8_FILES = ['/llms.txt', '/robots.txt', '/index.md', '/AGENTS.md']
+
+for (const path of UTF8_FILES) {
+  test(`${path} declares utf-8 over HTTP/1.1`, async ({ request }) => {
+    const res = await request.get(path)
+
+    expect(res.headers()['content-type']).toMatch(/charset=utf-8/i)
+    // Round-trips a non-ASCII byte, so the header is not merely cosmetic.
+    expect(await res.text()).toContain('—')
+  })
+
+  test(`${path} declares utf-8 over HTTP/2`, async ({ baseURL }) => {
+    const res = await getOverHttp2(`${baseURL}${path}`)
+
+    expect(res.status).toBe(200)
+    expect(res.contentType).toMatch(/charset=utf-8/i)
+    expect(res.body).toContain('—')
+  })
+}
+
+/**
+ * Playwright's `request` fixture speaks HTTP/1.1, and the browser contexts
+ * won't navigate to a markdown response without treating it as a download, so
+ * the h2 path needs a client of its own.
+ */
+function getOverHttp2(url: string) {
+  return new Promise<{ status: number; contentType: string; body: string }>((resolve, reject) => {
+    const { origin, pathname } = new URL(url)
+    // Same self-signed cert the rest of the suite waives via ignoreHTTPSErrors.
+    const client = http2.connect(origin, { rejectUnauthorized: false })
+    const req = client.request({ ':path': pathname })
+
+    let status = 0
+    let contentType = ''
+    let body = ''
+
+    req.on('response', headers => {
+      status = Number(headers[':status'])
+      contentType = String(headers['content-type'] ?? '')
+    })
+    req.setEncoding('utf8')
+    req.on('data', chunk => { body += chunk })
+    req.on('end', () => { client.close(); resolve({ status, contentType, body }) })
+
+    client.on('error', reject)
+    req.on('error', reject)
+    req.end()
   })
 }
 

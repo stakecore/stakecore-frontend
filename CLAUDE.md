@@ -149,8 +149,20 @@ Four things to know before changing any of it:
   `vite preview` falls back to `index.html` for any path it can't resolve, so a
   200 alone proves nothing — a missing file returns the shell rather than the
   404 GitHub Pages would give. The `not.toContain('<div id="root">')`
-  assertion is what makes those tests real. `Content-Type` is deliberately not
-  asserted: preview's MIME table is Vite's, not Pages'.
+  assertion is what makes those tests real.
+- **The charset shim is patched onto two APIs, and the spec asserts both
+  protocols.** `text/plain` and `text/markdown` carry no in-band encoding
+  declaration, so a response without `; charset=utf-8` leaves browsers falling
+  back to windows-1252 and every em dash rendering as mojibake. Pages sends the
+  parameter for both extensions (verified against a Pages-hosted `.md`); Vite's
+  static middleware drops it, so `utf8TextTypes` in
+  [vite.config.js](vite.config.js) restores it locally. It has to patch
+  `writeHead` *and* `setHeader`: sirv writes the type through `writeHead`,
+  which is the only path on HTTP/2, while over HTTP/1.1 something downstream
+  re-sets it via `setHeader` afterwards and would strip the charset back off.
+  Patching only `setHeader` left Playwright's `request` fixture (h1) green
+  while browsers, which negotiate h2, still showed mojibake — which is why the
+  spec now asserts over both protocols and reaches for `node:http2` to do it.
 
 **Two spec checks are unachievable on GitHub Pages** and are knowingly unmet:
 `Accept: text/markdown` content negotiation, and the `Link:` canonical header

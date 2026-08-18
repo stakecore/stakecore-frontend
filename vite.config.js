@@ -36,8 +36,63 @@ const openapiSchema = () => {
   }
 }
 
+// `text/plain` and `text/markdown` have no in-band way to declare an encoding
+// the way HTML does with <meta charset>, so a response that omits the charset
+// parameter leaves the reader guessing: browsers fall back to windows-1252 and
+// every em dash in llms.txt and the markdown mirrors renders as mojibake.
+//
+// GitHub Pages sends `; charset=utf-8` for both extensions, so production is
+// unaffected — Vite's static middleware is what drops it. This exists so local
+// preview matches what ships, and a file that reads as garbage locally is
+// genuinely broken rather than an artifact of the server we test against.
+const utf8TextTypes = () => {
+  const middleware = (req, res, next) => {
+    if (!/\.(md|txt)(?:$|\?)/.test(req.url ?? '')) return next()
+
+    const withCharset = value =>
+      typeof value === 'string' && !/charset=/i.test(value) ? `${value}; charset=utf-8` : value
+
+    // Both APIs have to be patched, and neither alone is enough.
+    //
+    // sirv, which serves these files, sets the type through writeHead(status,
+    // headers) — that is the only path on HTTP/2, where the compat layer sends
+    // the headers immediately and a later setHeader is too late to matter.
+    // Over HTTP/1.1 something downstream re-sets Content-Type via setHeader
+    // after writeHead, which still lands because h1 flushes headers lazily —
+    // and that call would strip the charset straight back off.
+    //
+    // Browsers negotiate h2 here (basic-ssl serves TLS), so patching only
+    // setHeader fixes the protocol the test client happens to use while
+    // leaving the one a human hits still broken.
+    const writeHead = res.writeHead.bind(res)
+    res.writeHead = (...args) => {
+      const headers = args.at(-1)
+      if (headers && typeof headers === 'object' && !Array.isArray(headers)) {
+        for (const key of Object.keys(headers)) {
+          if (key.toLowerCase() === 'content-type') headers[key] = withCharset(headers[key])
+        }
+      }
+      return writeHead(...args)
+    }
+
+    const setHeader = res.setHeader.bind(res)
+    res.setHeader = (name, value) =>
+      setHeader(name, String(name).toLowerCase() === 'content-type' ? withCharset(value) : value)
+
+    next()
+  }
+
+  return {
+    name: 'stakecore-utf8-text-types',
+    // Registered directly, not through the returned-function form, so the
+    // patch is in place before Vite's own static middleware runs.
+    configureServer: server => { server.middlewares.use(middleware) },
+    configurePreviewServer: server => { server.middlewares.use(middleware) }
+  }
+}
+
 export default defineConfig({
-  plugins: [react(), basicSsl(), openapiSchema()],
+  plugins: [react(), basicSsl(), openapiSchema(), utf8TextTypes()],
   base: '/',
   // The devcontainer publishes 5173 and 4173 to the host
   // (.devcontainer/docker-compose.yaml). Vite binds loopback by default,
