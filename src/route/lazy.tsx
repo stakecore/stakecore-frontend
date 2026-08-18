@@ -1,4 +1,4 @@
-import { type ComponentType } from "react";
+import type { ComponentType } from "react";
 import { SpinnerCircular } from "spinners-react";
 import { PAGE_COLOR_CODE } from "~/constants";
 import { safeSession } from "~/utils/safeStorage";

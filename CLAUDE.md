@@ -10,7 +10,7 @@ StakeCore is a React SPA for a crypto staking infrastructure provider operating 
 
 - **Dev server**: `pnpm dev`
 - **Build**: `pnpm build`
-- **Lint**: `pnpm lint`
+- **Lint**: `pnpm lint` (Biome) / `pnpm lint:fix` (applies safe fixes)
 - **Test**: `pnpm test` (one-shot) / `pnpm test:watch` (watch mode)
 - **Regenerate API client**: `pnpm openapi-gen && pnpm openapi-fix`
 - **Deploy**: `pnpm build-all && pnpm run deploy` (GitHub Pages; `deploy` is a reserved pnpm command, so use `pnpm run`)
@@ -184,6 +184,26 @@ as intended.
 - Array/record indexing therefore yields `T | undefined`. Prefer a real guard (`const x = arr[i]; if (x == null) return`) or `?? fallback` over `!`. Where an invariant genuinely holds but isn't expressible — `SERVERS[w.type]` in `infraConstellation.tsx`, `paletteAt` in `meterBar.tsx` — the codebase uses a total accessor with a fallback rather than an assertion, so drift becomes a wrong colour instead of a blank page.
 
 `pnpm lint` does not typecheck. Run `npx tsc -p tsconfig.json --noEmit` before pushing.
+
+### Linting (Biome)
+
+Biome replaced ESLint. It is configured **lint-only** — `formatter` and `assist` are both off, because turning the formatter on would rewrite all 183 source files in one commit and Prettier is already the editor formatter (`.devcontainer/devcontainer.json` sets it per-language). Config is [biome.jsonc](biome.jsonc).
+
+Two things about that file are load-bearing:
+
+- **It must stay `.jsonc`.** Biome parses `biome.json` as strict JSON, and a `//` comment there does not fail loudly — it emits a `reporter/parse` diagnostic, silently falls back to the *default* config, and starts linting `node_modules` (160 files checked becomes 804). A green run would prove nothing. If you ever see the checked-file count jump, that's the cause.
+- **`src/backendApi/` is excluded.** It's generated from OpenAPI and never hand-edited, so findings there are noise nobody is allowed to fix — it alone accounted for 25 of the 35 `noExplicitAny` hits.
+
+The old ESLint config declared `files: ['**/*.{js,jsx}']`, which never matched a single `.ts`/`.tsx` file. `eslint .` linted exactly three files (`eslint.config.js`, `vite.config.js`, `scripts/gen-coastlines.mjs`), so the `pnpm lint` gate in CI was effectively a no-op and the `react` / `react-hooks` / `react-refresh` plugins never ran on a component. Biome lints TS/TSX natively, so the swap turned linting on for `src/` for the first time.
+
+That left a backlog. Rather than disable those rules or hand-fix ~158 findings in the migration commit, the 13 currently-failing `recommended` rules are demoted to **`warn`** in a documented ratchet block. `biome lint` exits non-zero only on *errors*, so CI stays green while every finding is still printed on each run. **To ratchet: fix a rule's backlog, then delete its line from `biome.jsonc`** — it reverts to its `recommended` default of `error` and starts gating. Start with `useExhaustiveDependencies` (11), the one most likely to be hiding real stale-closure bugs.
+
+Two rules need care rather than a bulk `--write`:
+
+- **`noDoubleEquals`** (20) is not safe to auto-fix. Some hits are the `== null` guard idiom endorsed above; others are `bigint == 0`, where `===` is `false` and switching would silently change behaviour.
+- **`noNonNullAssertion`** (36) overlaps with the `!`-avoidance guidance above, but rewriting assertions into guards is a behavioural change, not a lint fix.
+
+`pnpm lint:fix` applies only Biome's **safe** fixes. Never run it with `--unsafe` across the repo.
 
 ### Chain config (`src/config/chains.ts`)
 

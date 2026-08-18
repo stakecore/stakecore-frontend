@@ -1,4 +1,4 @@
-import { PageUserInfoDto, ApyDto, BalanceDto } from "~/backendApi"
+import type { PageUserInfoDto, ApyDto, BalanceDto } from "~/backendApi"
 import { Formatter } from "../misc/formatter"
 import * as C from "../../constants"
 

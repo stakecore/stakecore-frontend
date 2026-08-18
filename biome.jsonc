@@ -1,0 +1,72 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.5.9/schema.json",
+
+  // NOTE: this file must stay `.jsonc`. Biome parses `biome.json` as strict
+  // JSON, and a single `//` comment there does not fail loudly — it silently
+  // falls back to the default config and starts linting node_modules.
+
+  "files": {
+    "includes": [
+      "**",
+      "!dist",
+      "!node_modules",
+      "!test-results",
+      "!playwright-report",
+      "!public",
+      "!**/*.min.js",
+      // Auto-generated from OpenAPI and never hand-edited (see CLAUDE.md),
+      // so findings here would be noise nobody is allowed to fix.
+      "!src/backendApi"
+    ]
+  },
+
+  "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
+
+  // Lint only. Enabling Biome's formatter would rewrite all 183 source files
+  // in a single commit; Prettier stays the editor formatter. `assist` is off
+  // for the same reason — it reorders imports.
+  "formatter": { "enabled": false },
+  "assist": { "enabled": false },
+
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "preset": "recommended",
+
+      // RATCHET — every rule below is a `recommended` rule that defaults to
+      // `error`. The old ESLint config's `files: ['**/*.{js,jsx}']` never
+      // matched a single .ts/.tsx file, so this is the first time src/ has
+      // been linted and they all start out failing. `biome lint` exits
+      // non-zero only on errors, so they are demoted to `warn`: still
+      // reported on every run, but not blocking CI. Work through a rule's
+      // backlog, then delete its line here to promote it back to `error`.
+      // Counts are as of the Biome migration.
+      "a11y": {
+        "noLabelWithoutControl": "warn", // 2
+        "noNoninteractiveElementToInteractiveRole": "warn", // 1
+        "noStaticElementInteractions": "warn", // 1
+        "noSvgWithoutTitle": "warn", // 16
+        "useAriaPropsSupportedByRole": "warn", // 1
+        "useButtonType": "warn", // 7
+        "useKeyWithClickEvents": "warn" // 2
+      },
+
+      "correctness": {
+        "noUnknownProperty": "warn", // 1
+        // 11 — most likely of the batch to be hiding real stale-closure
+        // bugs, so the best first ratchet target.
+        "useExhaustiveDependencies": "warn",
+        "useHookAtTopLevel": "warn" // 3
+      },
+
+      "suspicious": {
+        "noArrayIndexKey": "warn", // 10
+        "noAssignInExpressions": "warn", // 3
+        // 20, and NOT safe to bulk-fix: some are the `== null` guard idiom
+        // CLAUDE.md endorses, others are `bigint == 0`, where `===` would
+        // silently change behaviour. Hand-review each one.
+        "noDoubleEquals": "warn"
+      }
+    }
+  }
+}

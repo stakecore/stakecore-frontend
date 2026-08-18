@@ -1,7 +1,7 @@
 import { memo, useEffect, useMemo, useRef } from "react"
 import { useAfterIdle } from "~/utils/useAfterIdle"
 import { SpinnerCircular } from "spinners-react"
-import { ApiResponseDto_PageStatsDto, PageActivityDto } from "~/backendApi"
+import { type ApiResponseDto_PageStatsDto, PageActivityDto } from "~/backendApi"
 import { Formatter } from "~/utils/misc/formatter"
 import { HashLink } from "./links"
 import { Protocol } from "~/enums"

@@ -1,5 +1,5 @@
 import { Formatter } from "~/utils/misc/formatter"
-import { Status, StatusCode } from "~/enums"
+import { type Status, StatusCode } from "~/enums"
 import { useGlobalStore } from "./store"
 import { requestAccounts, switchNetworkIfNecessary } from "./eip1193"
 import type { Eip1193Provider } from "ethers"

@@ -28,6 +28,6 @@ export function normalizePAddress(network: string, pAddress: string): string {
 }
 
 export function pAddressToBech(network: string, pAddressHex: string): string {
-  let hrp = HRP[network]
+  const hrp = HRP[network]
   return bech32.encode(hrp, bech32.toWords(Buffer.from(pAddressHex, 'hex')))
 }

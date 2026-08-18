@@ -2,7 +2,7 @@
 
 import { describe, it, expect, afterEach, vi } from 'vitest'
 import { render, cleanup } from '@testing-library/react'
-import { ApiResponseDto_PageStatsDto, PageActivityDto } from '~/backendApi'
+import { type ApiResponseDto_PageStatsDto, PageActivityDto } from '~/backendApi'
 import { Formatter } from '~/utils/misc/formatter'
 import RecentActivity from './recentActivity'
 

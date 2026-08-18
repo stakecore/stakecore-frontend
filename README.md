@@ -27,7 +27,8 @@ The site itself is read-only by default; connecting a wallet enables in-page act
 pnpm install  # install dependencies
 pnpm dev      # start the dev server (Vite)
 pnpm build    # production build → ./dist
-pnpm lint     # eslint
+pnpm lint     # biome (lint only; see biome.jsonc)
+pnpm lint:fix # biome, applying safe fixes
 pnpm test     # run the full test suite once
 ```
 

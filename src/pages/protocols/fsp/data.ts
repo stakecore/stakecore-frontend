@@ -1,4 +1,4 @@
-import { FspDelegatorInfoDto, FspInfoDto, FspPageDataDto, FspService } from "~/backendApi"
+import { type FspDelegatorInfoDto, type FspInfoDto, type FspPageDataDto, FspService } from "~/backendApi"
 import type { FspStatisticsDto } from "~/backendApi"
 import {
   flareEvmAddressUrl, flareFspAddressUrl,

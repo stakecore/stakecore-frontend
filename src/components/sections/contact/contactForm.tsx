@@ -1,9 +1,9 @@
 import { RiMailLine } from '@remixicon/react'
 import { toast } from 'react-toastify'
-import { LandingPageService, FormDto } from '../../../backendApi'
+import { LandingPageService, type FormDto } from '../../../backendApi'
 
 
-const reemail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
+const reemail = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/
 
 const ContactForm = () => {
 

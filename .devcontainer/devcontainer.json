@@ -46,7 +46,7 @@
                 "timonwong.shellcheck",
                 "anthropic.claude-code",
                 "esbenp.prettier-vscode",
-                "dbaeumer.vscode-eslint"
+                "biomejs.biome"
             ],
             "settings": {
                 // Todo Tree only looks for ripgrep under VS Code's appRoot and

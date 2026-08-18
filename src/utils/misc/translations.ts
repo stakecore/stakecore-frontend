@@ -1,4 +1,4 @@
-import { Chain } from "~/enums"
+import type { Chain } from "~/enums"
 import { CHAIN_CONFIG, CHAIN_BY_HEX, CHAIN_LIST, type AddEthereumChainParams } from "~/config/chains"
 
 // Signatures below spell out the "no match" case each function already
