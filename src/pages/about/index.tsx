@@ -204,8 +204,8 @@ const Stack = () => (
                         balances traffic inside the cluster, and Traefik publishes the
                         services and sites that face outward. When something breaks
                         the alert lands in Telegram, and Claude helps the on-call
-                        engineer work out why — reading logs, correlating metrics,
-                        drafting the fix — but{' '}
+                        engineer work out why — pulling logs from Loki and metrics
+                        from Prometheus, correlating the two, drafting a fix — but{' '}
                         <span className="about-mark">
                             nothing reaches the cluster without an engineer approving it
                         </span>
