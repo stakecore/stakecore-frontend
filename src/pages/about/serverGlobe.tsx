@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { COASTLINE_RINGS } from './coastlines'
-import { project, graticule, dragRotation, greatCircleArc } from './globeProjection'
+import { project, dragRotation, greatCircleArc } from './globeProjection'
 import './serverGlobe.scss'
 
 // Spinning globe showing where the Nomad cluster actually runs.
@@ -13,7 +13,7 @@ import './serverGlobe.scss'
 //
 // The footprint is lopsided — five of six are European — so a globe that
 // hid its far side would sit empty for roughly 40% of every revolution.
-// Instead the far side draws faintly: coastlines, graticule and nodes all
+// Instead the far side draws faintly: coastlines, links and markers all
 // remain visible through the sphere, which reads as translucent and keeps
 // something on screen at every angle.
 //
@@ -34,8 +34,6 @@ const GLOBE_RADIUS_RATIO = 0.42 // leaves room for halos at the limb
 // live values are read from CSS at mount so the two stay in step.
 const FALLBACK_SERVER_COLOR = '#7fb88f'
 const FALLBACK_CLIENT_COLOR = '#ffffff'
-
-const GRATICULE_LINES = graticule()
 
 interface Node {
   city: string
@@ -160,9 +158,10 @@ function strokeLines(
   ctx.stroke()
 }
 
-// Provider capacity: deliberately the quietest thing on the sphere. Small,
-// unhaloed and dim, so it reads as texture behind the cluster rather than
-// as more nodes. The near/far split matches everything else.
+// Provider capacity: deliberately the quietest marker on the sphere. Smaller
+// and dimmer than either node class, so it reads as texture behind the
+// cluster rather than as more nodes. The near/far split matches everything
+// else.
 function drawRegions(
   ctx: CanvasRenderingContext2D,
   cx: number,
@@ -260,8 +259,6 @@ function draw(
 
   // Far face first, so the near face paints over it.
   ctx.lineWidth = 1
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)'
-  strokeLines(ctx, GRATICULE_LINES, cx, cy, radius, centreLon, centreLat, false)
   ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)'
   strokeLines(ctx, COASTLINE_RINGS, cx, cy, radius, centreLon, centreLat, false)
   // Mesh under the markers on both faces, so a link never draws over the
@@ -276,8 +273,6 @@ function draw(
   drawRegions(ctx, cx, cy, radius, centreLon, centreLat, false)
   drawNodes(ctx, cx, cy, radius, centreLon, centreLat, false, serverColor, clientColor)
 
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)'
-  strokeLines(ctx, GRATICULE_LINES, cx, cy, radius, centreLon, centreLat, true)
   ctx.strokeStyle = 'rgba(255, 255, 255, 0.34)'
   strokeLines(ctx, COASTLINE_RINGS, cx, cy, radius, centreLon, centreLat, true)
 

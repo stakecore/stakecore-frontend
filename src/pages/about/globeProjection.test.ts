@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { project, graticule, dragRotation, greatCircleArc } from './globeProjection'
+import { project, dragRotation, greatCircleArc } from './globeProjection'
 
 const R = 100
 
@@ -137,39 +137,6 @@ describe('dragRotation', () => {
   it('is a no-op for a zero-length drag', () => {
     const r = dragRotation(-25, 30, 0, 0, R)
     expect(r).toEqual({ lon: -25, lat: 30 })
-  })
-})
-
-describe('graticule', () => {
-  it('emits a meridian per step plus the parallels between the poles', () => {
-    const lines = graticule(30, 5)
-    // 12 meridians (360/30) + 5 parallels (-60..60 by 30)
-    expect(lines).toHaveLength(17)
-  })
-
-  it('emits flat lon/lat pairs within valid ranges', () => {
-    for (const line of graticule()) {
-      expect(line.length % 2).toBe(0)
-      expect(line.length).toBeGreaterThanOrEqual(4)
-      for (let i = 0; i < line.length; i += 2) {
-        expect(line[i]).toBeGreaterThanOrEqual(-180)
-        expect(line[i]).toBeLessThanOrEqual(180)
-        expect(line[i + 1]).toBeGreaterThanOrEqual(-90)
-        expect(line[i + 1]).toBeLessThanOrEqual(90)
-      }
-    }
-  })
-
-  it('omits degenerate parallels at the poles', () => {
-    for (const line of graticule()) {
-      const lats: number[] = []
-      for (let i = 1; i < line.length; i += 2) {
-        const lat = line[i]
-        if (lat != null) lats.push(lat)
-      }
-      const isParallel = lats.length > 0 && new Set(lats).size === 1
-      if (isParallel) expect(Math.abs(lats[0]!)).toBeLessThan(90)
-    }
   })
 })
 

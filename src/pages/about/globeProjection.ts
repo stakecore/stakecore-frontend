@@ -88,36 +88,9 @@ export function dragRotation(
 }
 
 /**
- * Lat/lon mesh as a list of polylines, each a flat [lon, lat, lon, lat, ...].
- *
- * Meridians run pole to pole, parallels run all the way around; both are
- * emitted densely enough that the projected curve stays smooth without
- * per-segment subdivision at draw time.
- */
-export function graticule(stepDeg = 30, resolutionDeg = 5): number[][] {
-  const lines: number[][] = []
-
-  for (let lon = -180; lon < 180; lon += stepDeg) {
-    const line: number[] = []
-    for (let lat = -90; lat <= 90; lat += resolutionDeg) line.push(lon, lat)
-    lines.push(line)
-  }
-
-  // Skip the poles themselves — a parallel at ±90° is a single point.
-  for (let lat = -90 + stepDeg; lat < 90; lat += stepDeg) {
-    const line: number[] = []
-    for (let lon = -180; lon <= 180; lon += resolutionDeg) line.push(lon, lat)
-    lines.push(line)
-  }
-
-  return lines
-}
-
-/**
  * Sample a great-circle arc between two points as a flat [lon, lat, …]
- * polyline, in the same shape `graticule()` returns and `strokeLines`
- * consumes — so an arc can be drawn by the existing near/far machinery
- * with no special case.
+ * polyline — the shape `strokeLines` consumes, so an arc is drawn by the
+ * existing near/far machinery with no special case.
  *
  * The interpolation is a slerp on the unit sphere, not a lerp of the
  * lon/lat pair. Between two points at the same latitude those differ
