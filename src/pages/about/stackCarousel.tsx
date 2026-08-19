@@ -83,7 +83,11 @@ const PLATFORM_GROUPS: StackGroup[] = [
     ],
   },
   {
-    label: 'Assisted by',
+    // Named for the job, like every other group, rather than for the
+    // relationship ("Assisted by"). The boundary on that job — engineers
+    // approve anything that lands — is in the prose above the carousel,
+    // because a label cannot carry it.
+    label: 'Debugging & triage',
     items: [
       { name: 'Claude', slug: 'claude' },
     ],
@@ -250,7 +254,7 @@ const StackCarousel = () => (
     <Row
       groups={PLATFORM_GROUPS}
       speed={BOTTOM_SPEED}
-      label="Technology we run on: delivery, hosting and assistance"
+      label="Technology we run on: delivery, hosting and debugging"
     />
   </div>
 )
