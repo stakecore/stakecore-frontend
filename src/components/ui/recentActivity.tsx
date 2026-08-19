@@ -1,5 +1,6 @@
-import { memo, useEffect, useMemo, useRef } from "react"
+import { memo, useMemo, useRef } from "react"
 import { useAfterIdle } from "~/utils/useAfterIdle"
+import { useMarquee } from "~/utils/useMarquee"
 import { SpinnerCircular } from "spinners-react"
 import { type ApiResponseDto_PageStatsDto, PageActivityDto } from "~/backendApi"
 import { Formatter } from "~/utils/misc/formatter"
@@ -118,105 +119,9 @@ const RecentActivity = ({ data, isLoading }: {
   // during that empty render — lifting the cap before there is anything to cap.
   const showAllCards = useAfterIdle(itemCount > 0)
 
-  useEffect(() => {
-    if (itemCount === 0) return
-    const el = marqueeRef.current
-    if (!el) return
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-
-    const SPEED_PX_PER_SEC = 30
-    const PAUSE_MS = 1200
-    // Clamp per-frame dt so the marquee can't catapult forward when the
-    // browser resumes rAF after a long pause (backgrounded tab, window
-    // minimised, etc.). 100ms ≈ 3px at 30px/s — well below visible.
-    const MAX_DT_MS = 100
-    // Our own writes round-trip through scrollLeft within a device pixel;
-    // any larger divergence means the user scrolled natively (swipe momentum
-    // can outlast the interaction pause) and we adopt their position.
-    const EXTERNAL_SCROLL_PX = 1
-    let pauseUntil = 0
-    let hovering = false
-    let lastTs = performance.now()
-    let raf = 0
-    let running = false
-    // Scroll offsets snap to device pixels on write, and some engines round
-    // scrollLeft on read, so read-modify-writing sub-pixel steps (0.5px per
-    // 60Hz frame at this speed) drops the fraction and judders — or stalls
-    // outright. Accumulate the true position here and assign it.
-    let pos = el.scrollLeft
-    // Half the track width, re-measured on resize instead of read per frame:
-    // scrollWidth on a ~24k px-wide flex track right after a React commit is
-    // a forced layout in the middle of the animation.
-    let half = 0
-    const measure = () => { half = el.scrollWidth / 2 }
-
-    const markInteraction = () => { pauseUntil = performance.now() + PAUSE_MS }
-    const onPointerEnter = () => { hovering = true }
-    const onPointerLeave = () => { hovering = false }
-
-    el.addEventListener('pointerenter', onPointerEnter)
-    el.addEventListener('pointerleave', onPointerLeave)
-    el.addEventListener('wheel', markInteraction, { passive: true })
-    el.addEventListener('touchstart', markInteraction, { passive: true })
-    el.addEventListener('touchmove', markInteraction, { passive: true })
-
-    const tick = (ts: number) => {
-      const dt = Math.min(ts - lastTs, MAX_DT_MS)
-      lastTs = ts
-      const paused = hovering || ts < pauseUntil
-      if (!paused) {
-        const current = el.scrollLeft
-        if (Math.abs(current - pos) > EXTERNAL_SCROLL_PX) pos = current
-        pos += SPEED_PX_PER_SEC * (dt / 1000)
-        // Content is duplicated, so pos and pos - half look identical. Wrap
-        // only while auto-scrolling so we never yank scrollLeft mid-swipe.
-        if (half > 0) {
-          if (pos >= half) pos -= half
-          else if (pos < 0) pos += half
-        }
-        el.scrollLeft = pos
-      }
-      raf = requestAnimationFrame(tick)
-    }
-    const start = () => {
-      if (running) return
-      running = true
-      // Reset the clock so the first frame after (re)entering the viewport
-      // doesn't see a huge dt; the MAX_DT_MS clamp backs this up too.
-      lastTs = performance.now()
-      measure()
-      raf = requestAnimationFrame(tick)
-    }
-    const stop = () => {
-      running = false
-      cancelAnimationFrame(raf)
-    }
-
-    // Only run the loop while the marquee is on-screen — no point doing
-    // per-frame scrollLeft writes + scrollWidth reads when the user has
-    // scrolled it out of view.
-    const io = new IntersectionObserver(
-      ([entry]) => { if (entry?.isIntersecting) start(); else stop() },
-      { threshold: 0 }
-    )
-    io.observe(el)
-
-    // The track only changes width when cards are added/removed or the
-    // mobile breakpoint flips the card size — re-measure then, not per frame.
-    const ro = new ResizeObserver(measure)
-    if (el.firstElementChild) ro.observe(el.firstElementChild)
-
-    return () => {
-      stop()
-      io.disconnect()
-      ro.disconnect()
-      el.removeEventListener('pointerenter', onPointerEnter)
-      el.removeEventListener('pointerleave', onPointerLeave)
-      el.removeEventListener('wheel', markInteraction)
-      el.removeEventListener('touchstart', markInteraction)
-      el.removeEventListener('touchmove', markInteraction)
-    }
-  }, [itemCount])
+  // The scroll loop itself lives in useMarquee, shared with the About-page
+  // stack carousel. Every constant it carries was tuned here first.
+  useMarquee(marqueeRef, { enabled: itemCount > 0 })
 
   if (!items && isLoading) {
     return <div style={{ textAlign: 'center' }}>
