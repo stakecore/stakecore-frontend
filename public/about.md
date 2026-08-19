@@ -69,8 +69,9 @@ but nothing reaches the cluster without an engineer approving it.
 | Job | What we run |
 | --- | --- |
 | Orchestration and secrets | Nomad, Consul, Vault |
-| Networking and ingress | WireGuard, HAProxy, Traefik |
-| Observability | Prometheus, Grafana, Loki |
+| Data | PostgreSQL |
+| Networking and ingress | WireGuard, HAProxy, Traefik, Let's Encrypt |
+| Observability | Grafana, Prometheus, Loki, Alloy |
 | Delivery | Docker, GitHub Actions |
 | Hosting | OVH, Hetzner, GitHub Pages |
 | Alerting and triage | Telegram, Claude |

@@ -11,7 +11,7 @@ import './stackCarousel.scss'
 //
 //   • Only software we actually run. This sits under a heading that sells
 //     the cluster; a logo here is a claim about production, not a wish list.
-//   • The groups are the point. A flat row of fourteen logos says nothing —
+//   • The groups are the point. A flat row of nineteen logos says nothing —
 //     "HAProxy balances internally, Traefik publishes outward" is the
 //     information, and the group label is what carries it.
 
@@ -44,21 +44,40 @@ const RUNTIME_GROUPS: StackGroup[] = [
     ],
   },
   {
+    // Second, not last: state is part of what the cluster runs, and reads
+    // better beside the scheduler than tacked on after the observability
+    // stack. One item because one is what we run — the API and the indexers
+    // share this and nothing else stores anything.
+    label: 'Data',
+    items: [
+      { name: 'PostgreSQL', slug: 'postgresql' },
+    ],
+  },
+  {
     // Ordered outside-in, matching the prose above the carousel: between
-    // sites, then inside the cluster, then out to the public.
+    // sites, then inside the cluster, then out to the public — and last the
+    // certificates that public edge is served under.
     label: 'Networking & ingress',
     items: [
       { name: 'WireGuard', slug: 'wireguard' },
       { name: 'HAProxy' },
       { name: 'Traefik', slug: 'traefikproxy' },
+      // The one entry that is a service we consume rather than software we
+      // run: Traefik's ACME resolver issues these. GitHub Pages under Hosting
+      // is the same kind of entry.
+      { name: "Let's Encrypt", slug: 'letsencrypt' },
     ],
   },
   {
     label: 'Observability',
     items: [
-      { name: 'Prometheus', slug: 'prometheus' },
       { name: 'Grafana', slug: 'grafana' },
+      { name: 'Prometheus', slug: 'prometheus' },
       { name: 'Loki', slug: 'loki' },
+      // Last because it is the one that feeds Loki: a per-node shipper that
+      // tails every container's output. Without it the group names a log
+      // store nothing writes to.
+      { name: 'Alloy', slug: 'alloy' },
     ],
   },
 ]
@@ -169,9 +188,9 @@ const BOTTOM_SPEED = -21
 // A duplicated track only wraps seamlessly when one copy is at least as wide
 // as the viewport: scrollLeft stops at scrollWidth - clientWidth, so with two
 // copies of a narrower run the wrap point sits past the end of the scroll
-// range and can never be reached. These rows are short — eight items and six
-// — so at desktop widths two copies is exactly that failure. Count the copies
-// needed instead of assuming, and re-count on resize.
+// range and can never be reached. These rows are short — twelve items and
+// seven — so at desktop widths two copies is exactly that failure. Count the
+// copies needed instead of assuming, and re-count on resize.
 const MIN_COPIES = 2
 
 const useCopiesToFill = (ref: RefObject<HTMLElement | null>) => {

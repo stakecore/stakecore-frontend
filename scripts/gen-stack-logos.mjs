@@ -5,9 +5,9 @@
 //
 // Source is Simple Icons (CC0-1.0), which ships every brand as a single
 // 24×24 path plus its official hex. We inline the path data rather than
-// depend on the package or ship 12 separate SVG files: the whole set is
-// ~4KB of string, against 12 extra requests and a 3400-icon dependency for
-// the twelve we use. The logos themselves remain trademarks of their
+// depend on the package or ship 18 separate SVG files: the whole set is
+// ~26kB of string in a lazy route chunk, against 18 extra requests and a
+// 3400-icon dependency for the eighteen we use. The logos themselves remain trademarks of their
 // owners; naming the software you run is nominative use.
 //
 // A single path is also what makes the carousel's hover treatment work.
@@ -39,6 +39,10 @@ const SLUGS = [
   'prometheus',
   'grafana',
   'docker',
+  'postgresql',
+  // The certificate authority, not a piece of software we run: Traefik's ACME
+  // resolver issues the public certs from it, so it belongs with the ingress.
+  'letsencrypt',
   'wireguard',
   'githubactions',
   'ovh',
@@ -54,6 +58,17 @@ const SLUGS = [
 // still has to reduce to one flat-coloured path, or it cannot be tinted with
 // currentColor and does not belong in the row.
 const EXTRA = {
+  alloy: {
+    title: 'Alloy',
+    // Grafana orange, the same hex as Loki below: Alloy has no brand colour of
+    // its own, and the glyph draws itself in the house colour.
+    hex: '#FF671D',
+    // Simple Icons carries no `alloy` slug. This is Grafana's own 24x24
+    // navigation glyph, from the same set as the Loki mark below and found the
+    // same way (the SVGs linked off the product page) — one flat path on a
+    // 10%-opacity rounded-rect plate, which the <path> match skips.
+    url: 'https://a-us.storyblok.com/f/1022730/24x24/902703be3f/icon-nav-alloy.svg',
+  },
   loki: {
     title: 'Loki',
     hex: '#FF671D',
