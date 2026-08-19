@@ -41,12 +41,11 @@ past a risk committee.
 
 Small, robust, and decentralized.
 
-**Three providers, two continents.** The three Nomad server nodes holding
-cluster state sit in Beauharnois, Helsinki, and Nuremberg, so an outage
-confined to one facility or region costs us a single node, not the cluster.
-Worker nodes run from Roubaix, Frankfurt, and Warsaw, plus our own premises in
-Ljubljana — spreading the cluster across OVH, Hetzner, and hardware we host
-ourselves, so no single provider can take it down.
+**Three providers, two continents.** The three server nodes holding cluster
+state sit in Beauharnois, Helsinki, and Nuremberg, so an outage confined to one
+facility or region costs us a single node, not the cluster. Worker nodes run
+from Roubaix, Frankfurt, and Warsaw, plus our own premises in Ljubljana — three
+independent providers, so no single one can take the cluster down.
 
 **A purpose-built cluster, plenty of redundancy.** Three Nomad server nodes
 orchestrate the validators and FSP signers we run across Flare, Songbird, and
@@ -56,6 +55,20 @@ a health check, so another network's client — validating or not — is a job
 specification and a place to put it. Any worker node can host any workload —
 failure of a single node is recovered automatically by re-scheduling somewhere
 else in the cluster.
+
+**What the cluster runs on.** HAProxy balances traffic inside the cluster;
+Traefik publishes the services and sites that face outward. Claude assists the
+on-call engineers with logs, alerts, and config drafts — nothing reaches the
+cluster without an engineer approving it.
+
+| Job | What we run |
+| --- | --- |
+| Orchestration and secrets | Nomad, Consul, Vault |
+| Load balancing and ingress | HAProxy, Traefik |
+| Observability | Prometheus, Grafana, Loki |
+| Delivery | Docker, WireGuard, GitHub Actions |
+| Hosting | OVH, Hetzner |
+| Assisted by | Claude |
 
 ## Why StakeCore
 

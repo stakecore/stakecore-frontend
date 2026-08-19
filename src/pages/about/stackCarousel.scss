@@ -1,0 +1,156 @@
+@use '../../assets/css/tokens' as t;
+
+// Tech-stack marquee, co-located with stackCarousel.tsx.
+
+.stack-carousel-mask {
+    // The fade lives on this non-scrolling wrapper, not on the scroller
+    // itself — a mask directly on a scroll container can force the browser
+    // off composited scrolling and repaint the whole track every 1px step.
+    // Same reasoning as .activity-marquee-mask.
+    position: relative;
+    margin-top: 40px;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.stack-carousel {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+
+    // The scroller is focusable (it holds no links, so this is the only way
+    // to scroll it from a keyboard). Show that focus rather than suppressing
+    // it, but keep it off the pointer path.
+    &:focus-visible {
+        outline: 2px solid var(--border-emphasis);
+        outline-offset: 4px;
+        border-radius: t.$radius-md;
+    }
+}
+
+.stack-carousel::-webkit-scrollbar { display: none; }
+
+.stack-carousel-track {
+    display: flex;
+    width: max-content;
+}
+
+.stack-carousel-half {
+    display: flex;
+    align-items: stretch;
+}
+
+.stack-group {
+    display: flex;
+    flex-direction: column;
+    gap: t.$space-2;
+    padding: 0 t.$space-5;
+    border-left: 1px solid var(--border-faint);
+
+    // The halves butt together, so the first group of each would otherwise
+    // show a divider against nothing at the seam. Every group keeps its
+    // left rule; the mask fades the leading one out anyway.
+}
+
+.stack-group-label {
+    font-family: var(--font-sans);
+    font-size: t.$text-xs;
+    font-weight: t.$weight-medium;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--main-color);
+    white-space: nowrap;
+    margin: 0;
+}
+
+.stack-group-items {
+    display: flex;
+    align-items: center;
+    gap: t.$space-5;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    flex: 1;
+}
+
+.stack-item {
+    display: flex;
+    align-items: center;
+    gap: t.$space-2;
+    white-space: nowrap;
+    // Muted at rest so thirteen brands read as one row rather than thirteen
+    // competing marks. Colour arrives on hover, below.
+    color: var(--text-dim);
+    transition: color 160ms ease;
+}
+
+.stack-item-glyph {
+    flex: none;
+    // fill="currentColor" on the path, so the whole tint is this one property.
+    color: inherit;
+}
+
+.stack-item-name {
+    font-family: var(--font-sans);
+    font-size: t.$text-sm;
+    font-weight: t.$weight-medium;
+    color: var(--heading-color);
+}
+
+// Brands with no usable mark are set as type. Mono + tracking reads as a
+// deliberate wordmark rather than a logo that failed to load.
+.stack-item--wordmark .stack-item-name {
+    font-family: t.$font-mono;
+    letter-spacing: 0.04em;
+}
+
+// Hover reveals the brand's own colour. --stack-brand is set inline per item
+// from the generated hex; items without a mark simply have no rule to apply.
+//
+// The white mix is a legibility floor, not a style choice: this page sits on
+// #000, and OVH (#123F6D) or WireGuard (#88171A) at full strength are close
+// to invisible against it. 18% lifts those into view while leaving already
+// bright marks — Vault's #FFEC6E, Nomad's #00CA8E — essentially untouched.
+// The tint is decorative either way: the name beside it never changes colour.
+.stack-item:hover .stack-item-glyph,
+.stack-carousel:focus-within .stack-item:hover .stack-item-glyph {
+    color: color-mix(in srgb, var(--stack-brand) 82%, #fff);
+}
+
+@include t.down(md) {
+    .stack-group { padding: 0 t.$space-4; }
+    .stack-group-items { gap: t.$space-4; }
+}
+
+// Reduced motion: useMarquee never starts a loop, so a scroller would sit
+// frozen with most of the roster parked off-screen and no auto-advance to
+// bring it round. Unwrap it into a static block instead — everything visible,
+// nothing moving, no horizontal scrolling required to read it.
+@media (prefers-reduced-motion: reduce) {
+    .stack-carousel-mask {
+        -webkit-mask-image: none;
+        mask-image: none;
+    }
+
+    .stack-carousel { overflow-x: visible; }
+
+    .stack-carousel-track { width: auto; }
+
+    .stack-carousel-half {
+        flex-wrap: wrap;
+        gap: t.$space-4 0;
+    }
+
+    // The duplicate half exists only to give the marquee a seam to wrap at.
+    // With no motion it is pure repetition, so drop it from the layout too —
+    // it is already aria-hidden.
+    .stack-carousel-half[aria-hidden='true'] { display: none; }
+
+    .stack-group {
+        // First-in-row groups would show a rule against the container edge
+        // once the halves wrap; the fade mask is gone here to hide it.
+        border-left: none;
+        border-right: 1px solid var(--border-faint);
+        padding-left: 0;
+    }
+}

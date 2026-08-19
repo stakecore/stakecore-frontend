@@ -124,6 +124,15 @@
     max-width: 560px;
 }
 
+// Third row of the infrastructure section. Unlike .about-split this never
+// becomes two columns — the marquee wants the container's full width, and
+// the intro above it keeps .about-split-text's 560px measure.
+.about-stack {
+    padding: 24px 0;
+
+    @include t.up(lg) { padding: 32px 0; }
+}
+
 .about-split-visual {
     display: flex;
     justify-content: center;

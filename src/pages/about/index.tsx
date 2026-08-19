@@ -10,6 +10,7 @@ import {
 } from '@remixicon/react'
 import InfraConstellation from './infraConstellation'
 import ServerGlobe from './serverGlobe'
+import StackCarousel from './stackCarousel'
 import './about.scss'
 
 
@@ -148,23 +149,17 @@ const Stack = () => (
             <div className="about-split about-split--visual-first">
                 <div className="about-split-text">
                     <h3 className="about-split-title">Three providers, two continents</h3>
+                    {/* The roster this paragraph used to recite — Nomad, OVH,
+                        Hetzner — is now the carousel below, so this keeps only
+                        the argument the logos can't make: where the nodes are,
+                        and why that spread matters. */}
                     <p className="about-split-body">
-                        The three{' '}
-                        <a
-                            className="about-inline-link"
-                            href="https://developer.hashicorp.com/nomad/docs"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            Nomad
-                        </a>{' '}
-                        server nodes holding cluster state sit in Beauharnois,
+                        The three server nodes holding cluster state sit in Beauharnois,
                         Helsinki, and Nuremberg, so an outage confined to one facility or
                         region costs us a single node, not the cluster. Worker nodes run
                         from Roubaix, Frankfurt, and Warsaw, plus our own premises in
-                        Ljubljana — spreading the cluster across OVH, Hetzner, and
-                        hardware we host ourselves, so no single provider can take it
-                        down.
+                        Ljubljana — three independent providers, so no single one can
+                        take the cluster down.
                     </p>
                 </div>
                 <div className="about-split-visual">
@@ -176,7 +171,16 @@ const Stack = () => (
                 <div className="about-split-text">
                     <h3 className="about-split-title">A purpose-built cluster, plenty of redundancy</h3>
                     <p className="about-split-body">
-                        Three Nomad server nodes orchestrate the validators and FSP
+                        Three{' '}
+                        <a
+                            className="about-inline-link"
+                            href="https://developer.hashicorp.com/nomad/docs"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Nomad
+                        </a>{' '}
+                        server nodes orchestrate the validators and FSP
                         signers we run across Flare, Songbird, and Avalanche. Nothing in
                         that arrangement is particular to those chains: to the scheduler
                         a node is a containerised job with a data volume, a set of ports,
@@ -190,6 +194,22 @@ const Stack = () => (
                 <div className="about-split-visual">
                     <InfraConstellation />
                 </div>
+            </div>
+
+            <div className="about-stack">
+                <div className="about-split-text">
+                    <h3 className="about-split-title">What the cluster runs on</h3>
+                    <p className="about-split-body">
+                        HAProxy balances traffic inside the cluster; Traefik publishes
+                        the services and sites that face outward. Claude assists the
+                        on-call engineers with logs, alerts, and config drafts —{' '}
+                        <span className="about-mark">
+                            nothing reaches the cluster without an engineer approving it
+                        </span>
+                        .
+                    </p>
+                </div>
+                <StackCarousel />
             </div>
         </div>
     </section>
