@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { project, dragRotation, greatCircleArc } from './globeProjection'
+import { project, graticule, dragRotation } from './globeProjection'
 
 const R = 100
 
@@ -140,63 +140,35 @@ describe('dragRotation', () => {
   })
 })
 
-describe('greatCircleArc', () => {
-  const lonsLats = (arc: number[]) => {
-    const pts: [number, number][] = []
-    for (let i = 0; i < arc.length; i += 2) {
-      const lon = arc[i]
-      const lat = arc[i + 1]
-      if (lon == null || lat == null) break
-      pts.push([lon, lat])
+describe('graticule', () => {
+  it('emits a meridian per step plus the parallels between the poles', () => {
+    const lines = graticule(30, 5)
+    // 12 meridians (360/30) + 5 parallels (-60..60 by 30)
+    expect(lines).toHaveLength(17)
+  })
+
+  it('emits flat lon/lat pairs within valid ranges', () => {
+    for (const line of graticule()) {
+      expect(line.length % 2).toBe(0)
+      expect(line.length).toBeGreaterThanOrEqual(4)
+      for (let i = 0; i < line.length; i += 2) {
+        expect(line[i]).toBeGreaterThanOrEqual(-180)
+        expect(line[i]).toBeLessThanOrEqual(180)
+        expect(line[i + 1]).toBeGreaterThanOrEqual(-90)
+        expect(line[i + 1]).toBeLessThanOrEqual(90)
+      }
     }
-    return pts
-  }
-
-  it('starts and ends on the two endpoints', () => {
-    const pts = lonsLats(greatCircleArc(-73.87, 45.31, 24.94, 60.17, 16))
-    expect(pts[0]?.[0]).toBeCloseTo(-73.87, 6)
-    expect(pts[0]?.[1]).toBeCloseTo(45.31, 6)
-    expect(pts.at(-1)?.[0]).toBeCloseTo(24.94, 6)
-    expect(pts.at(-1)?.[1]).toBeCloseTo(60.17, 6)
   })
 
-  it('emits the requested number of segments', () => {
-    expect(lonsLats(greatCircleArc(0, 0, 90, 0, 8))).toHaveLength(9)
-  })
-
-  // Along the equator the great circle IS the parallel, so latitude must
-  // stay at zero and longitude advance evenly — the easiest case to get
-  // wrong by interpolating lon/lat linearly instead of on the sphere.
-  it('keeps an equatorial arc on the equator', () => {
-    const pts = lonsLats(greatCircleArc(0, 0, 80, 0, 8))
-    for (const [lon, lat] of pts) {
-      expect(lat).toBeCloseTo(0, 9)
-      expect(Number.isFinite(lon)).toBe(true)
-    }
-    expect(pts[4]?.[0]).toBeCloseTo(40, 6)
-  })
-
-  // A meridian arc keeps longitude fixed while latitude sweeps.
-  it('keeps a north-south arc on one meridian', () => {
-    const pts = lonsLats(greatCircleArc(11.08, 20, 11.08, 60, 8))
-    for (const [lon] of pts) expect(lon).toBeCloseTo(11.08, 6)
-    expect(pts[4]?.[1]).toBeCloseTo(40, 6)
-  })
-
-  // The whole reason for slerping rather than lerping: between two points
-  // at the same high latitude the great circle bulges poleward, and a
-  // linear interpolation would draw a straight parallel instead.
-  it('bows poleward between two points at the same high latitude', () => {
-    const pts = lonsLats(greatCircleArc(-73.87, 50, 24.94, 50, 16))
-    const mid = pts[8]
-    expect(mid?.[1]).toBeGreaterThan(50)
-  })
-
-  it('handles coincident endpoints without producing NaN', () => {
-    const pts = lonsLats(greatCircleArc(11.08, 49.45, 11.08, 49.45, 8))
-    for (const [lon, lat] of pts) {
-      expect(Number.isNaN(lon)).toBe(false)
-      expect(Number.isNaN(lat)).toBe(false)
+  it('omits degenerate parallels at the poles', () => {
+    for (const line of graticule()) {
+      const lats: number[] = []
+      for (let i = 1; i < line.length; i += 2) {
+        const lat = line[i]
+        if (lat != null) lats.push(lat)
+      }
+      const isParallel = lats.length > 0 && new Set(lats).size === 1
+      if (isParallel) expect(Math.abs(lats[0]!)).toBeLessThan(90)
     }
   })
 })

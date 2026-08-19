@@ -88,57 +88,27 @@ export function dragRotation(
 }
 
 /**
- * Sample a great-circle arc between two points as a flat [lon, lat, …]
- * polyline — the shape `strokeLines` consumes, so an arc is drawn by the
- * existing near/far machinery with no special case.
+ * Lat/lon mesh as a list of polylines, each a flat [lon, lat, lon, lat, ...].
  *
- * The interpolation is a slerp on the unit sphere, not a lerp of the
- * lon/lat pair. Between two points at the same latitude those differ
- * visibly: the true great circle bows toward the pole, which is exactly
- * the shape that makes a transatlantic link read as a link rather than a
- * ruled line. A lerp would draw the parallel instead.
+ * Meridians run pole to pole, parallels run all the way around; both are
+ * emitted densely enough that the projected curve stays smooth without
+ * per-segment subdivision at draw time.
  */
-export function greatCircleArc(
-  lon1: number,
-  lat1: number,
-  lon2: number,
-  lat2: number,
-  steps = 24,
-): number[] {
-  const toVec = (lonDeg: number, latDeg: number) => {
-    const lon = lonDeg * DEG
-    const lat = latDeg * DEG
-    const cosLat = Math.cos(lat)
-    return [cosLat * Math.cos(lon), cosLat * Math.sin(lon), Math.sin(lat)] as const
+export function graticule(stepDeg = 30, resolutionDeg = 5): number[][] {
+  const lines: number[][] = []
+
+  for (let lon = -180; lon < 180; lon += stepDeg) {
+    const line: number[] = []
+    for (let lat = -90; lat <= 90; lat += resolutionDeg) line.push(lon, lat)
+    lines.push(line)
   }
 
-  const a = toVec(lon1, lat1)
-  const b = toVec(lon2, lat2)
-  const dot = Math.min(1, Math.max(-1, a[0] * b[0] + a[1] * b[1] + a[2] * b[2]))
-  const omega = Math.acos(dot)
-  const sinOmega = Math.sin(omega)
-
-  const out: number[] = []
-  for (let i = 0; i <= steps; i++) {
-    const t = i / steps
-    let x: number
-    let y: number
-    let z: number
-    // Coincident (or near-coincident) endpoints make sinOmega vanish and
-    // the slerp weights blow up; fall back to a plain lerp, which is exact
-    // in that limit anyway.
-    if (sinOmega < 1e-9) {
-      x = a[0] + (b[0] - a[0]) * t
-      y = a[1] + (b[1] - a[1]) * t
-      z = a[2] + (b[2] - a[2]) * t
-    } else {
-      const wa = Math.sin((1 - t) * omega) / sinOmega
-      const wb = Math.sin(t * omega) / sinOmega
-      x = a[0] * wa + b[0] * wb
-      y = a[1] * wa + b[1] * wb
-      z = a[2] * wa + b[2] * wb
-    }
-    out.push(Math.atan2(y, x) / DEG, Math.asin(Math.min(1, Math.max(-1, z))) / DEG)
+  // Skip the poles themselves — a parallel at ±90° is a single point.
+  for (let lat = -90 + stepDeg; lat < 90; lat += stepDeg) {
+    const line: number[] = []
+    for (let lon = -180; lon <= 180; lon += resolutionDeg) line.push(lon, lat)
+    lines.push(line)
   }
-  return out
+
+  return lines
 }

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { COASTLINE_RINGS } from './coastlines'
-import { project, dragRotation, greatCircleArc } from './globeProjection'
+import { project, graticule, dragRotation } from './globeProjection'
 import './serverGlobe.scss'
 
 // Spinning globe showing where the Nomad cluster actually runs.
@@ -13,7 +13,7 @@ import './serverGlobe.scss'
 //
 // The footprint is lopsided — five of six are European — so a globe that
 // hid its far side would sit empty for roughly 40% of every revolution.
-// Instead the far side draws faintly: coastlines, links and markers all
+// Instead the far side draws faintly: coastlines, graticule and nodes all
 // remain visible through the sphere, which reads as translucent and keeps
 // something on screen at every angle.
 //
@@ -34,6 +34,8 @@ const GLOBE_RADIUS_RATIO = 0.42 // leaves room for halos at the limb
 // live values are read from CSS at mount so the two stay in step.
 const FALLBACK_SERVER_COLOR = '#7fb88f'
 const FALLBACK_CLIENT_COLOR = '#ffffff'
+
+const GRATICULE_LINES = graticule()
 
 interface Node {
   city: string
@@ -101,14 +103,6 @@ const PROVIDER_REGIONS: readonly Region[] = [
   { city: 'Helsinki', lat: 60.17, lon: 24.94 },
   { city: 'Ashburn', lat: 39.04, lon: -77.49 },
 ]
-
-// The private network joining the nodes — every pair, because that is what
-// a WireGuard mesh is, and drawing a subset would imply a hub-and-spoke
-// topology we do not run. Sampled as great circles so the transatlantic
-// links bow the way they actually do rather than cutting straight across.
-const MESH_LINES: number[][] = NODES.flatMap((a, i) =>
-  NODES.slice(i + 1).map(b => greatCircleArc(a.lon, a.lat, b.lon, b.lat, 24)),
-)
 
 const ARIA_LABEL =
   'Globe showing StakeCore node locations. Server nodes in ' +
@@ -259,20 +253,15 @@ function draw(
 
   // Far face first, so the near face paints over it.
   ctx.lineWidth = 1
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)'
+  strokeLines(ctx, GRATICULE_LINES, cx, cy, radius, centreLon, centreLat, false)
   ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)'
   strokeLines(ctx, COASTLINE_RINGS, cx, cy, radius, centreLon, centreLat, false)
-  // Mesh under the markers on both faces, so a link never draws over the
-  // node it terminates at. Alpha via globalAlpha rather than a colour with
-  // one baked in: serverColor is whatever --success resolves to, and that
-  // could be hex, rgb() or a colour space this file has no business
-  // parsing.
-  ctx.strokeStyle = serverColor
-  ctx.globalAlpha = 0.09
-  strokeLines(ctx, MESH_LINES, cx, cy, radius, centreLon, centreLat, false)
-  ctx.globalAlpha = 1
   drawRegions(ctx, cx, cy, radius, centreLon, centreLat, false)
   drawNodes(ctx, cx, cy, radius, centreLon, centreLat, false, serverColor, clientColor)
 
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)'
+  strokeLines(ctx, GRATICULE_LINES, cx, cy, radius, centreLon, centreLat, true)
   ctx.strokeStyle = 'rgba(255, 255, 255, 0.34)'
   strokeLines(ctx, COASTLINE_RINGS, cx, cy, radius, centreLon, centreLat, true)
 
@@ -282,10 +271,6 @@ function draw(
   ctx.arc(cx, cy, radius, 0, Math.PI * 2)
   ctx.stroke()
 
-  ctx.strokeStyle = serverColor
-  ctx.globalAlpha = 0.26
-  strokeLines(ctx, MESH_LINES, cx, cy, radius, centreLon, centreLat, true)
-  ctx.globalAlpha = 1
   drawRegions(ctx, cx, cy, radius, centreLon, centreLat, true)
   drawNodes(ctx, cx, cy, radius, centreLon, centreLat, true, serverColor, clientColor)
 }
