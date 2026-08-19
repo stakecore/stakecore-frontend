@@ -33,6 +33,12 @@ dist-ssr
 *.env
 .claude/settings.local.json
 
+# Harness-created git worktrees (EnterWorktree). Each one is a full checkout
+# of the repo, so leaving this untracked means a stray `git add -A` on the
+# branch you're back on commits a second copy of the tree into it. The
+# branches the worktrees sit on are ordinary refs and stay tracked as normal.
+.claude/worktrees/
+
 # Playwright
 /test-results/
 /playwright-report/
