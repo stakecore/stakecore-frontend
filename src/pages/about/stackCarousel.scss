@@ -2,13 +2,22 @@
 
 // Tech-stack marquee, co-located with stackCarousel.tsx.
 
+// Two rows, scrolling opposite ways. The gap is deliberately tight: the pair
+// should read as one block of counter-moving type, not two separate marquees
+// that happen to be stacked.
+.stack-carousel-rows {
+    display: flex;
+    flex-direction: column;
+    gap: t.$space-3;
+    margin-top: 40px;
+}
+
 .stack-carousel-mask {
     // The fade lives on this non-scrolling wrapper, not on the scroller
     // itself — a mask directly on a scroll container can force the browser
     // off composited scrolling and repaint the whole track every 1px step.
     // Same reasoning as .activity-marquee-mask.
     position: relative;
-    margin-top: 40px;
     -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
     mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
 }
