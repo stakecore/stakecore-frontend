@@ -1,5 +1,9 @@
-import { test, expect, type Page, type TestInfo } from '@playwright/test'
+import type { Page, TestInfo } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
+// Not @playwright/test: without the CORS shim in this fixture every data
+// route renders ServerError, and these scans would cover the error panel
+// while claiming to cover the loaded page.
+import { test, expect } from './fixtures/backend'
 import { ROUTES, NOT_FOUND_PATH } from './fixtures/routes'
 import { injectMockWallet, MOCK_WALLET_NAME, PICKER_MOUNT_TIMEOUT } from './fixtures/wallet'
 

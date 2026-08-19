@@ -222,6 +222,20 @@ as intended.
   values. `e2e/fixtures/console.ts` fails a test on any unallowlisted console
   error; `e2e/fixtures/wallet.ts` installs a fake EIP-6963 provider via
   `addInitScript`.
+- **The backend allows only the production origin.** It answers every request
+  with a fixed `Access-Control-Allow-Origin: https://stakecore.org` — the same
+  value whatever `Origin` is sent, or none. Preview serves from
+  `https://localhost:4173`, so unaided, every SWR call is blocked, every data
+  route renders ServerError, and the console fills with CORS errors.
+  `e2e/fixtures/backend.ts` refetches each backend request via `route.fetch()`
+  (outside the page, where CORS does not apply) and refulfills it with just
+  that header patched, so the specs still hit the real backend and still fail
+  on an outage or a schema change. Every spec asserting rendered data imports
+  `test` from there rather than from `console.ts` or `@playwright/test`. Do not
+  instead allowlist the CORS text in `console.ts`: the console errors are the
+  quieter half, and the routes would still be rendering the error panel. The
+  real alternative is server-side — allowlist the preview origin and delete the
+  fixture.
 - CI runs them in `.github/workflows/e2e.yml`, separate from the deploy
   workflow so a backend outage cannot block a Pages publish.
 

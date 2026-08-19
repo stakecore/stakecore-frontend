@@ -1,4 +1,4 @@
-import { test, expect } from './fixtures/console'
+import { test, expect } from './fixtures/backend'
 import { ROUTES, NOT_FOUND_PATH } from './fixtures/routes'
 
 for (const { path, heading } of ROUTES) {

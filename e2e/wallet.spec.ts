@@ -1,4 +1,4 @@
-import { test, expect } from './fixtures/console'
+import { test, expect } from './fixtures/backend'
 import {
   injectMockWallet,
   walletCalls,
