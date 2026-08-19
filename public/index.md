@@ -1,8 +1,8 @@
 ---
 title: StakeCore
-description: Validator and protocol-signing infrastructure for the Flare, Songbird, and Avalanche networks, with non-custodial delegation and on-chain reporting.
+description: Blockchain node infrastructure, today running validators and protocol signing for the Flare, Songbird, and Avalanche networks, with non-custodial delegation and on-chain reporting.
 url: https://stakecore.org/index.md
-dateModified: 2026-08-18
+dateModified: 2026-08-19
 ---
 
 # StakeCore
@@ -11,10 +11,12 @@ Validator infrastructure for Flare, Songbird, and Avalanche.
 
 Human URL: <https://stakecore.org/>
 
-StakeCore runs validator and core protocol-signing infrastructure across three
-networks. Delegating to StakeCore is non-custodial: tokens stay in the holder's
-wallet, nothing is bridged or wrapped, and every figure published on the site
-is derived from on-chain state.
+StakeCore runs blockchain node infrastructure — validator and core
+protocol-signing duty across three networks today, on a general-purpose cluster
+that is not tied to those chains or to validating roles (see
+[/about.md](/about.md)). Delegating to StakeCore is non-custodial: tokens stay
+in the holder's wallet, nothing is bridged or wrapped, and every figure
+published on the site is derived from on-chain state.
 
 ## Live figures
 
@@ -32,7 +34,8 @@ curl -s https://backend.stakecore.org/api/page/info
 ## Protocols
 
 Validator and protocol-signing services on Flare, Avalanche, and the Songbird
-canary network. Each protocol sets its own rules and reward structure.
+canary network — the networks live on the cluster today. Each protocol sets its
+own rules and reward structure.
 
 | Protocol | Network | Mirror |
 | --- | --- | --- |

@@ -1,11 +1,18 @@
 # StakeCore
 
-> StakeCore runs validator and core protocol-signing infrastructure for the
-> Flare, Songbird, and Avalanche networks. Delegation is non-custodial: tokens
-> never leave the holder's wallet, and every published figure is on-chain.
+> StakeCore runs blockchain node infrastructure. Validator duty and core
+> protocol signing on the Flare, Songbird, and Avalanche networks are what it
+> carries today; the cluster is general-purpose and not tied to those chains or
+> to validating roles. Delegation is non-custodial: tokens never leave the
+> holder's wallet, and every published figure is on-chain.
 
 StakeCore operates a self-hosted, geographically distributed Nomad cluster
-spread across three infrastructure providers in two continents. The website at
+spread across three infrastructure providers in two continents. Workloads are
+containerised jobs, so any network's client — validator, protocol signer, RPC
+or archive node, indexer, relayer, attestation or oracle daemon — is a job
+specification rather than a new build, and any worker node can host any of
+them. The three networks listed below are the ones live today, not the limit of
+what the cluster runs. The website at
 https://stakecore.org is a client-rendered single-page app on a hash router, so
 the markdown files below — not the HTML — are the readable surface for anything
 that does not execute JavaScript. Live figures on the protocol pages come from
@@ -15,7 +22,7 @@ pages rather than freezing numbers that change every 10 to 30 seconds.
 ## Pages
 
 - [StakeCore](/index.md): Delegation totals, delegator counts, and recent on-chain activity across all three networks.
-- [About](/about.md): Who StakeCore serves, how the infrastructure is built, and why delegation carries a risk profile close to holding.
+- [About](/about.md): Who StakeCore serves, how the infrastructure is built, why it is not tied to any particular chain or node role, and why delegation carries a risk profile close to holding.
 - [Contact](/contact.md): How to reach the team, including the Telegram channel and the operating company.
 
 ## Protocols

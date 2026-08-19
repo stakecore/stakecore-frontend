@@ -36,17 +36,22 @@ const Mission = () => (
                     Your stake, our engine
                 </h1>
                 <p className="about-header-body">
-                    StakeCore runs validator and other core protocol-signing
-                    infrastructure — a
-                    redundant cluster we build, orchestrate, and monitor ourselves, today
-                    serving the Flare, Avalanche, and Songbird networks. From individual
-                    holders to protocols, custodians, and treasuries, anyone can delegate
-                    or stake their native tokens with us, earning rewards with a{' '}
+                    StakeCore runs blockchain node infrastructure — a redundant
+                    cluster we build, orchestrate, and monitor ourselves. Validator
+                    duty and core protocol signing on Flare, Avalanche, and Songbird
+                    are what it carries today, but nothing about it is specific to
+                    those three: RPC and archive nodes, indexers, relayers, and
+                    attestation or oracle daemons are the same shape of work, and{' '}
+                    <span className="about-mark">
+                        any network is a candidate
+                    </span>
+                    . From individual holders to protocols, custodians, and
+                    treasuries, anyone can delegate or stake their native tokens with
+                    us, earning rewards with a{' '}
                     <span className="about-mark">
                         risk profile close to that of simply holding the asset
                     </span>
-                    . New networks are welcome: on a cluster like ours, taking on a chain
-                    is a scheduling change, not a rebuild.
+                    .
                 </p>
             </header>
         </div>
@@ -91,8 +96,8 @@ const valueProps = [
     },
     {
         icon: <RiStackLine size={28} />,
-        title: 'One operator, every chain',
-        body: 'Whatever you hold, the same team and the same cluster stand behind it — validator duty and protocol signing alike. Picking up another network doesn\'t mean finding someone new to trust.',
+        title: 'One operator, any network',
+        body: 'The same team and the same cluster stand behind every workload we run — validator duty, protocol signing, RPC and archive nodes, indexers, relayers. Whatever you hold, picking up another network doesn\'t mean finding someone new to trust.',
     },
     {
         icon: <RiUserVoiceLine size={28} />,
@@ -171,10 +176,15 @@ const Stack = () => (
                 <div className="about-split-text">
                     <h3 className="about-split-title">A purpose-built cluster, plenty of redundancy</h3>
                     <p className="about-split-body">
-                        Three Nomad server nodes orchestrate the validators and FSP signers
-                        we run across Flare, Songbird, and Avalanche. Any worker node can
-                        host any workload — failure of a single node is recovered
-                        automatically by re-scheduling somewhere else in the cluster.
+                        Three Nomad server nodes orchestrate the validators and FSP
+                        signers we run across Flare, Songbird, and Avalanche. Nothing in
+                        that arrangement is particular to those chains: to the scheduler
+                        a node is a containerised job with a data volume, a set of ports,
+                        and a health check, so another network's client — validating or
+                        not — is a job specification and a place to put it. Any worker
+                        node can host any workload — failure of a single node is
+                        recovered automatically by re-scheduling somewhere else in the
+                        cluster.
                     </p>
                 </div>
                 <div className="about-split-visual">
