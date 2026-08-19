@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { COASTLINE_RINGS } from './coastlines'
-import { project, graticule, dragRotation } from './globeProjection'
+import { project, graticule, dragRotation, greatCircleArc } from './globeProjection'
 import './serverGlobe.scss'
 
 // Spinning globe showing where the Nomad cluster actually runs.
@@ -60,12 +60,65 @@ export const NODES: readonly Node[] = [
 const serverNodes = NODES.filter(n => n.role === 'server')
 const workerNodes = NODES.filter(n => n.role === 'worker')
 
+// Every datacenter region OVHcloud and Hetzner publish, which is the set a
+// workload could be scheduled into without changing anything but a job
+// specification — the claim the section next to this already makes.
+//
+// These are THEIR sites, not ours. Seven of them happen to hold a node
+// today (those draw over the top as real nodes); the rest are capacity,
+// and the legend says so. Nothing here should ever be read as somewhere
+// StakeCore runs — if that distinction ever blurs in the copy or the
+// styling, delete the layer rather than let the globe overstate the
+// footprint.
+//
+// Sources, both checked August 2026:
+//   https://www.ovhcloud.com/en/datacenter/
+//   https://www.hetzner.com/unternehmen/rechenzentrum/
+interface Region {
+  city: string
+  lat: number
+  lon: number
+}
+
+const PROVIDER_REGIONS: readonly Region[] = [
+  // OVHcloud
+  { city: 'Sydney', lat: -33.87, lon: 151.21 },
+  { city: 'Beauharnois', lat: 45.31, lon: -73.87 },
+  { city: 'Toronto', lat: 43.65, lon: -79.38 },
+  { city: 'Gravelines', lat: 50.99, lon: 2.13 },
+  { city: 'Paris', lat: 48.86, lon: 2.35 },
+  { city: 'Roubaix', lat: 50.69, lon: 3.18 },
+  { city: 'Strasbourg', lat: 48.58, lon: 7.75 },
+  { city: 'Frankfurt', lat: 50.11, lon: 8.68 },
+  { city: 'Mumbai', lat: 19.08, lon: 72.88 },
+  { city: 'Milan', lat: 45.46, lon: 9.19 },
+  { city: 'Warsaw', lat: 52.23, lon: 21.01 },
+  { city: 'Singapore', lat: 1.35, lon: 103.82 },
+  { city: 'London', lat: 51.51, lon: -0.13 },
+  { city: 'Hillsboro', lat: 45.52, lon: -122.99 },
+  { city: 'Vint Hill', lat: 38.72, lon: -77.72 },
+  // Hetzner (Hillsboro and Singapore are already listed above)
+  { city: 'Nuremberg', lat: 49.45, lon: 11.08 },
+  { city: 'Falkenstein', lat: 50.48, lon: 12.37 },
+  { city: 'Helsinki', lat: 60.17, lon: 24.94 },
+  { city: 'Ashburn', lat: 39.04, lon: -77.49 },
+]
+
+// The private network joining the nodes — every pair, because that is what
+// a WireGuard mesh is, and drawing a subset would imply a hub-and-spoke
+// topology we do not run. Sampled as great circles so the transatlantic
+// links bow the way they actually do rather than cutting straight across.
+const MESH_LINES: number[][] = NODES.flatMap((a, i) =>
+  NODES.slice(i + 1).map(b => greatCircleArc(a.lon, a.lat, b.lon, b.lat, 24)),
+)
+
 const ARIA_LABEL =
   'Globe showing StakeCore node locations. Server nodes in ' +
   serverNodes.map(n => n.city).join(', ') +
   '. Worker nodes in ' +
   workerNodes.map(n => n.city).join(', ') +
-  '.'
+  `. Also marked are ${PROVIDER_REGIONS.length} OVHcloud and Hetzner ` +
+  'datacenter regions the cluster can be scheduled into.'
 
 /**
  * Stroke a set of flat [lon, lat, ...] polylines, keeping only the points
@@ -105,6 +158,42 @@ function strokeLines(
     }
   }
   ctx.stroke()
+}
+
+// Provider capacity: deliberately the quietest thing on the sphere. Small,
+// unhaloed and dim, so it reads as texture behind the cluster rather than
+// as more nodes. The near/far split matches everything else.
+function drawRegions(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  radius: number,
+  centreLon: number,
+  centreLat: number,
+  nearFace: boolean,
+) {
+  ctx.fillStyle = '#ffffff'
+  for (const region of PROVIDER_REGIONS) {
+    const p = project(region.lon, region.lat, centreLon, centreLat, radius)
+    if (p.visible !== nearFace) continue
+    const x = cx + p.x
+    const y = cy + p.y
+
+    // A halo, as the nodes have, but a fraction of the strength. Without it
+    // a 2px dot at this alpha disappears against the coastlines, which was
+    // the first attempt: the Asian and Australian regions were invisible on
+    // the very half of the rotation they exist to fill.
+    ctx.globalAlpha = nearFace ? 0.07 : 0.03
+    ctx.beginPath()
+    ctx.arc(x, y, nearFace ? 6 : 4.5, 0, Math.PI * 2)
+    ctx.fill()
+
+    ctx.globalAlpha = nearFace ? 0.5 : 0.18
+    ctx.beginPath()
+    ctx.arc(x, y, nearFace ? 2.2 : 1.7, 0, Math.PI * 2)
+    ctx.fill()
+  }
+  ctx.globalAlpha = 1
 }
 
 function drawNodes(
@@ -175,6 +264,16 @@ function draw(
   strokeLines(ctx, GRATICULE_LINES, cx, cy, radius, centreLon, centreLat, false)
   ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)'
   strokeLines(ctx, COASTLINE_RINGS, cx, cy, radius, centreLon, centreLat, false)
+  // Mesh under the markers on both faces, so a link never draws over the
+  // node it terminates at. Alpha via globalAlpha rather than a colour with
+  // one baked in: serverColor is whatever --success resolves to, and that
+  // could be hex, rgb() or a colour space this file has no business
+  // parsing.
+  ctx.strokeStyle = serverColor
+  ctx.globalAlpha = 0.09
+  strokeLines(ctx, MESH_LINES, cx, cy, radius, centreLon, centreLat, false)
+  ctx.globalAlpha = 1
+  drawRegions(ctx, cx, cy, radius, centreLon, centreLat, false)
   drawNodes(ctx, cx, cy, radius, centreLon, centreLat, false, serverColor, clientColor)
 
   ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)'
@@ -188,6 +287,11 @@ function draw(
   ctx.arc(cx, cy, radius, 0, Math.PI * 2)
   ctx.stroke()
 
+  ctx.strokeStyle = serverColor
+  ctx.globalAlpha = 0.26
+  strokeLines(ctx, MESH_LINES, cx, cy, radius, centreLon, centreLat, true)
+  ctx.globalAlpha = 1
+  drawRegions(ctx, cx, cy, radius, centreLon, centreLat, true)
   drawNodes(ctx, cx, cy, radius, centreLon, centreLat, true, serverColor, clientColor)
 }
 
@@ -336,6 +440,14 @@ const ServerGlobe = () => {
         <div className="server-globe-legend-row">
           <dt className="server-globe-legend-term server-globe-legend-term--worker">Worker nodes</dt>
           <dd className="server-globe-legend-cities">{workerNodes.map(n => n.city).join(' · ')}</dd>
+        </div>
+        {/* Worded as capacity, not presence. "Can run" rather than "runs" is
+            the entire difference between this row and the two above it. */}
+        <div className="server-globe-legend-row">
+          <dt className="server-globe-legend-term server-globe-legend-term--region">Can run</dt>
+          <dd className="server-globe-legend-cities">
+            {PROVIDER_REGIONS.length} OVHcloud &amp; Hetzner regions
+          </dd>
         </div>
       </dl>
     </div>

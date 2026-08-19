@@ -112,3 +112,60 @@ export function graticule(stepDeg = 30, resolutionDeg = 5): number[][] {
 
   return lines
 }
+
+/**
+ * Sample a great-circle arc between two points as a flat [lon, lat, …]
+ * polyline, in the same shape `graticule()` returns and `strokeLines`
+ * consumes — so an arc can be drawn by the existing near/far machinery
+ * with no special case.
+ *
+ * The interpolation is a slerp on the unit sphere, not a lerp of the
+ * lon/lat pair. Between two points at the same latitude those differ
+ * visibly: the true great circle bows toward the pole, which is exactly
+ * the shape that makes a transatlantic link read as a link rather than a
+ * ruled line. A lerp would draw the parallel instead.
+ */
+export function greatCircleArc(
+  lon1: number,
+  lat1: number,
+  lon2: number,
+  lat2: number,
+  steps = 24,
+): number[] {
+  const toVec = (lonDeg: number, latDeg: number) => {
+    const lon = lonDeg * DEG
+    const lat = latDeg * DEG
+    const cosLat = Math.cos(lat)
+    return [cosLat * Math.cos(lon), cosLat * Math.sin(lon), Math.sin(lat)] as const
+  }
+
+  const a = toVec(lon1, lat1)
+  const b = toVec(lon2, lat2)
+  const dot = Math.min(1, Math.max(-1, a[0] * b[0] + a[1] * b[1] + a[2] * b[2]))
+  const omega = Math.acos(dot)
+  const sinOmega = Math.sin(omega)
+
+  const out: number[] = []
+  for (let i = 0; i <= steps; i++) {
+    const t = i / steps
+    let x: number
+    let y: number
+    let z: number
+    // Coincident (or near-coincident) endpoints make sinOmega vanish and
+    // the slerp weights blow up; fall back to a plain lerp, which is exact
+    // in that limit anyway.
+    if (sinOmega < 1e-9) {
+      x = a[0] + (b[0] - a[0]) * t
+      y = a[1] + (b[1] - a[1]) * t
+      z = a[2] + (b[2] - a[2]) * t
+    } else {
+      const wa = Math.sin((1 - t) * omega) / sinOmega
+      const wb = Math.sin(t * omega) / sinOmega
+      x = a[0] * wa + b[0] * wb
+      y = a[1] * wa + b[1] * wb
+      z = a[2] * wa + b[2] * wb
+    }
+    out.push(Math.atan2(y, x) / DEG, Math.asin(Math.min(1, Math.max(-1, z))) / DEG)
+  }
+  return out
+}

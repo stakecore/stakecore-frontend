@@ -86,6 +86,14 @@
     background: var(--heading-color);
 }
 
+// Matches how the regions draw on the globe: same white, much dimmer, and
+// smaller than either node swatch, so the legend ranks the three layers the
+// way the picture does.
+.server-globe-legend-term--region::before {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(0.6);
+}
+
 .server-globe-legend-cities {
     margin: 0;
     color: var(--main-color);

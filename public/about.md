@@ -45,7 +45,10 @@ Small, robust, and decentralized.
 state sit in Beauharnois, Helsinki, and Nuremberg, so an outage confined to one
 facility or region costs us a single node, not the cluster. Worker nodes run
 from Roubaix, Frankfurt, and Warsaw, plus our own premises in Ljubljana — three
-independent providers, so no single one can take the cluster down.
+independent providers, so no single one can take the cluster down. Those seven
+sites sit inside a much larger footprint: OVHcloud and Hetzner between them
+publish 19 datacenter regions across four continents, and a workload can be
+scheduled into any of them.
 
 **A purpose-built cluster, plenty of redundancy.** Three Nomad server nodes
 orchestrate the validators and FSP signers we run across Flare, Songbird, and
