@@ -8,7 +8,7 @@ import { test, expect } from './fixtures/console'
 // can catch either.
 
 const ABOUT = '/#/about'
-const ROSTER_SIZE = 15
+const ROSTER_SIZE = 16
 
 // Long enough to out-run sampling jitter at 21–25px/s (~13–15px of travel),
 // short enough that neither row can lap its ~1800px half and wrap mid-sample.

@@ -84,11 +84,18 @@ const PLATFORM_GROUPS: StackGroup[] = [
   },
   {
     // Named for the job, like every other group, rather than for the
-    // relationship ("Assisted by"). The boundary on that job — engineers
-    // approve anything that lands — is in the prose above the carousel,
-    // because a label cannot carry it.
-    label: 'Debugging & triage',
+    // relationship this once carried ("Assisted by"). Ordered the way the
+    // job runs: the alert arrives, then it gets worked. The boundary on
+    // Claude's half — engineers approve anything that lands — is in the
+    // prose above the carousel, because a label cannot carry it.
+    //
+    // Telegram is here and not in Observability on purpose. That group
+    // collects and visualises signals; Telegram does neither, it carries
+    // one to a human. Filing it there would repeat the mistake that put
+    // WireGuard under Delivery.
+    label: 'Alerting & triage',
     items: [
+      { name: 'Telegram', slug: 'telegram' },
       { name: 'Claude', slug: 'claude' },
     ],
   },
@@ -254,7 +261,7 @@ const StackCarousel = () => (
     <Row
       groups={PLATFORM_GROUPS}
       speed={BOTTOM_SPEED}
-      label="Technology we run on: delivery, hosting and debugging"
+      label="Technology we run on: delivery, hosting, alerting and triage"
     />
   </div>
 )

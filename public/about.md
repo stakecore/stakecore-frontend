@@ -58,9 +58,10 @@ else in the cluster.
 
 **What the cluster runs on.** WireGuard links the sites into one private
 network, HAProxy balances traffic inside the cluster, and Traefik publishes the
-services and sites that face outward. When something breaks, Claude helps the
-on-call engineers work out why — reading logs, triaging alerts, drafting the
-fix — and nothing reaches the cluster without an engineer approving it.
+services and sites that face outward. When something breaks the alert lands in
+Telegram, and Claude helps the on-call engineer work out why — reading logs,
+correlating metrics, drafting the fix — but nothing reaches the cluster without
+an engineer approving it.
 
 | Job | What we run |
 | --- | --- |
@@ -69,7 +70,7 @@ fix — and nothing reaches the cluster without an engineer approving it.
 | Observability | Prometheus, Grafana, Loki |
 | Delivery | Docker, GitHub Actions |
 | Hosting | OVH, Hetzner, GitHub Pages |
-| Debugging and triage | Claude |
+| Alerting and triage | Telegram, Claude |
 
 ## Why StakeCore
 
