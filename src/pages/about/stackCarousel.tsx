@@ -73,6 +73,9 @@ const PLATFORM_GROUPS: StackGroup[] = [
     items: [
       { name: 'OVH', slug: 'ovh' },
       { name: 'Hetzner', slug: 'hetzner' },
+      // The GitHub mark rather than the GitHub Pages one: that is a wordmark
+      // that turns to mush at glyph size (see scripts/gen-stack-logos.mjs).
+      { name: 'GitHub Pages', slug: 'github' },
     ],
   },
   {

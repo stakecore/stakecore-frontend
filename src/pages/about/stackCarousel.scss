@@ -116,14 +116,29 @@
 // Hover reveals the brand's own colour. --stack-brand is set inline per item
 // from the generated hex; items without a mark simply have no rule to apply.
 //
-// The white mix is a legibility floor, not a style choice: this page sits on
-// #000, and OVH (#123F6D) or WireGuard (#88171A) at full strength are close
-// to invisible against it. 18% lifts those into view while leaving already
-// bright marks — Vault's #FFEC6E, Nomad's #00CA8E — essentially untouched.
-// The tint is decorative either way: the name beside it never changes colour.
+// A raw brand hex will not do, because this page sits on #000 and several of
+// these marks are drawn for white backgrounds: GitHub is #181717, OVH
+// #123F6D, WireGuard #88171A. At full strength they are darker than the
+// muted rest colour, so "reveal" would read as the logo fading out.
+//
+// A flat mix toward white does not solve it either — enough white to rescue
+// #181717 washes Nomad's #00CA8E into pastel. What is wanted is a floor on
+// lightness alone, leaving hue and chroma untouched, which is exactly what
+// relative colour syntax expresses. Bright marks pass through unchanged
+// because max() picks their own lightness.
+//
+// The mix below is the fallback for browsers without relative colour syntax
+// (pre-2024); it under-serves the darkest marks but never inverts them.
 .stack-item:hover .stack-item-glyph,
 .stack-carousel:focus-within .stack-item:hover .stack-item-glyph {
-    color: color-mix(in srgb, var(--stack-brand) 82%, #fff);
+    color: color-mix(in srgb, var(--stack-brand) 60%, #fff);
+}
+
+@supports (color: oklch(from red l c h)) {
+    .stack-item:hover .stack-item-glyph,
+    .stack-carousel:focus-within .stack-item:hover .stack-item-glyph {
+        color: oklch(from var(--stack-brand) max(l, 0.78) c h);
+    }
 }
 
 @include t.down(md) {

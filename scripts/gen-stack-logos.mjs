@@ -44,6 +44,9 @@ const SLUGS = [
   'githubactions',
   'ovh',
   'hetzner',
+  // The GitHub mark, not `githubpages`: that one is a wordmark whose glyphs
+  // occupy a ~3px band of the 24x24 box and turn to mush at row size.
+  'github',
   'claude',
 ]
 

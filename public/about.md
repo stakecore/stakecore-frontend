@@ -67,7 +67,7 @@ cluster without an engineer approving it.
 | Load balancing and ingress | HAProxy, Traefik |
 | Observability | Prometheus, Grafana, Loki |
 | Delivery | Docker, WireGuard, GitHub Actions |
-| Hosting | OVH, Hetzner |
+| Hosting | OVH, Hetzner, GitHub Pages |
 | Assisted by | Claude |
 
 ## Why StakeCore
