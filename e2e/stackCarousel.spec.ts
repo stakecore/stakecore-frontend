@@ -19,6 +19,17 @@ const rows = (page: import('@playwright/test').Page) => ({
   bottom: page.locator('.stack-carousel').last(),
 })
 
+// The loop animates a transform on the track, not the container's scroll
+// offset — scroll offsets are quantised to whole pixels and these rows move
+// well under a pixel per frame. Read the offset back out of the transform.
+const offsetOf = async (row: import('@playwright/test').Locator) =>
+  row.evaluate(el => {
+    const t = getComputedStyle(el.firstElementChild as HTMLElement).transform
+    if (!t || t === 'none') return 0
+    // matrix(a, b, c, d, tx, ty)
+    return -Number(t.slice(t.indexOf('(') + 1, -1).split(',')[4])
+  })
+
 test.describe('stack carousel', () => {
   test('renders two counter-scrolling rows', async ({ page, consoleErrors }) => {
     await page.goto(ABOUT)
@@ -31,15 +42,9 @@ test.describe('stack carousel', () => {
     // as a jump forward if sampled immediately. Let it settle first.
     await page.waitForTimeout(300)
 
-    const before = {
-      top: await top.evaluate(el => el.scrollLeft),
-      bottom: await bottom.evaluate(el => el.scrollLeft),
-    }
+    const before = { top: await offsetOf(top), bottom: await offsetOf(bottom) }
     await page.waitForTimeout(SAMPLE_MS)
-    const after = {
-      top: await top.evaluate(el => el.scrollLeft),
-      bottom: await bottom.evaluate(el => el.scrollLeft),
-    }
+    const after = { top: await offsetOf(top), bottom: await offsetOf(bottom) }
 
     expect(after.top, 'top row should advance').toBeGreaterThan(before.top)
     expect(after.bottom, 'bottom row should retreat').toBeLessThan(before.bottom)
@@ -61,27 +66,59 @@ test.describe('stack carousel', () => {
     }
   })
 
-  // The regression this guards: scrollLeft stops at scrollWidth - clientWidth,
-  // so if one repeat of the content is wider than that range the wrap point
-  // can never be reached and the row creeps to the end and freezes (or, going
-  // backwards, jumps the wrong distance and tears). Two copies of these short
-  // rows did exactly that at desktop widths. Asserting the geometry catches it
-  // instantly; catching it by watching for a stall takes ~40 seconds.
-  test('gives every row a reachable wrap point', async ({ page }) => {
+  // The regression this guards: once one repeat has slid off the left, what
+  // remains must still cover the container, or the far end of the content
+  // comes into view before the wrap does and the row visibly runs out. Two
+  // copies of these short rows failed that at desktop widths. Asserting the
+  // geometry catches it instantly; catching it by eye takes ~40 seconds.
+  test('leaves enough content to cover the row after one repeat', async ({ page }) => {
     await page.goto(ABOUT)
     await page.locator('.stack-carousel').first().scrollIntoViewIfNeeded()
 
     for (const row of await page.locator('.stack-carousel').all()) {
-      const { period, maxScroll } = await row.evaluate(el => {
+      const { period, remaining } = await row.evaluate(el => {
+        const track = el.firstElementChild as HTMLElement
         const copies = el.querySelectorAll('.stack-carousel-half').length
-        return {
-          period: el.scrollWidth / copies,
-          maxScroll: el.scrollWidth - el.clientWidth,
-        }
+        const one = track.offsetWidth / copies
+        return { period: one, remaining: track.offsetWidth - one - el.clientWidth }
       })
       expect(period).toBeGreaterThan(0)
-      expect(period).toBeLessThanOrEqual(maxScroll)
+      expect(remaining).toBeGreaterThanOrEqual(0)
     }
+  })
+
+  // The whole point of animating a transform. Scroll offsets are whole
+  // pixels, so at 21-25px/s the rows rendered a 1px jump every second or
+  // third frame and sat frozen in between — 58% of frames measured as
+  // completely still. Sample the rendered position every frame and require
+  // that it actually moves on essentially all of them.
+  test('moves on every frame rather than stepping whole pixels', async ({ page }) => {
+    await page.goto(ABOUT)
+    await page.locator('.stack-carousel').first().scrollIntoViewIfNeeded()
+    await page.waitForTimeout(300)
+
+    const frozen = await page.evaluate(async () => {
+      const track = document.querySelector('.stack-carousel')?.firstElementChild
+      if (!(track instanceof HTMLElement)) return 1
+      const xs: number[] = []
+      await new Promise<void>(resolve => {
+        const t0 = performance.now()
+        const tick = (ts: number) => {
+          xs.push(track.getBoundingClientRect().x)
+          if (ts - t0 < 1500) requestAnimationFrame(tick)
+          else resolve()
+        }
+        requestAnimationFrame(tick)
+      })
+      const deltas: number[] = []
+      for (let i = 1; i < xs.length; i++) deltas.push(Math.abs(xs[i]! - xs[i - 1]!))
+      const steady = deltas.filter(d => d < 50)
+      return steady.filter(d => d < 0.01).length / steady.length
+    })
+
+    // Scroll-driven, this was ~0.58. A transform carries the fraction, so
+    // the only still frames should be scheduling noise.
+    expect(frozen).toBeLessThan(0.1)
   })
 
   test('pauses the hovered row while the pointer rests on it', async ({ page }) => {
@@ -93,9 +130,9 @@ test.describe('stack carousel', () => {
     // after the pause has actually taken effect rather than mid-step.
     await page.waitForTimeout(200)
 
-    const before = await top.evaluate(el => el.scrollLeft)
+    const before = await offsetOf(top)
     await page.waitForTimeout(SAMPLE_MS * 2)
-    expect(await top.evaluate(el => el.scrollLeft)).toBe(before)
+    expect(await offsetOf(top)).toBe(before)
   })
 })
 
@@ -128,10 +165,13 @@ test.describe('stack carousel under reduced motion', () => {
       }))
       expect(scrollWidth).toBeLessThanOrEqual(clientWidth)
 
-      // Frozen, not creeping — in either direction.
-      const before = await row.evaluate(el => el.scrollLeft)
+      // Frozen, not creeping — in either direction. The offset lives in the
+      // track's transform now, and with no loop running it should never have
+      // been written at all.
+      const before = await offsetOf(row)
       await page.waitForTimeout(500)
-      expect(await row.evaluate(el => el.scrollLeft)).toBe(before)
+      expect(await offsetOf(row)).toBe(before)
+      expect(before).toBe(0)
     }
 
     expect(consoleErrors).toEqual([])

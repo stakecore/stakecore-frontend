@@ -31,6 +31,16 @@
 .activity-marquee-track {
   display: flex;
   width: max-content;
+  // useMarquee transforms this every frame while the feed is on screen.
+  // Promoting it to its own layer keeps that off the main thread; without
+  // it the whole 24k-wide track recomposites each step.
+  //
+  // The container above stays scrollable on purpose — these cards carry
+  // links and the row is swipeable. That works alongside the transform
+  // rather than against it: the loop never writes scrollLeft, so a swipe
+  // and the animation no longer fight over one value the way they did when
+  // this was scroll-driven.
+  will-change: transform;
 }
 
 .activity-card {

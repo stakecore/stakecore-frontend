@@ -22,26 +22,22 @@
     mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
 }
 
+// Not a scroll container. useMarquee animates a transform on the track, so
+// there is nothing here for the browser to scroll — and because the element
+// is not scrollable it needs no tabIndex, which is what axe's
+// scrollable-region-focusable rule would otherwise demand of a row holding
+// no focusable children.
 .stack-carousel {
-    overflow-x: auto;
-    overflow-y: hidden;
-    scrollbar-width: none;
-
-    // The scroller is focusable (it holds no links, so this is the only way
-    // to scroll it from a keyboard). Show that focus rather than suppressing
-    // it, but keep it off the pointer path.
-    &:focus-visible {
-        outline: 2px solid var(--border-emphasis);
-        outline-offset: 4px;
-        border-radius: t.$radius-md;
-    }
+    overflow: hidden;
 }
-
-.stack-carousel::-webkit-scrollbar { display: none; }
 
 .stack-carousel-track {
     display: flex;
     width: max-content;
+    // Promote the track to its own layer: it is transformed every frame for
+    // as long as it is on screen, and without this the row is composited
+    // against the rest of the page on each one.
+    will-change: transform;
 }
 
 .stack-carousel-half {

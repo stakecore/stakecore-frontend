@@ -218,26 +218,16 @@ const Row = ({ groups, speed, label }: {
   // gives screen-reader users a landmark to jump to. The two rows carry
   // different names so a landmark list does not show the same entry twice.
   //
-  // The tabIndex below is where two lint rules pull opposite ways. Biome's
-  // noNoninteractiveTabindex says don't put non-interactive elements in the
-  // tab order; axe's scrollable-region-focusable (WCAG 2.1.1 A) says a scroll
-  // container whose content holds no focusable elements MUST be focusable, or
-  // a keyboard user cannot scroll it at all. These rows have no links in
-  // them, so axe is right and Biome's heuristic is wrong here — and the e2e
-  // a11y sweep gates on axe. Being focusable also lets useMarquee's focusin
-  // pause hold a row still while it is being read.
-  //
-  // The fade mask sits on the non-scrolling wrapper so the browser can keep
-  // the scroll composited.
+  // No tabIndex any more. It was here because the row used to be a scroll
+  // container holding no links, which axe's scrollable-region-focusable
+  // (WCAG 2.1.1 A) requires to be focusable — and Biome's
+  // noNoninteractiveTabindex objected to, so it carried a suppression.
+  // Animating a transform instead means there is no scroll container and
+  // neither rule has anything to say. The fade mask still sits on the outer
+  // wrapper, which keeps it off the layer being transformed.
   return (
     <div className="stack-carousel-mask">
-      <section
-        ref={ref}
-        className="stack-carousel"
-        aria-label={label}
-        // biome-ignore lint/a11y/noNoninteractiveTabindex: scroll container with no focusable content — see above
-        tabIndex={0}
-      >
+      <section ref={ref} className="stack-carousel" aria-label={label}>
         <div className="stack-carousel-track">
           {Array.from({ length: copies }, (_, i) => (
             // Only the leading copy is exposed; the rest exist purely to give
