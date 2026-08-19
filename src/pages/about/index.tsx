@@ -200,8 +200,9 @@ const Stack = () => (
                 <div className="about-split-text">
                     <h3 className="about-split-title">What the cluster runs on</h3>
                     <p className="about-split-body">
-                        HAProxy balances traffic inside the cluster; Traefik publishes
-                        the services and sites that face outward. Claude assists the
+                        WireGuard links the sites into one private network, HAProxy
+                        balances traffic inside the cluster, and Traefik publishes the
+                        services and sites that face outward. Claude assists the
                         on-call engineers with logs, alerts, and config drafts —{' '}
                         <span className="about-mark">
                             nothing reaches the cluster without an engineer approving it

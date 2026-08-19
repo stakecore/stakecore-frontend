@@ -44,8 +44,11 @@ const RUNTIME_GROUPS: StackGroup[] = [
     ],
   },
   {
-    label: 'Load balancing & ingress',
+    // Ordered outside-in, matching the prose above the carousel: between
+    // sites, then inside the cluster, then out to the public.
+    label: 'Networking & ingress',
     items: [
+      { name: 'WireGuard', slug: 'wireguard' },
       { name: 'HAProxy' },
       { name: 'Traefik', slug: 'traefikproxy' },
     ],
@@ -66,7 +69,6 @@ const PLATFORM_GROUPS: StackGroup[] = [
     label: 'Delivery',
     items: [
       { name: 'Docker', slug: 'docker' },
-      { name: 'WireGuard', slug: 'wireguard' },
       { name: 'GitHub Actions', slug: 'githubactions' },
     ],
   },

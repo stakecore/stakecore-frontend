@@ -56,17 +56,18 @@ specification and a place to put it. Any worker node can host any workload —
 failure of a single node is recovered automatically by re-scheduling somewhere
 else in the cluster.
 
-**What the cluster runs on.** HAProxy balances traffic inside the cluster;
-Traefik publishes the services and sites that face outward. Claude assists the
-on-call engineers with logs, alerts, and config drafts — nothing reaches the
-cluster without an engineer approving it.
+**What the cluster runs on.** WireGuard links the sites into one private
+network, HAProxy balances traffic inside the cluster, and Traefik publishes the
+services and sites that face outward. Claude assists the on-call engineers with
+logs, alerts, and config drafts — nothing reaches the cluster without an
+engineer approving it.
 
 | Job | What we run |
 | --- | --- |
 | Orchestration and secrets | Nomad, Consul, Vault |
-| Load balancing and ingress | HAProxy, Traefik |
+| Networking and ingress | WireGuard, HAProxy, Traefik |
 | Observability | Prometheus, Grafana, Loki |
-| Delivery | Docker, WireGuard, GitHub Actions |
+| Delivery | Docker, GitHub Actions |
 | Hosting | OVH, Hetzner, GitHub Pages |
 | Assisted by | Claude |
 
