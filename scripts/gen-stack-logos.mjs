@@ -15,14 +15,13 @@
 // colour at rest and its own brand hex on hover/focus — no duplicate
 // colour assets, and no `filter: grayscale()` repaint on a moving row.
 //
-// Brands with no usable single-path mark are NOT listed here. HAProxy's
-// only published SVG is a fine-stroked 64px drawing that turns to mush at
-// glyph size, and Grafana Loki publishes no standalone SVG at all. Both
-// are wordmarks in their own branding, so stackCarousel.tsx renders them
-// as type. Adding a slug below without checking that its mark reads at
-// 28px is how the row ends up with one illegible smudge in it.
+// Brands Simple Icons does not carry go in EXTRA below, fetched from the
+// vendor's own site. Anything with no mark that reads at 26px is left out
+// of both lists and set as type by stackCarousel.tsx — adding a slug
+// without checking how its mark survives that size is how the row ends up
+// with one illegible smudge in it.
 //
-// Re-run after changing SLUGS; the output is committed.
+// Re-run after changing SLUGS or EXTRA; the output is committed.
 
 import fs from 'node:fs/promises'
 import path from 'node:path'
@@ -50,6 +49,23 @@ const SLUGS = [
   'claude',
 ]
 
+// Marks Simple Icons does not publish, taken from the vendor instead. Each
+// still has to reduce to one flat-coloured path, or it cannot be tinted with
+// currentColor and does not belong in the row.
+const EXTRA = {
+  loki: {
+    title: 'Loki',
+    hex: '#FF671D',
+    // Grafana's own 24x24 navigation glyph. The headline logo
+    // (/static/img/logos/logo-loki.svg) is 48x56 and fills its fourteen
+    // shapes with fourteen linear gradients, so it cannot take currentColor;
+    // this one draws the same shapes flat, already square and already scaled
+    // for glyph size. It sits on a 10%-opacity rounded-rect plate, which is
+    // a <rect> and so is skipped by the <path> match below.
+    url: 'https://a-us.storyblok.com/f/1022730/24x24/e041973a44/icon-nav-loki.svg',
+  },
+}
+
 const OUT_PATH = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   '../src/pages/about/stackLogos.ts',
@@ -71,6 +87,22 @@ const extractPath = (svg, slug) => {
   return m[1]
 }
 
+// Disjoint subpaths concatenated into one `d` render exactly as the separate
+// elements did, so a flat multi-path mark collapses to the single-path shape
+// the rest of this file assumes. Verified against the fourteen shapes of the
+// Loki glyph, which do not overlap.
+const mergePaths = (svg, slug) => {
+  const ds = [...svg.matchAll(/<path[^>]*\sd="([^"]+)"/g)].map(m => m[1])
+  if (ds.length === 0) throw new Error(`no paths found in ${slug}`)
+  const fills = new Set(
+    [...svg.matchAll(/<path[^>]*\sfill="([^"]+)"/g)].map(m => m[1].toLowerCase()),
+  )
+  if (fills.size > 1) {
+    throw new Error(`${slug} uses ${fills.size} fills — it will not tint as one colour`)
+  }
+  return ds.join(' ')
+}
+
 const main = async () => {
   const data = JSON.parse(await get(`${BASE}/data/simple-icons.json`))
   const bySlug = new Map(data.map(i => [i.slug ?? slugify(i.title), i]))
@@ -85,6 +117,16 @@ const main = async () => {
       title: meta.title,
       hex: `#${meta.hex}`,
       path: extractPath(svg, slug),
+    })
+  }
+
+  for (const [slug, meta] of Object.entries(EXTRA)) {
+    const svg = await get(meta.url)
+    entries.push({
+      slug,
+      title: meta.title,
+      hex: meta.hex,
+      path: mergePaths(svg, slug),
     })
   }
 

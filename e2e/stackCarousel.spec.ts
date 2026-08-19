@@ -147,9 +147,10 @@ test.describe('stack carousel under reduced motion', () => {
     await expect(page.locator('.stack-item-name:visible')).toHaveCount(ROSTER_SIZE)
 
     // Scoped to the visible halves: clones are display:none but still in the
-    // DOM, and getByText matches hidden nodes too. Spot-check the two brands
-    // rendered as type rather than a glyph, and the one whose placement was
-    // the point of the group labels — one from each row.
+    // DOM, and getByText matches hidden nodes too. Spot-check the brand
+    // rendered as type rather than a glyph, the one whose mark is fetched
+    // from the vendor rather than Simple Icons, and the one whose placement
+    // was the point of the group labels — covering both rows.
     const shown = page.locator('.stack-carousel-half').filter({ visible: true })
     await expect(shown.getByText('HAProxy', { exact: true })).toBeVisible()
     await expect(shown.getByText('Loki', { exact: true })).toBeVisible()

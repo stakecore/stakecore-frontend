@@ -120,9 +120,9 @@ describe('StackCarousel glyphs', () => {
     expect(nomad?.style.getPropertyValue('--stack-brand')).toBe(logo?.hex)
   })
 
-  // HAProxy and Loki publish no mark that reads at glyph size, so they are
-  // set as type. Rendering an empty <svg> for them would leave a hole in the
-  // row; the wordmark class is what the stylesheet keys the type treatment on.
+  // HAProxy publishes no mark that reads at glyph size, so it is set as type.
+  // Rendering an empty <svg> for it would leave a hole in the row; the
+  // wordmark class is what the stylesheet keys the type treatment on.
   it('sets wordmark brands as type instead of an empty glyph', () => {
     const { container } = render(<StackCarousel />)
     const haproxy = [...container.querySelectorAll('.stack-item')]

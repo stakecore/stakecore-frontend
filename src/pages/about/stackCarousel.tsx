@@ -26,10 +26,12 @@ export interface StackGroup {
   items: StackItem[]
 }
 
-// HAProxy and Loki carry no `slug` deliberately. Neither publishes a mark
-// that survives being shrunk to glyph size (see scripts/gen-stack-logos.mjs),
-// and both are wordmarks in their own branding, so setting them as type is
-// the faithful treatment rather than a fallback.
+// HAProxy carries no `slug` deliberately: the only SVG it publishes is a
+// fine-stroked 64px drawing whose lines fall below a pixel at glyph size, and
+// its own branding is a wordmark anyway, so setting it as type is the
+// faithful treatment rather than a fallback. Everything else has a mark —
+// including Loki, whose glyph comes from Grafana rather than Simple Icons
+// (see scripts/gen-stack-logos.mjs).
 
 // Top row: what runs the workloads and moves traffic to them.
 const RUNTIME_GROUPS: StackGroup[] = [
@@ -53,7 +55,7 @@ const RUNTIME_GROUPS: StackGroup[] = [
     items: [
       { name: 'Prometheus', slug: 'prometheus' },
       { name: 'Grafana', slug: 'grafana' },
-      { name: 'Loki' },
+      { name: 'Loki', slug: 'loki' },
     ],
   },
 ]
