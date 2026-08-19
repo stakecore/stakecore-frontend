@@ -12,10 +12,17 @@ import { type RefObject, useEffect } from 'react'
 //     watches for re-measurement
 
 export interface MarqueeOptions {
-  /** Pixels per second. */
+  /** Pixels per second. Negative runs the track backwards. */
   speed?: number
   /** Set false while there is nothing to scroll yet; no loop is started. */
   enabled?: boolean
+  /**
+   * How many identical copies of the content the track holds. The wrap period
+   * is one copy, so this is what turns `scrollWidth` into a distance the
+   * position can actually travel. Two is the classic duplicated track; a
+   * short roster needs more (see the reachability rule below).
+   */
+  copies?: number
 }
 
 // Clamp per-frame dt so the marquee can't catapult forward when the browser
@@ -31,7 +38,7 @@ const EXTERNAL_SCROLL_PX = 1
 
 export function useMarquee(
   ref: RefObject<HTMLElement | null>,
-  { speed = 30, enabled = true }: MarqueeOptions = {},
+  { speed = 30, enabled = true, copies = 2 }: MarqueeOptions = {},
 ): void {
   useEffect(() => {
     if (!enabled) return
@@ -50,11 +57,25 @@ export function useMarquee(
     // 60Hz frame at 30px/s) drops the fraction and judders — or stalls
     // outright. Accumulate the true position here and assign it.
     let pos = el.scrollLeft
-    // Half the track width, re-measured on resize instead of read per frame:
-    // scrollWidth on a wide flex track right after a React commit is a forced
-    // layout in the middle of the animation.
-    let half = 0
-    const measure = () => { half = el.scrollWidth / 2 }
+    // One copy of the content — the distance after which the track looks
+    // identical again, and therefore the wrap period. Re-measured on resize
+    // rather than read per frame: scrollWidth on a wide flex track right
+    // after a React commit is a forced layout mid-animation.
+    //
+    // `period` is 0 when the wrap point is out of reach, which stops the loop
+    // dead rather than letting it stall or tear. scrollLeft can never exceed
+    // scrollWidth - clientWidth, so a period wider than that range is a
+    // position the browser will clamp before the wrap ever fires: forwards
+    // that means creeping to the end and freezing there, backwards it means
+    // jumping by the wrong distance and visibly tearing. It happens whenever
+    // one copy is narrower than the viewport — a short activity feed, or a
+    // stack row with few items — and the fix at the call site is more copies,
+    // not a faster loop.
+    let period = 0
+    const measure = () => {
+      const wrap = el.scrollWidth / Math.max(1, copies)
+      period = wrap <= el.scrollWidth - el.clientWidth ? wrap : 0
+    }
 
     const markInteraction = () => { pauseUntil = performance.now() + PAUSE_MS }
     const onPointerEnter = () => { hovering = true }
@@ -83,12 +104,10 @@ export function useMarquee(
         const current = el.scrollLeft
         if (Math.abs(current - pos) > EXTERNAL_SCROLL_PX) pos = current
         pos += speed * (dt / 1000)
-        // Content is duplicated, so pos and pos - half look identical. Wrap
+        // The content repeats, so pos and pos ± period look identical. Wrap
         // only while auto-scrolling so we never yank scrollLeft mid-swipe.
-        if (half > 0) {
-          if (pos >= half) pos -= half
-          else if (pos < 0) pos += half
-        }
+        if (pos >= period) pos -= period
+        else if (pos < 0) pos += period
         el.scrollLeft = pos
       }
       raf = requestAnimationFrame(tick)
@@ -96,11 +115,14 @@ export function useMarquee(
 
     const start = () => {
       if (running) return
+      measure()
+      // Nothing to scroll, or nowhere to wrap to. Either way, sitting still
+      // beats burning a frame callback to inch into a clamp.
+      if (period <= 0) return
       running = true
       // Reset the clock so the first frame after (re)entering the viewport
       // doesn't see a huge dt; the MAX_DT_MS clamp backs this up too.
       lastTs = performance.now()
-      measure()
       raf = requestAnimationFrame(tick)
     }
     const stop = () => {
@@ -110,15 +132,26 @@ export function useMarquee(
 
     // Only run the loop while the marquee is on-screen — no point doing
     // per-frame scrollLeft writes when the user has scrolled it out of view.
+    let visible = false
     const io = new IntersectionObserver(
-      ([entry]) => { if (entry?.isIntersecting) start(); else stop() },
+      ([entry]) => {
+        visible = !!entry?.isIntersecting
+        if (visible) start()
+        else stop()
+      },
       { threshold: 0 },
     )
     io.observe(el)
 
     // The track only changes width when items are added/removed or a
     // breakpoint flips the item size — re-measure then, not per frame.
-    const ro = new ResizeObserver(measure)
+    // Restart on the way back too: a narrower viewport can bring an
+    // out-of-reach wrap point back into range, and start() bails without
+    // arming anything when it is unreachable.
+    const ro = new ResizeObserver(() => {
+      measure()
+      if (visible && !running) start()
+    })
     if (el.firstElementChild) ro.observe(el.firstElementChild)
 
     return () => {
@@ -133,5 +166,9 @@ export function useMarquee(
       el.removeEventListener('touchstart', markInteraction)
       el.removeEventListener('touchmove', markInteraction)
     }
-  }, [ref, speed, enabled])
+    // `copies` belongs here: the caller raises it once it has measured how
+    // many repeats the viewport needs, and a stale value leaves the loop
+    // wrapping on the wrong period — the exact stale-closure bug
+    // useExhaustiveDependencies exists to catch.
+  }, [ref, speed, enabled, copies])
 }

@@ -154,6 +154,12 @@ describe('RecentActivity auto-scroll loop', () => {
       get: () => Math.round(raw),
       set: (v: number) => { raw = v },
     })
+    // happy-dom lays nothing out, so both of these read 0 — which the loop
+    // now (correctly) treats as "no reachable wrap point, don't run". Give
+    // the track a real width so these tests exercise a marquee that could
+    // actually scroll, matching the seam test below.
+    Object.defineProperty(el, 'scrollWidth', { configurable: true, get: () => 2000 })
+    Object.defineProperty(el, 'clientWidth', { configurable: true, get: () => 800 })
 
     const io = ObserverStub.intersection.find(o => o.target === el)!
     io.cb([{ isIntersecting: true }])
