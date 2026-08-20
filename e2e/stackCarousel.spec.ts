@@ -11,7 +11,7 @@ const ABOUT = '/#/about'
 // Every item across both rows of STACK_ROWS in src/pages/about/stackCarousel.tsx.
 // Hardcoded rather than imported: that module is TSX and pulls in a stylesheet,
 // which this process cannot transform. Bump it when the roster changes.
-const ROSTER_SIZE = 19
+const ROSTER_SIZE = 20
 
 // Long enough to out-run sampling jitter at 21–25px/s (~13–15px of travel),
 // short enough that neither row can lap its ~1800px half and wrap mid-sample.

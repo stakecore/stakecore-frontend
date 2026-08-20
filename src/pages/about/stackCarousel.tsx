@@ -11,7 +11,7 @@ import './stackCarousel.scss'
 //
 //   • Only software we actually run. This sits under a heading that sells
 //     the cluster; a logo here is a claim about production, not a wish list.
-//   • The groups are the point. A flat row of nineteen logos says nothing —
+//   • The groups are the point. A flat row of twenty logos says nothing —
 //     "HAProxy balances internally, Traefik publishes outward" is the
 //     information, and the group label is what carries it.
 
@@ -46,11 +46,19 @@ const RUNTIME_GROUPS: StackGroup[] = [
   {
     // Second, not last: state is part of what the cluster runs, and reads
     // better beside the scheduler than tacked on after the observability
-    // stack. One item because one is what we run — the API and the indexers
-    // share this and nothing else stores anything.
+    // stack. Ordered durable-first: PostgreSQL is what is still there after a
+    // restart, Redis is the read cache in front of it — this site polls every
+    // 10–30s (REFRESH_QUERY_*_MS in constants.ts), and the cache is why that
+    // does not reach the database every time.
+    //
+    // Redis is here rather than under Orchestration because it holds the
+    // answers, even if only briefly. That is the Telegram test applied the
+    // other way round: Telegram moves a signal without keeping it, so it is
+    // not Observability; Redis keeps one without moving it, so it is Data.
     label: 'Data',
     items: [
       { name: 'PostgreSQL', slug: 'postgresql' },
+      { name: 'Redis', slug: 'redis' },
     ],
   },
   {
@@ -200,7 +208,7 @@ const BOTTOM_SPEED = -21
 // A duplicated track only wraps seamlessly when one copy is at least as wide
 // as the viewport: scrollLeft stops at scrollWidth - clientWidth, so with two
 // copies of a narrower run the wrap point sits past the end of the scroll
-// range and can never be reached. These rows are short — twelve items and
+// range and can never be reached. These rows are short — thirteen items and
 // seven — so at desktop widths two copies is exactly that failure. Count the
 // copies needed instead of assuming, and re-count on resize.
 const MIN_COPIES = 2

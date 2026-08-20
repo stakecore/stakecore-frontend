@@ -5,9 +5,9 @@
 //
 // Source is Simple Icons (CC0-1.0), which ships every brand as a single
 // 24×24 path plus its official hex. We inline the path data rather than
-// depend on the package or ship 18 separate SVG files: the whole set is
-// ~26kB of string in a lazy route chunk, against 18 extra requests and a
-// 3400-icon dependency for the eighteen we use. The logos themselves remain trademarks of their
+// depend on the package or ship 19 separate SVG files: the whole set is
+// ~29kB of string in a lazy route chunk, against 19 extra requests and a
+// 3400-icon dependency for the nineteen we use. The logos themselves remain trademarks of their
 // owners; naming the software you run is nominative use.
 //
 // A single path is also what makes the carousel's hover treatment work.
@@ -40,6 +40,7 @@ const SLUGS = [
   'grafana',
   'docker',
   'postgresql',
+  'redis',
   // The certificate authority, not a piece of software we run: Traefik's ACME
   // resolver issues the public certs from it, so it belongs with the ingress.
   'letsencrypt',

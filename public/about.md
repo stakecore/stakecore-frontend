@@ -69,7 +69,7 @@ but nothing reaches the cluster without an engineer approving it.
 | Job | What we run |
 | --- | --- |
 | Orchestration and secrets | Nomad, Consul, Vault |
-| Data | PostgreSQL |
+| Data | PostgreSQL, Redis |
 | Private network | WireGuard, HAProxy |
 | Public edge | Traefik, Let's Encrypt |
 | Observability | Grafana, Prometheus, Loki, Alloy |
