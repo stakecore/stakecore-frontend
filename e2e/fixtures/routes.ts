@@ -5,6 +5,7 @@
 export const ROUTES = [
   { path: '/', heading: 'StakeCore' },
   { path: '/about', heading: 'Your stake, our engine' },
+  { path: '/news', heading: 'News' },
   { path: '/contact', heading: 'Get in touch' },
   { path: '/flare/fsp', heading: 'Flare Systems Protocol' },
   { path: '/songbird/fsp', heading: 'Songbird Systems Protocol' },

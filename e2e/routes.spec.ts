@@ -35,15 +35,15 @@ test('unknown paths render the 404 page', async ({ page, consoleErrors }) => {
   expect(consoleErrors).toEqual([])
 })
 
-test('/about links out to the FAsset Visualiser', async ({ page, consoleErrors }) => {
-  await page.goto('/#/about')
+test('/news links out to the FAsset Visualiser', async ({ page, consoleErrors }) => {
+  await page.goto('/#/news')
 
   const link = page.getByRole('link', { name: 'fasset.stakecore.org' })
   await expect(link).toHaveAttribute('href', 'https://fasset.stakecore.org')
   await expect(link).toHaveAttribute('target', '_blank')
   await expect(link).toHaveAttribute('rel', 'noopener noreferrer')
 
-  const testnet = page.getByRole('link', { name: 'FAsset Visualiser on Coston2 testnet' })
+  const testnet = page.getByRole('link', { name: 'Coston2 testnet' })
   await expect(testnet).toHaveAttribute('href', 'https://fasset-coston2.stakecore.org')
 
   // Presence of the anchors only — never a request to either host. External
