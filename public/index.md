@@ -2,7 +2,7 @@
 title: StakeCore
 description: Blockchain node infrastructure, today running validators and protocol signing for the Flare, Songbird, and Avalanche networks, with non-custodial delegation and on-chain reporting.
 url: https://stakecore.org/index.md
-dateModified: 2026-08-19
+dateModified: 2026-08-20
 ---
 
 # StakeCore
@@ -47,6 +47,7 @@ own rules and reward structure.
 ## More
 
 - [About StakeCore](/about.md) — who it serves and how the cluster is built
+- [News](/news.md) — dated announcements and network changes
 - [Contact](/contact.md) — how to reach the team
 - [Agent guide](/AGENTS.md) — the public API and what agents can do
 - [Glossary](/glossary.md) — FSP, FTSO, P-chain, reward epoch, and the rest

@@ -153,6 +153,36 @@ test('sitemap.md lists every route mirror', async ({ request }) => {
   }
 })
 
+// CLAUDE.md calls the hand-maintained <lastmod>/dateModified pair "the one
+// failure mode that no test can catch" — but that's only true of whether a
+// date is *correct*, not of whether the two copies of it *agree*. This test
+// covers the latter: every <loc> in sitemap.xml that points at a file with
+// frontmatter must have a <lastmod> equal to that file's own dateModified.
+// A mirror edited without bumping its date, or a sitemap.xml bumped without
+// touching the mirror, fails this instead of shipping quietly.
+test('every frontmatter dateModified agrees with sitemap.xml\'s lastmod for the same page', async ({ request }) => {
+  const sitemapBody = await (await request.get('/sitemap.xml')).text()
+
+  const entries = [...sitemapBody.matchAll(/<loc>([^<]+)<\/loc>\s*<lastmod>([^<]+)<\/lastmod>/g)]
+    .map(([, loc, lastmod]) => ({ loc: loc!, lastmod: lastmod! }))
+  expect(entries.length).toBeGreaterThan(0)
+
+  // Not every <loc> carries frontmatter (the HTML root does not), so this
+  // counts how many comparisons actually ran — a count of zero would mean
+  // the loop below silently checked nothing.
+  let checked = 0
+  for (const { loc, lastmod } of entries) {
+    const path = loc.replace('https://stakecore.org', '') || '/'
+    const body = await (await request.get(path)).text()
+    const fields = frontmatter(body)
+    if (fields?.dateModified == null) continue
+
+    checked++
+    expect(fields.dateModified, `${path}: frontmatter dateModified vs sitemap.xml lastmod`).toBe(lastmod)
+  }
+  expect(checked).toBeGreaterThan(0)
+})
+
 for (const { path, heading } of ROUTES) {
   test(`the ${path} mirror carries frontmatter, headings and a sitemap link`, async ({ request }) => {
     const body = await (await request.get(mirrorFor(path))).text()

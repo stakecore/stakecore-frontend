@@ -3,7 +3,13 @@ import fassetVisualiserThumbnail from '~/assets/images/news/fasset-visualiser.sv
 export type NewsCategory = 'Release' | 'Network' | 'Incident'
 
 export interface NewsLink {
-    /** Defaults to the href's hostname. Set it only when that reads wrongly. */
+    /**
+     * Defaults to the href's hostname. Set it only when that reads wrongly.
+     * Must stay unique across the whole feed, not just within one post: this
+     * is the link's accessible name, and `e2e/routes.spec.ts` locates links
+     * by it. A duplicate makes the link list ambiguous to both screen readers
+     * and `getByRole('link', { name })`.
+     */
     label?: string
     href: string
 }
@@ -39,7 +45,9 @@ export const hostOf = (href: string): string => {
 }
 
 // Dated announcements: things StakeCore shipped, and things that happened on
-// the networks it runs. Order here does not matter — the feed sorts.
+// the networks it runs. The feed sorts by date, so order here only matters as
+// the tiebreak between posts that share a date — `Array#sort` is stable, so
+// two same-dated posts keep this array's relative order in the rendered feed.
 export const newsData: NewsPost[] = [
     {
         id: 'fasset-visualiser',

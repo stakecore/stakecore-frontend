@@ -1,5 +1,11 @@
 @use '../../assets/css/tokens' as t;
 
+// Matches .about-single-area — the gap to the CallToAction below should read
+// the same as it does on the other inner pages.
+.news-area {
+    padding-bottom: 32px;
+}
+
 .news-header {
     max-width: 720px;
     margin-bottom: 48px;

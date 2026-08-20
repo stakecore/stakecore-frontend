@@ -12,7 +12,7 @@ Human URL: <https://stakecore.org/#/news>
 What we have shipped, and what has changed on the networks we run. Newest
 first.
 
-## What lands here
+## About this feed
 
 Three kinds of post. **Release** — software StakeCore has built and published.
 **Network** — a change on one of the networks it runs, such as a client

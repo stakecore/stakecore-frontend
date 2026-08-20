@@ -359,4 +359,18 @@ describe('Formatter.day', () => {
     // guard this would render "1 Jan 1970", which looks like real data.
     expect(Formatter.day(null as never)).toBe(Formatter.NO_VALUE)
   })
+
+  // An unpadded month/day still parses, but as *local* midnight rather than
+  // UTC, so the rendered day depends on the reader's timezone — the same
+  // failure the `timeZone: 'UTC'` option exists to prevent, entering through
+  // a different door.
+  it('returns the placeholder for a non-zero-padded ISO day', () => {
+    expect(Formatter.day('2026-8-20')).toBe(Formatter.NO_VALUE)
+  })
+
+  // The platform normalises this to 2 March instead of rejecting it — a
+  // calendar day that never existed rendering as a plausible one.
+  it('returns the placeholder for a calendar-invalid ISO day', () => {
+    expect(Formatter.day('2026-02-30')).toBe(Formatter.NO_VALUE)
+  })
 })

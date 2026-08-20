@@ -1,5 +1,3 @@
-// @vitest-environment happy-dom
-
 import { describe, it, expect } from 'vitest'
 import { hostOf, newsData, sortedPosts, type NewsPost } from './news'
 
@@ -29,6 +27,10 @@ describe('newsData', () => {
     for (const { date } of newsData) {
       expect(date).toMatch(/^\d{4}-\d{2}-\d{2}$/)
       expect(Number.isNaN(new Date(date).getTime())).toBe(false)
+      // Round-trips to the same string, so a calendar-invalid date like
+      // '2026-02-30' (silently normalised to 2 March) is caught at the data
+      // layer rather than only by Formatter.day's own guard.
+      expect(new Date(date).toISOString().slice(0, 10)).toBe(date)
     }
   })
 

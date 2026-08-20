@@ -15,11 +15,10 @@ Flare, Avalanche, and Songbird are what it carries today, but nothing about it
 is specific to those three: RPC and archive nodes, indexers, relayers, and
 attestation or oracle daemons are the same shape of work, and any network is a
 candidate. Some of what runs on it is our own: tools we build for our own
-operations, published when they're useful to anyone else and announced in
-[the news feed](/news.md). From individual
-holders to protocols, custodians, and treasuries, anyone can delegate or stake
-their native tokens with us, earning rewards with a risk profile close to that
-of simply holding the asset.
+operations, published when they're useful to anyone else and announced in [the
+news feed](/news.md). From individual holders to protocols, custodians, and
+treasuries, anyone can delegate or stake their native tokens with us, earning
+rewards with a risk profile close to that of simply holding the asset.
 
 ## Who we serve
 

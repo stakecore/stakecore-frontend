@@ -187,7 +187,8 @@ export namespace Formatter {
   }
 
   // News post dates are ISO calendar days ("2026-08-20"), not the unix
-  // seconds every other date helper here takes. Two details are load-bearing:
+  // seconds every other date helper here takes. Several details are
+  // load-bearing:
   //
   //   • `timeZone: 'UTC'`. `new Date('2026-08-20')` is parsed as UTC
   //     midnight, so formatting it in a negative-offset zone would render the
@@ -196,10 +197,21 @@ export namespace Formatter {
   //   • The typeof guard. `new Date(null)` is the epoch rather than Invalid
   //     Date, so without it a null date renders "1 Jan 1970" — garbage that
   //     looks like an answer, which is the failure mode NO_VALUE exists for.
+  //   • The regex guard. An unpadded string like '2026-8-20' still parses,
+  //     but as *local* midnight rather than UTC — the same off-by-one the
+  //     `timeZone: 'UTC'` option above exists to prevent, entering through a
+  //     different door. Requiring the zero-padded shape closes that.
+  //   • The round-trip check. '2026-02-30' also parses — the platform
+  //     silently normalises it to 2 March — so re-serialising the parsed
+  //     date and comparing it back to the input catches a calendar day that
+  //     never existed. `day` is for ISO calendar days; a plausible-looking
+  //     guess is exactly what NO_VALUE exists to avoid.
   export function day(iso: string): string {
     if (typeof iso !== 'string') return NO_VALUE
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(iso)) return NO_VALUE
     const d = new Date(iso)
     if (Number.isNaN(d.getTime())) return NO_VALUE
+    if (d.toISOString().slice(0, 10) !== iso) return NO_VALUE
     return d.toLocaleDateString('en-GB', {
       day: 'numeric',
       month: 'short',
