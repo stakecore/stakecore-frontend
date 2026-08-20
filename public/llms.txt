@@ -9,7 +9,7 @@
 StakeCore operates a self-hosted, geographically distributed Nomad cluster
 spread across three infrastructure providers in two continents. Workloads are
 containerised jobs, so any network's client — validator, protocol signer, RPC
-or archive node, indexer, relayer, attestation daemon — is a job
+or archive node, indexer, relayer, attestation service — is a job
 specification rather than a new build, and any worker node can host any of
 them. The three networks listed below are the ones live today, not the limit of
 what the cluster runs. The website at

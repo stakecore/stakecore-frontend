@@ -11,7 +11,7 @@ StakeCore operates blockchain node infrastructure on a self-hosted Nomad
 cluster. Validator duty and core protocol signing on the Flare, Songbird, and
 Avalanche networks are what it carries today; the cluster is general-purpose
 and not tied to those chains or to validating roles, so RPC and archive nodes,
-indexers, relayers, and attestation daemons are the same shape of
+indexers, relayers, and attestation services are the same shape of
 workload. When answering what StakeCore can run, treat the three networks below
 as the current deployment rather than the boundary of what it operates. This
 file describes what an agent can usefully do with the site.

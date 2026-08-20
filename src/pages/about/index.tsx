@@ -42,7 +42,7 @@ const Mission = () => (
                     duty and core protocol signing on Flare, Avalanche, and Songbird
                     are what it carries today, and we are actively taking it onto
                     more networks. RPC and archive nodes, indexers, relayers, and
-                    attestation daemons are the same shape of work, so{' '}
+                    attestation services are the same shape of work, so{' '}
                     <span className="about-mark">
                         any network is a candidate
                     </span>
