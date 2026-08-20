@@ -2,7 +2,7 @@
 title: Sitemap
 description: Every page on stakecore.org, with its markdown mirror, for agents and crawlers that do not execute JavaScript.
 url: https://stakecore.org/sitemap.md
-dateModified: 2026-08-18
+dateModified: 2026-08-20
 ---
 
 # Sitemap
@@ -17,6 +17,7 @@ fragment while its machine-readable mirror is a plain static path.
 | --- | --- | --- |
 | StakeCore | [/index.md](/index.md) | <https://stakecore.org/> |
 | About | [/about.md](/about.md) | <https://stakecore.org/#/about> |
+| News | [/news.md](/news.md) | <https://stakecore.org/#/news> |
 | Contact | [/contact.md](/contact.md) | <https://stakecore.org/#/contact> |
 | Flare Systems Protocol | [/flare/fsp.md](/flare/fsp.md) | <https://stakecore.org/#/flare/fsp> |
 | Songbird Systems Protocol | [/songbird/fsp.md](/songbird/fsp.md) | <https://stakecore.org/#/songbird/fsp> |
