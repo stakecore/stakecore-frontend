@@ -12,6 +12,13 @@ Human URL: <https://stakecore.org/#/news>
 What we have shipped, and what has changed on the networks we run. Newest
 first.
 
+## What lands here
+
+Three kinds of post. **Release** — software StakeCore has built and published.
+**Network** — a change on one of the networks it runs, such as a client
+upgrade or a protocol change. **Incident** — something that went wrong, and
+what was done about it. Every post is listed on this page, newest first.
+
 ## FAsset Visualiser
 
 2026-08-20 · Release
