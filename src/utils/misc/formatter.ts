@@ -186,6 +186,28 @@ export namespace Formatter {
       + ', ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })
   }
 
+  // News post dates are ISO calendar days ("2026-08-20"), not the unix
+  // seconds every other date helper here takes. Two details are load-bearing:
+  //
+  //   • `timeZone: 'UTC'`. `new Date('2026-08-20')` is parsed as UTC
+  //     midnight, so formatting it in a negative-offset zone would render the
+  //     previous day — a post dated the 20th showing as the 19th for every
+  //     reader west of Greenwich.
+  //   • The typeof guard. `new Date(null)` is the epoch rather than Invalid
+  //     Date, so without it a null date renders "1 Jan 1970" — garbage that
+  //     looks like an answer, which is the failure mode NO_VALUE exists for.
+  export function day(iso: string): string {
+    if (typeof iso !== 'string') return NO_VALUE
+    const d = new Date(iso)
+    if (Number.isNaN(d.getTime())) return NO_VALUE
+    return d.toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      timeZone: 'UTC',
+    })
+  }
+
   export function relativeDate(unix: number, n = 1): string {
     // Without this a missing timestamp falls through every unit and reports
     // "0 seconds ago" — an absent value rendered as "just now".

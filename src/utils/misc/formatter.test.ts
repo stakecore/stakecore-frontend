@@ -323,3 +323,29 @@ describe('Formatter.error', () => {
     expect(Formatter.error('insufficient funds for transfer')).toBe('insufficient funds for transfer')
   })
 })
+
+describe('Formatter.day', () => {
+  it('renders an ISO calendar day', () => {
+    expect(Formatter.day('2026-08-20')).toBe('20 Aug 2026')
+    expect(Formatter.day('2026-01-02')).toBe('2 Jan 2026')
+    expect(Formatter.day('2026-12-31')).toBe('31 Dec 2026')
+  })
+
+  // `new Date('2026-08-20')` is UTC midnight. Formatted in a negative-offset
+  // zone without `timeZone: 'UTC'` it renders the *previous* day — a post
+  // dated the 20th showing as the 19th for every reader west of Greenwich.
+  // CI runs in UTC, so this assertion only bites on a developer machine that
+  // is not; the guard proper is the explicit option in the implementation.
+  it('does not shift the day off the end of a month', () => {
+    expect(Formatter.day('2026-03-01')).toBe('1 Mar 2026')
+  })
+
+  it('returns the placeholder for anything unparseable', () => {
+    expect(Formatter.day('not a date')).toBe(Formatter.NO_VALUE)
+    expect(Formatter.day('')).toBe(Formatter.NO_VALUE)
+    expect(Formatter.day(undefined as never)).toBe(Formatter.NO_VALUE)
+    // `new Date(null)` is the epoch, not Invalid Date — without a typeof
+    // guard this would render "1 Jan 1970", which looks like real data.
+    expect(Formatter.day(null as never)).toBe(Formatter.NO_VALUE)
+  })
+})
