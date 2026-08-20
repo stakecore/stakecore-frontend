@@ -1,0 +1,121 @@
+@use '../../assets/css/tokens' as t;
+
+.news-header {
+    max-width: 720px;
+    margin-bottom: 48px;
+}
+
+.news-header-main {
+    // Matches .about-header-main and .contact-header-main exactly — the
+    // three inner-page titles share one scale.
+    font-family: t.$font-display;
+    font-size: 36px;
+    font-weight: t.$weight-extrabold;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    color: var(--heading-color);
+    margin: 0 0 16px;
+
+    @include t.up(md) { font-size: 56px; }
+    @include t.up(lg) { font-size: 72px; }
+}
+
+.news-header-body {
+    font-family: var(--font-sans);
+    font-size: t.$text-sm;
+    line-height: 1.6;
+    color: var(--main-color);
+    margin: 0;
+}
+
+.news-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+}
+
+// Posts are separated by a hairline above rather than boxed in, matching the
+// .about-tile treatment on the about page.
+.news-post {
+    padding-top: 24px;
+    border-top: 1px solid var(--border-subtle);
+    max-width: 720px;
+}
+
+.news-post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.news-post-date {
+    font-family: var(--font-mono);
+    font-size: t.$text-xs;
+    color: var(--main-color);
+}
+
+.news-post-category {
+    font-family: var(--font-sans);
+    font-size: t.$text-xs;
+    font-weight: t.$weight-medium;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--main-color);
+}
+
+.news-post-title {
+    font-family: var(--font-sans);
+    font-size: t.$text-lg;
+    font-weight: t.$weight-semibold;
+    line-height: 1.3;
+    color: var(--heading-color);
+    margin: 0 0 16px;
+}
+
+// The SVG is a 480x300 illustration, not a hero image: stretched full-bleed a
+// band of abstract shapes reads as a divider rather than a picture.
+.news-post-thumbnail {
+    display: block;
+    width: 100%;
+    max-width: 480px;
+    height: auto;
+    margin: 0 0 16px;
+    border-radius: 4px;
+}
+
+.news-post-body {
+    font-family: var(--font-sans);
+    font-size: t.$text-sm;
+    line-height: 1.6;
+    color: var(--main-color);
+    margin: 0;
+}
+
+.news-post-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px 16px;
+    margin: 12px 0 0;
+    font-family: var(--font-sans);
+    font-size: t.$text-sm;
+}
+
+// Element+class, matching a.about-inline-link: the plain class ties on
+// specificity with the global `a:hover { color: inherit }` and loses on load
+// order.
+a.news-post-link {
+    color: var(--heading-color);
+    text-decoration: underline;
+    text-decoration-color: rgba(255, 255, 255, 0.32);
+    text-underline-offset: 0.18em;
+    transition: text-decoration-color 150ms ease-out;
+}
+
+a.news-post-link:hover,
+a.news-post-link:focus-visible {
+    color: var(--heading-color);
+    text-decoration-color: var(--success);
+}
