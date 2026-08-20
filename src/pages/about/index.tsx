@@ -11,6 +11,7 @@ import {
 import InfraConstellation from './infraConstellation'
 import ServerGlobe from './serverGlobe'
 import StackCarousel from './stackCarousel'
+import WhatWeBuild from './whatWeBuild'
 import './about.scss'
 
 
@@ -20,6 +21,7 @@ const About = () => {
             <Mission />
             <Audiences />
             <Stack />
+            <WhatWeBuild />
             <ValueProps />
         </>
     )
@@ -46,7 +48,9 @@ const Mission = () => (
                     <span className="about-mark">
                         any network is a candidate
                     </span>
-                    . From individual holders to protocols, custodians, and
+                    . Some of what runs on it is our own: tools we build for our
+                    own operations, published when they're useful to anyone
+                    else. From individual holders to protocols, custodians, and
                     treasuries, anyone can delegate or stake their native tokens with
                     us, earning rewards with a{' '}
                     <span className="about-mark">
