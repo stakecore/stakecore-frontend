@@ -8,8 +8,9 @@
 
        Each agent is Flare's colour at its Flare end and the XRP mark's grey at
        its XRP end, meeting halfway: the bridge is in the colouring itself, not
-       just in the geometry. Width still varies, because backing capacity does.
-       The wireframe above is the core vault. -->
+       just in the geometry. Width still varies, because backing capacity does,
+       and the ring at each seam carries the agent's status — green for Normal,
+       red for the liquidation states. The wireframe above is the core vault. -->
   <defs>
     <radialGradient id="vaultGlow" cx="50%" cy="50%" r="50%">
       <stop offset="0%" stop-color="#4a90b8" stop-opacity="0.22"/>
@@ -56,13 +57,18 @@
       <rect x="335" y="187" width="26" height="85"/><ellipse cx="348" cy="272" rx="13" ry="4.7"/>
       <rect x="228" y="195" width="42" height="85"/><ellipse cx="249" cy="280" rx="21" ry="7.6"/>
     </g>
-    <!-- the seam where the two halves meet -->
-    <g fill="none" stroke="#cbd5e1" stroke-width="0.9" opacity="0.34">
-      <ellipse cx="207" cy="167" rx="8" ry="2.9"/>
+    <!-- The seam where the two halves meet, and the only rings in the piece.
+         Colour is agent status, as the app's own legend has it: green for
+         Normal, red for the liquidation states. Mixed across the field rather
+         than grouped, because status does not correlate with position. -->
+    <g fill="none" stroke="#5be2a0" stroke-width="1.5" opacity="0.85">
       <ellipse cx="303" cy="172" rx="10" ry="3.6"/>
       <ellipse cx="147" cy="184" rx="15" ry="5.4"/>
-      <ellipse cx="348" cy="187" rx="13" ry="4.7"/>
       <ellipse cx="249" cy="195" rx="21" ry="7.6"/>
+    </g>
+    <g fill="none" stroke="#ff5470" stroke-width="1.5" opacity="0.85">
+      <ellipse cx="207" cy="167" rx="8" ry="2.9"/>
+      <ellipse cx="348" cy="187" rx="13" ry="4.7"/>
     </g>
   </g>
 
@@ -74,15 +80,6 @@
     <ellipse cx="300" cy="99" rx="10" ry="4"/>
   </g>
   <ellipse cx="240" cy="95" rx="150" ry="26" fill="none" stroke="#9fe0c0" stroke-width="0.7" opacity="0.32"/>
-
-  <!-- Mint rims where each agent meets Flare: the "Normal" agent status. -->
-  <g fill="none" stroke="#9fe0c0" stroke-width="1.1" opacity="0.65">
-    <ellipse cx="207" cy="82" rx="8" ry="2.9"/>
-    <ellipse cx="303" cy="87" rx="10" ry="3.6"/>
-    <ellipse cx="147" cy="99" rx="15" ry="5.4"/>
-    <ellipse cx="348" cy="102" rx="13" ry="4.7"/>
-    <ellipse cx="249" cy="109" rx="21" ry="7.6"/>
-  </g>
 
   <!-- Core vault: an open wireframe polyhedron with two orbital rings. -->
   <circle cx="240" cy="36" r="36" fill="url(#vaultGlow)"/>
