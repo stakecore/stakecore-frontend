@@ -331,13 +331,24 @@ describe('Formatter.day', () => {
     expect(Formatter.day('2026-12-31')).toBe('31 Dec 2026')
   })
 
-  // `new Date('2026-08-20')` is UTC midnight. Formatted in a negative-offset
-  // zone without `timeZone: 'UTC'` it renders the *previous* day — a post
-  // dated the 20th showing as the 19th for every reader west of Greenwich.
-  // CI runs in UTC, so this assertion only bites on a developer machine that
-  // is not; the guard proper is the explicit option in the implementation.
+  // `new Date('2026-03-01')` is parsed as UTC midnight. Formatted in a
+  // negative-offset zone (Los Angeles: UTC-8) without `timeZone: 'UTC'`,
+  // `toLocaleDateString` would render the previous day (28 Feb) — a post dated
+  // the 1st showing as the 28th for every reader west of Greenwich. This test
+  // forces the LA timezone to ensure the `timeZone: 'UTC'` guard is actually
+  // pinned, not just surviving because the test environment is already UTC.
   it('does not shift the day off the end of a month', () => {
-    expect(Formatter.day('2026-03-01')).toBe('1 Mar 2026')
+    const previous = process.env.TZ
+    try {
+      process.env.TZ = 'America/Los_Angeles'
+      expect(Formatter.day('2026-03-01')).toBe('1 Mar 2026')
+    } finally {
+      if (previous === undefined) {
+        delete process.env.TZ
+      } else {
+        process.env.TZ = previous
+      }
+    }
   })
 
   it('returns the placeholder for anything unparseable', () => {
