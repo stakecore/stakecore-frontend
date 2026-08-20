@@ -11,6 +11,17 @@
     margin-bottom: 48px;
 }
 
+.news-header-sup {
+    // Matches .about-header-sup and .project-title-sup.
+    font-family: var(--font-sans);
+    font-size: t.$text-xs;
+    font-weight: t.$weight-medium;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--main-color);
+    margin: 0 0 16px;
+}
+
 .news-header-main {
     // Matches .about-header-main and .contact-header-main exactly — the
     // three inner-page titles share one scale.
@@ -24,14 +35,6 @@
 
     @include t.up(md) { font-size: 56px; }
     @include t.up(lg) { font-size: 72px; }
-}
-
-.news-header-body {
-    font-family: var(--font-sans);
-    font-size: t.$text-sm;
-    line-height: 1.6;
-    color: var(--main-color);
-    margin: 0;
 }
 
 .news-feed {

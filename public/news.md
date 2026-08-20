@@ -9,8 +9,7 @@ dateModified: 2026-08-20
 
 Human URL: <https://stakecore.org/#/news>
 
-What we have shipped, and what has changed on the networks we run. Newest
-first.
+What we ship, and what changes. Newest first.
 
 ## About this feed
 
