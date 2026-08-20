@@ -22,7 +22,7 @@ pages rather than freezing numbers that change every 10 to 30 seconds.
 ## Pages
 
 - [StakeCore](/index.md): Delegation totals, delegator counts, and recent on-chain activity across all three networks.
-- [About](/about.md): Who StakeCore serves, how the infrastructure is built, why it is not tied to any particular chain or node role, and why delegation carries a risk profile close to holding.
+- [About](/about.md): Who StakeCore serves, how the infrastructure is built, the software it builds and publishes, why it is not tied to any particular chain or node role, and why delegation carries a risk profile close to holding.
 - [Contact](/contact.md): How to reach the team, including the Telegram channel and the operating company.
 
 ## Protocols
@@ -31,6 +31,15 @@ pages rather than freezing numbers that change every 10 to 30 seconds.
 - [Songbird Systems Protocol](/songbird/fsp.md): The same protocol stack on Songbird, Flare's canary network.
 - [Flare Validator](/flare/validator.md): Snowball consensus staking on Flare, with rewards bound to FSP performance.
 - [Avalanche Validator](/avalanche/validator.md): Snowball consensus staking on Avalanche, rewarded from network inflation.
+
+## Products
+
+Software StakeCore builds and runs in public. These are separate applications
+rather than pages of this site: both are client-rendered, and neither has a
+markdown mirror or a public API.
+
+- [FAsset Visualiser](https://fasset.stakecore.org): Live system view of Flare's FAsset protocol — backing capacity, agent status, and mint and redemption flow as it happens.
+- [FAsset Visualiser on Coston2](https://fasset-coston2.stakecore.org): The same view against the Coston2 test network.
 
 ## Reference
 

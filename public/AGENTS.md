@@ -2,7 +2,7 @@
 title: StakeCore agent guide
 description: How an agent can read StakeCore's delegation data, which public API endpoints exist, what infrastructure StakeCore operates, and what the site does and does not let an agent do.
 url: https://stakecore.org/AGENTS.md
-dateModified: 2026-08-19
+dateModified: 2026-08-20
 ---
 
 # StakeCore agent guide
@@ -70,6 +70,21 @@ curl -s https://backend.stakecore.org/api/fsp/info/flare
 
 Figures are indexed from on-chain state and can also be verified directly
 against the block explorers linked on each protocol page.
+
+## Other StakeCore deployments
+
+StakeCore publishes software of its own on subdomains of `stakecore.org`. These
+are separate applications, not pages of this site.
+
+| Deployment | What it is |
+| --- | --- |
+| <https://fasset.stakecore.org> | FAsset Visualiser — a live system view of Flare's FAsset protocol |
+| <https://fasset-coston2.stakecore.org> | The same visualiser against the Coston2 test network |
+
+Neither has a markdown mirror, a public API, or a machine-readable schema, and
+both are client-rendered — fetching either without executing JavaScript returns
+a shell with nothing to read. They are listed here so an agent that finds the
+URLs in [/llms.txt](/llms.txt) does not spend a request discovering that.
 
 ## What agents cannot do here
 
