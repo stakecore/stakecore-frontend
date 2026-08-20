@@ -1,11 +1,11 @@
 ---
-title: News
+title: What's new
 description: Dated announcements from StakeCore — software released, changes on the networks it runs, and incidents worth recording.
 url: https://stakecore.org/news.md
 dateModified: 2026-08-20
 ---
 
-# News
+# What's new
 
 Human URL: <https://stakecore.org/#/news>
 
