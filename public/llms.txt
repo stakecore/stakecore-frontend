@@ -32,6 +32,15 @@ pages rather than freezing numbers that change every 10 to 30 seconds.
 - [Flare Validator](/flare/validator.md): Snowball consensus staking on Flare, with rewards bound to FSP performance.
 - [Avalanche Validator](/avalanche/validator.md): Snowball consensus staking on Avalanche, rewarded from network inflation.
 
+## Products
+
+Software StakeCore builds and runs in public. These are separate applications
+rather than pages of this site: both are client-rendered, and neither has a
+markdown mirror or a public API.
+
+- [FAsset Visualiser](https://fasset.stakecore.org): Live system view of Flare's FAsset protocol — backing capacity, agent status, and mint and redemption flow as it happens.
+- [FAsset Visualiser on Coston2](https://fasset-coston2.stakecore.org): The same view against the Coston2 test network.
+
 ## Reference
 
 - [Agent guide](/AGENTS.md): What an agent can do with StakeCore, including the public API.

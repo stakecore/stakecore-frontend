@@ -1,6 +1,6 @@
 ---
 title: Your stake, our engine
-description: Who StakeCore serves, how its multi-provider node cluster is built, why it is not tied to any particular chain, and why delegating carries a risk profile close to simply holding the asset.
+description: Who StakeCore serves, how its multi-provider node cluster is built, the software StakeCore builds and publishes, why it is not tied to any particular chain, and why delegating carries a risk profile close to simply holding the asset.
 url: https://stakecore.org/about.md
 dateModified: 2026-08-20
 ---
@@ -14,7 +14,9 @@ orchestrate, and monitor ourselves. Validator duty and core protocol signing on
 Flare, Avalanche, and Songbird are what it carries today, but nothing about it
 is specific to those three: RPC and archive nodes, indexers, relayers, and
 attestation or oracle daemons are the same shape of work, and any network is a
-candidate. From individual holders to protocols, custodians, and treasuries,
+candidate. Some of what runs on it is our own: tools we build for our own
+operations, published when they're useful to anyone else. From individual
+holders to protocols, custodians, and treasuries,
 anyone can delegate or stake their native tokens with us, earning rewards with
 a risk profile close to that of simply holding the asset.
 
@@ -76,6 +78,23 @@ but nothing reaches the cluster without an engineer approving it.
 | Delivery | Docker, GitHub Actions |
 | Hosting | OVH, Hetzner, GitHub Pages |
 | Alerting and triage | Telegram, Claude |
+
+## What we build
+
+The cluster runs our own software too.
+
+**FAsset Visualiser.** A live system view of Flare's FAsset protocol. Each
+FAsset — FXRP, FBTC, FDOGE — is drawn as a tunnel whose width is its total
+backing capacity, split between minted backing and free capacity, with the
+agents behind it coloured by status and every mint and redemption flowing
+through as it happens. A second deployment runs the same view against the
+Coston2 test network.
+
+- Flare: <https://fasset.stakecore.org>
+- Coston2 testnet: <https://fasset-coston2.stakecore.org>
+
+Both are client-rendered applications with no markdown mirror and no public
+API — there is nothing there for an agent to read.
 
 ## Why StakeCore
 
