@@ -40,15 +40,13 @@ const Mission = () => (
                     StakeCore runs blockchain node infrastructure — a redundant
                     cluster we build, orchestrate, and monitor ourselves. Validator
                     duty and core protocol signing on Flare, Avalanche, and Songbird
-                    are what it carries today, but nothing about it is specific to
-                    those three: RPC and archive nodes, indexers, relayers, and
-                    attestation or oracle daemons are the same shape of work, and{' '}
+                    are what it carries today, and we are actively taking it onto
+                    more networks. RPC and archive nodes, indexers, relayers, and
+                    attestation daemons are the same shape of work, so{' '}
                     <span className="about-mark">
                         any network is a candidate
                     </span>
-                    . Some of what runs on it is our own: tools we build for our
-                    own operations, published when they're useful to anyone
-                    else. From individual holders to protocols, custodians, and
+                    . From individual holders to protocols, custodians, and
                     treasuries, anyone can delegate or stake their native tokens with
                     us, earning rewards with a{' '}
                     <span className="about-mark">
