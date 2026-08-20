@@ -202,7 +202,7 @@ same pinning rule as before, for the same reason.
     category: 'Release',
     title: 'FAsset Visualiser',
     thumbnail: fassetVisualiserThumbnail,
-    body: "A live system view of Flare's FAsset protocol. Each FAsset — FXRP, FBTC, FDOGE — is drawn as a tunnel whose width is its total backing capacity, split between minted backing and free capacity, with the agents behind it coloured by status and every mint and redemption flowing through as it happens. A second deployment runs the same view against the Coston2 test network.",
+    body: "A live 3D view of Flare's FAsset protocol. Each agent backing FXRP is drawn as a tunnel whose width is its total backing capacity, split between minted backing and free capacity and coloured by the agent's status, with every mint and redeem travelling through it as it happens. Every figure in the scene is rendered live from protocol state, not from a snapshot. A second deployment runs the same view against the Coston2 test network.",
     links: [
         { href: 'https://fasset.stakecore.org' },
         { label: 'Coston2 testnet', href: 'https://fasset-coston2.stakecore.org' },

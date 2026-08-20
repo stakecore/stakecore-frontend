@@ -78,7 +78,7 @@ are separate applications, not pages of this site.
 
 | Deployment | What it is |
 | --- | --- |
-| <https://fasset.stakecore.org> | FAsset 3D Visualiser — a live system view of Flare's FAsset protocol |
+| <https://fasset.stakecore.org> | FAsset 3D Visualiser — a live 3D view of the FXRP agents backing Flare's FAsset protocol |
 | <https://fasset-coston2.stakecore.org> | The same visualiser against the Coston2 test network |
 
 Neither has a markdown mirror, a public API, or a machine-readable schema, and

@@ -61,6 +61,15 @@ Next.js SPA and a non-JS fetch sees only `FXRP — awaiting snapshot…`:
 - It has a legend panel, a minting-cap banner, and honours
   `prefers-reduced-motion`.
 
+**Corrected 2026-08-20, by the author.** Two of the readings above are wrong,
+and both came from inferring the product from its bundle strings rather than
+from anyone who built it. A tunnel is an **agent**, not an FAsset; and the
+deployment shows **FXRP only**, not FXRP/FBTC/FDOGE — those symbols appear in
+the bundle because the code supports them, not because the view renders them.
+The corrected description is the one pinned in
+[2026-08-20-news-page-design.md](2026-08-20-news-page-design.md). Treat this
+section as a record of what was inferred, not as a description of the product.
+
 ## Architecture
 
 ### Files
