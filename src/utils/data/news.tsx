@@ -53,12 +53,12 @@ export const newsData: NewsPost[] = [
         id: 'fasset-visualiser',
         date: '2026-08-20',
         category: 'Release',
-        title: 'FAsset Visualiser',
+        title: 'FAsset 3D Visualiser',
         thumbnail: fassetVisualiserThumbnail,
         body: "A live system view of Flare's FAsset protocol. Each FAsset — FXRP, FBTC, FDOGE — is drawn as a tunnel whose width is its total backing capacity, split between minted backing and free capacity, with the agents behind it coloured by status and every mint and redemption flowing through as it happens. A second deployment runs the same view against the Coston2 test network.",
         links: [
             { href: 'https://fasset.stakecore.org' },
-            { label: 'Coston2 testnet', href: 'https://fasset-coston2.stakecore.org' },
+            { href: 'https://fasset-coston2.stakecore.org' },
         ],
     },
 ]

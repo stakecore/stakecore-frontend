@@ -39,8 +39,8 @@ Software StakeCore builds and runs in public. These are separate applications
 rather than pages of this site: both are client-rendered, and neither has a
 markdown mirror or a public API.
 
-- [FAsset Visualiser](https://fasset.stakecore.org): Live system view of Flare's FAsset protocol — backing capacity, agent status, and mint and redemption flow as it happens.
-- [FAsset Visualiser on Coston2](https://fasset-coston2.stakecore.org): The same view against the Coston2 test network.
+- [FAsset 3D Visualiser](https://fasset.stakecore.org): Live system view of Flare's FAsset protocol — backing capacity, agent status, and mint and redemption flow as it happens.
+- [FAsset 3D Visualiser on Coston2](https://fasset-coston2.stakecore.org): The same view against the Coston2 test network.
 
 ## Reference
 

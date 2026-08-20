@@ -35,21 +35,21 @@ test('unknown paths render the 404 page', async ({ page, consoleErrors }) => {
   expect(consoleErrors).toEqual([])
 })
 
-test('/news links out to the FAsset Visualiser', async ({ page, consoleErrors }) => {
+test('/news links out to the FAsset 3D Visualiser', async ({ page, consoleErrors }) => {
   await page.goto('/#/news')
 
   // Scoped to this post's own .news-post rather than the whole page: a link
-  // label like "Coston2 testnet" is only unique within a post (see the
-  // comment on NewsLink['label'] in src/utils/data/news.tsx), and a second
-  // post reusing it would otherwise make these locators ambiguous.
-  const post = page.locator('.news-post', { has: page.getByRole('heading', { name: 'FAsset Visualiser' }) })
+  // label is only unique within a post (see the comment on NewsLink['label']
+  // in src/utils/data/news.tsx), and a second post linking the same host
+  // would otherwise make these locators ambiguous.
+  const post = page.locator('.news-post', { has: page.getByRole('heading', { name: 'FAsset 3D Visualiser' }) })
 
   const link = post.getByRole('link', { name: 'fasset.stakecore.org' })
   await expect(link).toHaveAttribute('href', 'https://fasset.stakecore.org')
   await expect(link).toHaveAttribute('target', '_blank')
   await expect(link).toHaveAttribute('rel', 'noopener noreferrer')
 
-  const testnet = post.getByRole('link', { name: 'Coston2 testnet' })
+  const testnet = post.getByRole('link', { name: 'fasset-coston2.stakecore.org' })
   await expect(testnet).toHaveAttribute('href', 'https://fasset-coston2.stakecore.org')
 
   // Presence of the anchors only — never a request to either host. External

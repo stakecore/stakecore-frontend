@@ -19,7 +19,7 @@ Three kinds of post. **Release** — software StakeCore has built and published.
 upgrade or a protocol change. **Incident** — something that went wrong, and
 what was done about it. Every post is listed on this page, newest first.
 
-## FAsset Visualiser
+## FAsset 3D Visualiser
 
 2026-08-20 · Release
 
@@ -29,8 +29,8 @@ between minted backing and free capacity, with the agents behind it coloured
 by status and every mint and redemption flowing through as it happens. A
 second deployment runs the same view against the Coston2 test network.
 
-- Flare: <https://fasset.stakecore.org>
-- Coston2 testnet: <https://fasset-coston2.stakecore.org>
+- <https://fasset.stakecore.org>
+- <https://fasset-coston2.stakecore.org>
 
 Both are client-rendered applications with no markdown mirror and no public
 API — there is nothing there for an agent to read.
