@@ -41,13 +41,14 @@
 
   <!-- Agents, drawn back to front. -->
   <g>
-    <!-- Flare half (upper) -->
+    <!-- Flare half (upper), capped with the same ellipse the XRP end gets so
+         both ends of an agent are round. -->
     <g fill="#b02a4e" opacity="0.46">
-      <rect x="199" y="82" width="16" height="85"/>
-      <rect x="293" y="87" width="20" height="85"/>
-      <rect x="132" y="99" width="30" height="85"/>
-      <rect x="335" y="102" width="26" height="85"/>
-      <rect x="228" y="109" width="42" height="86"/>
+      <rect x="199" y="82" width="16" height="85"/><ellipse cx="207" cy="82" rx="8" ry="2.9"/>
+      <rect x="293" y="87" width="20" height="85"/><ellipse cx="303" cy="87" rx="10" ry="3.6"/>
+      <rect x="132" y="99" width="30" height="85"/><ellipse cx="147" cy="99" rx="15" ry="5.4"/>
+      <rect x="335" y="102" width="26" height="85"/><ellipse cx="348" cy="102" rx="13" ry="4.7"/>
+      <rect x="228" y="109" width="42" height="86"/><ellipse cx="249" cy="109" rx="21" ry="7.6"/>
     </g>
     <!-- XRP half (lower), in the grey of the XRP mark below -->
     <g fill="#9aa0a8" opacity="0.34">
