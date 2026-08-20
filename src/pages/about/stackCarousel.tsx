@@ -11,7 +11,7 @@ import './stackCarousel.scss'
 //
 //   • Only software we actually run. This sits under a heading that sells
 //     the cluster; a logo here is a claim about production, not a wish list.
-//   • The groups are the point. A flat row of twenty logos says nothing —
+//   • The groups are the point. A flat row of twenty-one logos says nothing —
 //     "HAProxy balances internally, Traefik publishes outward" is the
 //     information, and the group label is what carries it.
 
@@ -80,11 +80,11 @@ const RUNTIME_GROUPS: StackGroup[] = [
     label: 'Public edge',
     items: [
       { name: 'Traefik', slug: 'traefikproxy' },
-      // The one entry that is a service we consume rather than software we
-      // run: Traefik's ACME resolver issues these. GitHub Pages under Hosting
-      // is the same kind of entry. It belongs beside Traefik because the
-      // resolver *is* Traefik's — the certificates are a property of this
-      // edge rather than a fourth item on a list.
+      // A service we consume rather than software we run: Traefik's ACME
+      // resolver issues these. GitHub Pages under Hosting and Sentry under
+      // Observability are the same kind of entry. It belongs beside Traefik
+      // because the resolver *is* Traefik's — the certificates are a property
+      // of this edge rather than a third item on a list.
       { name: "Let's Encrypt", slug: 'letsencrypt' },
     ],
   },
@@ -94,10 +94,19 @@ const RUNTIME_GROUPS: StackGroup[] = [
       { name: 'Grafana', slug: 'grafana' },
       { name: 'Prometheus', slug: 'prometheus' },
       { name: 'Loki', slug: 'loki' },
-      // Last because it is the one that feeds Loki: a per-node shipper that
-      // tails every container's output. Without it the group names a log
-      // store nothing writes to.
+      // Directly after Loki because it is the one that feeds it: a per-node
+      // shipper that tails every container's output. Without it the group
+      // names a log store nothing writes to.
       { name: 'Alloy', slug: 'alloy' },
+      // Last for two reasons. It is the one signal that arrives rather than
+      // being collected — Prometheus scrapes and Alloy tails, but an
+      // exception reports itself, from inside the process that failed. And
+      // it is the only thing in this group we do not run: sentry.io, so the
+      // reports survive the cluster being the thing that is broken, which is
+      // the case self-hosting it would not cover. Same kind of entry as
+      // Let's Encrypt and GitHub Pages. /api/debug-sentry in the backend's
+      // schema exists to prove the path still works.
+      { name: 'Sentry', slug: 'sentry' },
     ],
   },
 ]
@@ -208,7 +217,7 @@ const BOTTOM_SPEED = -21
 // A duplicated track only wraps seamlessly when one copy is at least as wide
 // as the viewport: scrollLeft stops at scrollWidth - clientWidth, so with two
 // copies of a narrower run the wrap point sits past the end of the scroll
-// range and can never be reached. These rows are short — thirteen items and
+// range and can never be reached. These rows are short — fourteen items and
 // seven — so at desktop widths two copies is exactly that failure. Count the
 // copies needed instead of assuming, and re-count on resize.
 const MIN_COPIES = 2

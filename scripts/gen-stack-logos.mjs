@@ -5,9 +5,9 @@
 //
 // Source is Simple Icons (CC0-1.0), which ships every brand as a single
 // 24×24 path plus its official hex. We inline the path data rather than
-// depend on the package or ship 19 separate SVG files: the whole set is
-// ~29kB of string in a lazy route chunk, against 19 extra requests and a
-// 3400-icon dependency for the nineteen we use. The logos themselves remain trademarks of their
+// depend on the package or ship 20 separate SVG files: the whole set is
+// ~30kB of string in a lazy route chunk, against 20 extra requests and a
+// 3400-icon dependency for the twenty we use. The logos themselves remain trademarks of their
 // owners; naming the software you run is nominative use.
 //
 // A single path is also what makes the carousel's hover treatment work.
@@ -38,6 +38,7 @@ const SLUGS = [
   'traefikproxy',
   'prometheus',
   'grafana',
+  'sentry',
   'docker',
   'postgresql',
   'redis',

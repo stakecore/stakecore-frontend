@@ -74,7 +74,7 @@ but nothing reaches the cluster without an engineer approving it.
 | Data | PostgreSQL, Redis |
 | Private network | WireGuard, HAProxy |
 | Public edge | Traefik, Let's Encrypt |
-| Observability | Grafana, Prometheus, Loki, Alloy |
+| Observability | Grafana, Prometheus, Loki, Alloy, Sentry |
 | Delivery | Docker, GitHub Actions |
 | Hosting | OVH, Hetzner, GitHub Pages |
 | Alerting and triage | Telegram, Claude |
