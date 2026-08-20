@@ -2,7 +2,7 @@
 title: Your stake, our engine
 description: Who StakeCore serves, how its multi-provider node cluster is built, why it is not tied to any particular chain, and why delegating carries a risk profile close to simply holding the asset.
 url: https://stakecore.org/about.md
-dateModified: 2026-08-19
+dateModified: 2026-08-20
 ---
 
 # Your stake, our engine
@@ -70,7 +70,8 @@ but nothing reaches the cluster without an engineer approving it.
 | --- | --- |
 | Orchestration and secrets | Nomad, Consul, Vault |
 | Data | PostgreSQL |
-| Networking and ingress | WireGuard, HAProxy, Traefik, Let's Encrypt |
+| Private network | WireGuard, HAProxy |
+| Public edge | Traefik, Let's Encrypt |
 | Observability | Grafana, Prometheus, Loki, Alloy |
 | Delivery | Docker, GitHub Actions |
 | Hosting | OVH, Hetzner, GitHub Pages |

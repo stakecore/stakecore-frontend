@@ -54,17 +54,29 @@ const RUNTIME_GROUPS: StackGroup[] = [
     ],
   },
   {
-    // Ordered outside-in, matching the prose above the carousel: between
-    // sites, then inside the cluster, then out to the public — and last the
-    // certificates that public edge is served under.
-    label: 'Networking & ingress',
+    // Ordered outside-in, matching the prose above the carousel: between the
+    // sites, then inside the cluster. Split from the public edge below rather
+    // than filed with it under one networking label — the boundary between
+    // what only the cluster can reach and what anyone can is the information
+    // here, and a label spanning both erases exactly that.
+    label: 'Private network',
     items: [
       { name: 'WireGuard', slug: 'wireguard' },
       { name: 'HAProxy' },
+    ],
+  },
+  {
+    // Named for the job, not the layer, like every other group. 'Ingress'
+    // would describe HAProxy too, which is the one distinction this pair
+    // exists to draw.
+    label: 'Public edge',
+    items: [
       { name: 'Traefik', slug: 'traefikproxy' },
       // The one entry that is a service we consume rather than software we
       // run: Traefik's ACME resolver issues these. GitHub Pages under Hosting
-      // is the same kind of entry.
+      // is the same kind of entry. It belongs beside Traefik because the
+      // resolver *is* Traefik's — the certificates are a property of this
+      // edge rather than a fourth item on a list.
       { name: "Let's Encrypt", slug: 'letsencrypt' },
     ],
   },
