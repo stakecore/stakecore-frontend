@@ -37,14 +37,6 @@
     @include t.up(lg) { font-size: 72px; }
 }
 
-.news-header-body {
-    font-family: var(--font-sans);
-    font-size: t.$text-sm;
-    line-height: 1.6;
-    color: var(--main-color);
-    margin: 0;
-}
-
 .news-feed {
     display: flex;
     flex-direction: column;

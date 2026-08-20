@@ -9,8 +9,6 @@ dateModified: 2026-08-20
 
 Human URL: <https://stakecore.org/#/news>
 
-What we ship, and what changes. Newest first.
-
 ## About this feed
 
 Three kinds of post. **Release** — software StakeCore has built and published.

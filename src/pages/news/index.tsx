@@ -11,9 +11,6 @@ const News = () => (
             <header className="news-header">
                 <p className="news-header-sup">News</p>
                 <h1 className="news-header-main">What's new</h1>
-                <p className="news-header-body">
-                    What we ship, and what changes.
-                </p>
             </header>
 
             <div className="news-feed">
