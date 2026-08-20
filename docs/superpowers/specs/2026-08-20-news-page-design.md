@@ -271,8 +271,16 @@ worth knowing before adding a future route.
 
 `public/news.md` carries frontmatter (`title`, `description`, `url`,
 `dateModified`) and then one `##` section per post, each giving the date, the
-category, the body, and the links. Its `dateModified` is the date of the most
-recent post, and moves whenever a post is added.
+category, the body, and the links.
+
+Its `dateModified` is **the day the file was last edited**, which is not the
+same thing as the newest post's date — a post may be backdated, and a typo fix
+touches the file without adding a post. An earlier draft of this spec said the
+two tracked each other; that was wrong, and following it would have stamped the
+mirror with a past date on a day it changed, which is exactly the staleness
+`CLAUDE.md` names as its one uncatchable failure. `e2e/agentReadability.spec.ts`
+pins `dateModified` against the file's `<lastmod>` in `sitemap.xml`, so the two
+copies cannot drift apart even though neither is checked for being correct.
 
 `public/sitemap.xml` gains a `<loc>` for `https://stakecore.org/news.md`. This
 is consistent with the constraint as reworded on the previous branch: no

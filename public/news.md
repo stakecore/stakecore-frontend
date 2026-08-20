@@ -21,7 +21,7 @@ what was done about it. Every post is listed on this page, newest first.
 
 ## FAsset 3D Visualiser
 
-2026-08-20 · Release
+2026-05-11 · Release
 
 A live 3D view of Flare's FAsset protocol. Each agent backing FXRP is drawn
 as a tunnel whose width is its total backing capacity, split between minted

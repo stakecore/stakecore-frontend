@@ -51,7 +51,7 @@ export const hostOf = (href: string): string => {
 export const newsData: NewsPost[] = [
     {
         id: 'fasset-visualiser',
-        date: '2026-08-20',
+        date: '2026-05-11',
         category: 'Release',
         title: 'FAsset 3D Visualiser',
         thumbnail: fassetVisualiserThumbnail,
