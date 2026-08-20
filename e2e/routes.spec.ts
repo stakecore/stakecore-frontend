@@ -34,3 +34,19 @@ test('unknown paths render the 404 page', async ({ page, consoleErrors }) => {
 
   expect(consoleErrors).toEqual([])
 })
+
+test('/about links out to the FAsset Visualiser', async ({ page, consoleErrors }) => {
+  await page.goto('/#/about')
+
+  const link = page.getByRole('link', { name: 'fasset.stakecore.org' })
+  await expect(link).toHaveAttribute('href', 'https://fasset.stakecore.org')
+  await expect(link).toHaveAttribute('target', '_blank')
+  await expect(link).toHaveAttribute('rel', 'noopener noreferrer')
+
+  const testnet = page.getByRole('link', { name: 'FAsset Visualiser on Coston2 testnet' })
+  await expect(testnet).toHaveAttribute('href', 'https://fasset-coston2.stakecore.org')
+
+  // Presence of the anchors only — never a request to either host. External
+  // uptime must not be able to redden this repo's CI.
+  expect(consoleErrors).toEqual([])
+})
