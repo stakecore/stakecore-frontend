@@ -2,15 +2,14 @@
   <!-- Two networks, bridged by agents.
 
        The upper disk is Flare, carrying its mark; the lower disk is XRP,
-       carrying its own. The tunnels are the agents, and every one of them
-       spans the full distance between the two — that connection is the whole
-       point of the object, and a tunnel stopping in mid-air would describe
-       nothing.
+       carrying its own. The five tunnels are the agents, and every one spans
+       the full distance between the two — that connection is the point of the
+       object, and a tunnel stopping in mid-air would describe nothing.
 
-       What varies between tunnels is what actually differs between agents:
-       width is total backing capacity, and the fill line is where minted
-       backing (dark, below) gives way to free capacity (lit, above). The
-       wireframe above is the core vault. -->
+       Each agent is Flare's colour at its Flare end and the XRP mark's grey at
+       its XRP end, meeting halfway: the bridge is in the colouring itself, not
+       just in the geometry. Width still varies, because backing capacity does.
+       The wireframe above is the core vault. -->
   <defs>
     <radialGradient id="vaultGlow" cx="50%" cy="50%" r="50%">
       <stop offset="0%" stop-color="#4a90b8" stop-opacity="0.22"/>
@@ -39,49 +38,31 @@
   </g>
   <ellipse cx="240" cy="265" rx="150" ry="28" fill="none" stroke="#7d9bba" stroke-width="0.9" opacity="0.45"/>
 
-  <!-- Agents. Each spans Flare to XRP; the fill line is what differs. -->
+  <!-- Agents, drawn back to front. -->
   <g>
-    <!-- free capacity (above the fill line) -->
-    <g fill="#c9385f" opacity="0.32">
-      <rect x="245" y="79" width="20" height="122"/>
-      <rect x="174" y="81" width="11" height="110"/>
-      <rect x="305" y="85" width="13" height="93"/>
-      <rect x="124" y="87" width="16" height="77"/>
-      <rect x="215" y="90" width="14" height="25"/>
-      <rect x="352" y="91" width="10" height="102"/>
-      <rect x="276" y="98" width="30" height="43"/>
-      <rect x="133" y="99" width="28" height="48"/>
-      <rect x="331" y="103" width="22" height="71"/>
-      <rect x="171" y="104" width="36" height="86"/>
-      <rect x="223" y="109" width="40" height="65"/>
+    <!-- Flare half (upper) -->
+    <g fill="#b02a4e" opacity="0.46">
+      <rect x="199" y="82" width="16" height="85"/>
+      <rect x="293" y="87" width="20" height="85"/>
+      <rect x="132" y="99" width="30" height="85"/>
+      <rect x="335" y="102" width="26" height="85"/>
+      <rect x="228" y="109" width="42" height="86"/>
     </g>
-    <!-- minted backing (below the fill line) -->
-    <g fill="#2e1a24" opacity="0.9">
-      <rect x="245" y="201" width="20" height="47"/><ellipse cx="255" cy="248" rx="10" ry="3.6"/>
-      <rect x="174" y="191" width="11" height="59"/><ellipse cx="180" cy="250" rx="5.5" ry="2"/>
-      <rect x="305" y="178" width="13" height="76"/><ellipse cx="312" cy="254" rx="6.5" ry="2.3"/>
-      <rect x="124" y="164" width="16" height="93"/><ellipse cx="132" cy="257" rx="8" ry="2.9"/>
-      <rect x="215" y="115" width="14" height="144"/><ellipse cx="222" cy="259" rx="7" ry="2.5"/>
-      <rect x="352" y="193" width="10" height="68"/><ellipse cx="357" cy="261" rx="5" ry="1.8"/>
-      <rect x="276" y="141" width="30" height="127"/><ellipse cx="291" cy="268" rx="15" ry="5.4"/>
-      <rect x="133" y="147" width="28" height="122"/><ellipse cx="147" cy="269" rx="14" ry="5"/>
-      <rect x="331" y="174" width="22" height="99"/><ellipse cx="342" cy="273" rx="11" ry="4"/>
-      <rect x="171" y="190" width="36" height="85"/><ellipse cx="189" cy="275" rx="18" ry="6.5"/>
-      <rect x="223" y="174" width="40" height="106"/><ellipse cx="243" cy="280" rx="20" ry="7.2"/>
+    <!-- XRP half (lower), in the grey of the XRP mark below -->
+    <g fill="#9aa0a8" opacity="0.34">
+      <rect x="199" y="167" width="16" height="84"/><ellipse cx="207" cy="251" rx="8" ry="2.9"/>
+      <rect x="293" y="172" width="20" height="85"/><ellipse cx="303" cy="257" rx="10" ry="3.6"/>
+      <rect x="132" y="184" width="30" height="85"/><ellipse cx="147" cy="269" rx="15" ry="5.4"/>
+      <rect x="335" y="187" width="26" height="85"/><ellipse cx="348" cy="272" rx="13" ry="4.7"/>
+      <rect x="228" y="195" width="42" height="85"/><ellipse cx="249" cy="280" rx="21" ry="7.6"/>
     </g>
-    <!-- the fill line: where minted backing gives way to free capacity -->
-    <g fill="none" stroke="#ff7fa3" stroke-width="1" opacity="0.72">
-      <ellipse cx="255" cy="201" rx="10" ry="3.6"/>
-      <ellipse cx="180" cy="191" rx="5.5" ry="2"/>
-      <ellipse cx="312" cy="178" rx="6.5" ry="2.3"/>
-      <ellipse cx="132" cy="164" rx="8" ry="2.9"/>
-      <ellipse cx="222" cy="115" rx="7" ry="2.5"/>
-      <ellipse cx="357" cy="193" rx="5" ry="1.8"/>
-      <ellipse cx="291" cy="141" rx="15" ry="5.4"/>
-      <ellipse cx="147" cy="147" rx="14" ry="5"/>
-      <ellipse cx="342" cy="174" rx="11" ry="4"/>
-      <ellipse cx="189" cy="190" rx="18" ry="6.5"/>
-      <ellipse cx="243" cy="174" rx="20" ry="7.2"/>
+    <!-- the seam where the two halves meet -->
+    <g fill="none" stroke="#cbd5e1" stroke-width="0.9" opacity="0.34">
+      <ellipse cx="207" cy="167" rx="8" ry="2.9"/>
+      <ellipse cx="303" cy="172" rx="10" ry="3.6"/>
+      <ellipse cx="147" cy="184" rx="15" ry="5.4"/>
+      <ellipse cx="348" cy="187" rx="13" ry="4.7"/>
+      <ellipse cx="249" cy="195" rx="21" ry="7.6"/>
     </g>
   </g>
 
@@ -95,18 +76,12 @@
   <ellipse cx="240" cy="95" rx="150" ry="26" fill="none" stroke="#9fe0c0" stroke-width="0.7" opacity="0.32"/>
 
   <!-- Mint rims where each agent meets Flare: the "Normal" agent status. -->
-  <g fill="none" stroke="#9fe0c0" stroke-width="1" opacity="0.62">
-    <ellipse cx="255" cy="79" rx="10" ry="3.6"/>
-    <ellipse cx="180" cy="81" rx="5.5" ry="2"/>
-    <ellipse cx="312" cy="85" rx="6.5" ry="2.3"/>
-    <ellipse cx="132" cy="87" rx="8" ry="2.9"/>
-    <ellipse cx="222" cy="90" rx="7" ry="2.5"/>
-    <ellipse cx="357" cy="91" rx="5" ry="1.8"/>
-    <ellipse cx="291" cy="98" rx="15" ry="5.4"/>
-    <ellipse cx="147" cy="99" rx="14" ry="5"/>
-    <ellipse cx="342" cy="103" rx="11" ry="4"/>
-    <ellipse cx="189" cy="104" rx="18" ry="6.5"/>
-    <ellipse cx="243" cy="109" rx="20" ry="7.2"/>
+  <g fill="none" stroke="#9fe0c0" stroke-width="1.1" opacity="0.65">
+    <ellipse cx="207" cy="82" rx="8" ry="2.9"/>
+    <ellipse cx="303" cy="87" rx="10" ry="3.6"/>
+    <ellipse cx="147" cy="99" rx="15" ry="5.4"/>
+    <ellipse cx="348" cy="102" rx="13" ry="4.7"/>
+    <ellipse cx="249" cy="109" rx="21" ry="7.6"/>
   </g>
 
   <!-- Core vault: an open wireframe polyhedron with two orbital rings. -->
