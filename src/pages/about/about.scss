@@ -244,34 +244,3 @@ a.about-inline-link:focus-visible {
     color: var(--main-color);
     margin: 0;
 }
-
-// The outbound links on a product tile. Sized down from the body copy so the
-// row reads as an appendix to the tile rather than a second paragraph.
-.about-product-links {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 6px 16px;
-    margin: 12px 0 0;
-    font-family: var(--font-sans);
-    font-size: t.$text-sm;
-}
-
-// Secondary deployments sit below the canonical one in weight. Same
-// element+class specificity trick as a.about-inline-link above: plain
-// `.about-product-link-alt:hover` ties with the global
-// `a:hover { color: inherit }` and would lose on load order.
-a.about-product-link-alt {
-    color: var(--main-color);
-    font-size: t.$text-xs;
-    text-decoration: underline;
-    text-decoration-color: rgba(255, 255, 255, 0.18);
-    text-underline-offset: 0.18em;
-    transition: text-decoration-color 150ms ease-out;
-}
-
-a.about-product-link-alt:hover,
-a.about-product-link-alt:focus-visible {
-    color: var(--heading-color);
-    text-decoration-color: var(--success);
-}

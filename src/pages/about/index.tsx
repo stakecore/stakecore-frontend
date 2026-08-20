@@ -11,7 +11,6 @@ import {
 import InfraConstellation from './infraConstellation'
 import ServerGlobe from './serverGlobe'
 import StackCarousel from './stackCarousel'
-import WhatWeBuild from './whatWeBuild'
 import './about.scss'
 
 
@@ -21,7 +20,6 @@ const About = () => {
             <Mission />
             <Audiences />
             <Stack />
-            <WhatWeBuild />
             <ValueProps />
         </>
     )
