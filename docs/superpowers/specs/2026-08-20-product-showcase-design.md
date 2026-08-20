@@ -27,7 +27,7 @@ becoming a top-level nav entry, a `/products` route, or a home-page strip.
 | Mainnet vs testnet | One entry, canonical link plus a labelled secondary deployment |
 | New route | None |
 | New markdown mirror | None. The section is mirrored inside `about.md` |
-| `sitemap.xml` / `sitemap.md` | Unchanged — see "Why the sitemaps get nothing" |
+| `sitemap.xml` / `sitemap.md` | No new `<loc>` entries — see "Why the sitemaps get nothing" |
 
 Two alternatives were considered and rejected:
 
@@ -215,10 +215,12 @@ Four choices in that markup are load-bearing:
   tiles carry no hover state deliberately — a hover response on static text
   reads as an affordance and invites clicks that go nowhere. A link inside a
   tile is a real affordance; the tile stays a tile.
-- **`.about-grid` without `--two`.** At `md` the base grid is three columns; a
-  single entry in the two-column variant reads as a broken pair, while in the
-  three-column one it reads as the first of a row. Revisit at two or four
-  entries.
+- **`.about-grid` with `--two`.** At the `md` breakpoint the base grid is three
+  columns, and a single entry there is squeezed into a sliver — title
+  wrapping, body reflowing to a handful of characters per line, links
+  stacking instead of sharing a row. The two-column variant gives a lone
+  entry enough width for the title and links to each hold one line. Revisit
+  at three or four entries.
 
 ### Placement
 
@@ -277,10 +279,10 @@ with no explanation. Preventing that wasted round trip is what `AGENTS.md` is
 for; the file already does the same job for the main site under *Reading the
 site*. Bump its `dateModified` too.
 
-### Why the sitemaps get nothing
+### Why the sitemaps get no new entry
 
 `sitemap.xml` and `sitemap.md` enumerate this site's own routes and their
-mirrors. Two reasons not to add the visualiser:
+mirrors. Two reasons not to add a `<loc>` for the visualiser:
 
 - A cross-host `<loc>` is ignored or rejected by crawlers under the sitemaps
   protocol unless the host is cross-submitted, so the entry would be inert at
@@ -290,6 +292,11 @@ mirrors. Two reasons not to add the visualiser:
 
 If the visualiser warrants a sitemap, it warrants its own, served from its own
 host.
+
+That reasoning bars only *new* entries. It says nothing about the existing
+ones: `AGENTS.md` gets a new entry recording the visualiser (see below), which
+changes its content, so its `<lastmod>` in `sitemap.xml` must be bumped to
+match — same as any other mirror edited on this branch.
 
 ## Testing
 

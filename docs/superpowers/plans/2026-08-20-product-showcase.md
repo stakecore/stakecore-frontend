@@ -14,7 +14,7 @@
 
 - **No nav entry.** Do not touch `src/utils/data/menu.ts` or `src/components/sections/footer.tsx`. This section is reachable only from `/about`.
 - **No new route and no new markdown mirror.** Do not add a `/products` route or a `public/products.md`.
-- **`public/sitemap.xml` and `public/sitemap.md` must not change.** They enumerate this site's own routes; a cross-host `<loc>` is inert and `sitemap.md` has a *Markdown mirror* column a third-party host cannot fill.
+- **No new `<loc>` entries in `public/sitemap.xml` or `public/sitemap.md`.** They enumerate this site's own routes; a cross-host `<loc>` is inert and `sitemap.md` has a *Markdown mirror* column a third-party host cannot fill. This does not exempt existing entries from the `dateModified` rule below: if a mirror's content changes, its `<lastmod>` in `sitemap.xml` must be bumped to match.
 - **Every markdown file edited must have its `dateModified` frontmatter set to the day the work ships.** Use `2026-08-20` unless the calendar has moved on, in which case use the current date. A stale date here is the one failure mode no test catches.
 - **Import alias:** `~/` resolves to `src/`.
 - **Exact product URLs:** `https://fasset.stakecore.org` and `https://fasset-coston2.stakecore.org`. No trailing slashes.
@@ -201,10 +201,14 @@ import { hostOf, productsData } from '~/utils/data/products'
 afterEach(cleanup)
 
 describe('WhatWeBuild', () => {
-  it('names every product', () => {
+  it('names every product under an h3', () => {
     render(<WhatWeBuild />)
     for (const { title } of productsData) {
-      expect(screen.getByRole('heading', { name: title })).toBeTruthy()
+      const heading = screen.getByRole('heading', { name: title })
+      // The level is the assertion worth making: the section's own h2
+      // precedes these, and the e2e axe scan of /about gates on
+      // heading-order. getByRole already throws if the heading is absent.
+      expect(heading.tagName).toBe('H3')
     }
   })
 

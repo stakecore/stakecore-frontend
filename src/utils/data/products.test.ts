@@ -36,4 +36,9 @@ describe('productsData', () => {
     const ids = productsData.map(p => p.id)
     expect(new Set(ids).size).toBe(ids.length)
   })
+
+  it('gives every product a distinct link label', () => {
+    const hosts = productsData.map(p => hostOf(p.href))
+    expect(new Set(hosts).size).toBe(hosts.length)
+  })
 })

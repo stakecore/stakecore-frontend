@@ -16,9 +16,9 @@ is specific to those three: RPC and archive nodes, indexers, relayers, and
 attestation or oracle daemons are the same shape of work, and any network is a
 candidate. Some of what runs on it is our own: tools we build for our own
 operations, published when they're useful to anyone else. From individual
-holders to protocols, custodians, and treasuries,
-anyone can delegate or stake their native tokens with us, earning rewards with
-a risk profile close to that of simply holding the asset.
+holders to protocols, custodians, and treasuries, anyone can delegate or stake
+their native tokens with us, earning rewards with a risk profile close to that
+of simply holding the asset.
 
 ## Who we serve
 

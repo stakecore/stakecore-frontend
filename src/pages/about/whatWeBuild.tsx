@@ -19,11 +19,14 @@ const WhatWeBuild = () => (
                 </h2>
             </header>
 
-            {/* .about-grid, not .about-grid--two: a single entry in the
-                two-column variant reads as a broken pair, while in the base
-                three-column grid it reads as the first of a row. Revisit at
-                two or four entries. */}
-            <div className="about-grid">
+            {/* about-grid--two, not the bare three-column base: at the md
+                breakpoint a single entry in a three-column row is squeezed
+                into a ~211px sliver (title wraps, body reflows to ~20
+                characters per line, the two links stack) with ~485px of the
+                row left empty. The two-column variant gives it ~332px, wide
+                enough for the title and links to each hold one line. Revisit
+                at three or four entries. */}
+            <div className="about-grid about-grid--two">
                 {productsData.map(({ id, icon, title, body, href, alsoAt }) => (
                     <article key={id} className="about-tile about-tile--wide">
                         <div className="about-tile-icon">{icon}</div>

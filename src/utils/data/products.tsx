@@ -27,7 +27,7 @@ export interface Product {
 // a raw href.
 export const hostOf = (href: string): string => {
     try {
-        return new URL(href).host
+        return new URL(href).hostname
     } catch {
         return href
     }
