@@ -72,8 +72,9 @@ Reusable pieces already in the repo:
 - `e2e/fixtures/wallet.ts` — `injectMockWallet()` for anything behind a
   connected wallet
 
-Useful selectors: route headings are `h1` (`h1.project-title-main` on protocol
-pages); chart sections are `h3.meter-bar-title`; recharts renders
+Useful selectors: route headings are `h1` (`h1.page-header-main` on every
+route except the home hero, which keeps its own `h1.hero-wordmark`); chart
+sections are `h3.meter-bar-title`; recharts renders
 `.recharts-responsive-container`, `.recharts-line`, `.recharts-line-dots circle`
 (one circle per data point), tooltip in `.recharts-tooltip-wrapper` (hover a dot
 first). `ServerError` and `NotFound` share `.error-container` — only `NotFound`

@@ -70,9 +70,10 @@ extraction step missing.
 
 Of the remaining variation, one part is signal and the rest is drift.
 
-**Signal:** `line-height` is 1.05 on every page-ramp title and 1.1 on every
-section-ramp title, without exception — it tracks the variant, so the component
-can bind it rather than expose it.
+**Signal:** `line-height` is 1.05 on every page-ramp title, and 1.1 on two of
+the three section-ramp titles — the dissenter is home "Protocols" at 1.05, and
+is normalised to 1.1 along with the rest. It tracks the variant, so the
+component can bind it rather than expose it.
 
 **Drift:** `max-width` is 880px on the about and protocols page headers but
 720px on the contact and news page headers, and 720px on both section headers —
@@ -169,9 +170,12 @@ existing `$text-*` scale:
 }
 ```
 
-`$text-xl`, `$text-2xl` and `$text-hero` lose their only three consumers when
-protocols migrates. They are left in place — they remain valid steps of the
-scale — but nothing should reach for them for a title again.
+`$text-2xl` and `$text-hero` lose their only consumers when protocols
+migrates — both were only in `protocols.scss`. `$text-xl`'s single consumer is
+unrelated and stays live: `.about-split-title` in
+[about.scss:96](../../../src/pages/about/about.scss), not part of the title
+system this effort touches. All three are left in place — they remain valid
+steps of the scale — but nothing should reach for them for a title again.
 
 ## The component
 
@@ -235,7 +239,7 @@ site, since that is where the drift lives:
 | `.page-header` margin-bottom | **32px** | 32 on contact, proposal, about-section, protocols; 48 news; 16 about |
 | `.page-header-sup` margin-bottom | **12px** | 12 on contact, proposal, about-section, protocols; 16 about, news |
 | `.page-header-main` margin | **0** | 0 on contact, proposal, about-section, protocols; 24 about, 16 news |
-| `.page-header-body` margin-top | **24px** | about only, the sole body consumer, currently expressed as the title's 24px bottom margin |
+| `.page-header-body` margin-top | **24px** | chosen from the two body consumers, about (24px, currently the title's bottom margin) and home "Protocols" (12px, via `.protocols-title`'s margin) — home moves to match |
 
 In every row the majority is the same four call sites, and the two dissenters
 are about and news — which is consistent with them being the pages whose header

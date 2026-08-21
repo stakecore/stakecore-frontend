@@ -958,6 +958,7 @@ Everything else must be pixel-identical. If something moves that is not on this 
 | Where | Change |
 | --- | --- |
 | Home "Protocols" heading | 32/44/56 → 28/40 — shrinks 16px at `lg`. The largest change. |
+| Home "Protocols" heading | title-to-blurb gap 12px → 24px, `line-height` 1.05 → 1.1 — matches the other four section headers exactly; accepted, not a bug |
 | Protocol page titles ×4 | 40/48/64 → 36/56/72 — smaller at mobile, larger at `lg` |
 | `/contact`, `/news` titles | `max-width` 720px → 880px, so they wrap later |
 | `/news` header | bottom spacing 48px → 32px, suptitle gap 16px → 12px, title gap 16px → 0 |

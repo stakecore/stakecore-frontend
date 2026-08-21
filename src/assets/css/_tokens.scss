@@ -83,8 +83,10 @@ $weight-bold: 700;
 //
 // A display title's size is a RAMP across breakpoints, not a scalar — which is
 // why the $text-* scale above went unused at the display end while fourteen
-// distinct raw px values accumulated in component files. A mixin can carry the
-// whole ramp, so a title states its ROLE and never its pixels.
+// distinct raw px values accumulated across component and global stylesheets
+// (three of them — 24, 30, 58 — are the bare h1-h6 element rules in
+// style.css). A mixin can carry the whole ramp, so a title states its ROLE and
+// never its pixels.
 
 @mixin display-page {
     font-size: 36px;

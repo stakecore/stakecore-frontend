@@ -8,11 +8,12 @@ import './pageHeader.scss'
 // component with the extraction step missing.
 //
 // `variant` is one decision that fixes five things at once: display ramp,
-// heading level, max-width, line-height and body size. Across all seven copies
-// those five were already perfectly correlated, so binding them loses no
-// expressiveness — and it means a call site cannot pick a size that
-// contradicts its place in the document outline, which keeps the heading-order
-// a11y rule satisfied by construction.
+// heading level, max-width, line-height and body size. Only heading level and
+// body size were already perfectly correlated across the seven copies; display
+// ramp, max-width and line-height each had a dissenter and are normalised to
+// the majority value on purpose. Binding heading level to the variant means a
+// call site cannot pick a size that contradicts its place in the document
+// outline, which keeps the heading-order a11y rule satisfied by construction.
 const PageHeader = ({ variant = 'page', supTitle, title, align = 'start', aside, children }: {
   variant?: 'page' | 'section'
   supTitle?: string
