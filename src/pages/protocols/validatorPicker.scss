@@ -2,8 +2,8 @@
 
 // Custom dropdown (button + absolutely-positioned popup) so the open
 // menu can be styled to match the rest of the dark UI instead of
-// inheriting OS / browser <select> chrome. Lives in ProjectTitle's
-// slot below the title. Per-chain accent (--validator-picker-accent)
+// inheriting OS / browser <select> chrome. Lives in PageHeader's
+// aside slot below the title. Per-chain accent (--validator-picker-accent)
 // lights the trigger border while focused/open and the chevron while
 // open.
 .validator-picker {

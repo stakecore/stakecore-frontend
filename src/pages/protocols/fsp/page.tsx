@@ -4,7 +4,7 @@ import { SpinnerCircular } from 'spinners-react'
 import QueryState from '~/components/ui/queryState'
 import { CHAIN_CONFIG, type FspChain } from '~/config/chains'
 import { Chain } from '~/enums'
-import ProjectTitle from "../title"
+import PageHeader from '~/components/ui/pageHeader'
 import InfoComponent from "../info"
 import FspDataLayer from "./data"
 import FspLocalDelegateComponent from "./delegateLocal"
@@ -41,7 +41,9 @@ const FspPage = ({ config }: { config: FspPageConfig }) => {
 
   return (
     <div className="single-project-page-design">
-      <ProjectTitle title={config.title} suptitle={config.suptitle} />
+      <div className="container">
+        <PageHeader supTitle={config.suptitle} title={config.title} />
+      </div>
       <div className="container pt-30">
         <Description />
         {/* Height reserved for the whole state ladder — see .protocol-body in

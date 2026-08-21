@@ -5,12 +5,10 @@
 // Imported from each page.tsx.
 //
 // Mobile-first: defaults are the most compact (mobile) variant;
-// padding and h1 size scale up at md and lg.
+// padding scales up at md and lg; the title's size comes from PageHeader.
 
 .single-project-page-design {
     padding-top: 80px;
-
-    h1 { font-size: t.$text-2xl; }
 }
 
 // Holds whichever of the loading / error / empty / loaded states the page is
@@ -20,52 +18,6 @@
 // loaded page is always far taller, so this only ever affects the other three.
 .protocol-body {
     min-height: 60vh;
-}
-
-// Column stack: the aside always sits below the title block. This was
-// previously a wrapping flex row, where the aside dropped to its own
-// line only because the longest title ("Flare Validator Delegation")
-// overflowed max-width — shortening a title pulled the control back up
-// beside the h1. Stacking explicitly makes the layout independent of
-// title length.
-.project-title {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-    padding-bottom: 32px;
-    max-width: 880px;
-}
-
-// Holds the suptitle + h1 stack.
-.project-title-text {
-    min-width: 0;
-}
-
-// Slot for page-level controls (currently: the validator dropdown on
-// the two validator pages), rendered under the title. align-items on
-// the parent keeps it at its natural width rather than stretching.
-.project-title-aside {
-    flex: 0 0 auto;
-}
-
-.project-title-sup {
-    font-family: var(--font-sans);
-    font-size: t.$text-xs;
-    font-weight: t.$weight-medium;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--main-color);
-    margin: 0 0 12px;
-}
-
-.project-title-main {
-    font-family: t.$font-display;
-    font-weight: t.$weight-extrabold;
-    letter-spacing: -0.02em;
-    line-height: 1.05;
-    color: var(--heading-color);
-    margin: 0;
 }
 
 // Flat, hairline-bordered panels. Solid body-coloured surface so the
@@ -150,8 +102,6 @@
 @include t.up(md) {
     .single-project-page-design {
         padding-top: 96px;
-
-        h1 { font-size: 48px; }
     }
 
     .single-project-page-left,
@@ -163,8 +113,6 @@
 @include t.up(lg) {
     .single-project-page-design {
         padding-top: 144px;
-
-        h1 { font-size: t.$text-hero; }
     }
 
     .col-lg-9 .single-project-page-right { margin-top: 0; }
