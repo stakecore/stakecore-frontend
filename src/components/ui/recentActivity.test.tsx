@@ -126,18 +126,18 @@ describe('RecentActivity card memoization', () => {
   })
 })
 
-// The loop itself lives in useMarquee and is tested there, including the
-// sub-pixel behaviour that is the reason it animates a transform rather than
-// scrollLeft. What matters at this level is that the feed wires itself up to
-// it correctly: the track moves, and the container's scroll position — which
-// belongs to the user, who can swipe this row — is never written to.
+// The loop itself lives in useMarquee and is tested there, including how it
+// splits its position between the scroll offset and the transform. What
+// matters at this level is that the feed wires itself up to it as a row the
+// user can swipe, and that a poll bringing new cards doesn't move the content
+// out from under them.
 describe('RecentActivity auto-scroll loop', () => {
   const items = [
     activity({ transaction: '0xtx_a', amount: '111' }),
     activity({ transaction: '0xtx_b', amount: '222' }),
   ]
 
-  const harness = () => {
+  const harness = (initial: PageActivityDto[] = items) => {
     const origRaf = globalThis.requestAnimationFrame
     const origCaf = globalThis.cancelAnimationFrame
     const queue: FrameRequestCallback[] = []
@@ -147,8 +147,8 @@ describe('RecentActivity auto-scroll loop', () => {
     })
     vi.stubGlobal('cancelAnimationFrame', () => {})
 
-    const { container } = render(
-      <RecentActivity data={payload(items)} isLoading={false} error="" />
+    const { container, rerender } = render(
+      <RecentActivity data={payload(initial)} isLoading={false} error="" />
     )
     const el = container.querySelector<HTMLDivElement>('.activity-marquee')
     const track = container.querySelector<HTMLDivElement>('.activity-marquee-track')
@@ -174,23 +174,75 @@ describe('RecentActivity auto-scroll loop', () => {
       const m = /translateX\((-?[\d.]+)px\)/.exec(track.style.transform)
       return m?.[1] == null ? 0 : -Number(m[1])
     }
-    return { el, track, step, offset, restore }
+    // Content is drawn at scrollLeft + whatever the transform holds, so this
+    // is the one number that says where the row actually sits.
+    const position = () => el.scrollLeft + offset()
+    const poll = (next: PageActivityDto[]) =>
+      rerender(<RecentActivity data={payload(next)} isLoading={false} error="" />)
+    return { el, track, step, offset, position, poll, restore }
   }
 
-  it('moves the track once the feed has cards', () => {
+  it('moves once the feed has cards', () => {
     const h = harness()
     for (let i = 0; i < 12; i++) h.step(100 / 12)
-    expect(h.offset()).toBeGreaterThan(0)
+    expect(h.position()).toBeGreaterThan(0)
     h.restore()
   })
 
-  it('never writes the scroll position the user owns', () => {
+  // This row is swipeable, so the loop shares the scroller rather than holding
+  // a position beside it. Travel that lives only in the transform is travel
+  // the user cannot scroll back past: they reach scrollLeft 0 and the first
+  // card is still held off to the left, further every second.
+  it('keeps its travel in the scroll offset, where a swipe can reach it', () => {
     const h = harness()
-    // A swipe lands the scroller somewhere; the loop must not touch it.
-    h.el.scrollLeft = 500
     for (let i = 0; i < 20; i++) h.step(16)
-    expect(h.el.scrollLeft).toBe(500)
-    expect(h.offset()).toBeGreaterThan(0)
+    expect(h.el.scrollLeft).toBeGreaterThan(0)
+    // Nothing meaningful is parked out of reach in the transform.
+    expect(Math.abs(h.offset())).toBeLessThan(1)
     h.restore()
+  })
+
+  it('carries on from a scroll position the user swiped to', () => {
+    const h = harness()
+    for (let i = 0; i < 5; i++) h.step(16)
+    h.el.scrollLeft = 500
+    h.step(16)
+    expect(h.position()).toBeGreaterThanOrEqual(500)
+    expect(h.position()).toBeLessThan(510)
+    h.restore()
+  })
+
+  // A poll brings newer entries, and the list is newest-first, so they are
+  // inserted in front of everything already on screen. The loop's position is
+  // a distance from the track's left edge, so left alone the row jumps by the
+  // width of whatever arrived — and the new cards land behind the position,
+  // in the stretch nothing can scroll back to. Re-anchor on the card that led
+  // the previous render: how far it moved is exactly what was inserted.
+  it('holds its place when a poll prepends newer cards', () => {
+    const pitch = 244
+    const proto = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'offsetLeft')
+    Object.defineProperty(HTMLElement.prototype, 'offsetLeft', {
+      configurable: true,
+      get(this: HTMLElement) {
+        const siblings = this.parentElement ? [...this.parentElement.children] : []
+        return Math.max(0, siblings.indexOf(this)) * pitch
+      },
+    })
+
+    const h = harness()
+    for (let i = 0; i < 20; i++) h.step(16)
+    const before = h.position()
+
+    h.poll([
+      activity({ transaction: '0xtx_new', amount: '999', timestamp: 1785309999 }),
+      ...items,
+    ])
+
+    // Same content under the viewport as the frame before, not a card's width
+    // further along.
+    expect(h.position()).toBeCloseTo(before + pitch, 1)
+    h.restore()
+    if (proto) Object.defineProperty(HTMLElement.prototype, 'offsetLeft', proto)
+    else Reflect.deleteProperty(HTMLElement.prototype, 'offsetLeft')
   })
 })

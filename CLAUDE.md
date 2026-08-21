@@ -174,7 +174,7 @@ file these as bugs; they're the known cost of the current hosting.
 
 ### Testing
 
-Vitest + happy-dom + `@testing-library/react` / `user-event`. 329 tests across 30 files at last count, all co-located next to source as `*.test.ts(x)`. Test files declare their environment per-file via a top-of-file `// @vitest-environment happy-dom` directive (no global config). There is no global setup file, so RTL's auto-cleanup does not run — a test that renders more than once must call `afterEach(cleanup)` itself, or later queries will match elements left behind by earlier renders.
+Vitest + happy-dom + `@testing-library/react` / `user-event`. 388 tests across 34 files at last count, all co-located next to source as `*.test.ts(x)`. Test files declare their environment per-file via a top-of-file `// @vitest-environment happy-dom` directive (no global config). There is no global setup file, so RTL's auto-cleanup does not run — a test that renders more than once must call `afterEach(cleanup)` itself, or later queries will match elements left behind by earlier renders.
 
 Common patterns: `vi.mock('~/features/wallet/store', ...)` to provide a fake Zustand store, `vi.mock('~/features/wallet/eip1193', ...)` for the RPC helpers, Proxy-mocked `Contract` instances for ethers calls, `MemoryRouter` wrapping for components that use `useLocation` / `NavLink`. `fireEvent.click` instead of `userEvent.click` when targeting react-router `<Link>` (userEvent's synthetic chain doesn't reach the onClick prop reliably through Link's `preventDefault`).
 
@@ -184,8 +184,13 @@ Playwright 1.62.1, Chromium only, specs in `e2e/`. `pnpm test:e2e` (or
 `pnpm test:e2e:ui`). Coverage is deliberately thin: every route renders with
 its real heading and no error panel, a wallet connect against a mocked
 EIP-6963 provider, an axe-core accessibility scan of all eight page states
-plus the open wallet picker, and the agent-readable static surface
-(`e2e/agentReadability.spec.ts` — see below).
+plus the open wallet picker, the agent-readable static surface
+(`e2e/agentReadability.spec.ts` — see below), and the two marquees
+(`e2e/stackCarousel.spec.ts`, `e2e/activityMarquee.spec.ts`). The marquee specs
+are here rather than in unit tests because what they assert is layout: whether
+a swipe can reach the activity feed's first card is a fact about scroll
+geometry, and happy-dom lays nothing out, so the same assertion there would
+pass against a row that is broken. Same trap as component-level axe below.
 
 Accessibility scans (`e2e/a11y.spec.ts`) gate on WCAG 2a/2aa/21a/21aa only.
 `best-practice` rules are scanned and logged but never fail a test — gating on

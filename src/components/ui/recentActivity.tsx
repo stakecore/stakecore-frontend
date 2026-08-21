@@ -1,4 +1,4 @@
-import { memo, useMemo, useRef } from "react"
+import { memo, useLayoutEffect, useMemo, useRef } from "react"
 import { useAfterIdle } from "~/utils/useAfterIdle"
 import { useMarquee } from "~/utils/useMarquee"
 import { SpinnerCircular } from "spinners-react"
@@ -119,9 +119,52 @@ const RecentActivity = ({ data, isLoading }: {
   // during that empty render — lifting the cap before there is anything to cap.
   const showAllCards = useAfterIdle(itemCount > 0)
 
+  // Each half of the track is INITIAL_CARDS * (230 + 14)px ≈ 2900px until idle
+  // fills in the rest — comfortably wider than the 1320px .container the
+  // marquee lives in, so the wrap point stays off screen either way. The
+  // ResizeObserver inside useMarquee re-measures when the track grows, so
+  // nothing here needs to depend on the rendered count.
+  const visibleItems = useMemo(
+    () => (items == null ? null : showAllCards ? items : items.slice(0, INITIAL_CARDS)),
+    [items, showAllCards],
+  )
+
   // The scroll loop itself lives in useMarquee, shared with the About-page
   // stack carousel. Every constant it carries was tuned here first.
-  useMarquee(marqueeRef, { enabled: itemCount > 0 })
+  // `scrollable` because this row is a real scroller the user can swipe: the
+  // loop has to keep its position in the scroll offset they own, or its travel
+  // is an offset nothing can scroll back past — see the hook's header.
+  useMarquee(marqueeRef, { enabled: itemCount > 0, scrollable: true })
+
+  // New activity arrives at the head of the list (it is sorted newest first),
+  // so a poll that brings any pushes every card already on screen right by the
+  // width it inserted. The loop's position is a distance from the track's left
+  // edge, so left alone the row jumps that far in a single frame — and the new
+  // cards, the ones worth showing, land behind the position where a swipe
+  // cannot reach them. However far the previous render's leading card moved is
+  // exactly what went in front of it. Adding that to the scroll offset holds
+  // the view still; the loop adopts the new position on its next frame. This
+  // runs in a layout effect, so the correction lands before the browser paints
+  // and there is no jump to see.
+  const leadKeyRef = useRef<string | null>(null)
+  useLayoutEffect(() => {
+    const el = marqueeRef.current
+    const track = el?.firstElementChild
+    const previousLead = leadKeyRef.current
+    const lead = visibleItems?.[0]?.key ?? null
+    leadKeyRef.current = lead
+    if (previousLead == null || lead == null || previousLead === lead) return
+    if (!el || !(track instanceof HTMLElement) || visibleItems == null) return
+    // Gone rather than pushed along — a re-ordering this can't measure, so
+    // leave the position alone rather than guess at it.
+    const index = visibleItems.findIndex(v => v.key === previousLead)
+    if (index <= 0) return
+    const first = track.children[0]
+    const moved = track.children[index]
+    if (!(first instanceof HTMLElement) || !(moved instanceof HTMLElement)) return
+    const inserted = moved.offsetLeft - first.offsetLeft
+    if (inserted > 0) el.scrollLeft += inserted
+  }, [visibleItems])
 
   if (!items && isLoading) {
     return <div style={{ textAlign: 'center' }}>
@@ -129,14 +172,14 @@ const RecentActivity = ({ data, isLoading }: {
     </div>
   }
 
-  if (!items || items.length === 0) return null
+  if (!items || items.length === 0 || !visibleItems) return null
 
   // The USD and relative-time strings are computed here, per poll, and passed
   // as primitives: memo then compares them by value, so a card only
   // re-renders when its *displayed* text actually changes — not because a
   // fresh priceByKey object arrived or "N minutes ago" ticked for some other
   // card. Formatting 50 strings is far cheaper than re-rendering 100 cards.
-  const cards = items.map(({ item, key }) => {
+  const cards = visibleItems.map(({ item, key }) => {
     const price = priceByKey[`${item.chain}-${item.protocol}`]
     const usd = price != null ? Number(item.amount) * price : null
     return {
@@ -146,23 +189,16 @@ const RecentActivity = ({ data, isLoading }: {
     }
   })
 
-  // Each half of the track is INITIAL_CARDS * (230 + 14)px ≈ 2900px until idle
-  // fills in the rest — comfortably wider than the 1320px .container the
-  // marquee lives in, so the wrap point stays off screen either way. The
-  // ResizeObserver in the effect above re-measures when the track grows, so
-  // nothing here needs to depend on the rendered count.
-  const visible = showAllCards ? cards : cards.slice(0, INITIAL_CARDS)
-
   // The fade mask lives on this non-scrolling wrapper, not on the scroller
   // itself — a mask directly on a scroll container can force the browser off
   // composited scrolling, repainting the whole track on every 1px step.
   return <div className="activity-marquee-mask">
     <div ref={marqueeRef} className="activity-marquee" aria-label="Recent activity">
       <div className="activity-marquee-track">
-        {visible.map(({ item, key, usdText, timeText }) =>
+        {cards.map(({ item, key, usdText, timeText }) =>
           <ActivityCard key={`a-${key}`} activity={item} usdText={usdText} timeText={timeText} />
         )}
-        {visible.map(({ item, key, usdText, timeText }) =>
+        {cards.map(({ item, key, usdText, timeText }) =>
           <ActivityCard key={`b-${key}`} activity={item} usdText={usdText} timeText={timeText} clone />
         )}
       </div>

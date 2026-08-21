@@ -1,11 +1,13 @@
 // Recent-activity marquee styles, co-located with recentActivity.tsx (moved
 // out of the global assets/css/custom.css). Home-page only.
 //
-// Native horizontal-scroll container. Activity items are rendered twice; a
-// rAF loop in JS drives scrollLeft for the idle auto-advance and wraps back
-// at the halfway mark (seamless because content is duplicated). Touch swipes
-// and trackpad horizontal scroll work via the browser's built-in scroll; the
-// JS loop pauses while the user is interacting.
+// Native horizontal-scroll container. Activity items are rendered twice, and
+// useMarquee auto-advances by one repeat before wrapping (seamless because
+// the content is duplicated). It splits that position between this
+// container's scrollLeft and a transform on the track, so the loop and a
+// swipe move the same thing — touch and trackpad still scroll natively, and
+// the loop pauses while the user is interacting. See the hook's header for
+// why both halves are needed.
 
 /* Soft edge mask so cards fade in/out instead of clipping hard. It sits on
  * this non-scrolling wrapper (the hero rune canvas shows through, so it must
@@ -35,11 +37,11 @@
   // Promoting it to its own layer keeps that off the main thread; without
   // it the whole 24k-wide track recomposites each step.
   //
-  // The container above stays scrollable on purpose — these cards carry
-  // links and the row is swipeable. That works alongside the transform
-  // rather than against it: the loop never writes scrollLeft, so a swipe
-  // and the animation no longer fight over one value the way they did when
-  // this was scroll-driven.
+  // The transform only ever holds the sub-pixel remainder of the loop's
+  // position — the whole pixels go through the container's scrollLeft. That
+  // split is what keeps the row navigable: a position parked in the
+  // transform sits outside the scroll range, so nothing can swipe back to
+  // the cards it has pushed past the left edge.
   will-change: transform;
 }
 
