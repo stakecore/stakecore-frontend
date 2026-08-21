@@ -6,8 +6,8 @@ Date: 2026-08-21
 
 Stop page and section titles drifting. Today the same visual element is built
 six times in six files, and title sizes are written as raw pixels in fourteen
-distinct values. Replace both with three named ramps — page, section, hero —
-and one `PageHeader` component that every title goes through.
+distinct values. Replace both with four named ramps — page, section, hero,
+stat — and one `PageHeader` component that every title goes through.
 
 The symptom this fixes is visible in the commit log: `fix(news): give the page
 a suptitle, per the site's title standard`. A standard that has to be applied
@@ -32,14 +32,23 @@ Every title author therefore hand-rolled a ramp, and the flat tokens went
 unused precisely where the need was greatest.
 
 Grouped by role, the two title categories each have a clear majority and
-exactly one dissenter. The hero is the exception: it has two variants and no
-majority, so it is settled by fiat rather than by counting.
+exactly one dissenter. The home hero stands outside that contest: it holds two
+display-scale elements, and they are not two titles.
 
 | Role | Winner | Dissenter |
 | --- | --- | --- |
 | Page title (`h1`) | **36 → 56 → 72** — about, contact, news | 40 → 48 → 64 — protocols |
 | Section title (`h2`) | **28 → 40** — about ×3, proposal | 32 → 44 → 56 — home "Protocols" |
-| Hero (`h1`, home) | *no majority* | 32 → 48 → 60 *and* 34 → 50 → 60 |
+| Home hero | *not a contest* | `.hero-wordmark` 32 → 48 → 60 *and* `.hero-stat-value` 34 → 50 → 60 |
+
+`.hero-wordmark` is the home page's `<h1>StakeCore</h1>`. `.hero-stat-value` is
+a `<div>` holding a formatted statistic, carrying `text-transform: uppercase`,
+`line-height: 1` and `font-variant-numeric: tabular-nums` — it is a numeric
+readout, not a title. The two converge at 60px at `lg`, so the pairing is
+deliberate, but they have different jobs and are tuned differently. They are
+therefore **named separately rather than merged**: collapsing them would couple
+a stat readout to a title ramp, so that a future change to the hero title would
+silently resize every statistic beside it.
 
 The second finding is the duplicated markup. Six `-sup` rules exist, and six of
 their seven declarations are byte-identical — only the trailing margin differs
@@ -68,18 +77,18 @@ can bind it rather than expose it.
 **Drift:** `max-width` is 880px on the about and protocols page headers but
 720px on the contact and news page headers, and 720px on both section headers —
 so the page headers disagree among themselves. Bottom spacing is 16 / 32 / 48 /
-32 / 32px with no discernible rule. And the two hero ramps differ by 2px at two
-of three breakpoints.
+32 / 32px with no discernible rule.
 
 ## Decisions
 
 | Question | Decision |
 | --- | --- |
 | Ramps expressed as | Sass **mixins**, not variables — a ramp is not a scalar |
-| How many display ramps | Three: `display-page`, `display-section`, `display-hero` |
+| How many display ramps | Four: `display-page`, `display-section`, `display-hero`, `display-stat` |
 | Page ramp | 36 → 56 → 72 (the three-way winner) |
 | Section ramp | 28 → 40 (the four-way winner) |
-| Hero ramp | 32 → 48 → 60; the 34/50/60 variant is dropped as drift |
+| Hero ramp | 32 → 48 → 60 — `.hero-wordmark` only |
+| Stat ramp | 34 → 50 → 60 — `.hero-stat-value`, named rather than merged into the hero ramp |
 | Protocols title | Snaps 40/48/64 → page ramp |
 | Home "Protocols" title | Snaps 32/44/56 → section ramp (shrinks 56→40 at lg) |
 | Component | One `PageHeader`, variant-driven |
@@ -109,6 +118,11 @@ Rejected, with reasons:
 - **A third `display-section-lead` ramp to spare the home title.** Zero visual
   change, but a named exception is the escape hatch every future title reaches
   for. Preferred a real 56→40 shrink over a permanent third tier.
+- **Merging `.hero-stat-value` into `display-hero`.** They differ by only 2px
+  at two breakpoints and converge at the third, so merging looks free. It is
+  not: it makes the hero title's size a hidden dependency of every statistic
+  rendered beside it. Naming the second ramp costs one mixin and keeps the
+  coupling explicit.
 - **Fluid `clamp()` ramps.** Removes the breakpoint jumps entirely, but changes
   sizes at every intermediate width — a larger visual diff than this effort is
   scoped for. Worth revisiting once the ramps are centralised, since it then
@@ -135,11 +149,21 @@ existing `$text-*` scale:
     @include up(md) { font-size: 40px; }
 }
 
-// The home hero only. Deliberately distinct from display-page: it is the one
-// title with no page above it in the hierarchy.
+// The home wordmark only. Deliberately distinct from display-page: it is the
+// one title with no page above it in the hierarchy.
 @mixin display-hero {
     font-size: 32px;
     @include up(md) { font-size: 48px; }
+    @include up(lg) { font-size: 60px; }
+}
+
+// Hero statistics. Sized alongside display-hero and converging with it at lg,
+// but kept separate on purpose: a stat readout is not a title, and merging the
+// two would make a future hero-title change silently resize every figure. See
+// "What was measured" above.
+@mixin display-stat {
+    font-size: 34px;
+    @include up(md) { font-size: 50px; }
     @include up(lg) { font-size: 60px; }
 }
 ```
@@ -230,8 +254,9 @@ is followed immediately by other content.
 Two ramp-only changes fall outside the component, because the hero and the home
 "Protocols" block are not suptitle headers:
 
-- [hero.scss](../../../src/components/sections/hero.scss) — both title rules
-  take `display-hero`; the 34/50/60 variant is dropped.
+- [hero.scss](../../../src/components/sections/hero.scss) — `.hero-wordmark`
+  takes `display-hero` and `.hero-stat-value` takes `display-stat`. Both keep
+  their current pixel values exactly; this is a naming change only.
 - [portfolio.scss](../../../src/components/sections/portfolio.scss) —
   `.protocols-title` takes `display-section`, shrinking 56 → 40 at `lg`. This
   is the single largest visual change in the effort and was decided
