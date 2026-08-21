@@ -8,6 +8,7 @@ import {
     RiStackLine,
     RiWallet3Line,
 } from '@remixicon/react'
+import PageHeader from '~/components/ui/pageHeader'
 import InfraConstellation from './infraConstellation'
 import ServerGlobe from './serverGlobe'
 import StackCarousel from './stackCarousel'
@@ -31,30 +32,24 @@ export default About
 const Mission = () => (
     <section id="about" className="about-single-area innerpage-single-area">
         <div className="container">
-            <header className="about-header">
-                <p className="about-header-sup">About</p>
-                <h1 className="about-header-main">
-                    Your stake, our engine
-                </h1>
-                <p className="about-header-body">
-                    StakeCore runs blockchain node infrastructure — a redundant
-                    cluster we build, orchestrate, and monitor ourselves. Validator
-                    duty and core protocol signing on Flare, Avalanche, and Songbird
-                    are what it carries today, and we are actively taking it onto
-                    more networks. RPC and archive nodes, indexers, relayers, and
-                    attestation services are the same shape of work, so{' '}
-                    <span className="about-mark">
-                        any network is a candidate
-                    </span>
-                    . From individual holders to protocols, custodians, and
-                    treasuries, anyone can delegate or stake their native tokens with
-                    us, earning rewards with a{' '}
-                    <span className="about-mark">
-                        risk profile close to that of simply holding the asset
-                    </span>
-                    .
-                </p>
-            </header>
+            <PageHeader supTitle="About" title="Your stake, our engine">
+                StakeCore runs blockchain node infrastructure — a redundant
+                cluster we build, orchestrate, and monitor ourselves. Validator
+                duty and core protocol signing on Flare, Avalanche, and Songbird
+                are what it carries today, and we are actively taking it onto
+                more networks. RPC and archive nodes, indexers, relayers, and
+                attestation services are the same shape of work, so{' '}
+                <span className="about-mark">
+                    any network is a candidate
+                </span>
+                . From individual holders to protocols, custodians, and
+                treasuries, anyone can delegate or stake their native tokens with
+                us, earning rewards with a{' '}
+                <span className="about-mark">
+                    risk profile close to that of simply holding the asset
+                </span>
+                .
+            </PageHeader>
         </div>
     </section>
 )
@@ -111,10 +106,11 @@ const valueProps = [
 const Audiences = () => (
     <section className="about-section">
         <div className="container">
-            <header className="about-section-header">
-                <p className="about-section-header-sup">Who we serve</p>
-                <h2 className="about-section-header-main">From personal wallets to institutional treasuries</h2>
-            </header>
+            <PageHeader
+                variant="section"
+                supTitle="Who we serve"
+                title="From personal wallets to institutional treasuries"
+            />
             <div className="about-grid about-grid--two">
                 {audiences.map(({ icon, title, body }, i) => (
                     <article key={i} className="about-tile about-tile--wide">
@@ -134,13 +130,11 @@ const Audiences = () => (
 const Stack = () => (
     <section className="about-section">
         <div className="container">
-            <header className="about-section-header">
-                <p className="about-section-header-sup">Infrastructure</p>
-                <h2 className="about-section-header-main">
-                    Small, robust, and{' '}
-                    <span className="about-mark">decentralized</span>
-                </h2>
-            </header>
+            <PageHeader
+                variant="section"
+                supTitle="Infrastructure"
+                title={<>Small, robust, and{' '}<span className="about-mark">decentralized</span></>}
+            />
 
             {/* Text precedes its visual in the DOM in both rows, so the stacked
                 and screen-reader order stays heading → prose → visual. The globe
@@ -222,10 +216,11 @@ const Stack = () => (
 const ValueProps = () => (
     <section className="about-section">
         <div className="container">
-            <header className="about-section-header">
-                <p className="about-section-header-sup">Why StakeCore</p>
-                <h2 className="about-section-header-main">Four things worth knowing</h2>
-            </header>
+            <PageHeader
+                variant="section"
+                supTitle="Why StakeCore"
+                title="Four things worth knowing"
+            />
             <div className="about-grid about-grid--two">
                 {valueProps.map(({ icon, title, body }, i) => (
                     <article key={i} className="about-tile about-tile--wide">

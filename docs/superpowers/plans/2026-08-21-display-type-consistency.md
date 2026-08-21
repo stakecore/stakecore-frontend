@@ -796,14 +796,24 @@ Delete the five `.project-title*` rule blocks, **and** the three `h1` element ru
 
 These are the whole point of this task. `.single-project-page-design h1` has specificity 0,1,1 and **outranks** `.page-header-main` at 0,1,0. Left in place, the component's ramp never applies and the migration silently changes nothing while appearing to succeed.
 
-Verify they are gone:
+Verify they are gone. The grep must anchor on a rule opening — a bare
+`grep 'h1'` also matches this file's prose (lines 8, 29 and 40 all mention
+`h1`) and would report a failure on a perfectly correct deletion:
 
 ```bash
-grep -n 'h1' src/pages/protocols/protocols.scss && echo "REVIEW: an h1 rule remains" || echo "clean"
+grep -nE '^[[:space:]]*h1[[:space:]]*\{' src/pages/protocols/protocols.scss && echo "REVIEW: an h1 rule remains" || echo "clean"
 grep -rn 'project-title' src/ && echo "STILL REFERENCED" || echo "clean"
 ```
 
-- [ ] **Step 5: Confirm the ramp actually took effect in the built CSS**
+- [ ] **Step 5: Update the three now-stale comments in `protocols.scss`**
+
+All three describe structure this task deletes:
+
+- Line 8 — `// padding and h1 size scale up at md and lg.` The h1 no longer scales here at all. Change the sentence to `// padding scales up at md and lg; the title's size comes from PageHeader.`
+- Line 29 — `// beside the h1. Stacking explicitly makes the layout independent of` — this belongs to the deleted `.project-title` block; delete it along with the block it documents.
+- Line 40 — `// Holds the suptitle + h1 stack.` — likewise, delete with `.project-title-text`.
+
+- [ ] **Step 6: Confirm the ramp actually took effect in the built CSS**
 
 ```bash
 pnpm build >/dev/null 2>&1
@@ -811,18 +821,18 @@ grep -c 'single-project-page-design h1' dist/assets/*.css
 ```
 Expected: `0`. A non-zero count means an element rule survived and is still overriding the component.
 
-- [ ] **Step 6: Run tests, typecheck and the full route spec**
+- [ ] **Step 7: Run tests, typecheck and the full route spec**
 
 ```bash
 pnpm test && npx tsc -p tsconfig.json --noEmit && pnpm test:e2e -- e2e/routes.spec.ts
 ```
 Expected: all pass, including all four protocol routes at level 1 — `Flare Systems Protocol`, `Songbird Systems Protocol`, `Flare Validator`, `Avalanche Validator`.
 
-- [ ] **Step 7: Visual check, including the aside**
+- [ ] **Step 8: Visual check, including the aside**
 
 Load `/#/flare/fsp` and `/#/flare/validator` at 375px, 768px and 1280px. Expected deltas: the title ramp changes from 40/48/64 to 36/56/72 — slightly smaller on mobile, notably larger at `lg`. On the validator route, confirm the multi-validator dropdown still sits **below** the title at its natural width and has not stretched to the text column or jumped beside the title.
 
-- [ ] **Step 8: Commit**
+- [ ] **Step 9: Commit**
 
 ```bash
 git add -A
@@ -859,7 +869,16 @@ Expected: `clean`.
 ```bash
 grep -rhoE 'font-size:\s*[0-9]+px' src --include=*.scss --include=*.css | grep -oE '[0-9]+' | sort -n | uniq -c | awk '$2>=24'
 ```
-Expected: only sizes from `style.css`'s bare `h1`–`h6` element rules (58, 30, 24) and any component-local sizes outside the title system. **None** of 32, 34, 36, 40, 44, 48, 50, 56, 60 or 72 should remain in the seven migrated files. The `style.css` element rules are explicitly out of scope per the spec.
+Expected survivors, all outside the title system and all out of scope per the spec:
+
+- `style.css` bare `h1`–`h6` element rules — 58, 30, 24
+- `proposal.scss` `.price` — **36px**, a pricing figure inside a Card, not a header
+- `index.scss` `.error-status` — **56px**, the 404 / ServerError status number
+
+Anything else at 24px or above in the six migrated stylesheets is a surviving
+header rule and must be removed. Note that 36 and 56 appearing in the output is
+therefore expected, not a failure — check *which* rule each belongs to rather
+than matching on the number.
 
 - [ ] **Step 3: Remove now-unused token imports**
 
@@ -939,6 +958,7 @@ Everything else must be pixel-identical. If something moves that is not on this 
 | Where | Change |
 | --- | --- |
 | Home "Protocols" heading | 32/44/56 → 28/40 — shrinks 16px at `lg`. The largest change. |
+| Home "Protocols" heading | title-to-blurb gap 12px → 24px, `line-height` 1.05 → 1.1 — matches the other four section headers exactly; accepted, not a bug |
 | Protocol page titles ×4 | 40/48/64 → 36/56/72 — smaller at mobile, larger at `lg` |
 | `/contact`, `/news` titles | `max-width` 720px → 880px, so they wrap later |
 | `/news` header | bottom spacing 48px → 32px, suptitle gap 16px → 12px, title gap 16px → 0 |

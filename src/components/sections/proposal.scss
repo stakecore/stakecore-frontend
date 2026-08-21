@@ -12,34 +12,6 @@
     @include t.up(md) { padding: 48px 0; }
 }
 
-.pricing-header-section {
-    margin: 0 auto 32px;
-    max-width: 720px;
-    text-align: center;
-}
-
-.pricing-header-sup {
-    font-family: var(--font-sans);
-    font-size: t.$text-xs;
-    font-weight: t.$weight-medium;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--main-color);
-    margin: 0 0 12px;
-}
-
-.pricing-header-main {
-    font-family: t.$font-display;
-    font-size: 28px;
-    font-weight: t.$weight-extrabold;
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-    color: var(--heading-color);
-    margin: 0;
-
-    @include t.up(md) { font-size: 40px; }
-}
-
 .pricing-item {
     padding: 0;
     margin-bottom: 16px;

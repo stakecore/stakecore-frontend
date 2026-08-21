@@ -1,7 +1,7 @@
 // Every route in src/route/router.tsx. Headings are literal per route — read
 // from each page component, not inferred — so a wrong page rendering under the
-// right URL still fails. Shared by routes.spec.ts (which asserts the heading)
-// and a11y.spec.ts (which only needs the paths).
+// right URL still fails. Shared by routes.spec.ts and a11y.spec.ts, which each
+// assert the heading at level 1.
 export const ROUTES = [
   { path: '/', heading: 'StakeCore' },
   { path: '/about', heading: 'Your stake, our engine' },

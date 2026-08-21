@@ -106,6 +106,42 @@ All wallet + chain-session state lives under `src/features/wallet/`:
 
 Global stylesheets are aggregated through `src/assets/css/index.scss`, which `main.tsx` imports alongside `bootstrap-reboot.min.css`, `grid.scss`, and the react-tooltip bundle. The aggregator pulls in `fonts.css`, `spacing.css`, `style.css`, `responsive.css`, `custom.css`, `wallet.css`, and `specs.css` in cascade order, and also inlines the `.error-*` rules used by `ServerError` and the 404 page (originally in `error.scss`, inlined to silence Sass `@import` deprecation warnings). Component-specific SCSS is co-located with each component (e.g. `header.scss`, `hero.scss`, `proposal.scss`, `meterBar.scss`, `epochProgress.scss`, `diff.scss`, `unavailabilityBanner.scss`). Design tokens (breakpoints, weights, font-size scale, radii, z-index scale, colors) live in `src/assets/css/_tokens.scss` and are consumed via `@use '...tokens' as t;`.
 
+Display type is different from body type and does not live in the `$text-*`
+scale. A title's size is a **ramp** across breakpoints, and a Sass variable
+holds one number — which is why `$text-xl` / `$text-2xl` / `$text-hero` sat at
+one usage each while fourteen distinct raw pixel sizes accumulated across
+component and global stylesheets (three of the fourteen — 24, 30, 58 — are the
+bare `h1`–`h6` element rules in `style.css`, not component files). Four mixins
+in `_tokens.scss` carry the whole ramp instead:
+`display-page` (36/56/72), `display-section` (28/40), `display-hero` (32/48/60,
+the home wordmark only) and `display-stat` (34/50/60, hero figures — kept
+separate from `display-hero` so a title change cannot silently resize every
+statistic beside it).
+
+Titles themselves go through [pageHeader.tsx](src/components/ui/pageHeader.tsx),
+which is the only place the suptitle-plus-title block exists. Its `variant`
+prop binds five things: display ramp, heading level (`page`→`h1`,
+`section`→`h2`), `max-width`, `line-height` and body size. Of those, only
+heading level and body size were already perfectly correlated across the seven
+hand-built copies it replaced — display ramp, `max-width` and `line-height`
+each had a dissenter, and are normalised to the variant's majority value on
+purpose. That normalisation is where this change's visual deltas come from.
+They are not separately settable on purpose — binding the level to the variant
+is what keeps `heading-order` correct by construction:
+[routes.ts](e2e/fixtures/routes.ts) supplies the expected heading name for each
+route, and [routes.spec.ts](e2e/routes.spec.ts) plus
+[a11y.spec.ts](e2e/a11y.spec.ts) each assert it at `level: 1` on all eight
+routes. **Do not size a title in a page stylesheet.** The one live exception is
+[callToAction.scss](src/components/sections/callToAction.scss)'s `h2`, a card
+heading inside `.call-to-action-part` that does not go through `PageHeader`:
+`PageHeader`'s 720px `max-width` and 32px bottom margin would fight the card,
+breaking the deliberate size match with `proposal.tsx`'s "Earn Yield" heading
+that the file's own comment protects. If a new title does not fit `page` or
+`section`, add a variant to the component rather than a `font-size` to the
+page — a per-page size is exactly how the previous drift started, and
+`news.scss` ended up carrying two comments asserting it matched the others
+exactly.
+
 Layout uses a 12-column grid, but **not** Bootstrap's — `src/assets/css/grid.scss` reimplements the containers, rows, columns, and the five utility classes the app actually uses (`d-flex`, `align-items-center`, `justify-content-center`, `mx-auto`, `mb-0`). Semantics match Bootstrap 5 exactly, including the `--bs-gutter-x` / `--bs-gutter-y` custom properties that `responsive.css` overrides. `bootstrap-grid.min.css` was 51.8 kB of render-blocking CSS for ~13 class usages. Only `bootstrap-reboot.min.css` remains third-party. If you reach for a Bootstrap class that isn't in `grid.scss`, add it there rather than pulling the framework back in.
 
 Fonts are **self-hosted** in `public/fonts/` (latin subsets; Inter and Roboto Mono are variable). `src/assets/css/fonts.css` holds the `@font-face` rules and `index.html` preloads Inter + Major Mono Display. They were on fonts.googleapis.com, which was render-blocking on a cold third-party origin and sat in front of the font files themselves. Two details are load-bearing: the metric-matched `'Inter Fallback'` face (second in every sans stack) keeps text from re-wrapping when the real Inter arrives, and Major Mono Display uses `font-display: optional` so a late arrival can't shift the header. Font URLs are literal and unhashed — that's why the files live in `public/`, not `src/assets/`.

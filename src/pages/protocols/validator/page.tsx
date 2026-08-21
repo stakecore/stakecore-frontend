@@ -6,7 +6,7 @@ import type { Chain } from '~/enums'
 import { CHAIN_CONFIG } from '~/config/chains'
 import ServerError from '~/components/ui/serverError'
 import EmptyState from '~/components/ui/emptyState'
-import ProjectTitle from "../title"
+import PageHeader from '~/components/ui/pageHeader'
 import InfoComponent from "../info"
 import UnavailabilityBanner from "../unavailabilityBanner"
 import ValidatorPicker from "../validatorPicker"
@@ -98,11 +98,9 @@ const ValidatorPage = ({
 
   return <>
     <div className="single-project-page-design">
-      <ProjectTitle
-        title={title}
-        suptitle={suptitle}
-        rightSlot={picker}
-      />
+      <div className="container">
+        <PageHeader supTitle={suptitle} title={title} aside={picker} />
+      </div>
       <div className="container pt-30">
         <Description />
         {/* Every state in the ladder above renders into a box of the same

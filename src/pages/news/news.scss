@@ -6,37 +6,6 @@
     padding-bottom: 32px;
 }
 
-.news-header {
-    max-width: 720px;
-    margin-bottom: 48px;
-}
-
-.news-header-sup {
-    // Matches .about-header-sup and .project-title-sup.
-    font-family: var(--font-sans);
-    font-size: t.$text-xs;
-    font-weight: t.$weight-medium;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--main-color);
-    margin: 0 0 16px;
-}
-
-.news-header-main {
-    // Matches .about-header-main and .contact-header-main exactly — the
-    // three inner-page titles share one scale.
-    font-family: t.$font-display;
-    font-size: 36px;
-    font-weight: t.$weight-extrabold;
-    letter-spacing: -0.02em;
-    line-height: 1.05;
-    color: var(--heading-color);
-    margin: 0 0 16px;
-
-    @include t.up(md) { font-size: 56px; }
-    @include t.up(lg) { font-size: 72px; }
-}
-
 .news-feed {
     display: flex;
     flex-direction: column;

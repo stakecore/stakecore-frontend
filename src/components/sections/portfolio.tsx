@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router'
 import { RiArrowRightUpLine } from '@remixicon/react'
 import { protocolsData } from '../../utils/data/protocols'
+import PageHeader from '~/components/ui/pageHeader'
 import './portfolio.scss'
 
 const Portfolio = () => {
@@ -19,14 +20,11 @@ const Portfolio = () => {
     return (
         <section className="protocols">
             <div className="container">
-                <header className="protocols-header">
-                    <h2 className="protocols-title">Protocols</h2>
-                    <p className="protocols-blurb">
-                        Validator and protocol-signing services on Flare, Avalanche, and
-                        the Songbird canary network. Each protocol specifies its own rules
-                        and reward structure.
-                    </p>
-                </header>
+                <PageHeader variant="section" title="Protocols">
+                    Validator and protocol-signing services on Flare, Avalanche, and
+                    the Songbird canary network. Each protocol specifies its own rules
+                    and reward structure.
+                </PageHeader>
 
                 <ul className="protocols-filter">
                     {filteredCategory.map((item) => (

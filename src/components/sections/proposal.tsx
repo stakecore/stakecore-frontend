@@ -1,14 +1,13 @@
 import { Link } from 'react-router'
 import { RiArrowRightLine } from '@remixicon/react'
+import PageHeader from '~/components/ui/pageHeader'
 import './proposal.scss'
 
 const Proposal = ({ priceData }: any) => {
     return (
         <section className="pricing-area">
             <div className="container">
-                <header className="pricing-header-section">
-                    <h2 className="pricing-header-main">Earn Yield</h2>
-                </header>
+                <PageHeader variant="section" align="center" title="Earn Yield" />
                 <div className="row justify-content-center">
                     {priceData.map(({ features, id, price, sortInfo, title }) => <Card
                         key={id} features={features} price={price} sortInfo={sortInfo} title={title}

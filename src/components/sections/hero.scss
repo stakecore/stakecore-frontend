@@ -62,7 +62,6 @@
     // Inter Extrabold matches the protocol page titles + hero stat
     // values — same display treatment used across the rest of the site.
     font-family: t.$font-display;
-    font-size: 32px;
     font-weight: t.$weight-extrabold;
     letter-spacing: -0.02em;
     line-height: 1.05;
@@ -71,8 +70,7 @@
     max-width: 100%;
     overflow-wrap: break-word;
 
-    @include t.up(md) { font-size: 48px; }
-    @include t.up(lg) { font-size: 60px; }
+    @include t.display-hero;
 }
 
 .hero-tagline {
@@ -114,7 +112,6 @@
 
 .hero-stat-value {
     font-family: t.$font-display;
-    font-size: 34px;
     font-weight: t.$weight-extrabold;
     text-transform: uppercase;
     letter-spacing: -0.02em;
@@ -123,8 +120,7 @@
     font-variant-numeric: tabular-nums;
     font-feature-settings: 'tnum';
 
-    @include t.up(md) { font-size: 50px; }
-    @include t.up(lg) { font-size: 60px; }
+    @include t.display-stat;
 }
 
 // Smaller muted prefix/suffix (e.g. "$") sits inline with the big number.
