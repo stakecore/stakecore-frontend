@@ -78,3 +78,38 @@ $weight-regular: 400;
 $weight-medium: 500;
 $weight-semibold: 600;
 $weight-bold: 700;
+
+// ---- Display ramps ----
+//
+// A display title's size is a RAMP across breakpoints, not a scalar — which is
+// why the $text-* scale above went unused at the display end while fourteen
+// distinct raw px values accumulated in component files. A mixin can carry the
+// whole ramp, so a title states its ROLE and never its pixels.
+
+@mixin display-page {
+    font-size: 36px;
+    @include up(md) { font-size: 56px; }
+    @include up(lg) { font-size: 72px; }
+}
+
+@mixin display-section {
+    font-size: 28px;
+    @include up(md) { font-size: 40px; }
+}
+
+// The home wordmark only. Deliberately distinct from display-page: it is the
+// one title with no page above it in the hierarchy.
+@mixin display-hero {
+    font-size: 32px;
+    @include up(md) { font-size: 48px; }
+    @include up(lg) { font-size: 60px; }
+}
+
+// Hero statistics. Sized alongside display-hero and converging with it at lg,
+// but kept separate on purpose: a stat readout is not a title, and merging the
+// two would make a future hero-title change silently resize every figure.
+@mixin display-stat {
+    font-size: 34px;
+    @include up(md) { font-size: 50px; }
+    @include up(lg) { font-size: 60px; }
+}
