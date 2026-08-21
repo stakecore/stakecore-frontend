@@ -5,7 +5,7 @@ Date: 2026-08-21
 ## Goal
 
 Stop page and section titles drifting. Today the same visual element is built
-six times in six files, and title sizes are written as raw pixels in fourteen
+seven times in seven files, and title sizes are written as raw pixels in fourteen
 distinct values. Replace both with four named ramps — page, section, hero,
 stat — and one `PageHeader` component that every title goes through.
 
@@ -95,6 +95,7 @@ so the page headers disagree among themselves. Bottom spacing is 16 / 32 / 48 /
 | Variant ↔ heading level | Bound: `page`→`h1`, `section`→`h2` |
 | `max-width` | Bound to variant: 880px page, 720px section |
 | `line-height` | Bound to variant: 1.05 page, 1.1 section — it already tracks it |
+| Body size | Bound to variant: `$text-lg` page, `$text-base` section — it already tracks it |
 | Bottom spacing | Standardised to the majority values (below); pages override via a layout class if genuinely needed |
 | `.container` | **Not** rendered by the component |
 | `$text-*` scale | Unchanged — it works for body and small text |
@@ -219,7 +220,7 @@ Three properties of this shape are load-bearing:
 - **`title` is `ReactNode`, not `string`.** `.about-section-header-main`
   contains a `<span className="about-mark">`; a `string` prop would force that
   call site back to hand-built markup and reopen the drift.
-- **The component does not render `.container`.** Five of six call sites
+- **The component does not render `.container`.** Six of seven call sites
   already sit inside one. `ProjectTitle` currently renders its own, as a
   *sibling* of the page's other container rather than nested inside it, so its
   two call sites gain an explicit wrapper — a move, not an unnesting.
@@ -250,22 +251,33 @@ is followed immediately by other content.
 | [news](../../../src/pages/news/index.tsx) | `variant="page"` | max-width 720 → 880; block margin 48 → 32, sup 16 → 12, title 16 → 0 |
 | [proposal](../../../src/components/sections/proposal.tsx) | `variant="section" align="center"` | none |
 | [protocols](../../../src/pages/protocols/title.tsx) | `variant="page"` + `aside` | ramp 40/48/64 → 36/56/72 |
+| [home protocols](../../../src/components/sections/portfolio.tsx) | `variant="section"` + body | ramp 32/44/56 → 28/40 |
 
-Two ramp-only changes fall outside the component, because the hero and the home
-"Protocols" block are not suptitle headers:
+The home "Protocols" block is a full seventh call site rather than a ramp-only
+change: `<header>` + `h2` + a body paragraph is the same shape as proposal's,
+merely without a suptitle. Its `max-width` (720px) and bottom margin (32px)
+already match the section standard, so the title ramp is its only visual
+change — a shrink from 56px to 40px at `lg`, the largest in the effort, decided
+deliberately.
+
+Its blurb is also what establishes that body size tracks the variant:
+`.about-header-body` is `$text-lg` under a page header and `.protocols-blurb`
+is `$text-base` under a section header, with everything else about the two
+rules identical.
+
+One ramp-only change falls outside the component, since the hero holds no
+suptitle header:
 
 - [hero.scss](../../../src/components/sections/hero.scss) — `.hero-wordmark`
   takes `display-hero` and `.hero-stat-value` takes `display-stat`. Both keep
   their current pixel values exactly; this is a naming change only.
-- [portfolio.scss](../../../src/components/sections/portfolio.scss) —
-  `.protocols-title` takes `display-section`, shrinking 56 → 40 at `lg`. This
-  is the single largest visual change in the effort and was decided
-  deliberately.
 
-Once migrated, the six per-page rule blocks (`.about-header-*`,
+Once migrated, the seven per-page rule blocks (`.about-header-*`,
 `.about-section-header-*`, `.contact-header-*`, `.news-header-*`,
-`.pricing-header-*`, `.project-title-*`) are deleted. `.about-header-body`
-folds into `.page-header-body`; `.about-mark` is unrelated and stays.
+`.pricing-header-*`, `.project-title-*`, `.protocols-header` /
+`.protocols-title` / `.protocols-blurb`) are deleted. `.about-header-body` and
+`.protocols-blurb` both fold into `.page-header-body`; `.about-mark` is
+unrelated and stays.
 
 ### The specificity trap
 
