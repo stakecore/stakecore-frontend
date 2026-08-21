@@ -13,69 +13,6 @@
     @include t.up(lg) { padding: 64px 0; }
 }
 
-.about-header {
-    max-width: 880px;
-    padding-bottom: 16px;
-}
-
-.about-header-sup {
-    font-family: var(--font-sans);
-    font-size: t.$text-xs;
-    font-weight: t.$weight-medium;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--main-color);
-    margin: 0 0 16px;
-}
-
-.about-header-main {
-    font-family: t.$font-display;
-    font-size: 36px;
-    font-weight: t.$weight-extrabold;
-    letter-spacing: -0.02em;
-    line-height: 1.05;
-    color: var(--heading-color);
-    margin: 0 0 24px;
-
-    @include t.up(md) { font-size: 56px; }
-    @include t.up(lg) { font-size: 72px; }
-}
-
-.about-header-body {
-    font-family: var(--font-sans);
-    font-size: t.$text-lg;
-    line-height: 1.5;
-    color: var(--main-color);
-    margin: 0;
-}
-
-.about-section-header {
-    max-width: 720px;
-    margin-bottom: 32px;
-}
-
-.about-section-header-sup {
-    font-family: var(--font-sans);
-    font-size: t.$text-xs;
-    font-weight: t.$weight-medium;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--main-color);
-    margin: 0 0 12px;
-}
-
-.about-section-header-main {
-    font-family: t.$font-display;
-    font-size: 28px;
-    font-weight: t.$weight-extrabold;
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-    color: var(--heading-color);
-    margin: 0;
-
-    @include t.up(md) { font-size: 40px; }
-}
-
 // Emphasis accent, used in both headings and body copy. Sage rather than
 // white is the whole point: this page also has underlined white links
 // (a.about-inline-link), so the two underlines must not be confusable —
