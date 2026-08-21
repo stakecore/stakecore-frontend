@@ -122,13 +122,15 @@ prop binds five things that were already perfectly correlated across the seven
 hand-built copies it replaced: display ramp, heading level (`page`→`h1`,
 `section`→`h2`), `max-width`, `line-height` and body size. They are not
 separately settable on purpose — binding the level to the variant is what keeps
-`heading-order` correct by construction, and the e2e fixture in
-[routes.ts](e2e/fixtures/routes.ts) pins a named level-1 heading on all eight
+`heading-order` correct by construction: [routes.ts](e2e/fixtures/routes.ts)
+supplies the expected heading name for each route, and
+[routes.spec.ts](e2e/routes.spec.ts) plus
+[a11y.spec.ts](e2e/a11y.spec.ts) each assert it at `level: 1` on all eight
 routes. **Do not size a title in a page stylesheet.** If a new title does not
 fit `page` or `section`, add a variant to the component rather than a
 `font-size` to the page — a per-page size is exactly how the previous drift
-started, and two of those files ended up carrying comments asserting they
-matched the others exactly.
+started, and `news.scss` ended up carrying two comments asserting it matched
+the others exactly.
 
 Layout uses a 12-column grid, but **not** Bootstrap's — `src/assets/css/grid.scss` reimplements the containers, rows, columns, and the five utility classes the app actually uses (`d-flex`, `align-items-center`, `justify-content-center`, `mx-auto`, `mb-0`). Semantics match Bootstrap 5 exactly, including the `--bs-gutter-x` / `--bs-gutter-y` custom properties that `responsive.css` overrides. `bootstrap-grid.min.css` was 51.8 kB of render-blocking CSS for ~13 class usages. Only `bootstrap-reboot.min.css` remains third-party. If you reach for a Bootstrap class that isn't in `grid.scss`, add it there rather than pulling the framework back in.
 

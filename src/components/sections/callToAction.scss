@@ -24,7 +24,11 @@
 
     h2 {
         font-family: t.$font-display;
-        font-size: 28px;
+        // Shared ramp with proposal.tsx's "Earn Yield" heading, which this
+        // card is replaced by once a wallet with a balance connects — keeping
+        // both on display-section is what stops the heading size from
+        // jumping at the swap.
+        @include t.display-section;
         font-weight: t.$weight-extrabold;
         letter-spacing: -0.02em;
         line-height: 1.1;
@@ -51,8 +55,6 @@
 @include t.up(md) {
     .call-to-action-part {
         padding: 48px;
-
-        h2 { font-size: 40px; }
     }
 }
 
