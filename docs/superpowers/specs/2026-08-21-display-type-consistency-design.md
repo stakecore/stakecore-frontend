@@ -5,7 +5,7 @@ Date: 2026-08-21
 ## Goal
 
 Stop page and section titles drifting. Today the same visual element is built
-seven times in seven files, and title sizes are written as raw pixels in fourteen
+seven times across six stylesheets, and title sizes are written as raw pixels in fourteen
 distinct values. Replace both with four named ramps — page, section, hero,
 stat — and one `PageHeader` component that every title goes through.
 
