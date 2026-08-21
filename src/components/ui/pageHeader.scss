@@ -1,0 +1,79 @@
+@use '../../assets/css/tokens' as t;
+
+// Styles for the site's one title block. See pageHeader.tsx for why variant
+// binds five properties together, and
+// docs/superpowers/specs/2026-08-21-display-type-consistency-design.md for the
+// measurements behind each value here — every one is the majority of the seven
+// hand-built copies this replaces.
+
+.page-header {
+    max-width: 880px;
+    margin-bottom: 32px;
+}
+
+.page-header--section {
+    max-width: 720px;
+}
+
+.page-header--center {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+// Column layout only when there is an aside to place. align-items keeps the
+// aside at its natural width rather than stretching it to the text column.
+.page-header--with-aside {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+// Groups the suptitle + title + body so the aside can sit outside them.
+.page-header-text {
+    min-width: 0;
+}
+
+.page-header-sup {
+    font-family: var(--font-sans);
+    font-size: t.$text-xs;
+    font-weight: t.$weight-medium;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--main-color);
+    margin: 0 0 12px;
+}
+
+.page-header-main {
+    font-family: t.$font-display;
+    font-weight: t.$weight-extrabold;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    color: var(--heading-color);
+    margin: 0;
+
+    @include t.display-page;
+}
+
+.page-header--section .page-header-main {
+    line-height: 1.1;
+
+    @include t.display-section;
+}
+
+.page-header-body {
+    font-family: var(--font-sans);
+    font-size: t.$text-lg;
+    line-height: 1.5;
+    color: var(--main-color);
+    margin: 24px 0 0;
+}
+
+.page-header--section .page-header-body {
+    font-size: t.$text-base;
+}
+
+.page-header-aside {
+    flex: 0 0 auto;
+}
