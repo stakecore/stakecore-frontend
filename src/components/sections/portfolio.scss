@@ -9,32 +9,6 @@
     @include t.up(lg) { padding: 96px 0; }
 }
 
-.protocols-header {
-    margin-bottom: 32px;
-    max-width: 720px;
-}
-
-.protocols-title {
-    font-family: t.$font-display;
-    font-size: 32px;
-    font-weight: t.$weight-extrabold;
-    letter-spacing: -0.02em;
-    line-height: 1.05;
-    color: var(--heading-color);
-    margin: 0 0 12px;
-
-    @include t.up(md) { font-size: 44px; }
-    @include t.up(lg) { font-size: 56px; }
-}
-
-.protocols-blurb {
-    font-family: var(--font-sans);
-    font-size: t.$text-base;
-    line-height: 1.5;
-    color: var(--main-color);
-    margin: 0;
-}
-
 .protocols-filter {
     display: flex;
     flex-wrap: wrap;
