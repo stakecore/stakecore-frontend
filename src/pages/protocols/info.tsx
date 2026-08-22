@@ -2,7 +2,7 @@ import React from "react"
 import SpecsTooltip from "./tooltip"
 import { HashLink } from "~/components/ui/links"
 import { symbolToChain } from "~/utils/misc/translations"
-import type { ISpecs, ISpecValue } from "./types"
+import type { ISpecs, ISpecValue, ISummaryValue } from "./types"
 import './specs.scss'
 
 
@@ -81,11 +81,36 @@ const SpecsRow = ({ title, value, tooltip }: { title: React.ReactNode, value: IS
   )
 }
 
-const ProjectSingleInfo = ({ title, value }) => {
+// A summary value is plain text or a pair of bounds. The bounds are named
+// rather than joined with "to", because "25.0 to 93.0" left the reader to
+// work out that they were a min and a max — and the unit rides on the range
+// so it appears once, at the end, instead of being missing entirely (the
+// asset has its own row further up the same card).
+const SummaryValue = ({ value }: { value: ISummaryValue }) => {
+  if (typeof value === 'string') return <>{value}</>
+  return (
+    <span className="single-info-range">
+      <span className="single-info-bound-group">
+        <span className="single-info-bound">Min</span> {value.min}
+      </span>
+      {/* A real whitespace node, not just a flex gap: flex ignores
+          whitespace-only children for layout, but textContent keeps it, so
+          the accessible name stays "Min 25.0 Max 93.0 FLR" rather than
+          running the two bounds together. */}
+      {' '}
+      <span className="single-info-bound-group">
+        <span className="single-info-bound">Max</span> {value.max}
+        {value.unit && ` ${value.unit}`}
+      </span>
+    </span>
+  )
+}
+
+const ProjectSingleInfo = ({ title, value }: { title: string, value: ISummaryValue }) => {
   return (
     <div className="single-info">
       <p>{title}</p>
-      <h3>{value}</h3>
+      <h3><SummaryValue value={value} /></h3>
     </div>
   )
 }

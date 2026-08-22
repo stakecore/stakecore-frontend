@@ -1,5 +1,13 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { Chain } from '~/enums'
+
+// The lockup range is measured from "now", so without a fixed clock its upper
+// bound moves every day and no exact assertion is possible.
+const FIXED_NOW = 1_700_000_000
+vi.mock('~/utils/misc/time', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('~/utils/misc/time')>()),
+  unixnow: () => FIXED_NOW,
+}))
 import { createValidatorDataAccess, type ValidatorService } from './data'
 import type { PChainValidatorInfoDto } from '~/backendApi'
 
@@ -45,5 +53,54 @@ describe('createValidatorDataAccess epoch APYs', () => {
     const access = createValidatorDataAccess(Chain.FLARE, serviceOf(info))
     const [validator] = await access.getPageData()
     expect(validator?.graphics.epochApys).toEqual([])
+  })
+})
+
+// The summary's two bounded fields used to render as one opaque string
+// ("25.0 to 93.0"), which left the reader to infer that the numbers were a
+// min and a max, and left the unit off entirely — the asset lives in a
+// separate row of the same card. They are structured now, so info.tsx can
+// label the bounds; see ISummaryValue in ../types.
+describe('createValidatorDataAccess summary bounds', () => {
+  const RANGE_END = FIXED_NOW + 149 * 86400
+
+  it('reports the delegation bounds as a range carrying the asset symbol', async () => {
+    const access = createValidatorDataAccess(Chain.FLARE, serviceOf(infoOf({
+      minimumDelegated: 25,
+      validatorAvailableCapacity: 93,
+    })))
+    const [validator] = await access.getPageData()
+
+    expect(validator?.summary.delegation).toEqual({ min: '25.0', max: '93.0', unit: 'FLR' })
+  })
+
+  it('reports the lockup bounds in days, with the unit on the range not the number', async () => {
+    const access = createValidatorDataAccess(Chain.FLARE, serviceOf(infoOf({
+      validatorEndTime: RANGE_END,
+    })))
+    const [validator] = await access.getPageData()
+
+    // `Formatter.days` bakes " days" into its own output, so the max is a bare
+    // number here and `unit` carries the word for both bounds.
+    expect(validator?.summary.lockup).toEqual({ min: '14', max: '149', unit: 'days' })
+  })
+
+  it('collapses to "Unavailable" when the validator has no capacity left', async () => {
+    const access = createValidatorDataAccess(Chain.FLARE, serviceOf(infoOf({
+      minimumDelegated: 100,
+      validatorAvailableCapacity: 10,
+    })))
+    const [validator] = await access.getPageData()
+
+    expect(validator?.summary.delegation).toBe('Unavailable')
+  })
+
+  it('collapses the lockup to "Unavailable" once the term is shorter than the minimum', async () => {
+    const access = createValidatorDataAccess(Chain.FLARE, serviceOf(infoOf({
+      validatorEndTime: FIXED_NOW + 3 * 86400,
+    })))
+    const [validator] = await access.getPageData()
+
+    expect(validator?.summary.lockup).toBe('Unavailable')
   })
 })

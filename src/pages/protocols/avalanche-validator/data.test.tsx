@@ -36,7 +36,7 @@ describe('AvalancheValidatorDataAccess.getSummary', () => {
       minimumDelegated: 25,
       validatorAvailableCapacity: 1_000_000,
     }))
-    expect(out.delegation).toBe('25.0 to 1.00M')
+    expect(out.delegation).toEqual({ min: '25.0', max: '1.00M', unit: 'AVAX' })
   })
 
   it('still reports "Unavailable" lockup when leftover < 14 days', () => {

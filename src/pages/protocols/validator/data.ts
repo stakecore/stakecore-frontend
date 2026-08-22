@@ -34,16 +34,19 @@ export function createValidatorDataAccess(chain: ValidatorChain, service: Valida
     const minDelegated = Formatter.number(data.minimumDelegated)
     const maxDelegated = Formatter.number(data.validatorAvailableCapacity)
     const leftover = data.validatorEndTime - unixnow()
-    const maxLockup = Formatter.days(leftover)
+    // A bare number, not `Formatter.days`, which appends ' days' to its own
+    // output — here the unit belongs to the range as a whole rather than to
+    // its upper bound, so it rides on `unit` and gets rendered once.
+    const maxLockup = Formatter.number(leftover / 86400, 1)
     return {
       asset,
       apy: Formatter.percent(data.apy),
       delegation: checkRangeAvailable(
         data.minimumDelegated,
         data.validatorAvailableCapacity,
-        `${minDelegated} to ${maxDelegated}`
+        { min: minDelegated, max: maxDelegated, unit: asset },
       ),
-      lockup: checkRangeAvailable(14 * 86400, leftover, `14 to ${maxLockup}`),
+      lockup: checkRangeAvailable(14 * 86400, leftover, { min: '14', max: maxLockup, unit: 'days' }),
       expired: leftover <= 0,
     }
   }

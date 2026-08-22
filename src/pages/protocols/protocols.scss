@@ -70,6 +70,28 @@
 // have it overridden by this selector.
 .col-lg-9 .single-project-page-right { margin-top: 24px; }
 
+// Bound names on a ranged summary value ("Min 25.0 · Max 93.0 FLR"). They are
+// scaffolding rather than data, so they sit at the muted label colour and
+// below the number's size — the figures stay the thing the eye lands on.
+// Sized in em so both track the h3 they live in rather than needing their own
+// breakpoint ramp.
+.single-info-bound {
+    font-size: 0.7em;
+    color: var(--main-color);
+}
+
+// The bounds are flex items so that a value too wide for this column breaks
+// *between* them rather than mid-pair. In normal inline flow "Min 50.0k Max
+// 4.45M FLR" wrapped after "Max" at the real /flare/validator width, leaving
+// the number on the next line away from the word naming it — which defeats
+// the point of naming the bounds. As flex items the second bound moves to its
+// own line intact, and only wraps internally if it cannot fit even there.
+.single-info-range {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 12px;
+}
+
 .single-info {
     padding-bottom: 24px;
 

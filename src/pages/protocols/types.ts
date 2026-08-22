@@ -13,11 +13,23 @@ export type ISpec = {
   tooltip?: string
 }
 
+// A bounded summary field: the two ends plus the unit they share. Structured
+// rather than a pre-joined string for the same reason ILink is — the data
+// layers stay DOM-free and info.tsx decides how to mark the bounds up. The
+// string form it replaces ("25.0 to 93.0") left the reader to infer that the
+// numbers were a min and a max, and carried no unit at all, since the asset
+// sits in a different row of the same card.
+export type IRange = { min: string; max: string; unit?: string }
+
+// A summary cell is either plain text ('No Limit' on the FSP routes,
+// 'Unavailable' when a validator is full or expiring) or a range.
+export type ISummaryValue = string | IRange
+
 export type ISummary = {
   asset: string
   apy: string
-  delegation: string
-  lockup: string
+  delegation: ISummaryValue
+  lockup: ISummaryValue
   // True when the validator's term has ended — set by validator
   // summaries only; FSP summaries leave this undefined.
   expired?: boolean

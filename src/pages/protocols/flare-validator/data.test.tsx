@@ -40,7 +40,7 @@ describe('FlareValidatorDataAccess.getSummary', () => {
       minimumDelegated: 25,
       validatorAvailableCapacity: 1_000_000,
     }))
-    expect(out.delegation).toBe('25.0 to 1.00M')
+    expect(out.delegation).toEqual({ min: '25.0', max: '1.00M', unit: 'FLR' })
   })
 
   it('reports delegation as "Unavailable" when the capacity is exhausted (min > available)', () => {
@@ -56,7 +56,7 @@ describe('FlareValidatorDataAccess.getSummary', () => {
     const out = FlareValidatorDataAccess.getSummary(infoOf({
       validatorEndTime: NOW + 90 * 86_400,
     }))
-    expect(out.lockup).toBe('14 to 90 days')
+    expect(out.lockup).toEqual({ min: '14', max: '90', unit: 'days' })
   })
 
   it('reports lockup as "Unavailable" when leftover is below 14 days', () => {
