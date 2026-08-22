@@ -75,6 +75,27 @@ const PAUSE_MS = 1200
 // pause) and we carry on from their position rather than yanking them back.
 const EXTERNAL_SCROLL_PX = 1
 
+// WCAG 2.2.2 (Pause, Stop, Hide) — where the two callers stand, because it
+// differs between them and the difference is not visible from this file.
+//
+// Both rows move automatically for longer than five seconds, so both need a
+// mechanism to pause them. Three exist here: pointer hover, keyboard focus
+// (below), and prefers-reduced-motion, which refuses to start a loop at all.
+//
+//   • The hero activity feed contains links. A keyboard user tabs into it, the
+//     focusin latch fires, and the row stops. Fully covered.
+//   • The About stack carousels contain no focusable children at all — they
+//     are static logos — so the focus latch can never fire there. Their only
+//     mechanism is prefers-reduced-motion, an OS-level setting rather than an
+//     in-page control.
+//
+// That second case is a knowing decision, not an oversight: an audit in
+// 2026-08 weighed a visible pause toggle against it and kept the OS setting,
+// on the grounds that the rows carry no information that is not also in the
+// prose above them and that a control in the corner would fight a deliberately
+// clean block. If those rows ever gain focusable children or become the only
+// place some fact appears, revisit it — the honest fix then is a real button.
+
 // Whether a focus is one the user is navigating with, rather than the
 // leftover of a click. Both pause the loop under a plain `focusin` latch, and
 // the click case never lifts: the feed's links open in a new tab, so the

@@ -208,9 +208,77 @@ with fixed headers. The page-level HTML checks that read rendered content
 without prerendering routes to real paths — i.e. leaving the hash router. Don't
 file these as bugs; they're the known cost of the current hosting.
 
+### Accessibility
+
+The target is **WCAG 2.1 AA**, gated in CI by `e2e/a11y.spec.ts` (see Testing
+below). axe covers perhaps a third of the criteria, so the decisions it cannot
+check are recorded here — each one is load-bearing, and several look like
+arbitrary style choices until you know what they are for.
+
+- **Document titles live in route `handle.title`** ([router.tsx](src/route/router.tsx)),
+  applied by an effect in [root.tsx](src/layout/root.tsx). A hash fragment
+  never reaches the server, so without this every route ships index.html's
+  `<title>StakeCore</title>` and a screen-reader user gets no signal that
+  navigation happened at all (2.4.2 Page Titled, level A). They are asserted
+  per route in [routes.ts](e2e/fixtures/routes.ts) on the same navigation as
+  the heading, so a title naming a page the router didn't render fails.
+- **The skip link is a `<button>`, not `<a href="#main">`.** In a hash router
+  that href is a navigation to the `/main` route, not a fragment jump. It moves
+  focus onto `<main tabIndex={-1}>` — focus, not scroll: a scroll leaves the
+  next Tab back in the header, which is the thing being skipped. It is
+  positioned off-screen with a `transform`, never `display:none` or
+  `visibility:hidden`, both of which would remove it from the tab order it
+  exists to be in.
+- **`NotFound` uses an `<h1>`; `ServerError` and `RouteError` keep their
+  `<div>`.** The 404 is a whole route, so "Page not found" is its title and
+  1.3.1 wants that in the markup. The other two render *inside* a route that
+  already owns an `h1`. `.error-label` out-specifies the bare `h1` rules in
+  `style.css`, so the promotion changes nothing visually.
+- **The protocols nav toggle carries no `aria-haspopup`.** It is shorthand for
+  "menu", and the thing it controls is a plain `<ul>` of links with no arrow
+  navigation. Claiming it also left axe unable to resolve `aria-controls`,
+  filing an `aria-valid-attr-value` *incomplete* on every route in the site.
+  `aria-expanded` + `aria-controls` is the whole disclosure contract.
+- **Spec tooltips are `<button>`s** ([tooltip.tsx](src/pages/protocols/tooltip.tsx)),
+  and their accessible name is the tooltip text itself. As a `<div>` the text
+  lived only in `data-tooltip-content` and was pointer-only (2.1.1) with no
+  text alternative for the icon (1.1.1). react-tooltip opens on focus as well
+  as hover, so making the trigger focusable fixes the visual tooltip too.
+- **Charts name themselves from their series keys**
+  ([statsChart.tsx](src/components/ui/statsChart.tsx)). recharts' accessibility
+  layer already makes the surface focusable and arrow-key navigable — the
+  tooltip follows the keyboard, so the values are genuinely reachable without a
+  pointer — but it ships no name, so focus landed on an interactive region that
+  announced nothing (4.1.2). The `<h3>` above each chart is not
+  programmatically associated with it. There is still no *tabular* alternative
+  to the data; that is a known gap, not an oversight.
+- **`aria-label` needs a role to attach to.** The activity marquee is a
+  `<section>` for exactly this reason: ARIA forbids a naming attribute on an
+  element with no role, so `aria-label` on the bare `<div>` it used to be named
+  nothing at all (axe: `aria-prohibited-attr`) and AT dropped it.
+- **2.2.2 (Pause, Stop, Hide) is met unevenly, on purpose.** The hero activity
+  feed contains links, so keyboard focus pauses it. The About stack carousels
+  contain no focusable children, so their only mechanism is
+  `prefers-reduced-motion`. That was weighed against adding a visible pause
+  toggle and deliberately kept — see the long comment in
+  [useMarquee.ts](src/utils/useMarquee.ts) for the reasoning and the condition
+  that should reopen it.
+- **Contrast has been measured, not assumed.** axe reports `color-contrast` as
+  *incomplete* on most routes because the chain background art, the hero rune
+  canvas and the carousel mask defeat its background resolution. Sampling the
+  rendered pixels behind every one of those nodes put the worst case at
+  **6.04:1** (`.page-header-sup` over the Flare symbol), comfortably past the
+  4.5:1 AA threshold. Don't treat those incompletes as unknowns; do re-measure
+  if the background art gets brighter than `opacity: 0.30`.
+- **Two things pass only on a technicality, so tread carefully.** Hash links in
+  the activity feed are 17px tall and clear 2.5.8 (WCAG 2.2) solely through the
+  spacing exception, with 26px between centres against a 24px requirement —
+  tightening `.activity-row` spacing breaks it. And the home page's tab order
+  runs ~100 marquee links deep; the skip link bypasses the header, not those.
+
 ### Testing
 
-Vitest + happy-dom + `@testing-library/react` / `user-event`. 388 tests across 34 files at last count, all co-located next to source as `*.test.ts(x)`. Test files declare their environment per-file via a top-of-file `// @vitest-environment happy-dom` directive (no global config). There is no global setup file, so RTL's auto-cleanup does not run — a test that renders more than once must call `afterEach(cleanup)` itself, or later queries will match elements left behind by earlier renders.
+Vitest + happy-dom + `@testing-library/react` / `user-event`. 410 tests across 37 files at last count, all co-located next to source as `*.test.ts(x)`. Test files declare their environment per-file via a top-of-file `// @vitest-environment happy-dom` directive (no global config). There is no global setup file, so RTL's auto-cleanup does not run — a test that renders more than once must call `afterEach(cleanup)` itself, or later queries will match elements left behind by earlier renders.
 
 Common patterns: `vi.mock('~/features/wallet/store', ...)` to provide a fake Zustand store, `vi.mock('~/features/wallet/eip1193', ...)` for the RPC helpers, Proxy-mocked `Contract` instances for ethers calls, `MemoryRouter` wrapping for components that use `useLocation` / `NavLink`. `fireEvent.click` instead of `userEvent.click` when targeting react-router `<Link>` (userEvent's synthetic chain doesn't reach the onClick prop reliably through Link's `preventDefault`).
 
@@ -218,9 +286,11 @@ Common patterns: `vi.mock('~/features/wallet/store', ...)` to provide a fake Zus
 
 Playwright 1.62.1, Chromium only, specs in `e2e/`. `pnpm test:e2e` (or
 `pnpm test:e2e:ui`). Coverage is deliberately thin: every route renders with
-its real heading and no error panel, a wallet connect against a mocked
-EIP-6963 provider, an axe-core accessibility scan of all eight page states
-plus the open wallet picker, the agent-readable static surface
+its real heading, its own document title and no error panel, a wallet connect
+against a mocked EIP-6963 provider, an axe-core accessibility scan of all eight
+page states plus the open wallet picker, the two structural a11y facts axe
+cannot see (the skip link reaching `<main>`, and every chart carrying an
+accessible name), the agent-readable static surface
 (`e2e/agentReadability.spec.ts` — see below), and the two marquees
 (`e2e/stackCarousel.spec.ts`, `e2e/activityMarquee.spec.ts`). The marquee specs
 are here rather than in unit tests because what they assert is layout: whether
