@@ -10,13 +10,12 @@ dateModified: 2026-08-22
 Human URL: <https://stakecore.org/#/about>
 
 StakeCore runs blockchain node infrastructure — a redundant cluster we build,
-orchestrate, and monitor ourselves. Validator duty and core protocol signing on
-Flare, Avalanche, and Songbird are what it carries today, and we are actively
-taking it onto more networks. RPC and archive nodes, indexers, relayers, and
-attestation services are the same shape of work, so any network is a candidate.
-From individual holders to protocols, custodians, and treasuries, anyone can
-delegate or stake their native tokens with us, earning rewards with a risk
-profile close to that of simply holding the asset.
+orchestrate, and monitor ourselves. Validator duty on Flare and Avalanche, and
+core oracle attestation signing on Flare and Songbird, are what it carries
+today, and we are actively taking it onto more networks. We're open to running
+any kind of workload, but we prefer to keep our stakers and delegators on core
+network protocols, where the risk profile stays close to that of simply holding
+the asset.
 
 ## Who we serve
 
