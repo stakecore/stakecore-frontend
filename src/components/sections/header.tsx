@@ -110,7 +110,12 @@ const Header = () => {
                                                     <button
                                                         type="button"
                                                         className={`nav-link-click submenu-toggle${item.children.some(c => c.path === pathName) ? ' active' : ''}`}
-                                                        aria-haspopup="true"
+                                                        // No aria-haspopup: it is shorthand for "menu", and this
+                                                        // controls a plain <ul> of links, not a menu widget with
+                                                        // arrow navigation. Claiming it also left axe unable to
+                                                        // resolve aria-controls, filing an aria-valid-attr-value
+                                                        // "incomplete" on every route. aria-expanded +
+                                                        // aria-controls is the whole disclosure contract.
                                                         aria-expanded={openDropdown === item.id}
                                                         aria-controls={`submenu-${item.id}`}
                                                         onClick={(e) => {

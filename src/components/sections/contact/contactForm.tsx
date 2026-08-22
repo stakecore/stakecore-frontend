@@ -60,7 +60,6 @@ const ContactForm = () => {
                             <div className="form-group">
                                 <label htmlFor="name">Full Name</label>
                                 <input type="text" id="name" name="name" className="form-control" placeholder="Jane Doe" required={true} minLength={4} maxLength={25} data-error="Please enter your Name" />
-                                <label htmlFor="name" className="for-icon"><i className="far fa-user"></i></label>
                                 <div className="help-block with-errors"></div>
                             </div>
                         </div>
@@ -68,7 +67,6 @@ const ContactForm = () => {
                             <div className="form-group">
                                 <label htmlFor="email">Email Address</label>
                                 <input type="email" id="email" name="email" className="form-control" placeholder="hi@mail.com" required={true} minLength={5} maxLength={35} data-error="Please enter your Email" />
-                                <label htmlFor="email" className="for-icon"><i className="far fa-envelope"></i></label>
                                 <div className="help-block with-errors"></div>
                             </div>
                         </div>

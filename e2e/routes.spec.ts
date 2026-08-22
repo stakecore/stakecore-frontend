@@ -1,11 +1,15 @@
 import { test, expect } from './fixtures/backend'
-import { ROUTES, NOT_FOUND_PATH } from './fixtures/routes'
+import { ROUTES, NOT_FOUND_PATH, NOT_FOUND_TITLE } from './fixtures/routes'
 
-for (const { path, heading } of ROUTES) {
+for (const { path, heading, title } of ROUTES) {
   test(`${path} renders`, async ({ page, consoleErrors }) => {
     await page.goto(`/#${path}`)
 
     await expect(page.getByRole('heading', { level: 1, name: heading })).toBeVisible()
+    // WCAG 2.4.2. Asserted on the same navigation as the heading so the two
+    // can't drift: a title naming a page the router didn't render is worse
+    // than no title at all.
+    await expect(page).toHaveTitle(title)
 
     // The error assertions below are point-in-time, and ServerError only
     // appears once a fetch has actually failed — so wait for SWR to settle
@@ -30,7 +34,11 @@ test('unknown paths render the 404 page', async ({ page, consoleErrors }) => {
 
   await expect(page.locator('.error-container--centered')).toBeVisible()
   await expect(page.getByText('404', { exact: true })).toBeVisible()
-  await expect(page.getByText('Page not found')).toBeVisible()
+  // A heading, not a styled <div>: "Page not found" reads as the page's title
+  // visually, and 1.3.1 requires that relationship to survive into the markup.
+  // It is also what gives the 404 the level-1 heading every other route has.
+  await expect(page.getByRole('heading', { level: 1, name: 'Page not found' })).toBeVisible()
+  await expect(page).toHaveTitle(NOT_FOUND_TITLE)
 
   expect(consoleErrors).toEqual([])
 })

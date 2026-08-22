@@ -246,3 +246,19 @@ describe('RecentActivity auto-scroll loop', () => {
     else Reflect.deleteProperty(HTMLElement.prototype, 'offsetLeft')
   })
 })
+
+describe('RecentActivity landmark', () => {
+  // The scroller carried aria-label="Recent activity" on a bare <div>. ARIA
+  // forbids a naming attribute on an element with no role (axe:
+  // aria-prohibited-attr), and assistive tech drops it — so the label named
+  // nothing. A <section> with an accessible name is a region landmark, which
+  // is the same shape the /about stack carousels already use.
+  it('exposes the marquee as a named region rather than a labelled div', () => {
+    const { getByRole } = render(
+      <RecentActivity data={payload([activity({ transaction: '0xtx_region' })])} isLoading={false} />,
+    )
+
+    const region = getByRole('region', { name: 'Recent activity' })
+    expect(region.classList.contains('activity-marquee')).toBe(true)
+  })
+})

@@ -14,7 +14,18 @@ const StatsChart = ({ data, keys, formatY, height = 200 }: {
   height?: number
 }) => (
   <ResponsiveContainer width="100%" height={height}>
-    <LineChart data={data} margin={chartMargin}>
+    <LineChart
+      data={data}
+      margin={chartMargin}
+      // recharts' accessibility layer makes the SVG surface focusable
+      // (tabindex=0, role="application") and arrow-key navigable — the tooltip
+      // follows the keyboard, so the numbers really are reachable without a
+      // pointer. It ships no name for it though, so focus landed on an
+      // interactive region that announced nothing (WCAG 4.1.2). The series
+      // names are the identifying part; the <h3> above each chart is not
+      // programmatically associated with it.
+      aria-label={`Line chart of ${keys.join(' and ')}. Interactive: use arrow keys to move through data points.`}
+    >
       <XAxis dataKey="x" tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 12 }} tickLine={false} axisLine={false} />
       <YAxis hide domain={['auto', 'auto']} />
       <Tooltip

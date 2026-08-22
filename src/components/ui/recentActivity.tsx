@@ -192,8 +192,13 @@ const RecentActivity = ({ data, isLoading }: {
   // The fade mask lives on this non-scrolling wrapper, not on the scroller
   // itself — a mask directly on a scroll container can force the browser off
   // composited scrolling, repainting the whole track on every 1px step.
+  // <section>, not <div>: ARIA forbids a naming attribute on an element with
+  // no role, so aria-label on the bare div named nothing at all (axe:
+  // aria-prohibited-attr) and assistive tech dropped it. A <section> with an
+  // accessible name is a region landmark — the same shape the /about stack
+  // carousels use.
   return <div className="activity-marquee-mask">
-    <div ref={marqueeRef} className="activity-marquee" aria-label="Recent activity">
+    <section ref={marqueeRef} className="activity-marquee" aria-label="Recent activity">
       <div className="activity-marquee-track">
         {cards.map(({ item, key, usdText, timeText }) =>
           <ActivityCard key={`a-${key}`} activity={item} usdText={usdText} timeText={timeText} />
@@ -202,7 +207,7 @@ const RecentActivity = ({ data, isLoading }: {
           <ActivityCard key={`b-${key}`} activity={item} usdText={usdText} timeText={timeText} clone />
         )}
       </div>
-    </div>
+    </section>
   </div>
 }
 

@@ -8,7 +8,7 @@ import Footer from '../components/sections/footer'
 import CallToAction from '../components/sections/callToAction'
 import { PreloaderContent } from '../components/ui/preloader'
 import { useAfterIdle } from '../utils/useAfterIdle'
-import { lazy, Suspense, useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { CookiesProvider } from 'react-cookie'
 import { CHAIN_CONFIG } from '~/config/chains'
 
@@ -43,9 +43,15 @@ const NavigationPreloader = () => {
 
 const RootLayout = () => {
   const { pathname } = useLocation()
+  const mainRef = useRef<HTMLElement>(null)
   const deferredChrome = useAfterIdle()
   const matches = useMatches()
   const hideCallToAction = matches.some(m => (m.handle as { hideCallToAction?: boolean } | undefined)?.hideCallToAction)
+  // Deepest match wins, so a nested route could override its parent later.
+  const routeTitle = matches.reduce<string | undefined>(
+    (acc, m) => (m.handle as { title?: string } | undefined)?.title ?? acc,
+    undefined,
+  )
   const chain = chainFromRoute(pathname)
   const chainId = chainToChainId(chain)
   // Per-chain background art + modifier class (e.g. the Songbird symbol
@@ -61,6 +67,12 @@ const RootLayout = () => {
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [pathname])
+
+  // WCAG 2.4.2. Guarded rather than unconditional: a route that forgot its
+  // handle should keep index.html's title, not blank the tab.
+  useEffect(() => {
+    if (routeTitle) document.title = routeTitle
+  }, [routeTitle])
 
   useEffect(() => {
     setChain(chainId)
@@ -86,6 +98,19 @@ const RootLayout = () => {
   return (
     <>
       <NavigationPreloader />
+      {/* WCAG 2.4.1. A <main> landmark already satisfies the criterion for
+          anyone browsing by landmark, but a keyboard-only sighted user has no
+          landmark list — they tab, and the header is ~10 stops deep on every
+          route. A <button> rather than an <a href="#main">: this is a hash
+          router, so that href is a navigation to the "/main" route, not a
+          fragment jump. */}
+      <button
+        type="button"
+        className="skip-link"
+        onClick={() => mainRef.current?.focus()}
+      >
+        Skip to main content
+      </button>
       <Header />
       <div className='background'>
         {image && <div className={`background-image ${bgClass}`} style={{ backgroundImage: `url("${image}")` }} />}
@@ -93,7 +118,11 @@ const RootLayout = () => {
           {/* The page needs exactly one <main> landmark for screen-reader
               "skip to content" navigation (axe: landmark-one-main). The
               footer stays outside it — it's not main content. */}
-          <main>
+          {/* tabIndex={-1} so the skip link can move focus *onto* it. Without
+              that, focus stays in the header and the next Tab lands back on
+              the nav — a scroll that looks like a skip but isn't one. -1 keeps
+              it out of the tab order for everyone else. */}
+          <main ref={mainRef} tabIndex={-1}>
             <Outlet />
             {!hideCallToAction && <CallToAction />}
           </main>

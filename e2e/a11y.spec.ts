@@ -141,3 +141,47 @@ test('the wallet picker has no WCAG violations', async ({ page }, testInfo) => {
 
   expect(await scanForWcagViolations(page, testInfo, 'wallet-picker')).toEqual([])
 })
+
+// The header's nav, social row and wallet button are ~10 tab stops in front of
+// every page's content. A <main> landmark satisfies 2.4.1 for anyone browsing
+// by landmark, but a keyboard-only sighted user has no landmark list — they
+// tab. This is the mechanism for them.
+test('a skip link bypasses the header', async ({ page }) => {
+  await page.goto('/#/about')
+  await expect(page.getByRole('heading', { level: 1, name: 'Your stake, our engine' })).toBeVisible()
+
+  // First tab stop on the page, or it is not a bypass of anything.
+  await page.keyboard.press('Tab')
+  const skip = page.getByRole('button', { name: 'Skip to main content' })
+  await expect(skip).toBeFocused()
+  // Hidden until focused: it must not occupy space in the header layout.
+  await expect(skip).toBeVisible()
+
+  await page.keyboard.press('Enter')
+
+  // Focus has to land *on* main, not merely scroll to it — a scroll leaves the
+  // next Tab back in the header, which is the bug this is meant to fix.
+  await expect(page.locator('main')).toBeFocused()
+})
+
+// recharts' accessibility layer makes each chart focusable (tabindex=0,
+// role="application") and arrow-key navigable, which is genuinely useful — but
+// it shipped with an empty <title> and no aria-label, so focus landed on an
+// interactive region that announced nothing at all (WCAG 4.1.2).
+test('charts carry an accessible name', async ({ page }) => {
+  await page.goto('/#/flare/fsp')
+  await page.waitForLoadState('networkidle')
+
+  const surfaces = page.locator('.recharts-surface')
+  await expect(surfaces.first()).toBeVisible()
+
+  const count = await surfaces.count()
+  expect(count).toBeGreaterThan(0)
+  for (let i = 0; i < count; i++) {
+    const name = await surfaces.nth(i).getAttribute('aria-label')
+    expect(name, `chart ${i} has no aria-label`).toBeTruthy()
+    // Naming it "chart" alone would pass a presence check while telling the
+    // user nothing; the series name is the part that identifies it.
+    expect(name!.length).toBeGreaterThan(10)
+  }
+})

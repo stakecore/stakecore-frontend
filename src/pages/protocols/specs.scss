@@ -58,11 +58,21 @@
   align-self: center;
 }
 
+/* A <button> rather than a <div> so the tooltip text is reachable by keyboard
+   (see tooltip.tsx). That brings UA button chrome with it, so the background,
+   padding and font have to be reset back to what the old div rendered — the
+   only intended visual change here is the cursor and the focus ring, which
+   :focus-visible in style.css supplies. */
 .specs-table-info {
   display: inline-block;
   margin-right: 5px;
   color-scheme: dark;
   color: inherit;
+  background: none;
+  padding: 0;
+  font: inherit;
+  line-height: 0;
+  cursor: help;
 }
 
 /* Mobile — stack title above value, drop horizontal scrolling.

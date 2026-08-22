@@ -86,7 +86,6 @@ describe('Header — protocols submenu', () => {
   it('renders the Protocols toggle with the documented a11y attributes (closed state)', () => {
     renderHeader()
     const toggle = screen.getByText('protocols').closest('button')!
-    expect(toggle.getAttribute('aria-haspopup')).toBe('true')
     expect(toggle.getAttribute('aria-expanded')).toBe('false')
     // aria-controls points at the <ul id="submenu-N">
     expect(toggle.getAttribute('aria-controls')).toMatch(/^submenu-/)
@@ -132,5 +131,32 @@ describe('Header — protocols submenu', () => {
     renderHeader('/about')
     const toggle = screen.getByText('protocols').closest('button')!
     expect(toggle.classList.contains('active')).toBe(false)
+  })
+})
+
+// --- Disclosure, not a menu -------------------------------------------
+
+describe('Header — protocols submenu is a disclosure', () => {
+  it('does not claim aria-haspopup, which would promise a role="menu" popup', () => {
+    renderHeader()
+    const toggle = screen.getByText('protocols').closest('button')!
+
+    // The controlled element is a plain <ul> of links, not a menu widget:
+    // aria-haspopup="true" is shorthand for "menu", so it advertised keyboard
+    // semantics (arrow navigation, type-ahead) that nothing implements. It
+    // also made axe unable to resolve aria-controls, filing an
+    // aria-valid-attr-value "incomplete" on every route in the site.
+    expect(toggle.getAttribute('aria-haspopup')).toBeNull()
+  })
+
+  it('still exposes the disclosure state it does implement', () => {
+    renderHeader()
+    const toggle = screen.getByText('protocols').closest('button')!
+
+    // aria-expanded + aria-controls are the whole disclosure contract, and
+    // they stay — this is a narrowing of the claim, not a removal of it.
+    expect(toggle.getAttribute('aria-expanded')).toBe('false')
+    const controls = toggle.getAttribute('aria-controls')!
+    expect(document.getElementById(controls)).toBeTruthy()
   })
 })

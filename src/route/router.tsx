@@ -9,9 +9,17 @@ import RouteError from "./routeError";
 // root so a crash renders into RootLayout's <Outlet /> with the header, footer
 // and wallet UI still mounted — a root-level boundary replaces the layout
 // itself, so one bad component would take the whole chrome with it.
-const lazyRoute = (path, factory) => ({
+//
+// `handle.title` is the document title, applied by RootLayout. It lives on the
+// route rather than inside each page component for two reasons: it has to be
+// set for lazy routes before their chunk resolves, and putting it here keeps
+// every title in one list where a duplicate is visible. A hash fragment never
+// reaches the server, so index.html's static <title> is what all eight routes
+// would otherwise ship — see the note in e2e/fixtures/routes.ts.
+const lazyRoute = (path, factory, title) => ({
     path,
     lazy: routeLazy(path, factory),
+    handle: { title },
     errorElement: <RouteError />
 })
 
@@ -24,15 +32,18 @@ export const router = createHashRouter([
         // -switch effect) — nothing above this point can catch those.
         errorElement: <RouteError />,
         children: [
-            { path: "/", element: <Home />, errorElement: <RouteError /> },
-            lazyRoute("/contact", () => import("../pages/contact")),
-            lazyRoute("/about", () => import("../pages/about")),
-            lazyRoute("/news", () => import("../pages/news")),
-            lazyRoute("/avalanche/validator", () => import("../pages/protocols/avalanche-validator/page")),
-            lazyRoute("/flare/validator", () => import("../pages/protocols/flare-validator/page")),
-            lazyRoute("/flare/fsp", () => import("../pages/protocols/flare-fsp/page")),
-            lazyRoute("/songbird/fsp", () => import("../pages/protocols/songbird-fsp/page")),
-            { path: "*", element: <NotFound />, handle: { hideCallToAction: true }, errorElement: <RouteError /> }
+            // The home page keeps the bare wordmark: it is the site's own
+            // page, so "StakeCore — StakeCore" would be the only duplication
+            // in the set.
+            { path: "/", element: <Home />, handle: { title: "StakeCore" }, errorElement: <RouteError /> },
+            lazyRoute("/contact", () => import("../pages/contact"), "Contact — StakeCore"),
+            lazyRoute("/about", () => import("../pages/about"), "About — StakeCore"),
+            lazyRoute("/news", () => import("../pages/news"), "News — StakeCore"),
+            lazyRoute("/avalanche/validator", () => import("../pages/protocols/avalanche-validator/page"), "Avalanche Validator — StakeCore"),
+            lazyRoute("/flare/validator", () => import("../pages/protocols/flare-validator/page"), "Flare Validator — StakeCore"),
+            lazyRoute("/flare/fsp", () => import("../pages/protocols/flare-fsp/page"), "Flare Systems Protocol — StakeCore"),
+            lazyRoute("/songbird/fsp", () => import("../pages/protocols/songbird-fsp/page"), "Songbird Systems Protocol — StakeCore"),
+            { path: "*", element: <NotFound />, handle: { hideCallToAction: true, title: "Page not found — StakeCore" }, errorElement: <RouteError /> }
         ]
     }
 ])
