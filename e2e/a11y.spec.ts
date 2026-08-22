@@ -170,8 +170,11 @@ test('a skip link bypasses the header', async ({ page }) => {
 // interactive region that announced nothing at all (WCAG 4.1.2).
 test('charts carry an accessible name', async ({ page }) => {
   await page.goto('/#/flare/fsp')
-  await page.waitForLoadState('networkidle')
 
+  // No networkidle here on purpose. A chart only exists once its data has
+  // arrived and the lazy recharts chunk has run, so this assertion *is* the
+  // condition — and it waits for that one fact rather than for the whole page
+  // to fall silent, which on a slow backend can outlast the test budget.
   const surfaces = page.locator('.recharts-surface')
   await expect(surfaces.first()).toBeVisible()
 
@@ -179,9 +182,11 @@ test('charts carry an accessible name', async ({ page }) => {
   expect(count).toBeGreaterThan(0)
   for (let i = 0; i < count; i++) {
     const name = await surfaces.nth(i).getAttribute('aria-label')
-    expect(name, `chart ${i} has no aria-label`).toBeTruthy()
     // Naming it "chart" alone would pass a presence check while telling the
-    // user nothing; the series name is the part that identifies it.
-    expect(name!.length).toBeGreaterThan(10)
+    // user nothing; the series name is the part that identifies it. Length
+    // stands in for that — asserted on `?? ''` so a null name fails here
+    // rather than needing a separate truthiness check first.
+    expect(name ?? '', `chart ${i} has a useless or missing aria-label`).not.toHaveLength(0)
+    expect((name ?? '').length).toBeGreaterThan(10)
   }
 })

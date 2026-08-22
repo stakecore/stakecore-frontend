@@ -1,5 +1,5 @@
 import { OpenAPI } from '../../src/backendApi/core/OpenAPI'
-import { test as base } from './console'
+import { test as base } from './embeds'
 
 /**
  * The live backend answers **every** origin with a fixed

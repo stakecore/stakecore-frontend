@@ -64,3 +64,36 @@ test('/news links out to the FAsset 3D Visualiser', async ({ page, consoleErrors
   // uptime must not be able to redden this repo's CI.
   expect(consoleErrors).toEqual([])
 })
+
+// Guards e2e/fixtures/embeds.ts. Every spec that waits on
+// `waitForLoadState('networkidle')` settles only once the YouTube player and
+// the fonts it pulls from gstatic have finished, so without that fixture the
+// four video routes take their settle time from a third-party CDN — measured:
+// holding only the player's requests left /flare/fsp never settling while
+// /about settled in 517ms. The symptom is a suite that reddens on a protocol
+// route, at that call, and goes green on a rerun.
+//
+// Asserted as "no player subresources" rather than "no request to the embed
+// URL": the fixture fulfils that one request locally, so it still shows up as
+// a request. `/s/player/...` and the gstatic fonts only ever appear if the
+// real player actually loaded.
+test('protocol routes pull nothing from the video CDN', async ({ page }) => {
+  const external: string[] = []
+  page.on('request', r => {
+    const url = r.url()
+    if (/fonts\.gstatic\.com|youtube-nocookie\.com\/s\//.test(url)) external.push(url)
+  })
+
+  await page.goto('/#/flare/fsp')
+  await expect(page.getByRole('heading', { level: 1, name: 'Flare Systems Protocol' })).toBeVisible()
+  // A fixed wait rather than networkidle: what this asserts has nothing to do
+  // with whether our own backend has settled, and the player is lazy and
+  // chatty — this just gives it room to betray itself.
+  await page.waitForTimeout(3000)
+
+  expect(external).toEqual([])
+
+  // The <iframe> itself must survive — it is our markup, and axe's frame-title
+  // rule selects it. Only the bytes behind it are stubbed.
+  await expect(page.locator('.video-container iframe')).toHaveAttribute('title', 'YouTube video player')
+})

@@ -347,6 +347,35 @@ as intended.
   quieter half, and the routes would still be rendering the error panel. The
   real alternative is server-side — allowlist the preview origin and delete the
   fixture.
+- **The YouTube player is stubbed; the backend is not.**
+  `e2e/fixtures/embeds.ts` fulfils every youtube-nocookie.com request locally,
+  because `waitForLoadState('networkidle')` otherwise settles only once that
+  player — and the gstatic fonts it pulls from inside the frame — has finished.
+  That handed the four video routes' settle time to a third-party CDN, and a
+  slow one blew the 30s test budget: the suite reddened on a protocol route, at
+  that call, and went green on a rerun. Measured by holding *only* the player's
+  requests for 25s: `/flare/fsp` never settled, while `/about` (no video, same
+  delay, same backend) settled in 517ms. Stubbing it took the full suite from a
+  12.7–40s spread with intermittent failures to 12.5–12.8s across five runs.
+  No coverage is lost — nothing asserts anything about the player, the a11y
+  scans already exclude the frame's contents, and the `<iframe>` element stays
+  in our document so `frame-title` still applies. The stub body is a *complete*
+  document (lang, title, body) because axe injects into every frame and the
+  scans' `exclude` scopes out the frame's `<body>`, not its `<html>`.
+  `routes.spec.ts` guards the fixture by asserting no `/s/player/` or gstatic
+  request ever escapes.
+- **Prefer a web assertion to `networkidle` in new specs.** `networkidle` waits
+  for *everything* to fall silent, so it inherits the slowest thing on the
+  page — which is how a third-party CDN came to set the pass/fail line above,
+  and it still leaves the remaining calls exposed to a slow backend. Where a
+  spec can name the fact it is waiting for, that assertion is both the wait and
+  the check: the chart test waits on `.recharts-surface` being visible, which a
+  chart only becomes once its data has arrived and the lazy recharts chunk has
+  run. The calls that remain in `routes.spec.ts` and the `a11y.spec.ts` route
+  loop each have a documented reason (let SWR settle so a ServerError would
+  have appeared; audit the rendered page rather than a spinner) and no cheap
+  replacement — `spinners-react` renders an unclassed `<svg>`, so "no spinner
+  on screen" would need a marker added to the app.
 - CI runs them in `.github/workflows/e2e.yml`, separate from the deploy
   workflow so a backend outage cannot block a Pages publish.
 

@@ -8,6 +8,11 @@ const IGNORED = [
   // The YouTube iframe (movieClip.tsx) intermittently emits this permissions-
   // policy warning itself; it's YouTube's player code reacting to a policy we
   // don't control, not a defect in our pages.
+  //
+  // Dormant for anything importing `test` from `backend.ts`, which layers
+  // `embeds.ts` underneath and stubs the player so its code never runs. Kept
+  // for specs that extend this file directly — and because deleting it would
+  // make un-stubbing the player look safe when it isn't.
   /compute-pressure/,
 ]
 
