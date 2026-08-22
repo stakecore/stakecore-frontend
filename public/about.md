@@ -74,8 +74,7 @@ from inside the process that failed. Healthchecks.io waits outside the cluster
 for jobs to check in on schedule, and treats silence as the alarm. When one of
 Grafana's alert rules fires the
 alert lands in Telegram, and Claude helps the on-call engineer work out why,
-correlating logs against metrics and drafting a fix. But nothing reaches the
-cluster without an engineer approving it.
+correlating logs against metrics and drafting a fix.
 
 | Job | What we run |
 | --- | --- |

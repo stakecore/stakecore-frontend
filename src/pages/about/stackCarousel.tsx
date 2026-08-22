@@ -140,9 +140,7 @@ const PLATFORM_GROUPS: StackGroup[] = [
   {
     // Named for the job, like every other group, rather than for the
     // relationship this once carried ("Assisted by"). Ordered the way the
-    // job runs: the alert arrives, then it gets worked. The boundary on
-    // Claude's half — engineers approve anything that lands — is in the
-    // prose above the carousel, because a label cannot carry it.
+    // job runs: the alert arrives, then it gets worked.
     //
     // Telegram is here and not in Observability on purpose. That group
     // collects and visualises signals; Telegram does neither, it carries

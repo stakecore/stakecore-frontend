@@ -216,11 +216,7 @@ const Stack = () => (
                         alarm. When one of Grafana's alert rules fires the
                         alert lands in Telegram, and Claude helps the on-call engineer
                         work out why, correlating logs against metrics and drafting a
-                        fix. But{' '}
-                        <span className="about-mark">
-                            nothing reaches the cluster without an engineer approving it
-                        </span>
-                        .
+                        fix.
                     </p>
                 </div>
                 <StackCarousel />
