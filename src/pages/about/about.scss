@@ -2,6 +2,12 @@
 
 // About page styles, co-located with about/index.jsx.
 
+// The infrastructure section's two-column geometry. Both row types are built
+// from these, so a change to either lands on all of them at once — .about-split
+// and .about-stack-prose have to agree or the section shows two measures.
+$infra-measure: 560px; // one text column at its widest
+$infra-gutter: 56px;   // between the two columns, at lg and up
+
 .about-single-area {
     padding-bottom: 32px;
 }
@@ -44,7 +50,7 @@
 
     @include t.up(lg) {
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-        gap: 56px;
+        gap: $infra-gutter;
         padding: 32px 0;
     }
 }
@@ -58,16 +64,41 @@
 
 .about-split-text {
     min-width: 0;
-    max-width: 560px;
+    max-width: $infra-measure;
 }
 
-// Third row of the infrastructure section. Unlike .about-split this never
-// becomes two columns — the marquee wants the container's full width, and
-// the intro above it keeps .about-split-text's 560px measure.
+// Third row of the infrastructure section, and the only one whose two columns
+// are both prose: there is no third visual, and the marquee below wants the
+// container's full width rather than half of it. Splitting the intro is what
+// keeps that full-bleed row from towering over one narrow column — and it does
+// it without giving these paragraphs a measure of their own, which is why the
+// heading sits outside .about-stack-prose rather than in a .about-split-text.
 .about-stack {
     padding: 24px 0;
 
     @include t.up(lg) { padding: 32px 0; }
+}
+
+// Same columns and gap as .about-split, so the measure tracks the rows above
+// by construction instead of by a number repeated here. Below lg the columns
+// collapse and the gap becomes ordinary paragraph spacing.
+.about-stack-prose {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    // Below lg this is one column, so it caps where a single .about-split-text
+    // does; the lg rule widens it to hold two of them.
+    max-width: $infra-measure;
+
+    // Capping the grid rather than the columns is what keeps a column equal to
+    // .about-split-text at every width: below this the columns are half the
+    // container like the rows above, and at xxl — where those rows are already
+    // pinned to $infra-measure — this stops these two growing past it alone.
+    @include t.up(lg) {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: $infra-gutter;
+        max-width: $infra-measure * 2 + $infra-gutter;
+    }
 }
 
 .about-split-visual {

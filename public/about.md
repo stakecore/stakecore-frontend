@@ -2,7 +2,7 @@
 title: Your stake, our engine
 description: Who StakeCore serves, how its multi-provider node cluster is built, why it is not tied to any particular chain, and why delegating carries a risk profile close to simply holding the asset.
 url: https://stakecore.org/about.md
-dateModified: 2026-08-20
+dateModified: 2026-08-22
 ---
 
 # Your stake, our engine
@@ -59,12 +59,23 @@ specification and a place to put it. Any worker node can host any workload —
 failure of a single node is recovered automatically by re-scheduling somewhere
 else in the cluster.
 
-**What the cluster runs on.** WireGuard links the sites into one private
-network, HAProxy balances traffic inside the cluster, and Traefik publishes the
-services and sites that face outward. When something breaks the alert lands in
-Telegram, and Claude helps the on-call engineer work out why — pulling logs
-from Loki and metrics from Prometheus, correlating the two, drafting a fix —
-but nothing reaches the cluster without an engineer approving it.
+**What the cluster runs on.** WireGuard links our nodes into one private
+network, whichever provider or site they sit in. Nomad places every workload
+onto that network and keeps it running, moving a job between nodes in case of
+failures. Each job pulls its signing keys and service credentials from Vault
+when it starts, rather than carrying them in an image. HAProxy balances traffic
+between jobs inside that network, and Traefik publishes the APIs and websites
+that need to be reachable from outside it.
+
+From there, everything the cluster does becomes a signal. Alloy ships every
+container's logs to Loki, Prometheus scrapes the metrics, and both are read
+through Grafana. Sentry catches what neither can: an exception reporting itself
+from inside the process that failed. Healthchecks.io waits outside the cluster
+for jobs to check in on schedule, and treats silence as the alarm. When one of
+Grafana's alert rules fires the
+alert lands in Telegram, and Claude helps the on-call engineer work out why,
+correlating logs against metrics and drafting a fix. But nothing reaches the
+cluster without an engineer approving it.
 
 | Job | What we run |
 | --- | --- |
@@ -72,7 +83,7 @@ but nothing reaches the cluster without an engineer approving it.
 | Data | PostgreSQL, Redis |
 | Private network | WireGuard, HAProxy |
 | Public edge | Traefik, Let's Encrypt |
-| Observability | Grafana, Prometheus, Loki, Alloy, Sentry |
+| Observability | Grafana, Prometheus, Loki, Alloy, Sentry, Healthchecks.io |
 | Delivery | Docker, GitHub Actions |
 | Hosting | OVH, Hetzner, GitHub Pages |
 | Alerting and triage | Telegram, Claude |

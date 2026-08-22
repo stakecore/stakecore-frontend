@@ -11,7 +11,7 @@ import './stackCarousel.scss'
 //
 //   • Only software we actually run. This sits under a heading that sells
 //     the cluster; a logo here is a claim about production, not a wish list.
-//   • The groups are the point. A flat row of twenty-one logos says nothing —
+//   • The groups are the point. A flat row of twenty-two logos says nothing —
 //     "HAProxy balances internally, Traefik publishes outward" is the
 //     information, and the group label is what carries it.
 
@@ -107,6 +107,13 @@ const RUNTIME_GROUPS: StackGroup[] = [
       // Let's Encrypt and GitHub Pages. /api/debug-sentry in the backend's
       // schema exists to prove the path still works.
       { name: 'Sentry', slug: 'sentry' },
+      // The mirror image of Sentry, and here for the same reason: third-party
+      // and off-cluster, so it still reports when the cluster is the thing
+      // that is broken. Sentry hears a process announce its own failure; this
+      // one hears nothing, on a schedule, and treats the silence as the
+      // failure. It detects rather than carries, which is what keeps it out of
+      // Alerting & triage — the same test that put Telegram there.
+      { name: 'Healthchecks.io', slug: 'healthchecks' },
     ],
   },
 ]

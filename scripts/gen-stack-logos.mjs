@@ -5,9 +5,9 @@
 //
 // Source is Simple Icons (CC0-1.0), which ships every brand as a single
 // 24×24 path plus its official hex. We inline the path data rather than
-// depend on the package or ship 20 separate SVG files: the whole set is
-// ~30kB of string in a lazy route chunk, against 20 extra requests and a
-// 3400-icon dependency for the twenty we use. The logos themselves remain trademarks of their
+// depend on the package or ship 21 separate SVG files: the whole set is
+// ~30kB of string in a lazy route chunk, against 21 extra requests and a
+// 3400-icon dependency for the twenty-one we use. The logos themselves remain trademarks of their
 // owners; naming the software you run is nominative use.
 //
 // A single path is also what makes the carousel's hover treatment work.
@@ -20,6 +20,13 @@
 // of both lists and set as type by stackCarousel.tsx — adding a slug
 // without checking how its mark survives that size is how the row ends up
 // with one illegible smudge in it.
+//
+// A vendor mark rarely arrives in the shape this file needs, so an EXTRA
+// entry may set two optional fields, each documented at its use below:
+// `flatten` waives the one-fill check for a mark whose tones are shading
+// rather than meaning, and `fit` rescales a mark that does not already fill
+// its own box. Both are opt-in: applied by default they would silently change
+// the marks already committed here.
 //
 // Re-run after changing SLUGS or EXTRA; the output is committed.
 
@@ -82,6 +89,27 @@ const EXTRA = {
     // a <rect> and so is skipped by the <path> match below.
     url: 'https://a-us.storyblok.com/f/1022730/24x24/e041973a44/icon-nav-loki.svg',
   },
+  healthchecks: {
+    title: 'Healthchecks.io',
+    // The green of the pulse. The plate's dark green never reaches the row:
+    // like Alloy's and Loki's, that plate is a <rect>, so the <path> match
+    // skips it for free.
+    hex: '#22BC66',
+    // The standalone logo, deliberately not /static/img/favicon.svg. The
+    // favicon draws the same mark for 16px, with strokes so heavy that
+    // flattening fuses its two pulses into one blob — an arrowhead, not a
+    // heartbeat. This one keeps the trace thin enough to still read as a
+    // pulse at row size.
+    url: 'https://healthchecks.io/static/img/logo.svg',
+    // Two tones tracing one continuous pulse rather than two marks, so
+    // collapsing them to a single colour keeps the silhouette. Checked against
+    // the vendor original at 26px before setting this.
+    flatten: true,
+    // The pulse spans 64% of the plate. Left alone it would render a third
+    // smaller than every Simple Icons glyph beside it, which all fill their
+    // own box.
+    fit: true,
+  },
 }
 
 const OUT_PATH = path.resolve(
@@ -109,16 +137,76 @@ const extractPath = (svg, slug) => {
 // elements did, so a flat multi-path mark collapses to the single-path shape
 // the rest of this file assumes. Verified against the fourteen shapes of the
 // Loki glyph, which do not overlap.
-const mergePaths = (svg, slug) => {
+// It holds only while every path is self-locating, which is checked below
+// rather than assumed: all three merged marks are absolute throughout today,
+// and a vendor switching to relative coordinates is exactly the change that
+// would break this quietly.
+const mergePaths = (svg, slug, { flatten = false } = {}) => {
   const ds = [...svg.matchAll(/<path[^>]*\sd="([^"]+)"/g)].map(m => m[1])
   if (ds.length === 0) throw new Error(`no paths found in ${slug}`)
+  // A leading `m` is relative to the current point: the origin inside a path's
+  // own element, but after concatenation wherever the previous subpath began.
+  // The shapes would land at plausible coordinates nothing downstream checks,
+  // scattered across the box — so refuse the merge instead.
+  if (ds.length > 1 && ds.some(d => /^\s*m/.test(d))) {
+    throw new Error(`${slug} merges a path with a relative moveto — its subpaths would scatter`)
+  }
   const fills = new Set(
     [...svg.matchAll(/<path[^>]*\sfill="([^"]+)"/g)].map(m => m[1].toLowerCase()),
   )
-  if (fills.size > 1) {
+  // Multiple fills normally mean the mark carries information in its colours,
+  // which currentColor would destroy. `flatten` is the opt-out for a mark whose
+  // tones are shading within one shape — set it only after looking at the
+  // flattened result at row size, since this check is the only thing standing
+  // between a two-tone logo and an unreadable blob.
+  if (fills.size > 1 && !flatten) {
     throw new Error(`${slug} uses ${fills.size} fills — it will not tint as one colour`)
   }
   return ds.join(' ')
+}
+
+// Scales a path to fill the 24×24 box the carousel renders it in, preserving
+// aspect ratio and centring the remainder. Only straight-line commands are
+// handled, which is exact arithmetic — a curve or arc would need its control
+// points transformed too, so this throws on one rather than emitting a mark
+// that is quietly the wrong shape.
+const fitToBox = (d, slug) => {
+  const toks = d.match(/[a-zA-Z]|-?\d*\.?\d+(?:e-?\d+)?/g) ?? []
+  const subpaths = []
+  let pts = null
+  let x = 0
+  let y = 0
+  let cmd = null
+  let i = 0
+  const num = () => Number.parseFloat(toks[i++])
+  while (i < toks.length) {
+    if (/[a-zA-Z]/.test(toks[i])) cmd = toks[i++]
+    switch (cmd) {
+      case 'z': case 'Z': cmd = null; break
+      // A moveto starts a subpath; the coordinate pairs that follow it without
+      // a command letter of their own are linetos, not more movetos.
+      case 'm': x += num(); y += num(); pts = [[x, y]]; subpaths.push(pts); cmd = 'l'; break
+      case 'M': x = num(); y = num(); pts = [[x, y]]; subpaths.push(pts); cmd = 'L'; break
+      case 'l': x += num(); y += num(); pts.push([x, y]); break
+      case 'L': x = num(); y = num(); pts.push([x, y]); break
+      case 'h': x += num(); pts.push([x, y]); break
+      case 'H': x = num(); pts.push([x, y]); break
+      case 'v': y += num(); pts.push([x, y]); break
+      case 'V': y = num(); pts.push([x, y]); break
+      default: throw new Error(`${slug}: cannot fit a path using '${cmd}' — straight lines only`)
+    }
+  }
+  const all = subpaths.flat()
+  const xs = all.map(p => p[0])
+  const ys = all.map(p => p[1])
+  const [minX, minY] = [Math.min(...xs), Math.min(...ys)]
+  const [w, h] = [Math.max(...xs) - minX, Math.max(...ys) - minY]
+  const scale = 24 / Math.max(w, h)
+  const [ox, oy] = [(24 - w * scale) / 2, (24 - h * scale) / 2]
+  const r = n => +(n).toFixed(3)
+  return subpaths
+    .map(p => `M${p.map(([px, py]) => `${r((px - minX) * scale + ox)} ${r((py - minY) * scale + oy)}`).join('L')}Z`)
+    .join('')
 }
 
 const main = async () => {
@@ -140,12 +228,9 @@ const main = async () => {
 
   for (const [slug, meta] of Object.entries(EXTRA)) {
     const svg = await get(meta.url)
-    entries.push({
-      slug,
-      title: meta.title,
-      hex: meta.hex,
-      path: mergePaths(svg, slug),
-    })
+    let path = mergePaths(svg, slug, { flatten: meta.flatten })
+    if (meta.fit) path = fitToBox(path, slug)
+    entries.push({ slug, title: meta.title, hex: meta.hex, path })
   }
 
   const body = entries

@@ -191,15 +191,32 @@ const Stack = () => (
             </div>
 
             <div className="about-stack">
-                <div className="about-split-text">
-                    <h3 className="about-split-title">What the cluster runs on</h3>
+                <h3 className="about-split-title">What the cluster runs on</h3>
+                {/* Two columns of prose rather than prose beside a visual: this
+                    row has no third illustration, and the marquee below runs the
+                    container's full width. */}
+                <div className="about-stack-prose">
                     <p className="about-split-body">
-                        WireGuard links the sites into one private network, HAProxy
-                        balances traffic inside the cluster, and Traefik publishes the
-                        services and sites that face outward. When something breaks
-                        the alert lands in Telegram, and Claude helps the on-call
-                        engineer work out why — pulling logs from Loki and metrics
-                        from Prometheus, correlating the two, drafting a fix — but{' '}
+                        WireGuard links our nodes into one private network, whichever
+                        provider or site they sit in. Nomad places every workload onto
+                        that network and keeps it running, moving a job between nodes in
+                        case of failures. Each job pulls its signing keys and service
+                        credentials from Vault when it starts, rather than carrying them
+                        in an image. HAProxy balances traffic between jobs inside that
+                        network, and Traefik publishes the APIs and websites that need
+                        to be reachable from outside it.
+                    </p>
+                    <p className="about-split-body">
+                        From there, everything the cluster does becomes a signal. Alloy
+                        ships every container's logs to Loki, Prometheus scrapes the
+                        metrics, and both are read through Grafana. Sentry catches what
+                        neither can: an exception reporting itself from inside the
+                        process that failed. Healthchecks.io waits outside the cluster
+                        for jobs to check in on schedule, and treats silence as the
+                        alarm. When one of Grafana's alert rules fires the
+                        alert lands in Telegram, and Claude helps the on-call engineer
+                        work out why, correlating logs against metrics and drafting a
+                        fix. But{' '}
                         <span className="about-mark">
                             nothing reaches the cluster without an engineer approving it
                         </span>
