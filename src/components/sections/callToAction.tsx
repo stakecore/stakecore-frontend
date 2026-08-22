@@ -26,6 +26,13 @@ const CallToAction = () => {
     setWalletChoiceVisible(true)
   }
 
+  // SWR reports `isLoading` for every retry after a failure, not just the
+  // first load, so a ladder that checks it before treating a missing payload
+  // as an error tore the "Connection failed" panel down and rebuilt it on each
+  // retry. Gate the spinner on "nothing has arrived yet" instead. Same rule as
+  // the ladder in queryState.tsx, which carries the browser trace.
+  const firstLoad = isLoading && error == null && data == null
+
   let hasError = false
   let component: ReactNode = null
   if (walletAddress == null) {
@@ -34,7 +41,7 @@ const CallToAction = () => {
         Connect Wallet
       </button>
     </div>
-  } else if (isLoading) {
+  } else if (firstLoad) {
     component = <div style={{ textAlign: 'center' }} className="mt-30 mb-30" >
       <SpinnerCircular color={PAGE_COLOR_CODE} size={100} />
     </div>

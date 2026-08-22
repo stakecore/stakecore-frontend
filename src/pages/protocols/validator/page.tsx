@@ -59,28 +59,35 @@ const ValidatorPage = ({
   const [params, setParams] = useSearchParams()
   const selected = data ? pickSelected(data, params.get('node')) : null
 
+  // Same ladder as QueryState on the FSP routes, and the same rule about the
+  // order: most-settled first. `isLoading` used to come first, but SWR reports
+  // it for any in-flight request with no loaded data — the state every retry
+  // after a failure is in — so the error panel was rebuilt on each retry and a
+  // failed background refresh blanked an already-good page. See the comment in
+  // queryState.tsx for the trace. The page changes when a fetch succeeds, and
+  // only then.
   let component: ReactNode = null
-  if (isLoading) {
+  if (selected) {
+    component = <>
+      <InfoComponent specs={selected.specs} summary={selected.summary} />
+      <OfficialDelegate validatorLink={selected.delegation.validatorLink} />
+      <ValidatorStatistics config={selected.graphics} />
+    </>
+  } else if (error != null) {
+    component = <ServerError error={error} />
+  } else if (isLoading) {
     component = <>
       <div style={{ textAlign: 'center' }} className="mt-30 mb-30" >
         <SpinnerCircular color={accentColor} size={100} />
       </div>
     </>
-  } else if (error != null) {
-    component = <ServerError error={error} />
-  } else if (!selected) {
+  } else {
     // Request succeeded but returned no validators (e.g. every validator
     // expired or was removed) — an empty state, not a connection failure.
     component = <EmptyState
       title='No validators available'
       description='There are no validators to display right now. Please check back soon.'
     />
-  } else {
-    component = <>
-      <InfoComponent specs={selected.specs} summary={selected.summary} />
-      <OfficialDelegate validatorLink={selected.delegation.validatorLink} />
-      <ValidatorStatistics config={selected.graphics} />
-    </>
   }
 
   // Picker lives directly under the page title — only rendered once data has

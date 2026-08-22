@@ -37,7 +37,14 @@ const Hero = () => {
     }
   }
 
-  const hasError = !isLoading && data == null
+  // `error != null`, not `!isLoading`. SWR reports isLoading for every retry
+  // after a failure as well as for the first load, so keying off it meant each
+  // retry swapped the error panel back out for the empty stats block and then
+  // back again — and the gap is the whole fetch duration, measured at 2.5s
+  // against a slow-failing backend. The fetcher throws when `data` is missing,
+  // so a settled failure always leaves an error behind for this to read.
+  // Same rule as the ladder in queryState.tsx.
+  const hasError = data == null && error != null
 
   return (
     <section className="hero">

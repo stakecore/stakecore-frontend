@@ -65,6 +65,12 @@ const FspLocalDelegateComponent = ({ config }: { config: FspDelegateConfig }) =>
     },
   }
 
+  // See callToAction.tsx and queryState.tsx: SWR reports `isLoading` on every
+  // retry after a failure, so the spinner has to be gated on "nothing has
+  // arrived yet" or the error panel is rebuilt on each one. This view polls
+  // every 10s, so that was a fixed cadence for as long as the page stayed open.
+  const firstLoad = isLoading && error == null && data == null
+
   let component: ReactNode = null
   if (walletAddress == null) {
     component = <div style={{ textAlign: 'center' }}>
@@ -72,7 +78,7 @@ const FspLocalDelegateComponent = ({ config }: { config: FspDelegateConfig }) =>
         Connect Wallet
       </button>
     </div>
-  } else if (isLoading) {
+  } else if (firstLoad) {
     component = <div style={{ textAlign: 'center' }}>
       <SpinnerCircular color={chainCfg.color} size={45} />
     </div>

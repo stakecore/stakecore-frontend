@@ -78,6 +78,21 @@ React 19, TypeScript, Vite 7, React Router 8 (hash router), SWR for data fetchin
 - `src/backendApi/` is **auto-generated** from OpenAPI — do not edit manually. Use `pnpm openapi-gen` to regenerate.
 - Services: `FspService`, `FlareValidatorService`, `AvalancheValidatorService`, `LandingPageService`
 - Data fetching uses SWR with refresh intervals defined in `src/constants.ts` (`REFRESH_QUERY_FAST_MS` = 10s, `REFRESH_QUERY_SLOW_MS` = 30s)
+- **Never branch on `isLoading` before you have checked for loaded data and for
+  an error.** SWR 2.x reports `isLoading` for *any* in-flight request with no
+  loaded data — which is the state every retry after a failure is in, not just
+  the first load. All five state ladders in this app got that order wrong, and
+  it showed up as the "Connection failed" panel being torn down and rebuilt on
+  each retry: the panel is replaced by a spinner for however long the fetch
+  takes to fail, then rebuilt. Traced in the browser against a backend failing
+  after 2.5s, the hero's panel vanished for the full 2.5s of every retry. The
+  rule is **most-settled-first**: data you have, then an error you have, then a
+  request still in flight. Two consequences worth keeping — the page changes
+  only when a fetch *succeeds*, and a failed background refresh no longer
+  blanks a fully-rendered page. `queryState.tsx` carries the trace and the
+  reasoning; `validator/page.tsx`, `hero.tsx`, `callToAction.tsx` and
+  `fsp/delegateLocal.tsx` each hold the same rule, the last two as a `firstLoad`
+  guard because their ladders use `data == null` as the failure signal.
 
 ### State Management
 
@@ -278,7 +293,7 @@ arbitrary style choices until you know what they are for.
 
 ### Testing
 
-Vitest + happy-dom + `@testing-library/react` / `user-event`. 410 tests across 37 files at last count, all co-located next to source as `*.test.ts(x)`. Test files declare their environment per-file via a top-of-file `// @vitest-environment happy-dom` directive (no global config). There is no global setup file, so RTL's auto-cleanup does not run — a test that renders more than once must call `afterEach(cleanup)` itself, or later queries will match elements left behind by earlier renders.
+Vitest + happy-dom + `@testing-library/react` / `user-event`. 431 tests across 42 files at last count, all co-located next to source as `*.test.ts(x)`. Test files declare their environment per-file via a top-of-file `// @vitest-environment happy-dom` directive (no global config). There is no global setup file, so RTL's auto-cleanup does not run — a test that renders more than once must call `afterEach(cleanup)` itself, or later queries will match elements left behind by earlier renders.
 
 Common patterns: `vi.mock('~/features/wallet/store', ...)` to provide a fake Zustand store, `vi.mock('~/features/wallet/eip1193', ...)` for the RPC helpers, Proxy-mocked `Contract` instances for ethers calls, `MemoryRouter` wrapping for components that use `useLocation` / `NavLink`. `fireEvent.click` instead of `userEvent.click` when targeting react-router `<Link>` (userEvent's synthetic chain doesn't reach the onClick prop reliably through Link's `preventDefault`).
 
