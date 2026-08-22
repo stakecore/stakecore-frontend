@@ -71,15 +71,24 @@ const FspLocalDelegateComponent = ({ config }: { config: FspDelegateConfig }) =>
   // every 10s, so that was a fixed cadence for as long as the page stayed open.
   const firstLoad = isLoading && error == null && data == null
 
+  // mt-20 on both compact states. Unspaced, they sit 8px under the h2 —
+  // reboot's heading margin and nothing else — which below md, where the
+  // card drops its border and side/bottom padding (protocols.scss), reads
+  // as part of the title rather than as the card's content. Top margin
+  // only: a bottom one would collapse straight through the card's missing
+  // bottom padding on mobile (no change there, since the next card's
+  // .mt-30 already wins the collapse) while at md+ it would stack on the
+  // card's 32px padding and leave the box visibly bottom-heavy. The loaded
+  // and error states space themselves (a <p>, and .error-container's 32px).
   let component: ReactNode = null
   if (walletAddress == null) {
-    component = <div style={{ textAlign: 'center' }}>
+    component = <div style={{ textAlign: 'center' }} className="mt-20">
       <button type="button" onClick={connectWallet} className="theme-btn">
         Connect Wallet
       </button>
     </div>
   } else if (firstLoad) {
-    component = <div style={{ textAlign: 'center' }}>
+    component = <div style={{ textAlign: 'center' }} className="mt-20">
       <SpinnerCircular color={chainCfg.color} size={45} />
     </div>
   } else if (data == null) {
