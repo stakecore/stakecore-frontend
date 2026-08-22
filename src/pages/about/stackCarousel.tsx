@@ -224,7 +224,7 @@ const BOTTOM_SPEED = -21
 // A duplicated track only wraps seamlessly when one copy is at least as wide
 // as the viewport: scrollLeft stops at scrollWidth - clientWidth, so with two
 // copies of a narrower run the wrap point sits past the end of the scroll
-// range and can never be reached. These rows are short — fourteen items and
+// range and can never be reached. These rows are short — fifteen items and
 // seven — so at desktop widths two copies is exactly that failure. Count the
 // copies needed instead of assuming, and re-count on resize.
 const MIN_COPIES = 2
