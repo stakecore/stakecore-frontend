@@ -293,7 +293,7 @@ arbitrary style choices until you know what they are for.
 
 ### Testing
 
-Vitest + happy-dom + `@testing-library/react` / `user-event`. 431 tests across 42 files at last count, all co-located next to source as `*.test.ts(x)`. Test files declare their environment per-file via a top-of-file `// @vitest-environment happy-dom` directive (no global config). There is no global setup file, so RTL's auto-cleanup does not run — a test that renders more than once must call `afterEach(cleanup)` itself, or later queries will match elements left behind by earlier renders.
+Vitest + happy-dom + `@testing-library/react` / `user-event`. 455 tests across 45 files at last count, all co-located next to source as `*.test.ts(x)`. Test files declare their environment per-file via a top-of-file `// @vitest-environment happy-dom` directive (no global config). There is no global setup file, so RTL's auto-cleanup does not run — a test that renders more than once must call `afterEach(cleanup)` itself, or later queries will match elements left behind by earlier renders.
 
 Common patterns: `vi.mock('~/features/wallet/store', ...)` to provide a fake Zustand store, `vi.mock('~/features/wallet/eip1193', ...)` for the RPC helpers, Proxy-mocked `Contract` instances for ethers calls, `MemoryRouter` wrapping for components that use `useLocation` / `NavLink`. `fireEvent.click` instead of `userEvent.click` when targeting react-router `<Link>` (userEvent's synthetic chain doesn't reach the onClick prop reliably through Link's `preventDefault`).
 
@@ -307,7 +307,9 @@ page states plus the open wallet picker, the two structural a11y facts axe
 cannot see (the skip link reaching `<main>`, and every chart carrying an
 accessible name), the agent-readable static surface
 (`e2e/agentReadability.spec.ts` — see below), and the two marquees
-(`e2e/stackCarousel.spec.ts`, `e2e/activityMarquee.spec.ts`). The marquee specs
+(`e2e/stackCarousel.spec.ts`, `e2e/activityMarquee.spec.ts`), and the
+containment and retry behaviour of a failed section chunk
+(`e2e/chunkResilience.spec.ts` — see Lazy chunk failures). The marquee specs
 are here rather than in unit tests because what they assert is layout: whether
 a swipe can reach the activity feed's first card is a fact about scroll
 geometry, and happy-dom lays nothing out, so the same assertion there would
@@ -455,6 +457,51 @@ Never touch `sessionStorage` / `localStorage` directly — go through `safeSessi
 `set()` returns a **boolean**, and callers recording a decision they must later read back have to branch on it. `routeLazy` is the cautionary example: its `RELOAD_FLAG` is the only thing stopping a permanently broken chunk from reloading forever, so it reloads only `if (get(...) !== '1' && set(...))`. Swallowing the write failure and reloading anyway would produce an infinite reload loop — strictly worse than the crash being fixed.
 
 Testing blocked storage: replace the property with a throwing getter via `Object.defineProperty(window, 'sessionStorage', { get() { throw ... } })`, and restore the saved descriptor afterwards. Do **not** use `vi.spyOn(Storage.prototype, …)` — those spies were observed to silently stop applying once another test in the same file had already touched storage, which turns the storage tests green against code that is still broken. Both storage test suites assert the block is live before asserting anything else, for exactly that reason.
+
+### Lazy chunk failures
+
+`routeLazy` covers a failed **route** chunk. Everything else lazily imported —
+a chart, a section, the deferred chrome — goes through `lazyRetry`
+([lazyRetry.tsx](src/components/ui/lazyRetry.tsx)), which is a drop-in
+replacement for `React.lazy` and still needs a `<Suspense>` above it, as every
+call site already has.
+
+The reason is that `<Suspense>` handles a chunk that is *pending* and does
+nothing for one that *rejects*: that propagates as a render error, and the only
+boundaries in this app are the per-route `errorElement`s. So a 503 on the 6 kB
+fsp-stats chunk took the entire `/flare/fsp` route with it — no `<h1>`, no
+provider data (already fetched and fine), no delegate widget, under "A new
+version may have been deployed", which was not true. The same shape existed on
+the validator chart and, worse, on `root.tsx`'s toasts / tooltips / wallet
+picker: those mount inside `RootLayout`, so their only boundary was the *root*
+`errorElement`, which replaces `RootLayout` itself — a failed react-toastify
+chunk blanked the whole site on every route.
+
+Three things about it are load-bearing:
+
+- **The retry re-imports a cache-busted URL, because a plain retry does not
+  re-fetch at all.** The module map records a failed fetch against its URL and
+  replays that failure for every later import of it. Measured in Chromium
+  against this build: three imports of a chunk whose first fetch 503'd produced
+  exactly **one** request. `retryImport` therefore recovers the URL from the
+  engine's own error message and appends `?__retry=n`. Safari names no URL
+  ("Importing a module script failed."), so there it degrades to containment
+  with no retry — which is still the half that matters.
+- **The `lazy()` is created once per call site, never in component state.** A
+  lazy that suspends on first render never commits, so React discards the
+  subtree and rebuilds it when the promise settles, re-running any `useState`
+  initializer inside. A lazy minted there is a different object each time, so
+  the rejection is never replayed as a catchable throw and the chunk is
+  re-requested forever — 3,786 requests in 30s, with no error UI, when this was
+  first written that way. `e2e/chunkResilience.spec.ts` asserts the exact
+  request count for that reason; loosening it to `toBeGreaterThan` would let
+  the storm back in.
+- **`silent: true` is for chunks with no visible surface until the user acts.**
+  The three in `root.tsx` use it; a notice about a toast container nobody has
+  triggered is noise. Anything the user can see gets the notice and its Retry.
+
+A route chunk keeps using `routeLazy` instead: when the thing that failed *is*
+the page, there is no subtree left to contain the failure to.
 
 ### Route error boundaries
 

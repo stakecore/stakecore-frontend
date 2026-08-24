@@ -1,0 +1,40 @@
+@use '../../assets/css/tokens' as t;
+
+// Mirrors .empty-state deliberately: both are a section reporting that it has
+// nothing to draw, and they can appear on the same page. Kept as its own
+// block rather than a modifier because this one carries an action.
+.lazy-fallback {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+    padding: 48px 0;
+}
+
+.lazy-fallback-icon {
+    color: var(--main-color);
+    opacity: 0.6;
+}
+
+.lazy-fallback-title {
+    font-family: var(--font-sans);
+    font-size: t.$text-sm;
+    font-weight: t.$weight-medium;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--main-color);
+}
+
+.lazy-fallback-desc {
+    font-family: var(--font-sans);
+    font-size: t.$text-sm;
+    line-height: 1.5;
+    color: var(--main-color);
+    margin: 0;
+    max-width: 540px;
+}
+
+.lazy-fallback-retry {
+    margin-top: 6px;
+}

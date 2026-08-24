@@ -1,7 +1,8 @@
-import { lazy, Suspense, type ComponentType } from 'react'
+import { Suspense, type ComponentType } from 'react'
 import useSWR from 'swr'
 import { SpinnerCircular } from 'spinners-react'
 import QueryState from '~/components/ui/queryState'
+import { lazyRetry } from '~/components/ui/lazyRetry'
 import { CHAIN_CONFIG, type FspChain } from '~/config/chains'
 import { Chain } from '~/enums'
 import PageHeader from '~/components/ui/pageHeader'
@@ -15,7 +16,14 @@ import '../protocols.scss'
 
 // recharts + d3 are heavy and only used in this below-the-fold stats section,
 // so load it lazily instead of shipping it in the FSP page chunk.
-const FspStatsComponent = lazy(() => import("../fsp-stats"))
+//
+// lazyRetry, not lazy: a 503 on this chunk used to reach the route's
+// errorElement and replace the whole page — heading, provider data and the
+// delegate widget included — over a section nobody had scrolled to yet.
+const FspStatsComponent = lazyRetry(() => import("../fsp-stats"), {
+  title: 'Statistics unavailable',
+  description: "The reward-epoch charts couldn't be loaded. Everything above is unaffected.",
+})
 
 export interface FspPageConfig {
   // FspChain, not Chain: this shell reads wrappedSymbol and the EVM explorer

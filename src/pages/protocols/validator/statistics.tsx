@@ -1,13 +1,17 @@
-import { lazy, Suspense, useCallback } from "react"
+import { Suspense, useCallback } from "react"
 import { Formatter } from "~/utils/misc/formatter"
 import EpochProgress from "~/components/ui/epochProgress"
 import MeterBar from "~/components/ui/meterBar"
+import { lazyRetry } from "~/components/ui/lazyRetry"
 import ValidatorStatsStrip from "../validatorStatsStrip"
 import type { IGraphics } from "./types"
 
 // recharts + d3 are heavy and only used for this below-the-fold chart, so
 // load it lazily instead of shipping it in the validator page chunks.
-const StatsChart = lazy(() => import("~/components/ui/statsChart"))
+const StatsChart = lazyRetry(() => import("~/components/ui/statsChart"), {
+  title: 'Chart unavailable',
+  description: "The APY chart couldn't be loaded. The statistics above are unaffected.",
+})
 
 
 const ValidatorStatistics = ({ config }: { config: IGraphics }) => {

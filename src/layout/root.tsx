@@ -8,7 +8,8 @@ import Footer from '../components/sections/footer'
 import CallToAction from '../components/sections/callToAction'
 import { PreloaderContent } from '../components/ui/preloader'
 import { useAfterIdle } from '../utils/useAfterIdle'
-import { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import { Suspense, useEffect, useRef, useState } from 'react'
+import { lazyRetry } from '~/components/ui/lazyRetry'
 import { CookiesProvider } from 'react-cookie'
 import { CHAIN_CONFIG } from '~/config/chains'
 
@@ -19,9 +20,16 @@ import { CHAIN_CONFIG } from '~/config/chains'
 // the EIP-6963 picker (~79 kB of the eager bundle) in front of first paint on
 // a page whose LCP already waits on script execution. Mounted at idle
 // instead, so the chunks are warm well before anyone can click.
-const Toasts = lazy(() => import('react-toastify').then(m => ({ default: m.ToastContainer })))
-const Tooltips = lazy(() => import('react-tooltip').then(m => ({ default: m.Tooltip })))
-const DiscoverWalletProviders = lazy(() => import('../features/wallet/picker'))
+//
+// lazyRetry with silent:true, and one boundary each. These mount inside
+// RootLayout, so the only boundary above them was the *root* errorElement —
+// which replaces RootLayout itself. A 503 on the react-toastify chunk
+// therefore blanked the entire site, chrome included, on every route. None of
+// the three has a visible surface until the user acts, so failing quietly is
+// the whole recovery: the page keeps working, minus a toast.
+const Toasts = lazyRetry(() => import('react-toastify').then(m => ({ default: m.ToastContainer })), { silent: true })
+const Tooltips = lazyRetry(() => import('react-tooltip').then(m => ({ default: m.Tooltip })), { silent: true })
+const DiscoverWalletProviders = lazyRetry(() => import('../features/wallet/picker'), { silent: true })
 
 
 const NavigationPreloader = () => {
