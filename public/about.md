@@ -2,7 +2,7 @@
 title: Your stake, our engine
 description: Who StakeCore serves, how its multi-provider node cluster is built, why it is not tied to any particular chain, and why delegating carries a risk profile close to simply holding the asset.
 url: https://stakecore.org/about.md
-dateModified: 2026-08-22
+dateModified: 2026-08-29
 ---
 
 # Your stake, our engine
@@ -18,6 +18,12 @@ network protocols, where the risk profile stays close to that of simply holding
 the asset.
 
 ## Who we serve
+
+Two ways in, and they are the same two at every size. Delegate to one of our
+validators or FSP providers, and earn the going rate less our fee. Or stake to a
+validator as owned stake and pay no fee at all — a validator can accept
+delegation only in proportion to what it has staked itself, so your stake lifts
+that ceiling, and we earn from the delegation it makes room for.
 
 **Individual holders.** Whether you hold a hundred tokens or a hundred
 thousand, the rate is the same — rewards are proportional and we run no tiers.
