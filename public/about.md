@@ -46,7 +46,7 @@ past a risk committee.
 
 Small, robust, and decentralized.
 
-**Three providers, two continents.** The three server nodes holding cluster
+**Three providers, seven cities.** The three server nodes holding cluster
 state sit in Beauharnois, Helsinki, and Nuremberg, so an outage confined to one
 facility or region costs us a single node, not the cluster. Worker nodes run
 from Roubaix, Frankfurt, and Warsaw, plus our own premises in Ljubljana — three

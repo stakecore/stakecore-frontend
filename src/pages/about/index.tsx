@@ -145,7 +145,7 @@ const Stack = () => (
                 columns to move it between. */}
             <div className="about-split about-split--visual-first">
                 <div className="about-split-text">
-                    <h3 className="about-split-title">Three providers, two continents</h3>
+                    <h3 className="about-split-title">Three providers, seven cities</h3>
                     {/* The roster this paragraph used to recite — Nomad, OVH,
                         Hetzner — is now the carousel below, so this keeps only
                         the argument the logos can't make: where the nodes are,
