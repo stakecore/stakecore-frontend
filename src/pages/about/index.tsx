@@ -106,13 +106,14 @@ const Audiences = () => (
                 supTitle="Who we serve"
                 title="From personal wallets to institutional treasuries"
             >
-                Two ways in, and they are the same two at every size. Delegate
-                to one of our validators or FSP providers, and earn the going
-                rate less our fee. Or stake to a validator as owned stake and{' '}
-                <span className="about-mark">pay no fee at all</span> — a
-                validator can accept delegation only in proportion to what it
-                has staked itself, so your stake lifts that ceiling, and we
-                earn from the delegation it makes room for.
+                Whatever the size of the position, the offer is the same.
+                Delegate to us and earn yield on tokens that stay in your
+                wallet. Or, where that does not fit, we will build something
+                that does —{' '}
+                <span className="about-mark">
+                    staking without the delegation fee
+                </span>
+                , for one.
             </PageHeader>
             <div className="about-grid about-grid--two">
                 {audiences.map(({ icon, title, body }, i) => (
