@@ -1,20 +1,20 @@
 import { Link } from 'react-router'
 import { RiArrowRightLine } from '@remixicon/react'
-import PageHeader from '~/components/ui/pageHeader'
 import './proposal.scss'
 
+// Cards only — no section, container or heading of its own. This renders into
+// CallToAction's slot, which already supplies all three, and a second <h2>
+// there would duplicate the "Use your crypto" the cards sit under. Until the
+// panel became a persistent frame this component replaced that whole section
+// and so carried its own PageHeader, pinned to the same display ramp as the
+// heading it was standing in for.
 const Proposal = ({ priceData }: any) => {
     return (
-        <section className="pricing-area">
-            <div className="container">
-                <PageHeader variant="section" align="center" title="Earn Yield" />
-                <div className="row justify-content-center">
-                    {priceData.map(({ features, id, price, sortInfo, title }) => <Card
-                        key={id} features={features} price={price} sortInfo={sortInfo} title={title}
-                    />)}
-                </div>
-            </div>
-        </section>
+        <div className="row justify-content-center pricing-row">
+            {priceData.map(({ features, id, price, sortInfo, title }) => <Card
+                key={id} features={features} price={price} sortInfo={sortInfo} title={title}
+            />)}
+        </div>
     )
 }
 

@@ -16,10 +16,14 @@ import RouteError from "./routeError";
 // every title in one list where a duplicate is visible. A hash fragment never
 // reaches the server, so index.html's static <title> is what all eight routes
 // would otherwise ship — see the note in e2e/fixtures/routes.ts.
-const lazyRoute = (path, factory, title) => ({
+//
+// `handle` takes any extra route flags RootLayout reads (currently
+// `hideContactPrompt`), so a route needing one doesn't have to be spelled out
+// longhand and repeat its own title.
+const lazyRoute = (path, factory, title, handle = {}) => ({
     path,
     lazy: routeLazy(path, factory),
-    handle: { title },
+    handle: { title, ...handle },
     errorElement: <RouteError />
 })
 
@@ -36,7 +40,9 @@ export const router = createHashRouter([
             // page, so "StakeCore — StakeCore" would be the only duplication
             // in the set.
             { path: "/", element: <Home />, handle: { title: "StakeCore" }, errorElement: <RouteError /> },
-            lazyRoute("/contact", () => import("../pages/contact"), "Contact — StakeCore"),
+            // hideContactPrompt: the CallToAction panel's second value proposition
+            // links to /contact, so it is suppressed on /contact itself.
+            lazyRoute("/contact", () => import("../pages/contact"), "Contact — StakeCore", { hideContactPrompt: true }),
             lazyRoute("/about", () => import("../pages/about"), "About — StakeCore"),
             lazyRoute("/news", () => import("../pages/news"), "News — StakeCore"),
             lazyRoute("/avalanche/validator", () => import("../pages/protocols/avalanche-validator/page"), "Avalanche Validator — StakeCore"),

@@ -1,15 +1,16 @@
 @use '../../assets/css/tokens' as t;
 
-// Proposal (pricing-card) section, co-located with proposal.tsx.
+// Proposal (pricing-card) row, co-located with proposal.tsx.
 //
-// Rendered by CallToAction once a wallet is connected and the user
-// holds non-zero FLR / AVAX / SGB. Markup carries pricing-* class
+// Rendered into CallToAction's slot once a wallet is connected and the
+// user holds non-zero FLR / AVAX / SGB. Markup carries pricing-* class
 // names from the template.
-
-.pricing-area {
-    padding: 32px 0;
-
-    @include t.up(md) { padding: 48px 0; }
+//
+// The card text is left-aligned against .call-to-action-part's centred
+// default — the reset lives here rather than on the slot so it travels
+// with the markup it belongs to.
+.pricing-row {
+    text-align: start;
 }
 
 .pricing-item {

@@ -55,6 +55,10 @@ const RootLayout = () => {
   const deferredChrome = useAfterIdle()
   const matches = useMatches()
   const hideCallToAction = matches.some(m => (m.handle as { hideCallToAction?: boolean } | undefined)?.hideCallToAction)
+  // /contact only: drops CallToAction's "talk to us" prop, which would
+  // otherwise link to the page the visitor is already on. The staking half of
+  // the panel stays.
+  const hideContactPrompt = matches.some(m => (m.handle as { hideContactPrompt?: boolean } | undefined)?.hideContactPrompt)
   // Deepest match wins, so a nested route could override its parent later.
   const routeTitle = matches.reduce<string | undefined>(
     (acc, m) => (m.handle as { title?: string } | undefined)?.title ?? acc,
@@ -132,7 +136,7 @@ const RootLayout = () => {
               it out of the tab order for everyone else. */}
           <main ref={mainRef} tabIndex={-1}>
             <Outlet />
-            {!hideCallToAction && <CallToAction />}
+            {!hideCallToAction && <CallToAction hideContactPrompt={hideContactPrompt} />}
           </main>
           <Footer />
         </CookiesProvider>

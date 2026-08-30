@@ -12,9 +12,9 @@
 
 .call-to-action-part {
     padding: 32px;
-    // Centered to match the Proposal ("Earn Yield") that replaces this card
-    // once a wallet with a balance is connected — otherwise the heading jumps
-    // from left-aligned to centered as the state changes.
+    // Centered because the heading and both value propositions are centered
+    // copy. The Proposal cards that render into the slot opt back out via
+    // .pricing-row — they are a card grid, not prose.
     text-align: center;
     border: 1px solid var(--border-subtle);
     // Solid card fill (matches the sibling proposal cards and the protocol
@@ -24,10 +24,9 @@
 
     h2 {
         font-family: t.$font-display;
-        // Shared ramp with proposal.tsx's "Earn Yield" heading, which this
-        // card is replaced by once a wallet with a balance connects — keeping
-        // both on display-section is what stops the heading size from
-        // jumping at the swap.
+        // The panel's only heading, in every state — Proposal renders into the
+        // slot beneath it rather than replacing the card, so there is no
+        // second title to stay in step with.
         @include t.display-section;
         font-weight: t.$weight-extrabold;
         letter-spacing: -0.02em;
@@ -46,9 +45,52 @@
         margin: 0 auto;
         max-width: 640px;
     }
+
+    // ServerError is left-aligned by default, which reads as broken inside
+    // this centred card — and worse, the `p` rule above out-specifies
+    // .error-desc, so the description centred itself while the status and
+    // label stayed flush left. Centre the whole block rather than half of it.
+    // The .error-container--centered modifier is not usable here: it also
+    // forces min-height: 60vh, which is a full-page 404 treatment.
+    .error-container {
+        align-items: center;
+        text-align: center;
+        padding: 0;
+    }
+
+    // Second value proposition. Deliberately quieter than the connect button
+    // above it — one loud door, one quiet one — so it reads as an alternative
+    // route in rather than a competing call to action. Nested (not a
+    // top-level rule) because the `p` above is (0,1,1) and would otherwise
+    // win the margin outright.
+    p.call-to-action-more {
+        margin: 32px auto 0;
+        padding-top: 24px;
+        border-top: 1px solid var(--border-faint);
+        font-size: t.$text-sm;
+
+        a {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+            font-weight: t.$weight-medium;
+            color: var(--heading-color);
+            transition: color 150ms ease-out;
+
+            &:hover { color: var(--main-color); }
+
+            i {
+                display: inline-flex;
+                align-items: center;
+            }
+        }
+    }
 }
 
-.hero-btns {
+// The swappable middle: connect button, spinner, error panel, Proposal cards,
+// or the no-balance line.
+.call-to-action-slot {
     margin-top: 24px;
 }
 

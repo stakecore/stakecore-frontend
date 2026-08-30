@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react'
 import useSWR from 'swr'
+import { Link } from 'react-router'
 import { SpinnerCircular } from 'spinners-react'
+import { RiArrowRightLine } from '@remixicon/react'
 import ServerError from '../ui/serverError'
 import Proposal from './proposal'
 import { getProposalData } from "../../utils/data/proposals"
@@ -11,7 +13,19 @@ import { PAGE_COLOR_CODE } from '../../constants'
 import './callToAction.scss'
 
 
-const CallToAction = () => {
+// A persistent frame, not a swapping section. The heading and the talk-to-us
+// prop bracket a slot that varies with the wallet/fetch state; the section
+// itself always renders the same shape.
+//
+// It used to be the whole section that swapped: Proposal *replaced* this card
+// once a connected wallet turned out to hold something, so a second value
+// proposition living in here would have been invisible to precisely the
+// connected holders it is aimed at. Proposal now renders into the slot and
+// supplies only its cards.
+//
+// `hideContactPrompt` is set by the /contact route (see router.tsx), where the
+// prop would be a door into the page the visitor is already standing in.
+const CallToAction = ({ hideContactPrompt = false }: { hideContactPrompt?: boolean }) => {
   const { setWalletChoiceVisible, walletChoiceVisible, walletAddress } = useGlobalStore(
     useShallow(state => ({ setWalletChoiceVisible: state.setWalletChoiceVisible, walletChoiceVisible: state.walletChoiceVisible, walletAddress: state.walletAddress }))
   )
@@ -33,27 +47,22 @@ const CallToAction = () => {
   // the ladder in queryState.tsx, which carries the browser trace.
   const firstLoad = isLoading && error == null && data == null
 
-  let hasError = false
-  let component: ReactNode = null
+  let slot: ReactNode = null
   if (walletAddress == null) {
-    component = <div className="hero-btns">
-      <button type="button" onClick={onConnectWallet} className="theme-btn">
-        Connect Wallet
-      </button>
-    </div>
+    slot = <button type="button" onClick={onConnectWallet} className="theme-btn">
+      Connect Wallet
+    </button>
   } else if (firstLoad) {
-    component = <div style={{ textAlign: 'center' }} className="mt-30 mb-30" >
+    slot = <div style={{ textAlign: 'center' }} className="mt-30 mb-30" >
       <SpinnerCircular color={PAGE_COLOR_CODE} size={100} />
     </div>
   } else if (data == null) {
-    hasError = true
-    component = <ServerError error={error} />
+    slot = <ServerError error={error} />
   } else {
     const proposal = getProposalData(data)
-    if (proposal.length > 0) {
-      return <Proposal priceData={proposal} />
-    }
-    component = <div>No FLR, AVAX, or SGB detected in this wallet.</div>
+    slot = proposal.length > 0
+      ? <Proposal priceData={proposal} />
+      : <p>No FLR, AVAX, or SGB detected in this wallet.</p>
   }
 
   return (
@@ -62,11 +71,18 @@ const CallToAction = () => {
         <div className="row">
           <div className="col-lg-12">
             <div className="call-to-action-part">
-              { !hasError && <>
-                <h2>Earn Yield</h2>
-                <p>Put your dormant FLR, AVAX, or SGB to work and earn yield with a risk profile close to simply holding the asset.</p>
-              </> }
-              {component}
+              <h2>Use your crypto</h2>
+              <p>Put your dormant FLR, AVAX, or SGB to work and earn yield with a risk profile close to simply holding the asset.</p>
+              <div className="call-to-action-slot">{slot}</div>
+              {!hideContactPrompt && (
+                <p className="call-to-action-more">
+                  Something else in mind? We run any workload on any network — validators, RPC and archive nodes, indexers, relayers.
+                  {' '}
+                  <Link to="/contact">
+                    Talk to us<i><RiArrowRightLine size={14} /></i>
+                  </Link>
+                </p>
+              )}
             </div>
           </div>
         </div>
