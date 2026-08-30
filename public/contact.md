@@ -2,7 +2,7 @@
 title: Get in touch
 description: How to reach the StakeCore team — the Telegram channel, the contact form, and the company operating the infrastructure from Ljubljana, Slovenia.
 url: https://stakecore.org/contact.md
-dateModified: 2026-08-18
+dateModified: 2026-08-30
 ---
 
 # Get in touch
@@ -10,7 +10,10 @@ dateModified: 2026-08-18
 Human URL: <https://stakecore.org/#/contact>
 
 Questions about delegation, integration, custom reporting, or reward routing
-go to the same team that runs the cluster.
+go to the same team that runs the cluster. So does anything the site does not
+already list: a network we do not run yet, or a workload that is not validation
+— RPC and archive nodes, indexers, relayers. The cluster is general-purpose and
+the site only shows what is on it today; see [/about.md](/about.md).
 
 ## Office
 
