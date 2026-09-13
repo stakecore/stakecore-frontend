@@ -2,7 +2,7 @@
 title: What's new
 description: Dated announcements from StakeCore — software released, changes on the networks it runs, and incidents worth recording.
 url: https://stakecore.org/news.md
-dateModified: 2026-08-20
+dateModified: 2026-09-13
 ---
 
 # What's new
@@ -15,6 +15,18 @@ Three kinds of post. **Release** — software StakeCore has built and published.
 **Network** — a change on one of the networks it runs, such as a client
 upgrade or a protocol change. **Incident** — something that went wrong, and
 what was done about it. Every post is listed on this page, newest first.
+
+## Avalanche validators upgraded for Helicon
+
+2026-09-13 · Network
+
+StakeCore upgraded its Avalanche validators to AvalancheGo v1.15.0, the
+release that schedules the Helicon network upgrade for activation on Mainnet
+on 22 September 2026. The upgrade went smoothly, with negligible downtime, as
+expected.
+
+- <https://github.com/ava-labs/avalanchego/releases/tag/v1.15.0>
+- <https://build.avax.network/blog/helicon-upgrade>
 
 ## FAsset 3D Visualiser
 

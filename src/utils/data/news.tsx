@@ -48,6 +48,17 @@ export const hostOf = (href: string): string => {
 // two same-dated posts keep this array's relative order in the rendered feed.
 export const newsData: NewsPost[] = [
     {
+        id: 'avalanchego-helicon',
+        date: '2026-09-13',
+        category: 'Network',
+        title: 'Avalanche validators upgraded for Helicon',
+        body: 'StakeCore upgraded its Avalanche validators to AvalancheGo v1.15.0, the release that schedules the Helicon network upgrade for activation on Mainnet on 22 September 2026. The upgrade went smoothly, with negligible downtime, as expected.',
+        links: [
+            { href: 'https://github.com/ava-labs/avalanchego/releases/tag/v1.15.0' },
+            { href: 'https://build.avax.network/blog/helicon-upgrade' },
+        ],
+    },
+    {
         id: 'fasset-visualiser',
         date: '2026-05-11',
         category: 'Release',
