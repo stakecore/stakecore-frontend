@@ -61,3 +61,12 @@ if [ -f package.json ]; then
     # corepack's pnpm shim is not on root's secure_path.
     pnpm exec playwright install --with-deps chromium
 fi
+
+# Security checks on every push (.githooks/pre-push). core.hooksPath is stored
+# in .git/config, inside the bind-mounted checkout, so it survives rebuilds and
+# applies to git on the host as well. Installing the tools up front is only a
+# warm-up: the hook installs anything missing on first use, so a failed
+# download here comes back at push time instead of being lost.
+git config core.hooksPath .githooks
+.githooks/tools.sh install ||
+    echo "post-create: pre-push tools not installed; the hook will retry on the first push" >&2

@@ -25,6 +25,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        # Nothing after checkout fetches or pushes, so the token has no reason
+        # to stay in .git/config where every later step can read it.
+        with:
+          persist-credentials: false
 
       # Before setup-node, otherwise `cache: pnpm` fails — pnpm does not
       # resolve yet. Same ordering as deploy-site.yml.

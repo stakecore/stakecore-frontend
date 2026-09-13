@@ -8,10 +8,17 @@ on:
 # `pages: write` allows publishing to Pages. `id-token: write` lets the
 # deploy action mint an OIDC token that proves the artifact came from
 # this workflow run. `contents: read` is just for `actions/checkout`.
+#
+# zizmor (in the pre-push hook) wants both writes on the `deploy` job alone,
+# since at workflow level `build` inherits them too. They stay here for now:
+# `build` runs actions/configure-pages, which reads the site's URL from the
+# Pages API, and which grant it still needs once these are gone is something
+# only a run can show. This workflow runs only on main, so that run is a
+# production deploy. Make the move deliberately, then delete both ignores.
 permissions:
   contents: read
-  pages: write
-  id-token: write
+  pages: write # zizmor: ignore[excessive-permissions]
+  id-token: write # zizmor: ignore[excessive-permissions]
 
 # Queue up overlapping pushes so the latest commit always wins. We don't
 # cancel a running deploy mid-flight (cancel-in-progress: false) to avoid
@@ -26,6 +33,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        # Nothing after checkout fetches or pushes, so the token has no reason
+        # to stay in .git/config where every later step can read it.
+        with:
+          persist-credentials: false
 
       - name: Enable Corepack
         run: corepack enable

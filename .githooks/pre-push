@@ -1,0 +1,214 @@
+#!/usr/bin/env bash
+# Security checks on what is about to leave this machine:
+#
+#   - shellcheck: every shell script in the pushed tree
+#   - gitleaks: secrets in every commit the remote does not have yet
+#   - actionlint: workflow correctness, including shellcheck over each run: block
+#   - zizmor: workflow security (injection, credential exposure, pinning, permissions)
+#   - audit: dependency advisories at or above $audit_level (pnpm audit)
+#
+# (A comment line that starts with the word shellcheck is read as a directive,
+# hence the dashes.)
+#
+# Enabled by `git config core.hooksPath .githooks`, which post-create.sh runs.
+# Skip checks with `SKIP=audit,zizmor git push`, or the whole hook with
+# `git push --no-verify`. "Pre-push hook" in CLAUDE.md has the reasoning.
+set -euo pipefail
+
+remote=${1:?git passes the remote as \$1 and the refs on stdin}
+hooks=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+root=$(git rev-parse --show-toplevel)
+audit_level=high
+# Extensionless scripts are found by their shebang. zsh, node and the like are
+# not shellcheck's to judge.
+shebang='^#![[:space:]]*(/usr/bin/env[[:space:]]+)?([^[:space:]]*/)?(sh|bash|dash|ksh)([[:space:]]|$)'
+
+# git shows both streams; sending everything to one keeps the tools' output in
+# the order it was produced.
+exec 1>&2
+
+work=$(mktemp -d)
+trap 'rm -rf "$work"' EXIT
+
+# What the remote already has: its remote-tracking branches (when $remote is a
+# named remote rather than a bare URL) plus the current tip of every ref being
+# updated. Nothing reachable from these is new, so none of it is checked again.
+known=()
+if git config --get "remote.$remote.url" >/dev/null 2>&1; then
+    known+=("--remotes=$remote")
+fi
+
+pushed=()
+while read -r _ local_sha _ remote_sha; do
+    # A deletion arrives as an all-zero sha, which resolves to nothing.
+    commit=$(git rev-parse --verify --quiet "$local_sha^{commit}") || continue
+    pushed+=("$commit")
+    if git cat-file -e "$remote_sha^{commit}" 2>/dev/null; then
+        known+=("$remote_sha")
+    fi
+done
+
+new=()
+for commit in "${pushed[@]}"; do
+    first_new=$(git rev-list -n 1 "$commit" --not "${known[@]}")
+    if [[ -n $first_new ]]; then
+        new+=("$commit")
+    fi
+done
+
+if ((${#new[@]} == 0)); then
+    echo "pre-push: nothing new for the remote, nothing to check"
+    exit 0
+fi
+
+tool() {
+    "$hooks/tools.sh" path "$1"
+}
+
+# Each check runs from a state where errexit is off (it sits on the left of
+# `||` in run), so every step that could fail before the tool itself says
+# `|| return`. Otherwise a failed install would fall through to running an
+# empty command, and a failed setup step could leave a check passing.
+
+# gitleaks splits --log-opts on spaces and exits 0 when git fails beneath it,
+# printing "0 commits scanned" and "no leaks found", so its exit code alone
+# proves nothing. The options carry no empty pieces, git vets the revisions
+# first, and a run that logged an error or never reached its summary fails.
+check_gitleaks() {
+    local gitleaks revs=("${new[@]}") log=$work/gitleaks.log
+    gitleaks=$(tool gitleaks) || return
+    if ((${#known[@]})); then
+        revs+=(--not "${known[@]}")
+    fi
+    git rev-list --quiet "${revs[@]}" || return
+    "$gitleaks" git --no-banner --no-color --redact -v --log-opts="${revs[*]}" "$root" 2>&1 |
+        tee "$log" || return
+    if grep -q '^[^ ]* ERR ' "$log" || ! grep -qE '^[^ ]* INF [0-9]+ commits scanned' "$log"; then
+        echo "gitleaks did not finish a clean scan, so it proved nothing; failing"
+        return 1
+    fi
+}
+
+check_shellcheck() {
+    local dir=$1 shellcheck path first files=() scripts=()
+    shellcheck=$(tool shellcheck) || return
+    # Listed into a file rather than read from <(find ...), whose failure
+    # nothing would notice: the loop would see no files and pass the check as
+    # "no shell scripts".
+    (cd "$dir" && find . -type f -print0) >"$dir.files" || return
+    mapfile -d '' -t files <"$dir.files"
+    for path in "${files[@]}"; do
+        path=${path#./}
+        if [[ $path != *.sh && $path != *.bash ]]; then
+            first=
+            IFS= read -r -n 128 first <"$dir/$path" 2>/dev/null
+            [[ $first =~ $shebang ]] || continue
+        fi
+        scripts+=("$path")
+    done
+    if ((${#scripts[@]} == 0)); then
+        echo "no shell scripts"
+        return 0
+    fi
+    (cd "$dir" && "$shellcheck" -- "${scripts[@]}")
+}
+
+check_actionlint() {
+    local dir=$1 actionlint shellcheck
+    actionlint=$(tool actionlint) || return
+    shellcheck=$(tool shellcheck) || return
+    (
+        cd "$dir" || exit
+        shopt -s nullglob
+        workflows=(.github/workflows/*.yml .github/workflows/*.yaml)
+        if ((${#workflows[@]} == 0)); then
+            echo "no workflows"
+            exit 0
+        fi
+        "$actionlint" -shellcheck="$shellcheck" -pyflakes= "${workflows[@]}"
+    )
+}
+
+# --offline so the verdict cannot depend on whether a GH_TOKEN happens to be
+# set; it costs the audits that need the GitHub API.
+check_zizmor() {
+    local dir=$1 zizmor status=0
+    zizmor=$(tool zizmor) || return
+    (cd "$dir" && "$zizmor" --offline --no-progress .) || status=$?
+    # 3 is "no inputs collected": a pass for a tree with nothing to audit, a
+    # failure for one whose workflows zizmor somehow did not pick up.
+    if ((status == 3)) && ! compgen -G "$dir/.github/workflows/*.y*ml" >/dev/null; then
+        echo "no workflows or actions"
+        return 0
+    fi
+    return "$status"
+}
+
+check_audit() {
+    local dir=$1
+    if [[ ! -f $dir/pnpm-lock.yaml ]]; then
+        echo "no pnpm-lock.yaml"
+        return 0
+    fi
+    (cd "$dir" && pnpm audit --audit-level "$audit_level")
+}
+
+failed=()
+skipped=()
+
+# run <name> <label> <command...>
+run() {
+    local name=$1 label=$2 skip=",${SKIP:-},"
+    shift 2
+    if [[ ${skip// /} == *",$name,"* ]]; then
+        echo "pre-push: $label skipped (SKIP)"
+        skipped+=("$label")
+        return
+    fi
+    echo "pre-push: $label"
+    "$@" || failed+=("$label")
+}
+
+run gitleaks gitleaks check_gitleaks
+
+# Check the trees being pushed, not the working tree: a dirty file must not
+# pass a broken commit, and `git push origin other-branch` must check that
+# branch. Tips sharing a tree are checked once.
+tips=()
+declare -A seen=()
+for commit in "${new[@]}"; do
+    tree=$(git rev-parse "$commit^{tree}")
+    if [[ -z ${seen[$tree]:-} ]]; then
+        seen[$tree]=1
+        tips+=("$commit")
+    fi
+done
+
+for commit in "${tips[@]}"; do
+    at=
+    if ((${#tips[@]} > 1)); then
+        at=" @ $(git rev-parse --short "$commit")"
+    fi
+    dir=$work/$commit
+    mkdir -p "$dir"
+    # A throwaway index, so neither the real index nor the working tree moves.
+    GIT_INDEX_FILE=$work/index git read-tree "$commit"
+    GIT_INDEX_FILE=$work/index git checkout-index --all --prefix="$dir/"
+    for check in shellcheck actionlint zizmor audit; do
+        run "$check" "$check$at" "check_$check" "$dir"
+    done
+done
+
+echo
+if ((${#failed[@]})); then
+    printf -v list '%s, ' "${failed[@]}"
+    echo "pre-push: FAILED: ${list%, }"
+    echo "pre-push: fix and push again, or skip a check with SKIP=<name> git push"
+    exit 1
+fi
+if ((${#skipped[@]})); then
+    printf -v list '%s, ' "${skipped[@]}"
+    echo "pre-push: passed, except for what was skipped: ${list%, }"
+else
+    echo "pre-push: all checks passed"
+fi

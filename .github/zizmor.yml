@@ -1,0 +1,12 @@
+# Read by zizmor, the workflow audit in .githooks/pre-push.
+rules:
+  unpinned-uses:
+    config:
+      policies:
+        # GitHub's own actions may float on a major tag, so their security
+        # fixes arrive without anyone acting. zizmor's default pins them to a
+        # commit too, but this repo has no Dependabot config, so nothing would
+        # ever move such a pin forward. Any other action is someone else's
+        # code running with this repo's token, and must be pinned to a commit.
+        "actions/*": ref-pin
+        "*": hash-pin

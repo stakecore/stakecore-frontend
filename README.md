@@ -32,6 +32,8 @@ pnpm lint:fix # biome, applying safe fixes
 pnpm test     # run the full test suite once
 ```
 
+`git push` runs a pre-push hook ([`.githooks/pre-push`](.githooks/pre-push)): shellcheck, gitleaks, actionlint, zizmor and `pnpm audit`, against the commits being pushed. The devcontainer enables it; in any other Linux checkout run `git config core.hooksPath .githooks` once. `SKIP=audit git push` skips a check.
+
 The backend lives at `https://backend.stakecore.org`. The TypeScript client under `src/backendApi/` is **auto-generated from OpenAPI** — never edit by hand. Regenerate with:
 
 ```bash
