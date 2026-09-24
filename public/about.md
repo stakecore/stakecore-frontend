@@ -2,33 +2,33 @@
 title: Your stake, our engine
 description: Who StakeCore serves, how its multi-provider node cluster is built, why it is not tied to any particular chain, and why delegating carries a risk profile close to simply holding the asset.
 url: https://stakecore.org/about.md
-dateModified: 2026-08-29
+dateModified: 2026-09-24
 ---
 
 # Your stake, our engine
 
 Human URL: <https://stakecore.org/#/about>
 
-StakeCore runs blockchain node infrastructure — a redundant cluster we build,
-orchestrate, and monitor ourselves. Validator duty on Flare and Avalanche, and
-core oracle attestation signing on Flare and Songbird, are what it carries
-today, and we are actively taking it onto more networks. We're open to running
-any kind of workload, but we prefer to keep our stakers and delegators on core
-network protocols, where the risk profile stays close to that of simply holding
-the asset.
+StakeCore runs blockchain node infrastructure on a redundant cluster we build,
+orchestrate, and monitor ourselves. Today it carries validator duty on Flare and
+Avalanche, plus core oracle attestation signing on Flare and Songbird, and we
+are adding more networks. We will run any workload, but we prefer to keep our
+stakers and delegators on core network protocols, where the risk profile stays
+close to simply holding the asset.
 
 ## Who we serve
 
-Whatever the size of the position, the offer is the same. Delegate to us and
-earn yield on tokens that stay in your wallet. Or, where that does not fit, we
-will build something that does — staking without the delegation fee, for one.
+We host the infrastructure and expose its interface to stakers and delegators.
+Whatever the size of the position, the offer is the same: earn yield on tokens
+that stay in your wallet.
 
 **Individual holders.** Whether you hold a hundred tokens or a hundred
 thousand, the rate is the same — rewards are proportional and we run no tiers.
 No account to open and no onboarding call to sit through.
 
-**Protocols and foundations.** The treasury you are sitting on is denominated
-in the token your own network runs on. Putting it to work adds weight to the
+**Protocols and foundations.** We run the nodes for the network, and bring the
+delegators that back them. The treasury you are sitting on is denominated in
+the token your own network runs on. Putting it to work adds weight to the
 validator set securing that network, and the rewards land back in the treasury.
 
 **Custodians, exchanges and wallets.** Offer staking to your users without

@@ -33,15 +33,14 @@ const Mission = () => (
     <section id="about" className="about-single-area innerpage-single-area">
         <div className="container">
             <PageHeader supTitle="About" title="Your stake, our engine">
-                StakeCore runs blockchain node infrastructure — a redundant
-                cluster we build, orchestrate, and monitor ourselves. Validator
-                duty on Flare and Avalanche, and core oracle attestation signing
-                on Flare and Songbird, are what it carries today, and we are
-                actively taking it onto more networks. We're open to running any
-                kind of workload, but we prefer to keep our stakers and
-                delegators on core network protocols, where the{' '}
+                StakeCore runs blockchain node infrastructure on a redundant
+                cluster we build, orchestrate, and monitor ourselves. Today it
+                carries validator duty on Flare and Avalanche, plus core oracle
+                attestation signing on Flare and Songbird, and we are adding
+                more networks. We will run any workload, but we prefer to keep
+                our stakers and delegators on core network protocols, where the{' '}
                 <span className="about-mark">
-                    risk profile stays close to that of simply holding the asset
+                    risk profile stays close to simply holding the asset
                 </span>
                 .
             </PageHeader>
@@ -59,7 +58,7 @@ const audiences = [
     {
         icon: <RiBuilding4Line size={28} />,
         title: 'Protocols & foundations',
-        body: 'The treasury you are sitting on is denominated in the token your own network runs on. Putting it to work adds weight to the validator set securing that network, and the rewards land back in the treasury.',
+        body: 'We run the nodes for the network, and bring the delegators that back them. The treasury you are sitting on is denominated in the token your own network runs on. Putting it to work adds weight to the validator set securing that network, and the rewards land back in the treasury.',
     },
     {
         icon: <RiBankLine size={28} />,
@@ -106,14 +105,9 @@ const Audiences = () => (
                 supTitle="Who we serve"
                 title="From personal wallets to institutional treasuries"
             >
-                Whatever the size of the position, the offer is the same.
-                Delegate to us and earn yield on tokens that stay in your
-                wallet. Or, where that does not fit, we will build something
-                that does —{' '}
-                <span className="about-mark">
-                    staking without the delegation fee
-                </span>
-                , for one.
+                We host the infrastructure and expose its interface to stakers
+                and delegators. Whatever the size of the position, the offer is
+                the same: earn yield on tokens that stay in your wallet.
             </PageHeader>
             <div className="about-grid about-grid--two">
                 {audiences.map(({ icon, title, body }, i) => (
