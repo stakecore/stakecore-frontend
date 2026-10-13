@@ -2,7 +2,7 @@
 title: Your stake, our engine
 description: Who StakeCore serves, how its multi-provider node cluster is built, why it is not tied to any particular chain, and why delegating carries a risk profile close to simply holding the asset.
 url: https://stakecore.org/about.md
-dateModified: 2026-09-24
+dateModified: 2026-10-12
 ---
 
 # Your stake, our engine
@@ -61,6 +61,14 @@ a health check, so another network's client — validating or not — is a job
 specification and a place to put it. Any worker node can host any workload —
 failure of a single node is recovered automatically by re-scheduling somewhere
 else in the cluster.
+
+**An AI agent on standby.** When an unexpected error happens,
+Grafana posts the alert to our Telegram channel, and an LLM agent watching that
+channel picks it up. It runs with restricted permissions: it can allocate
+another node and coordinate moving the affected job onto it, and in many cases
+that resolves the incident on its own. When its permissions are insufficient to
+fix the problem, it posts its own message to the same channel and an engineer
+takes over.
 
 **What the cluster runs on.** WireGuard links our nodes into one private
 network, whichever provider or site they sit in. Nomad places every workload

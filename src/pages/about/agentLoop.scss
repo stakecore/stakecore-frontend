@@ -1,0 +1,399 @@
+@use '../../assets/css/tokens' as t;
+
+// Incident pipeline, co-located with agentLoop.tsx.
+//
+// React decides which step is running and stamps `data-state` on each stop;
+// everything here is how a stop looks in each of its four states — pending,
+// active, recorded, skipped — and how the rail between stops is drawn. No colour is literal: every one is a theme token, so both
+// palettes come for free.
+//
+// One rule holds throughout: TEXT NEVER CHANGES OPACITY. It is either not
+// rendered or rendered at a colour that passes contrast, and it moves between
+// two passing colours. Markers and the rail are free to fade.
+
+$marker: 20px;
+$gutter: 16px; // between the rail and the text beside it, and between branches
+$rail: 2px;
+$fork-lead: 42px; // from the split line down to a branch's first marker
+
+// The rail's unlit track, and the lit run drawn over it along `$axis`.
+@mixin track {
+    border-radius: 1px;
+    background: var(--border);
+    background: color-mix(in srgb, var(--heading-color) 14%, transparent);
+}
+
+@mixin fill($axis, $origin) {
+    &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background: var(--text-dim);
+        background: color-mix(in srgb, var(--heading-color) 55%, transparent);
+        transform: scale#{$axis}(0);
+        transform-origin: $origin;
+        // No delay here on purpose: this is the way back, when the record
+        // clears, and every segment should let go at once. The delays that
+        // sequence the fork live on the lit states below.
+        transition: transform 300ms ease-out;
+    }
+}
+
+.agent-loop {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    // The branches are half the component's width, so how many lines their
+    // text needs depends on this box and not on the viewport.
+    container-type: inline-size;
+}
+
+// --- Status line ---
+//
+// Names the phase, and the outcome once there is one. Its dot sits in a box
+// the width of a marker so it lands on the rail's centre line.
+
+.agent-loop-status {
+    display: flex;
+    align-items: center;
+    gap: $gutter;
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: t.$text-xs;
+    line-height: 1.5;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--main-color);
+    transition: color 400ms ease-out;
+
+    &:not([data-status='standby']) {
+        color: var(--heading-color);
+    }
+}
+
+.agent-loop-status-dot {
+    flex: 0 0 $marker;
+    display: flex;
+    justify-content: center;
+
+    &::before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        box-sizing: border-box;
+        border: 1.5px solid var(--main-color);
+        transition: background-color 400ms ease-out, border-color 400ms ease-out;
+    }
+}
+
+[data-status='running'] .agent-loop-status-dot::before,
+[data-status='handoff'] .agent-loop-status-dot::before {
+    background: var(--heading-color);
+    border-color: var(--heading-color);
+}
+
+[data-status='resolved'] .agent-loop-status-dot::before {
+    background: var(--success);
+    border-color: var(--success);
+}
+
+[data-status='running'] .agent-loop-status-dot::before {
+    @media (prefers-reduced-motion: no-preference) {
+        animation: agent-loop-blink 1s ease-in-out infinite alternate;
+    }
+}
+
+@keyframes agent-loop-blink {
+    to { opacity: 0.35; }
+}
+
+// --- The rail ---
+
+.agent-loop-trunk,
+.agent-loop-branch ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+// Every stop reserves its height whether or not anything is written at it:
+// a 20px head, a 4px gap, its lines of text and the space before the next
+// stop. That reservation is what keeps the page from shifting as the record
+// fills and clears. A trunk sentence wraps to two lines on a phone, so two is
+// its budget; the branches are half as wide and get three there (below).
+.agent-loop-step {
+    position: relative;
+    display: grid;
+    grid-template-columns: $marker minmax(0, 1fr);
+    column-gap: $gutter;
+    min-height: 84px;
+}
+
+// The trunk's last stop runs straight into the fork, so its link reaches the
+// bottom of the row instead of stopping short of a marker.
+.agent-loop-trunk .agent-loop-step:last-child {
+    min-height: 76px;
+
+    .agent-loop-link { bottom: 0; }
+}
+
+.agent-loop-branch .agent-loop-step:last-child {
+    min-height: 66px;
+}
+
+@container (max-width: 400px) {
+    .agent-loop-branch .agent-loop-step {
+        min-height: 105px;
+
+        &:last-child { min-height: 87px; }
+    }
+}
+
+// --- Markers ---
+//
+// Pending is a faint ring, active a bright ring with a pulse, recorded a
+// solid disc with a glyph. The change is in fill and shape, not only in
+// opacity, so it survives a low-contrast display.
+
+.agent-loop-marker {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: $marker;
+    height: $marker;
+    box-sizing: border-box;
+    border-radius: 50%;
+    border: 1.5px solid var(--border-strong);
+    border-color: color-mix(in srgb, var(--heading-color) 38%, transparent);
+    transition: background-color 400ms ease-out, border-color 400ms ease-out;
+
+    svg {
+        width: 12px;
+        height: 12px;
+        fill: none;
+        stroke: var(--body-background);
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        opacity: 0;
+        transition: opacity 300ms ease-out;
+    }
+}
+
+[data-state='active'] .agent-loop-marker {
+    border-color: var(--heading-color);
+
+    &::after {
+        content: '';
+        position: absolute;
+        inset: -1.5px;
+        border-radius: 50%;
+        border: 1.5px solid var(--heading-color);
+        opacity: 0;
+
+        @media (prefers-reduced-motion: no-preference) {
+            animation: agent-loop-pulse 1.5s ease-out infinite;
+        }
+    }
+}
+
+@keyframes agent-loop-pulse {
+    from { opacity: 0.7; transform: scale(1); }
+    to { opacity: 0; transform: scale(2); }
+}
+
+[data-state='recorded'] .agent-loop-marker {
+    background: var(--heading-color);
+    border-color: var(--heading-color);
+
+    svg { opacity: 1; }
+}
+
+[data-state='recorded'][data-tone='bad'] .agent-loop-marker {
+    background: var(--danger);
+    border-color: var(--danger);
+}
+
+[data-state='recorded'][data-tone='good'] .agent-loop-marker {
+    background: var(--success);
+    border-color: var(--success);
+}
+
+// A stop on the branch the incident did not take. Dashed, so "passed over"
+// is a different shape from "not reached yet" and not just the same ring.
+[data-state='skipped'] .agent-loop-marker {
+    border-style: dashed;
+}
+
+// --- Links between stops ---
+//
+// A faint track is always there, so the empty rail still reads as a route.
+// When a step is recorded its link is drawn through, top to bottom, to the
+// stop that has just started.
+
+.agent-loop-link {
+    position: absolute;
+    left: calc($marker / 2 - $rail / 2);
+    top: $marker + 4px;
+    bottom: 4px;
+    width: $rail;
+    @include track;
+    @include fill(Y, top);
+}
+
+[data-state='recorded'] .agent-loop-link::after {
+    transform: scaleY(1);
+    transition-duration: 450ms;
+}
+
+// --- The fork ---
+//
+// Two branches side by side under the trunk. The trunk's rail arrives at the
+// top-left corner; the first branch simply continues it downward, and a split
+// line carries it across to the second. All of it is faint track until an
+// incident commits to a branch, and then only that branch's run is lit — in
+// order, as one line: down the trunk, across if need be, down the drop.
+
+.agent-loop-fork {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: $gutter;
+}
+
+// From the first branch's rail to the second's: half the fork plus half the
+// gutter between centres, plus one rail width so both ends are square.
+.agent-loop-split {
+    position: absolute;
+    top: 0;
+    left: calc($marker / 2 - $rail / 2);
+    width: calc(50% + #{$gutter / 2 + $rail});
+    height: $rail;
+    @include track;
+    @include fill(X, left);
+}
+
+.agent-loop-branch {
+    position: relative;
+    min-width: 0;
+}
+
+.agent-loop-drop {
+    position: absolute;
+    top: 0;
+    left: calc($marker / 2 - $rail / 2);
+    width: $rail;
+    height: $fork-lead - 4px;
+    @include track;
+    @include fill(Y, top);
+}
+
+// Sequenced after the trunk's last link, which takes 450ms to arrive.
+.agent-loop-branch[data-branch='resolved'][data-taken='true'] .agent-loop-drop::after {
+    transform: scaleY(1);
+    transition-delay: 400ms;
+}
+
+.agent-loop-fork[data-taken='handoff'] .agent-loop-split::after {
+    transform: scaleX(1);
+    transition-delay: 400ms;
+}
+
+.agent-loop-branch[data-branch='handoff'][data-taken='true'] .agent-loop-drop::after {
+    transform: scaleY(1);
+    transition-delay: 700ms;
+}
+
+// The condition that selects a branch, set beside its drop and in line with
+// the stage names below it.
+.agent-loop-condition {
+    margin: 0;
+    padding: 12px 0 12px ($marker + $gutter);
+    font-family: var(--font-mono);
+    font-size: t.$text-xs;
+    line-height: 18px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    // One line, always. The two branches' stops line up row for row only
+    // while both conditions are the same height.
+    white-space: nowrap;
+    color: var(--main-color);
+    transition: color 400ms ease-out;
+}
+
+// At 320px the branch's text column is 96px and "NOT PERMITTED" is 103px with
+// its tracking. Without it, 94px.
+@container (max-width: 300px) {
+    .agent-loop-condition { letter-spacing: 0; }
+}
+
+[data-taken='true'] > .agent-loop-condition {
+    color: var(--heading-color);
+}
+
+// --- What is written at each stop ---
+
+.agent-loop-step-body {
+    min-width: 0;
+}
+
+.agent-loop-step-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: $marker;
+}
+
+.agent-loop-step-index {
+    font-family: var(--font-mono);
+    font-size: t.$text-xs;
+    line-height: 1;
+    color: var(--main-color);
+}
+
+.agent-loop-step-stage {
+    font-family: var(--font-sans);
+    font-size: t.$text-base;
+    font-weight: t.$weight-semibold;
+    line-height: $marker;
+    // Named from the start, in body colour; bright once the incident reaches
+    // it. Both pass contrast, so the transition never dips below it.
+    color: var(--main-color);
+    transition: color 400ms ease-out;
+}
+
+[data-state='active'] .agent-loop-step-stage,
+[data-state='recorded'] .agent-loop-step-stage {
+    color: var(--heading-color);
+}
+
+// Bright while its step is running, settling to body colour once it is on
+// the record — both pass contrast, so the transition never dips below it.
+.agent-loop-step-text {
+    margin: 4px 0 0;
+    font-family: var(--font-sans);
+    font-size: t.$text-sm;
+    line-height: 1.5;
+    color: var(--main-color);
+    transition: color 400ms ease-out;
+}
+
+[data-state='active'] .agent-loop-step-text {
+    color: var(--heading-color);
+}
+
+// Written in from the left as the step starts. A clip, not a fade — see the
+// rule at the top of this file.
+.agent-loop-step-text {
+    @media (prefers-reduced-motion: no-preference) {
+        animation: agent-loop-write 450ms ease-out both;
+    }
+}
+
+@keyframes agent-loop-write {
+    from { clip-path: inset(0 100% 0 0); }
+    to { clip-path: inset(0 0 0 0); }
+}

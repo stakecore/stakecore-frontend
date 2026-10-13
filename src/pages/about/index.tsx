@@ -9,6 +9,7 @@ import {
     RiWallet3Line,
 } from '@remixicon/react'
 import PageHeader from '~/components/ui/pageHeader'
+import AgentLoop from './agentLoop'
 import InfraConstellation from './infraConstellation'
 import ServerGlobe from './serverGlobe'
 import StackCarousel from './stackCarousel'
@@ -185,6 +186,29 @@ const Stack = () => (
                 </div>
                 <div className="about-split-visual">
                     <InfraConstellation />
+                </div>
+            </div>
+
+            {/* Third row, visual back on the left so the zig-zag continues.
+                It picks up where the constellation stops: that row is the
+                failure the scheduler absorbs, this one is the alert that
+                reaches something able to act on it. */}
+            <div className="about-split about-split--visual-first">
+                <div className="about-split-text">
+                    <h3 className="about-split-title">An AI agent on standby</h3>
+                    <p className="about-split-body">
+                        When an unexpected error happens, Grafana posts the alert to
+                        our Telegram channel, and an LLM agent watching that channel
+                        picks it up. It runs with restricted permissions: it can
+                        allocate another node and coordinate moving the affected job
+                        onto it, and in many cases that resolves the incident on its
+                        own. When its permissions are insufficient to fix the
+                        problem, it posts its own message to the same channel and an
+                        engineer takes over.
+                    </p>
+                </div>
+                <div className="about-split-visual">
+                    <AgentLoop />
                 </div>
             </div>
 
