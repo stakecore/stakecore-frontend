@@ -578,6 +578,21 @@ Two rules need care rather than a bulk `--write`:
 - **zizmor runs `--offline`** so its verdict cannot depend on whether a `GH_TOKEN` happens to be set. The cost is the audits that need the GitHub API (`known-vulnerable-actions`, `impostor-commit`, …). Its policy is in [.github/zizmor.yml](.github/zizmor.yml): `actions/*` may float on a major tag, and every other action must be pinned to a commit. zizmor's own default pins GitHub's actions too, but the repo has no Dependabot config, so nothing would ever move those pins and `actions/checkout` would silently stop receiving its fixes. Adopt that default together with Dependabot, not on its own.
 - **Two zizmor findings are ignored inline, not fixed:** the workflow-level `pages: write` and `id-token: write` in `deploy-site.yml`, whose comment there gives the reason. In short, the narrower grant belongs on the `deploy` job, `build` runs `actions/configure-pages`, and the workflow only runs on main, so the first proof would be a production deploy. `checkout`'s credential persistence (`artipacked`) *was* fixed in both workflows, since nothing after checkout talks to the remote.
 - **The audit needs the network and judges the whole lockfile, not the diff.** A newly published advisory blocks a push that touched no dependency. That is intended; `SKIP=audit` is the way through while the bump lands.
+- **One advisory is ignored by name**, in `package.json`'s
+  `pnpm.auditConfig.ignoreGhsas`: `GHSA-vfj7-8cjw-p6xm`, a `high`
+  stack-exhaustion DoS in `braces`. It is listed because **no fixed version
+  exists**. `braces` is vulnerable at `<=3.0.3` and 3.0.3 is its latest
+  release, and every `globby`, 16.2.4 included, still reaches it through
+  `fast-glob` and `micromatch@4.0.8`, so no override above it changes
+  anything. `pnpm why` finds a single path,
+  `gh-pages > globby > fast-glob > micromatch > braces`: a devDependency that
+  runs during `pnpm run deploy`, globbing our own `dist/`, so the deeply
+  nested pattern the advisory needs has nowhere to come from, and
+  `pnpm audit --prod` stays clean. Ignoring the one GHSA rather than reaching
+  for `SKIP=audit` is deliberate: SKIP waves through the whole check, this
+  leaves every other advisory gating, and `pnpm audit` still prints the
+  finding as `(1 ignored)` rather than hiding it. Delete the entry when
+  `braces` publishes past 3.0.3, or when `gh-pages` moves off `globby`.
 
 ### Chain config (`src/config/chains.ts`)
 

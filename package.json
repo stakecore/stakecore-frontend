@@ -66,19 +66,25 @@
     "onlyBuiltDependencies": [
       "esbuild"
     ],
+    "auditConfig": {
+      "ignoreGhsas": [
+        "GHSA-vfj7-8cjw-p6xm"
+      ]
+    },
     "overrides": {
       "baseline-browser-mapping": "^2.11.0",
-      "brace-expansion": "^2.1.4",
+      "brace-expansion": "^2.1.7",
       "browserslist": "^4.28.7",
       "esbuild": "^0.28.1",
       "flatted": "^3.4.2",
-      "handlebars": "^4.7.9",
+      "handlebars": "^4.7.10",
       "immutable": "^5.1.9",
       "js-yaml": "^4.3.2",
       "minimatch": "^5.1.8",
       "nanoid": "^3.3.18",
       "postcss": "^8.5.25",
       "rollup": "^4.59.0",
+      "source-map-js": "^1.2.2",
       "micromatch>picomatch": "^2.3.2",
       "tinyglobby>picomatch": "^4.0.4",
       "vite>picomatch": "^4.0.4",
