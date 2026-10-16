@@ -2,7 +2,7 @@
 title: StakeCore
 description: Blockchain node infrastructure, today running validators and protocol signing for the Flare, Songbird, and Avalanche networks, with non-custodial delegation and on-chain reporting.
 url: https://stakecore.org/index.md
-dateModified: 2026-08-20
+dateModified: 2026-10-16
 ---
 
 # StakeCore
@@ -15,7 +15,7 @@ StakeCore runs blockchain node infrastructure — validator and core
 protocol-signing duty across three networks today, on a general-purpose cluster
 that is not tied to those chains or to validating roles (see
 [/about.md](/about.md)). Delegating to StakeCore is non-custodial: tokens stay
-in the holder's wallet, nothing is bridged or wrapped, and every figure
+in the holder's own wallet and are never sent to StakeCore, and every figure
 published on the site is derived from on-chain state.
 
 ## Live figures

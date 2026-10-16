@@ -1,8 +1,8 @@
 ---
 title: Avalanche Validator
-description: StakeCore's Avalanche validator — Snowball proof-of-stake on the P-chain, where delegators earn a share of network inflation minus the validator fee.
+description: StakeCore's Avalanche validator — proof-of-stake consensus on the P-chain, where delegated AVAX is locked for a fixed term and rewarded from new issuance, minus the validator fee.
 url: https://stakecore.org/avalanche/validator.md
-dateModified: 2026-08-18
+dateModified: 2026-10-16
 ---
 
 # Avalanche Validator
@@ -13,17 +13,28 @@ Human URL: <https://stakecore.org/#/avalanche/validator>
 
 ## Basic information
 
-Avalanche runs on the proof of stake protocol called Snowball. Snowball
-requires validators to stake AVAX, which allows them to validate and broadcast
-network transactions. In return, validators are rewarded with the network's
-inflation.
+Every blockchain needs a way to agree on which transactions happened and in
+what order. On Avalanche, that is the job of validators: computers that check
+new transactions and add them to the chain. Avalanche is proof of stake, so
+each validator puts up AVAX as a stake, and the more stake behind a validator,
+the more weight its vote carries. In return, validators and the people backing
+them are rewarded with newly issued AVAX.
 
-Delegators can choose to contribute to a validator's staked AVAX, earning a
-share of the inflation reward rate, offset by a small fee percentage that each
-validator defines.
+You can add your AVAX to a validator's stake by delegating to it. Your tokens
+never leave your own wallet, but they are staked for a fixed term:
 
-**Note:** Avalanche staking takes place on its platform chain (P-chain), not
-the contract chain (C-chain), where most users hold their AVAX assets.
+- **Amount and term**: there is a minimum amount, and the delegation runs for a
+  period you choose, at least 14 days and never past the validator's own end
+  date. Both limits are shown on the page. Until the delegation ends, your
+  AVAX is locked and cannot be withdrawn early.
+- **Two chains**: your wallet normally holds AVAX on Avalanche's contract chain
+  (C-chain), but staking happens on its platform chain (P-chain). To delegate,
+  you first move AVAX from the C-chain to the P-chain, and move it back once
+  the delegation ends.
+- **Rewards**: paid in one go on the P-chain when the delegation ends, together
+  with your stake, minus the validator's fee. They are all or nothing: if the
+  validator was online less than 80% of the time, the delegation earns no
+  reward at all.
 
 ## Staking
 

@@ -2,7 +2,7 @@
 title: Glossary
 description: Terminology used across the StakeCore site — protocol names, chain layers, epoch mechanics, and the distinction between delegation and staking.
 url: https://stakecore.org/glossary.md
-dateModified: 2026-08-18
+dateModified: 2026-10-16
 ---
 
 # Glossary
@@ -28,10 +28,6 @@ higher frequency than the base FTSO cadence.
 **FDC — Flare Data Connector.** The component that attests to data originating
 outside the Flare network.
 
-**Snowball.** The proof-of-stake consensus protocol Avalanche runs and Flare
-adapts. It requires validators to stake native tokens in order to validate and
-broadcast transactions.
-
 ## Chain layers
 
 **P-chain (platform chain).** Where staking and delegation actually take
@@ -45,9 +41,10 @@ itself sits on the P-chain.
 ## Mechanics
 
 **Delegation.** Assigning the weight of held tokens to a provider without
-transferring them. Nothing is bridged, wrapped, or routed through a smart
-contract, and the provider never takes custody. Compare *staking*, which on
-the P-chain locks tokens for a fixed term.
+transferring them; the provider never takes custody. On the FSP protocols this
+means wrapping FLR or SGB one to one into WFLR or WSGB, which stays in the
+holder's wallet with no lockup. Compare *staking*: delegating to a validator
+stakes the tokens on the P-chain, where they are locked for a fixed term.
 
 **Reward epoch.** The accounting period rewards are computed over. On Flare
 and Songbird an FSP reward epoch lasts 3.5 days; Flare validator rewards are

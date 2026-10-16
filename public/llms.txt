@@ -30,8 +30,8 @@ pages rather than freezing numbers that change every 10 to 30 seconds.
 
 - [Flare Systems Protocol](/flare/fsp.md): FTSO, Fast Updates, and FDC signing on Flare, rewarded per 3.5-day epoch.
 - [Songbird Systems Protocol](/songbird/fsp.md): The same protocol stack on Songbird, Flare's canary network.
-- [Flare Validator](/flare/validator.md): Snowball consensus staking on Flare, with rewards bound to FSP performance.
-- [Avalanche Validator](/avalanche/validator.md): Snowball consensus staking on Avalanche, rewarded from network inflation.
+- [Flare Validator](/flare/validator.md): Proof-of-stake consensus on Flare: delegated FLR is locked for a fixed term, with rewards bound to FSP performance.
+- [Avalanche Validator](/avalanche/validator.md): Proof-of-stake consensus on Avalanche: delegated AVAX is locked for a fixed term and rewarded from new issuance.
 
 ## Products
 

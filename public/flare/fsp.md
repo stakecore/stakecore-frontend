@@ -2,7 +2,7 @@
 title: Flare Systems Protocol
 description: StakeCore's FSP signing on Flare — FTSO, Fast Updates, and FDC — with rewards distributed on provider performance in each 3.5-day reward epoch.
 url: https://stakecore.org/flare/fsp.md
-dateModified: 2026-08-18
+dateModified: 2026-10-16
 ---
 
 # Flare Systems Protocol
@@ -13,11 +13,31 @@ Human URL: <https://stakecore.org/#/flare/fsp>
 
 ## Basic information
 
-Flare Systems Protocol is a protocol consisting of three parts — FTSO (Flare
-Time Series Oracle), Fast Updates, and FDC (Flare Data Connector). Rewards are
-distributed based on the delegated provider's performance in each 3.5-day
-epoch. The site shows statistics for the last 25 reward epochs. Note that a
-reward epoch on Flare Network lasts 3.5 days.
+Flare is a blockchain with data built in. Besides processing transactions, the
+network publishes prices and other outside information that apps on Flare can
+rely on. That data comes from independent data providers like StakeCore,
+working under the Flare Systems Protocol (FSP). The protocol has three parts:
+
+- **FTSO (Flare Time Series Oracle)**: every 90 seconds, each provider submits
+  its own prices, and the network combines them into a single price feed.
+- **Fast Updates**: between those rounds, providers adjust the prices up or
+  down a little on every block (about every 1.8 seconds), so the feeds stay
+  current.
+- **FDC (Flare Data Connector)**: providers confirm that something happened on
+  another blockchain, such as a Bitcoin or XRP payment, so contracts on Flare
+  can act on it.
+
+Providers need FLR holders to back them, and holders do that by delegating.
+You wrap your FLR into WFLR (one to one, reversible at any time) and assign its
+weight to up to two providers. Your tokens never leave your wallet, there is no
+lock-up, and you can unwrap or move them whenever you like.
+
+Rewards are paid each reward epoch, which lasts 3.5 days. What you earn depends
+on how much you delegated and how well your provider performed in that epoch,
+minus the provider's fee. A provider that misses the protocol's minimum
+requirements can lose that epoch's rewards, and its delegators lose theirs with
+it. That's why the page shows our record over the last 25 reward epochs (about
+three months).
 
 ## Delegating
 

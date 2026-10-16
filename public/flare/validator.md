@@ -1,8 +1,8 @@
 ---
 title: Flare Validator
-description: StakeCore's Flare validator — Snowball consensus staking on the P-chain, with rewards bound to Flare Systems Protocol performance and paid on the C-chain.
+description: StakeCore's Flare validator — proof-of-stake consensus on the P-chain, where delegated FLR is locked for a fixed term and rewards are bound to Flare Systems Protocol performance and paid on the C-chain.
 url: https://stakecore.org/flare/validator.md
-dateModified: 2026-08-18
+dateModified: 2026-10-16
 ---
 
 # Flare Validator
@@ -13,16 +13,29 @@ Human URL: <https://stakecore.org/#/flare/validator>
 
 ## Basic information
 
-Flare Network adapts Avalanche's Snowball proof-of-stake protocol. The protocol
-is the basis for the network consensus, which requires validators to stake
-funds, and broadcast and validate network transactions.
+Every blockchain needs a way to agree on which transactions happened and in
+what order. On Flare, that is the job of validators: computers that check new
+transactions and add them to the chain. Flare uses the same proof-of-stake
+design as Avalanche, where each validator puts up FLR as a stake, and the more
+stake behind a validator, the more weight its vote carries. In return,
+validators and the people backing them earn FLR rewards.
 
-However, Flare modifies the rewarding structure by binding it to the Flare
-Systems Protocol performance and distributing rewards in 14-day cycles on the
-C-chain (EVM chain) instead of the P-chain (platform chain).
+You can add your FLR to a validator's stake by delegating to it. Your tokens
+never leave your own wallet, but unlike delegating to an FSP provider, they are
+staked for a fixed term:
 
-**Note:** even though Flare staking rewards are distributed on the C-chain,
-staking still takes place on its platform chain (P-chain).
+- **Amount and term**: there is a minimum amount, and the delegation runs for a
+  period you choose, at least 14 days and never past the validator's own end
+  date. Both limits are shown on the page. Until the delegation ends, your
+  FLR is locked and cannot be withdrawn early.
+- **Two chains**: your wallet normally holds FLR on Flare's contract chain
+  (C-chain), but staking happens on its platform chain (P-chain). To delegate,
+  you first move FLR from the C-chain to the P-chain, and move it back once the
+  delegation ends.
+- **Rewards**: paid every 14 days on the C-chain, not on the P-chain where your
+  stake sits. They depend on the validator staying online at least 80% of the
+  time and on its operator meeting the Flare Systems Protocol's requirements,
+  minus the validator's fee.
 
 ## Staking
 

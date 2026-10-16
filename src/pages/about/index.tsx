@@ -77,8 +77,8 @@ const audiences = [
 const valueProps = [
     {
         icon: <RiShieldCheckLine size={28} />,
-        title: 'Tokens that never move',
-        body: <>Delegation is a vote, not a transfer. Nothing gets bridged, wrapped, or routed through a smart contract, and <span className="about-mark">we never take custody of anything</span> — your keys stay yours the entire time.</>,
+        title: 'Tokens that never leave your wallet',
+        body: <>Delegation is a vote, not a transfer. Nothing gets bridged or sent to us: on Flare and Songbird you wrap your tokens one to one in your own wallet, on a validator you stake them from your own address, and <span className="about-mark">we never take custody of anything</span> — your keys stay yours the entire time.</>,
     },
     {
         icon: <RiLineChartLine size={28} />,

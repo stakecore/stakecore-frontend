@@ -2,7 +2,7 @@
 title: Your stake, our engine
 description: Who StakeCore serves, how its multi-provider node cluster is built, why it is not tied to any particular chain, and why delegating carries a risk profile close to simply holding the asset.
 url: https://stakecore.org/about.md
-dateModified: 2026-10-12
+dateModified: 2026-10-16
 ---
 
 # Your stake, our engine
@@ -100,9 +100,11 @@ correlating logs against metrics and drafting a fix.
 
 ## Why StakeCore
 
-**Tokens that never move.** Delegation is a vote, not a transfer. Nothing gets
-bridged, wrapped, or routed through a smart contract, and we never take custody
-of anything — your keys stay yours the entire time.
+**Tokens that never leave your wallet.** Delegation is a vote, not a transfer.
+Nothing gets bridged or sent to us: on Flare and Songbird you wrap your tokens
+one to one in your own wallet, on a validator you stake them from your own
+address, and we never take custody of anything — your keys stay yours the
+entire time.
 
 **Transparent statistics.** Delegation totals, reward history, and uptime are
 on this site, live, and every number behind them is on-chain. No NDA, no

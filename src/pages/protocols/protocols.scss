@@ -59,6 +59,36 @@
     }
 }
 
+// Term / definition pairs in a protocol's Basic Information copy. The term is a
+// small mono caption in full ink rather than bold body text: bold Inter at the
+// muted body colour read as a smudge on dark, and the ink contrast is what
+// sharpens it. Each pair hangs off a left rule instead of a bullet, so the
+// caption is the first thing on its line. The rule is --border-strong, not the
+// card's --border-subtle, which all but vanishes on the dark ground.
+.protocol-parts {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin: 0 0 1rem;
+
+    > div {
+        padding-left: 16px;
+        border-left: 1px solid var(--border-strong);
+    }
+
+    dt {
+        margin-bottom: 4px;
+        font-family: t.$font-mono;
+        font-size: t.$text-xs;
+        font-weight: t.$weight-medium;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--heading-color);
+    }
+
+    dd { margin: 0; }
+}
+
 // InfoComponent puts a single-project-page-right card inside a col-lg-9
 // next to a col-lg-3 with single-project-page-left. On stacked layouts
 // (sub-lg) the right card sits below the left and needs vertical
@@ -216,27 +246,3 @@
     font-weight: t.$weight-medium;
     color: var(--heading-color);
 }
-
-// Notification callout (note / warning / danger), used by the validator
-// delegate + description sections. Moved out of the global custom.css.
-.notification-block {
-    // Fallback then exact: 60% of the ink is #999 on the dark palette.
-    border-left: 4px solid var(--main-color);
-    border-left-color: color-mix(in srgb, var(--heading-color) 60%, transparent);
-    padding: 0.5rem 1rem;
-    // Was rgba(0,0,0,.5): half the ground colour over the ground itself —
-    // exactly black on dark (same as the old literal). On light that's
-    // 50% white over white, i.e. invisible: only the left rail shows there,
-    // which is correct — the callout never needed a background on light,
-    // only on dark where it separated the panel from the black page.
-    // Fallback then exact, this branch's own pattern.
-    background: var(--surface-raised);
-    background: color-mix(in srgb, var(--body-background) 50%, transparent);
-}
-
-// These carry AA-contrast border values per palette, which the named
-// colours they replaced did not: orange measured 1.98:1 on white and lime
-// 1.37:1, both well under the 3:1 UI-component minimum.
-.notification-block.note { border-color: var(--status-good); }
-.notification-block.warning { border-color: var(--status-warn); }
-.notification-block.danger { border-color: var(--danger); }

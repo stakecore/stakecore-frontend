@@ -212,7 +212,9 @@ oklch lightness clamp (a floor on dark, a ceiling on light).
   `orange` / `red` and are now `--status-good` / `--status-warn` / `--danger`,
   so on dark the warning rail shifts `#ffa500` → `#e58630`. The named colours
   could not stay: `orange` measures 1.98:1 on white and `lime` 1.37:1, and the
-  warning callout renders on both validator routes.
+  warning callout rendered on both validator routes. (The callout and its
+  styles were later removed when the protocol Basic Information copy was
+  rewritten; its lock-up warning now lives in the validator definition lists.)
 - **`var(--…)` resolving inside SVG presentation attributes** (`stroke`,
   `fill`, `color`) was verified in Chromium, but only Chromium is installed
   here, so nothing depends on it where the failure mode is invisible content.
