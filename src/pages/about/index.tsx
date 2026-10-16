@@ -173,15 +173,14 @@ const Stack = () => (
                         >
                             Nomad
                         </a>{' '}
-                        server nodes orchestrate the validators and FSP
-                        signers we run across Flare, Songbird, and Avalanche. Nothing in
-                        that arrangement is particular to those chains: to the scheduler
-                        a node is a containerised job with a data volume, a set of ports,
-                        and a health check, so another network's client — validating or
-                        not — is a job specification and a place to put it. Any worker
-                        node can host any workload — failure of a single node is
-                        recovered automatically by re-scheduling somewhere else in the
-                        cluster.
+                        server nodes schedule everything we run, including our validators
+                        and FSP signers on Flare, Songbird and Avalanche. The cluster
+                        doesn't care which blockchain a job belongs to. Each blockchain
+                        client runs as a container with its own data volume, ports and
+                        health check, so supporting a new network mostly means writing
+                        one more job file. Any worker can run any job, and if a worker
+                        goes down, Nomad restarts its jobs on the others without anyone
+                        stepping in.
                     </p>
                 </div>
                 <div className="about-split-visual">
