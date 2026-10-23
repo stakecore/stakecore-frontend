@@ -262,3 +262,62 @@ describe('RecentActivity landmark', () => {
     expect(region.classList.contains('activity-marquee')).toBe(true)
   })
 })
+
+describe('RecentActivity explorer links', () => {
+  // Shapes from live /api/page/info data. A Flare validator delegation is a
+  // P-chain transaction; since backend 1.5.0 its delegator arrives as the
+  // C-chain address bound to it, or still as P-flare1... when there is none.
+  // Validator claims are C-chain transactions with a C-chain recipient.
+  const P_TX = 'r1b55CNTt5A2VQotKmt6hHdHF31tsCmthsCxWZAAKWK8vaK6o'
+  const P_ADDRESS = 'P-flare1qagw84vwfw2vw38xcety3msumfxyddvt3txxmz'
+  const C_ADDRESS = '0xe0B56e29cEfC18099F3e3AA9a8e0753C205A9EA6'
+  const C_TX = '0x8444b523a262f4fccb5e01eff4b0e6ed9d8474ad093cc6c72eb847037c083e46'
+  const VALIDATOR = PageActivityDto.protocol._1
+
+  // the first card's [transaction, address] links; the track repeats every card
+  const links = (item: PageActivityDto) => {
+    const { container } = render(<RecentActivity data={payload([item])} isLoading={false} error="" />)
+    const card = container.querySelector('.activity-card')
+    return [...(card?.querySelectorAll('a') ?? [])].map(a => a.getAttribute('href'))
+  }
+
+  it('links a validator delegator shown by its C-chain address to the C-chain explorer', () => {
+    expect(links(activity({ protocol: VALIDATOR, delegator: C_ADDRESS, transaction: P_TX }))).toEqual([
+      `https://flare.space/dapp/p-chain-explorer/tx/${P_TX}`,
+      `https://flare-explorer.flare.network/address/${C_ADDRESS}`,
+    ])
+  })
+
+  it('keeps a validator delegator still on its P-chain address on the P-chain explorer', () => {
+    expect(links(activity({ protocol: VALIDATOR, delegator: P_ADDRESS, transaction: P_TX }))).toEqual([
+      `https://flare.space/dapp/p-chain-explorer/tx/${P_TX}`,
+      `https://flare.space/dapp/p-chain-explorer/address/${P_ADDRESS}`,
+    ])
+  })
+
+  it('links a validator reward claim to the C-chain explorer', () => {
+    const claim = activity({ type: PageActivityDto.type.CLAIM, protocol: VALIDATOR, delegator: C_ADDRESS, transaction: C_TX })
+    expect(links(claim)).toEqual([
+      `https://flare-explorer.flare.network/tx/${C_TX}`,
+      `https://flare-explorer.flare.network/address/${C_ADDRESS}`,
+    ])
+  })
+
+  it('keeps FSP activity on the C-chain explorer', () => {
+    expect(links(activity({ delegator: C_ADDRESS, transaction: C_TX }))).toEqual([
+      `https://flare-explorer.flare.network/tx/${C_TX}`,
+      `https://flare-explorer.flare.network/address/${C_ADDRESS}`,
+    ])
+  })
+
+  it('keeps Avalanche validator activity on the P-chain explorer', () => {
+    const avax = activity({
+      chain: PageActivityDto.chain._2, protocol: VALIDATOR,
+      delegator: 'P-avax1qagw84vwfw2vw38xcety3msumfxyddvt3txxmz', transaction: P_TX,
+    })
+    expect(links(avax)).toEqual([
+      `https://subnets.avax.network/p-chain/tx/${P_TX}`,
+      'https://subnets.avax.network/p-chain/address/P-avax1qagw84vwfw2vw38xcety3msumfxyddvt3txxmz',
+    ])
+  })
+})

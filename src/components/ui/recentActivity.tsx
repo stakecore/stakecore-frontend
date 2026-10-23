@@ -5,23 +5,30 @@ import { SpinnerCircular } from "spinners-react"
 import { type ApiResponseDto_PageStatsDto, PageActivityDto } from "~/backendApi"
 import { Formatter } from "~/utils/misc/formatter"
 import { HashLink } from "./links"
-import { Protocol } from "~/enums"
 import * as C from "~/constants"
 import { CHAIN_CONFIG, chainConfig } from "~/config/chains"
 import "./recentActivity.scss"
 
-// FSP activity links to the EVM explorer; validator activity to the P-chain
-// explorer. Each chain's config only defines the builders for the protocols
-// it actually emits, so a missing builder falls back to an empty string.
-function chainToTransactionUrl(chain: number, protocol: number, hash: string): string {
+// The explorer follows the value, not the protocol: one validator card can
+// carry both kinds. A Flare validator delegation is a P-chain transaction whose
+// delegator the backend shows by its C-chain address when it has one, and a
+// validator reward claim is a C-chain transaction. 0x values are C-chain
+// (EVM); anything else - a P-chain tx id, a P-flare1... address - is P-chain.
+// Each chain's config only defines the builders for the explorers it has, so a
+// missing builder falls back to an empty string.
+function isEvmValue(value: string): boolean {
+  return value.startsWith('0x')
+}
+
+function chainToTransactionUrl(chain: number, hash: string): string {
   const ex = chainConfig(chain)?.explorers
-  const build = protocol == Protocol.FSP ? ex?.evmTx : ex?.pChainTx
+  const build = isEvmValue(hash) ? ex?.evmTx : ex?.pChainTx
   return build ? build(hash) : ''
 }
 
-function chainToAddressUrl(chain: number, protocol: number, address: string): string {
+function chainToAddressUrl(chain: number, address: string): string {
   const ex = chainConfig(chain)?.explorers
-  const build = protocol == Protocol.FSP ? ex?.evmAddress : ex?.pChainAddress
+  const build = isEvmValue(address) ? ex?.evmAddress : ex?.pChainAddress
   return build ? build(address) : ''
 }
 
@@ -233,8 +240,8 @@ const ActivityCard = memo(({ activity, usdText, timeText, clone = false }: {
   const chainCfg = chainConfig(activity.chain)
   const logo = chainCfg?.logo
   const symbol = chainCfg?.symbol
-  const txUrl = chainToTransactionUrl(activity.chain, activity.protocol, activity.transaction)
-  const addrUrl = chainToAddressUrl(activity.chain, activity.protocol, activity.delegator)
+  const txUrl = chainToTransactionUrl(activity.chain, activity.transaction)
+  const addrUrl = chainToAddressUrl(activity.chain, activity.delegator)
 
   return <div className="activity-card" aria-hidden={clone || undefined}>
     <div className="activity-card-top">
