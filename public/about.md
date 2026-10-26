@@ -2,7 +2,7 @@
 title: Your stake, our engine
 description: Who StakeCore serves, how its multi-provider node cluster is built, why it is not tied to any particular chain, and why delegating carries a risk profile close to simply holding the asset.
 url: https://stakecore.org/about.md
-dateModified: 2026-10-16
+dateModified: 2026-10-26
 ---
 
 # Your stake, our engine
@@ -14,7 +14,9 @@ orchestrate, and monitor ourselves. Today it carries validator duty on Flare and
 Avalanche, plus core oracle attestation signing on Flare and Songbird, and we
 are adding more networks. We will run any workload, but we prefer to keep our
 stakers and delegators on core network protocols, where the risk profile stays
-close to simply holding the asset.
+close to simply holding the asset. That is what our goal rests on: bringing
+passive token holders into securing the decentralized monetary systems of the
+future.
 
 ## Who we serve
 

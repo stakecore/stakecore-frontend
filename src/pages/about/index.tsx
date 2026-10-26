@@ -43,7 +43,9 @@ const Mission = () => (
                 <span className="about-mark">
                     risk profile stays close to simply holding the asset
                 </span>
-                .
+                . That is what our goal rests on: bringing passive token
+                holders into securing the decentralized monetary systems of the
+                future.
             </PageHeader>
         </div>
     </section>
