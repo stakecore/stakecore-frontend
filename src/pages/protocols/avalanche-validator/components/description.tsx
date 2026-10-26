@@ -33,7 +33,7 @@ const ProjectDescription = () => {
         <dt>Rewards</dt>
         <dd>
           Paid in one go on the P-chain when the delegation ends, together with your stake, minus
-          the validator's fee. They are all or nothing: if the validator was online less than 80% of
+          the validator's fee. They are all or nothing: if the validator was online less than 90% of
           the time, the delegation earns no reward at all.
         </dd>
       </div>

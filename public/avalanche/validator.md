@@ -2,7 +2,7 @@
 title: Avalanche Validator
 description: StakeCore's Avalanche validator — proof-of-stake consensus on the P-chain, where delegated AVAX is locked for a fixed term and rewarded from new issuance, minus the validator fee.
 url: https://stakecore.org/avalanche/validator.md
-dateModified: 2026-10-16
+dateModified: 2026-10-26
 ---
 
 # Avalanche Validator
@@ -33,7 +33,7 @@ never leave your own wallet, but they are staked for a fixed term:
   the delegation ends.
 - **Rewards**: paid in one go on the P-chain when the delegation ends, together
   with your stake, minus the validator's fee. They are all or nothing: if the
-  validator was online less than 80% of the time, the delegation earns no
+  validator was online less than 90% of the time, the delegation earns no
   reward at all.
 
 ## Staking
