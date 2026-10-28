@@ -61,7 +61,7 @@ const audiences = [
     {
         icon: <RiBuilding4Line size={28} />,
         title: 'Protocols & foundations',
-        body: 'We run the nodes for the network, and bring the delegators that back them. The treasury you are sitting on is denominated in the token your own network runs on. Putting it to work adds weight to the validator set securing that network, and the rewards land back in the treasury.',
+        body: 'We run the nodes for the network and bring the delegators that back them. The treasury you are sitting on is denominated in the token your own network runs on. Putting it to work adds weight to the validator set securing that network, and the rewards land back in the treasury.',
     },
     {
         icon: <RiBankLine size={28} />,
@@ -90,12 +90,12 @@ const valueProps = [
     {
         icon: <RiStackLine size={28} />,
         title: 'One operator, any network',
-        body: 'The same team and the same cluster stand behind every workload we run — validator duty, protocol signing, RPC and archive nodes, indexers, relayers. Whatever you hold, picking up another network doesn\'t mean finding someone new to trust.',
+        body: 'The same team and the same cluster stand behind every workload we run — validator duty, protocol signing, RPC and archive nodes, indexers, relayers. Whatever you hold, picking up another network does not mean finding someone new to trust.',
     },
     {
         icon: <RiUserVoiceLine size={28} />,
         title: 'Direct access to the engineers',
-        body: 'Partners get a direct line to the engineers who built the cluster: integration questions, custom reporting, reward routing, answered by whoever is on call for it. Everyone else reaches the same team through our socials or the contact page.',
+        body: 'Partners get a direct line to the engineers who built the cluster: integration questions, custom reporting, reward routing, answered by whoever is on call. Everyone else reaches the same team through our socials or the contact page.',
     },
 ]
 
@@ -135,7 +135,12 @@ const Stack = () => (
                 variant="section"
                 supTitle="Infrastructure"
                 title={<>Small, robust, and{' '}<span className="about-mark">decentralized</span></>}
-            />
+            >
+                We believe decentralization is fractal. Every authorized
+                participant in a protocol should itself run on
+                robust, decentralized infrastructure. That is exactly what we
+                strive to offer.
+            </PageHeader>
 
             {/* Text precedes its visual in the DOM in both rows, so the stacked
                 and screen-reader order stays heading → prose → visual. The globe
@@ -176,9 +181,9 @@ const Stack = () => (
                             Nomad
                         </a>{' '}
                         server nodes schedule everything we run, including our validators
-                        and FSP signers on Flare, Songbird and Avalanche. The cluster
-                        doesn't care which blockchain a job belongs to. Each blockchain
-                        client runs as a container with its own data volume, ports and
+                        and FSP signers on Flare, Songbird, and Avalanche. The cluster
+                        does not care which blockchain a job belongs to. Each blockchain
+                        client runs as a container with its own data volume, ports, and
                         health check, so supporting a new network mostly means writing
                         one more job file. Any worker can run any job, and if a worker
                         goes down, Nomad restarts its jobs on the others without anyone
@@ -222,8 +227,8 @@ const Stack = () => (
                     <p className="about-split-body">
                         WireGuard links our nodes into one private network, whichever
                         provider or site they sit in. Nomad places every workload onto
-                        that network and keeps it running, moving a job between nodes in
-                        case of failures. Each job pulls its signing keys and service
+                        that network and keeps it running, moving a job to another node
+                        when one fails. Each job pulls its signing keys and service
                         credentials from Vault when it starts, rather than carrying them
                         in an image. HAProxy balances traffic between jobs inside that
                         network, and Traefik publishes the APIs and websites that need
@@ -235,9 +240,9 @@ const Stack = () => (
                         metrics, and both are read through Grafana. Sentry catches what
                         neither can: an exception reporting itself from inside the
                         process that failed. Healthchecks.io waits outside the cluster
-                        for jobs to check in on schedule, and treats silence as the
-                        alarm. When one of Grafana's alert rules fires the
-                        alert lands in Telegram, and Claude helps the on-call engineer
+                        for jobs to check in on schedule and treats silence as the
+                        alarm. When one of Grafana's alert rules fires, the
+                        notice lands in Telegram, and Claude helps the on-call engineer
                         work out why, correlating logs against metrics and drafting a
                         fix.
                     </p>

@@ -2,7 +2,7 @@
 title: Your stake, our engine
 description: Who StakeCore serves, how its multi-provider node cluster is built, why it is not tied to any particular chain, and why delegating carries a risk profile close to simply holding the asset.
 url: https://stakecore.org/about.md
-dateModified: 2026-10-26
+dateModified: 2026-10-28
 ---
 
 # Your stake, our engine
@@ -28,7 +28,7 @@ that stay in your wallet.
 thousand, the rate is the same — rewards are proportional and we run no tiers.
 No account to open and no onboarding call to sit through.
 
-**Protocols and foundations.** We run the nodes for the network, and bring the
+**Protocols and foundations.** We run the nodes for the network and bring the
 delegators that back them. The treasury you are sitting on is denominated in
 the token your own network runs on. Putting it to work adds weight to the
 validator set securing that network, and the rewards land back in the treasury.
@@ -44,7 +44,9 @@ past a risk committee.
 
 ## Infrastructure
 
-Small, robust, and decentralized.
+Small, robust, and decentralized. We believe decentralization is fractal.
+Every authorized participant in a protocol should itself run on robust,
+decentralized infrastructure. That is exactly what we strive to offer.
 
 **Three providers, seven cities.** The three server nodes holding cluster
 state sit in Beauharnois, Helsinki, and Nuremberg, so an outage confined to one
@@ -57,8 +59,8 @@ scheduled into any of them.
 
 **A purpose-built cluster, plenty of redundancy.** Three Nomad server nodes
 schedule everything we run, including our validators and FSP signers on Flare,
-Songbird and Avalanche. The cluster doesn't care which blockchain a job belongs
-to. Each blockchain client runs as a container with its own data volume, ports
+Songbird, and Avalanche. The cluster does not care which blockchain a job belongs
+to. Each blockchain client runs as a container with its own data volume, ports,
 and health check, so supporting a new network mostly means writing one more job
 file. Any worker can run any job, and if a worker goes down, Nomad restarts its
 jobs on the others without anyone stepping in.
@@ -73,8 +75,8 @@ takes over.
 
 **What the cluster runs on.** WireGuard links our nodes into one private
 network, whichever provider or site they sit in. Nomad places every workload
-onto that network and keeps it running, moving a job between nodes in case of
-failures. Each job pulls its signing keys and service credentials from Vault
+onto that network and keeps it running, moving a job to another node when one
+fails. Each job pulls its signing keys and service credentials from Vault
 when it starts, rather than carrying them in an image. HAProxy balances traffic
 between jobs inside that network, and Traefik publishes the APIs and websites
 that need to be reachable from outside it.
@@ -83,10 +85,10 @@ From there, everything the cluster does becomes a signal. Alloy ships every
 container's logs to Loki, Prometheus scrapes the metrics, and both are read
 through Grafana. Sentry catches what neither can: an exception reporting itself
 from inside the process that failed. Healthchecks.io waits outside the cluster
-for jobs to check in on schedule, and treats silence as the alarm. When one of
-Grafana's alert rules fires the
-alert lands in Telegram, and Claude helps the on-call engineer work out why,
-correlating logs against metrics and drafting a fix.
+for jobs to check in on schedule and treats silence as the alarm. When one of
+Grafana's alert rules fires, the notice lands in Telegram, and Claude helps the
+on-call engineer work out why, correlating logs against metrics and drafting a
+fix.
 
 | Job | What we run |
 | --- | --- |
@@ -114,11 +116,11 @@ quarterly PDF, nothing you have to believe just because we said it.
 **One operator, any network.** The same team and the same cluster stand behind
 every workload we run — validator duty, protocol signing, RPC and archive
 nodes, indexers, relayers. Whatever you hold, picking up another network
-doesn't mean finding someone new to trust.
+does not mean finding someone new to trust.
 
 **Direct access to the engineers.** Partners get a direct line to the engineers
 who built the cluster: integration questions, custom reporting, reward routing,
-answered by whoever is on call for it. Everyone else reaches the same team
+answered by whoever is on call. Everyone else reaches the same team
 through our socials or the [contact page](/contact.md).
 
 ## Sitemap
