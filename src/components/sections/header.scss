@@ -57,15 +57,54 @@
     }
 }
 
+// Sticky shrink. Past 85px of scroll the header goes compact: its vertical
+// padding drops to 10px. That used to be a padding transition, which re-laid
+// out a fixed bar on every frame while the page scrolled under it — on the way
+// back up, Chrome occasionally left stale page pixels in the band the bar was
+// growing into (a sliver of the title above "ABOUT").
+//
+// So the layout height never changes; transforms fake it. The bar slides up by
+// the padding it loses (--header-shrink) and the row inside slides back down
+// by half, which lands both the bottom edge and the centred row exactly where
+// 10px padding would put them. Transforms run on the compositor, so nothing
+// lays out mid-scroll. Keep --header-shrink equal to 2 × (padding − 10px) at
+// each breakpoint below.
+//
+// Which elements move matters. Not .header-inner: its border has to stay on
+// the bar's bottom edge, inset by the container. And no ancestor of the
+// mobile drawer: a transform makes an element the containing block for
+// absolute descendants, so the drawer's `left: 45%; width: 50%` would be
+// measured against .nav-outer instead of the full-width bar. Only the leaves
+// move — the drawer itself included, which is safe, since an element's own
+// transform does not change its containing block.
+.main-header {
+    --header-shrink: 0px;
+}
+
+.header-upper {
+    transition: transform 200ms ease-out;
+}
+
+.fixed-header .header-upper {
+    transform: translateY(calc(-1 * var(--header-shrink)));
+}
+
 .header-inner {
     padding: 10px 0;
     border-bottom: 1px solid transparent;
-    transition: padding 200ms ease-out, border-color 200ms ease-out;
+    transition: border-color 200ms ease-out;
+
+    :is(.logo-outer, .navbar-header, .navbar-collapse, .menu-btns) {
+        transition: transform 200ms ease-out;
+    }
 }
 
 .fixed-header .header-inner {
-    padding: 10px 0;
     border-bottom-color: var(--border-subtle);
+
+    :is(.logo-outer, .navbar-header, .navbar-collapse, .menu-btns) {
+        transform: translateY(calc(var(--header-shrink) / 2));
+    }
 }
 
 .nav-outer {
@@ -274,6 +313,7 @@
 // === md (768+): tablet header padding ===
 
 @include t.up(md) {
+    .main-header { --header-shrink: 10px; }
     .header-inner { padding: 15px 0; }
 }
 
@@ -281,6 +321,7 @@
 
 @include t.up(lg) {
     .main-header .logo-outer { display: block; }
+    .main-header { --header-shrink: 40px; }
     .header-inner { padding: 30px 0; }
     .menu-btns { display: flex; }
     .nav-outer { width: auto; }
